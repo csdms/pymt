@@ -171,6 +171,78 @@ u'OutputFile'
 #>>> dialog = ConfigDialog ()
 #>>> dialog.read ('/data1/progs/cca/project/csdms_eric/data/Child.xml')
 #>>> dialog.entry_names ('Output Grids')
+
+=== Type names are case insensitive ===
+
+>>> contents = \"\"\"
+... <dialog>
+...   <tab name="Parameters">
+...     <entry name="StopTime">
+...       <label><![CDATA[Stop <b>time</b> &deg;]]></label>
+...       <help_brief>Simulation stop time (in years)</help_brief>
+...       <default>100</default>
+...       <range>
+...         <min>1</min>
+...         <max>10000</max>
+...       </range>
+...       <type>fLoAt</type>
+...     </entry>
+...   </tab>
+... </dialog>
+... \"\"\"
+
+>>> import StringIO
+>>> file = StringIO.StringIO (contents)
+
+>>> dialog = ConfigDialog ()
+>>> dialog.read (file)
+
+>>> dialog.type ('Parameters', 'StopTime')
+<type 'float'>
+
+=== Double is synonymous with Float ===
+
+In addition, 'int', 'integer', and 'long' are synonyms for one
+another.
+
+>>> contents = \"\"\"
+... <dialog>
+...   <tab name="Parameters">
+...     <entry name="StopTime">
+...       <label><![CDATA[Stop <b>time</b> &deg;]]></label>
+...       <help_brief>Simulation stop time (in years)</help_brief>
+...       <default>100</default>
+...       <range>
+...         <min>1</min>
+...         <max>10000</max>
+...       </range>
+...       <type>Double</type>
+...     </entry>
+...     <entry name="NNodes">
+...       <label>Number of nodes</label>
+...       <help_brief>Number of computational nodes</help_brief>
+...       <default>101</default>
+...       <range>
+...         <min>3</min>
+...         <max>100000</max>
+...       </range>
+...       <type>long</type>
+...     </entry>
+...   </tab>
+... </dialog>
+... \"\"\"
+
+>>> import StringIO
+>>> file = StringIO.StringIO (contents)
+
+>>> dialog = ConfigDialog ()
+>>> dialog.read (file)
+
+>>> dialog.type ('Parameters', 'StopTime')
+<type 'float'>
+>>> dialog.type ('Parameters', 'NNodes')
+<type 'int'>
+
 """
 
 import os
@@ -328,11 +400,11 @@ class ConfigEntry (object):
       return unicode (default)
   def _get_type (self, type):
     if isinstance (type, types.StringTypes):
-      if type == 'Float':
+      if type.lower () in ['float', 'double']:
         return types.FloatType
-      elif type == 'Int':
+      elif type.lower () in ['int', 'integer', 'long']:
         return types.IntType
-      elif type == 'String':
+      elif type.lower () == 'string':
         return types.StringTypes
       else:
         raise InvalidEntryType (type)
@@ -509,14 +581,14 @@ class ConfigDialog (object):
       raise TypeConversionError (type)
   def type (self, tab, entry):
     type = self.data (tab, entry, 'type')
-    if type == 'String':
-      return types.StringTypes
-    elif type == 'Float':
+    if type.lower () in ['float', 'double']:
       return types.FloatType
-    elif type == 'Int':
+    elif type.lower () in ['int', 'integer', 'long']:
       return types.IntType
+    elif type.lower () == 'string':
+      return types.StringTypes
     else:
-      raise UnknownValueError (type)
+      raise InvalidEntryType (type)
   def range (self, tab, entry):
     type = self.type (tab, entry)
     if type is types.StringTypes:
