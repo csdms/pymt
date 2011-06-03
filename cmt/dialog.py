@@ -243,6 +243,46 @@ another.
 >>> dialog.type ('Parameters', 'NNodes')
 <type 'int'>
 
+=== Range values are converted to the appropriate type ===
+
+>>> contents = \"\"\"
+... <dialog>
+...   <tab name="Parameters">
+...     <entry name="StopTime">
+...       <label><![CDATA[Stop <b>time</b> &deg;]]></label>
+...       <help_brief>Simulation stop time (in years)</help_brief>
+...       <default>100</default>
+...       <range>
+...         <min>1</min>
+...         <max>10000</max>
+...       </range>
+...       <type>Double</type>
+...     </entry>
+...     <entry name="NNodes">
+...       <label>Number of nodes</label>
+...       <help_brief>Number of computational nodes</help_brief>
+...       <default>101</default>
+...       <range>
+...         <min>3.0</min>
+...         <max>1e5</max>
+...       </range>
+...       <type>Integer</type>
+...     </entry>
+...   </tab>
+... </dialog>
+... \"\"\"
+
+>>> import StringIO
+>>> file = StringIO.StringIO (contents)
+
+>>> dialog = ConfigDialog ()
+>>> dialog.read (file)
+
+>>> dialog.range ('Parameters', 'StopTime')
+[1.0, 10000.0]
+>>> dialog.range ('Parameters', 'NNodes')
+[3, 100000]
+
 """
 
 import os
@@ -601,7 +641,7 @@ class ConfigDialog (object):
       if type is types.FloatType:
         return [float (val) for val in min_max]
       elif type is types.IntType:
-        return [int (val) for val in min_max]
+        return [int (float (val)) for val in min_max]
 
   def data (self, tab_name, entry_name, data_name):
     entry = self.entry (tab_name, entry_name)
