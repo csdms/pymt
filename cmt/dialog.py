@@ -1,6 +1,6 @@
 """
 >>> contents = \"\"\"
-... <dialog>
+... <dialog name="Configure Model">
 ...   <tab name="Parameters">
 ...     <entry name="StopTime">
 ...       <label><![CDATA[Stop <b>time</b> &deg;]]></label>
@@ -55,6 +55,9 @@
 
 >>> dialog = ConfigDialog ()
 >>> dialog.read (file)
+
+>>> dialog.name ()
+u'Configure Model'
 
 >>> dialog.tab_names ()
 [u'Parameters', u'Files and Directories']
@@ -196,6 +199,10 @@ u'OutputFile'
 
 >>> dialog = ConfigDialog ()
 >>> dialog.read (file)
+
+If a dialog does not have a name attribute, it's name is an empty string.
+>>> dialog.name ()
+''
 
 >>> dialog.type ('Parameters', 'StopTime')
 <type 'float'>
@@ -568,6 +575,16 @@ class ConfigDialog (object):
       raise ParseError (file, "XML file does contain a dialog node")
     if dialog.attributes.has_key ('namespace'):
       self._namespace = dialog.attributes['namespace'].value
+
+  def name (self):
+    dialogs = self._dom.getElementsByTagName ('dialog')
+    if len (dialogs) != 1:
+      raise ParseError ('', "XML file does contain a dialog node")
+    try:
+      name = dialogs[0].attributes['name'].value
+    except KeyError:
+      name = ''
+    return name
 
   def tab_names (self):
     tabs = []
