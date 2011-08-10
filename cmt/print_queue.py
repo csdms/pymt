@@ -275,6 +275,7 @@ class PrintQueue (object):
           try:
             dimen = port.get_raster_dimen (var)
             res = port.get_raster_res (var)
+            verbose (8, 'Output variable is %s' % var)
             verbose (8, 'Output file is %s' % path)
             verbose (8, 'Output file format is %s' % q['format'])
             verbose (8, 'Variable dimension is %s' %
@@ -282,8 +283,6 @@ class PrintQueue (object):
             verbose (8, 'Variable resolution is %s' %
                           ' x '.join ([str (val) for val in res]))
 
-            #new_file = csdms_utils.raster_file.RasterFileDB (
-            #             NCRasterFile, var, '1')
             new_file = csdms_utils.raster_file.RasterFileDB (NCRasterFile)
             q['files'].add_file (new_file, path, var)
           except Exception as e:
@@ -338,7 +337,7 @@ class PrintQueue (object):
 
             verbose (8, 'Get values')
             values = self._port.get_value_set_data (var)
-            #verbose (1, 'Number of values is %d' % values.getCount ())
+            verbose (8, 'Number of values is %d' % len (values))
             verbose (8, 'Got values')
             
             q['files'].append_val (var, values, time=time)
