@@ -147,7 +147,7 @@ class TemplateFiles (object):
   def add_file (self, src, rename=None):
     (root, ext) = os.path.splitext (src)
     print 'source file is %s' % src
-    if ext != '.in':
+    if rename is None and ext != '.in':
       raise FileTypeError (src)
 
     if rename is None:
