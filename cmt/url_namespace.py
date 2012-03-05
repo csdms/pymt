@@ -129,7 +129,7 @@ def ischild (ns, base):
   if ns==base:
     return False
   else:
-    return ns.startswith (base):
+    return ns.startswith (base)
 
 def commonprefix (list):
   """
