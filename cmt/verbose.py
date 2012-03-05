@@ -1,7 +1,30 @@
 import os
 import sys
+import logging
 
 from csdms_utils import Verbose
+
+level_string = {'DEBUG': 10, 'INFO': 20, 'WARNING': 30, 'ERROR': 40}
+
+class CMTLogger (logging.Logger):
+    def __init__ (self, name, level):
+        try:
+            level = int (os.environ['CMT_VERBOSE'])
+        except KeyError:
+            pass
+        except ValueError:
+            try:
+                level = level_string[level]
+            except KeyError:
+                pass
+
+        logging.Logger.__init__ (self, name, level=level)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter ('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        ch.setFormatter (formatter)
+        self.addHandler (ch)
 
 class CMTVerbose (Verbose):
   """
