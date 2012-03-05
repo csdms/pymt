@@ -67,13 +67,13 @@ If the size or shape doesn't match, it's an error.
 Map between two fields
 ----------------------
 
-    >>> src = EsmpRasterField ((3,2), (2,1), (0, 0))
-    >>> data = np.arange (6)
-    >>> src.add_field ('src', data, centering='point')
+    >>> src = EsmpRasterField ((3,3), (1,1), (0, 0))
+    >>> data = np.arange (src.get_cell_count (), dtype=np.float64)
+    >>> src.add_field ('src', data, centering='zonal')
 
-    >>> dst = EsmpRasterField ((3,2), (2,1), (0, 0))
-    >>> data = np.empty (6, dtype=np.float64)
-    >>> dst.add_field ('dst', data, centering='point')
+    >>> dst = EsmpRasterField ((4,4), (.5,.5), (0, 0))
+    >>> data = np.empty (dst.get_cell_count (), dtype=np.float64)
+    >>> dst.add_field ('dst', data, centering='zonal')
 
     >>> run_regridding (src.as_esmp ('src'), dst.as_esmp ('dst'))
 
@@ -82,8 +82,11 @@ Map between two fields
 
 import numpy as np
 
+from cmt.grids.raster import UniformRectilinear
 from cmt.grids.rectilinear import Rectilinear
 from cmt.grids.structured import Structured
+from cmt.grids.unstructured import Unstructured
+from cmt.grids.igrid import IGrid, IField, DimensionError,CenteringValueError, centering_choices
 import ESMP
 
 class EsmpGrid (IGrid):
