@@ -80,6 +80,10 @@ class PortQueue (object):
   def add_port (self, server):
     self._servers[server] = None
 
+  def add_ports (self, servers):
+      for server in servers.split (','):
+          self.add_port (server.strip ())
+
   def initialize (self, properties):
     for name in self._init_queue:
       self._servers[name].initialize (properties)
