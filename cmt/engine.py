@@ -15,7 +15,7 @@ class Engine (object):
     self.initialized = False
 
   def initialize (self):
-    if not self->initialized:
+    if not self.initialized:
       ports = get_active_ports ()
 
       create_port_queue (ports)
