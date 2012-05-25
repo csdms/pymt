@@ -31,7 +31,7 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
     >>> print g.get_offset () # doctest: +NORMALIZE_WHITESPACE
     [ 4 8 12 16 20 24]
     >>> print g.get_connectivity () # doctest: +NORMALIZE_WHITESPACE
-    [ 1 0 3 4 2 1 4 5 4 3 6 7 5 4 7 8 7 6 9 10 8 7 10 11]
+    [ 0 1 4 3 1 2 5 4 3 4 7 6 4 5 8 7 6 7 10 9 7 8 11 10]
 
 Rectilinear grid of points
 --------------------------
@@ -66,12 +66,28 @@ from meshgrid import meshgrid
 from structured import Structured, StructuredPoints
 
 class RectilinearPoints (StructuredPoints):
-    def __init__ (self, x, y, indexing='xy', set_connectivity=False):
+    #def __init__ (self, x, y, indexing='xy', set_connectivity=False):
+    def __init__ (self, x, y, **kwds):
+        kwds.setdefault ('set_connectivity', False)
+        kwds.setdefault ('indexing', 'xy')
+
         XI = np.meshgrid (x, y)
         shape = XI[0].shape
-        if indexing == 'ij':
+        if kwds['indexing'] == 'ij':
             shape = shape[::-1]
-        super (RectilinearPoints, self).__init__ (XI[0], XI[1], shape, indexing=indexing, set_connectivity=set_connectivity)
+            self._x_coordinates = np.array (y)
+            self._y_coordinates = np.array (x)
+        else:
+            self._x_coordinates = np.array (x)
+            self._y_coordinates = np.array (y)
+
+        #super (RectilinearPoints, self).__init__ (XI[0], XI[1], shape, indexing=indexing, set_connectivity=set_connectivity)
+        super (RectilinearPoints, self).__init__ (XI[0], XI[1], shape,
+                                                  **kwds)
+    def get_x_coordinates (self):
+        return self._x_coordinates
+    def get_y_coordinates (self):
+        return self._y_coordinates
 
 class Rectilinear (RectilinearPoints, Structured):
     """
@@ -90,8 +106,11 @@ Create a rectilinear grid.
 :returns: An instance of a Rectilinear grid.
 :rtype: Rectilinear
     """
-    def __init__ (self, x, y, indexing='xy', set_connectivity=True):
-        super (Rectilinear, self).__init__ (x, y, indexing=indexing, set_connectivity=True)
+    #def __init__ (self, x, y, indexing='xy', set_connectivity=True):
+    def __init__ (self, x, y, **kwds):
+        kwds['set_connectivity'] = True 
+        super (Rectilinear, self).__init__ (x, y, **kwds)
+        #super (Rectilinear, self).__init__ (x, y, indexing=indexing, set_connectivity=True)
 
 if __name__ == '__main__':
     import doctest

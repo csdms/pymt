@@ -59,8 +59,8 @@ from cmt.grids.rectilinear import Rectilinear
 from cmt.grids.raster import UniformRectilinear
 from cmt.grids.igrid import IGrid
 
-#class UnstructuredMap (Unstructured):
-class UnstructuredMap (IGrid):
+class UnstructuredMap (Unstructured):
+#class UnstructuredMap (IGrid):
     name = 'Unstructured'
     def __init__ (self, *args, **kwargs):
         super (UnstructuredMap, self).__init__ (*args, **kwargs)

@@ -33,7 +33,7 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
     >>> print g.get_offset () # doctest: +NORMALIZE_WHITESPACE
     [ 4 8 12 16 20 24]
     >>> print g.get_connectivity () # doctest: +NORMALIZE_WHITESPACE
-    [ 1 0 3 4 2 1 4 5 4 3 6 7 5 4 7 8 7 6 9 10 8 7 10 11]
+    [ 0 1 4 3 1 2 5 4 3 4 7 6 4 5 8 7 6 7 10 9 7 8 11 10]
 
 Structured grid of points
 -------------------------
@@ -71,21 +71,30 @@ import numpy as np
 from meshgrid import meshgrid
 from igrid import IGrid, IField
 from unstructured import Unstructured, UnstructuredPoints
+from connectivity import get_connectivity
 
 class StructuredPoints (UnstructuredPoints):
-    def __init__ (self, x, y, shape, indexing='xy', set_connectivity=True, **kwargs):
+    #def __init__ (self, x, y, shape, indexing='xy', set_connectivity=True, **kwargs):
+    def __init__ (self, x, y, shape, **kwds):
+        kwds.setdefault ('set_connectivity', True)
+        indexing = kwds.pop ('indexing', 'xy')
+
         x = np.array (x, dtype=np.float64)
         y = np.array (y, dtype=np.float64)
+
+        assert (len (x) == len (y))
+        assert (x.size == np.prod (shape))
 
         if indexing == 'xy':
             x.shape = shape
             y.shape = shape
         else:
-            (y, x) = (x.reshape (shape[::-1]).T.copy (), y.reshape (shape[::-1]).T.copy ())
+            (y, x) = (x.reshape (shape[::-1]).T.copy (),
+                      y.reshape (shape[::-1]).T.copy ())
 
         self._shape = np.array (x.shape, dtype=np.int64)
 
-        super (StructuredPoints, self).__init__ (x, y, set_connectivity=set_connectivity, **kwargs)
+        super (StructuredPoints, self).__init__ (x, y, **kwds)
 
         #self._shape = np.array (x.shape, dtype=np.int64)
 
@@ -112,30 +121,18 @@ Create a structured rectilinear grid.
 
 
     """
-    def __init__ (self, x, y, shape, indexing='xy', set_connectivity=True):
-        #point_ids = np.arange (self.get_point_count (), dtype=np.int32)
-        try:
-            point_count = x.size
-        except AttributeError:
-            point_count = len (x)
+    #def __init__ (self, x, y, shape, indexing='xy', set_connectivity=True):
+    def __init__ (self, x, y, shape, **kwds):
+        kwds.setdefault ('indexing', 'xy')
+        kwds.setdefault ('set_connectivity', True)
+        ordering = kwds.pop ('ordering', 'cw')
+        if not ordering in ['cw', 'ccw']:
+            raise TypeError ("ordering not understood (valid choices are 'cw' or 'ccw')")
 
-        assert (point_count == np.prod (shape))
+        (c, o) = get_connectivity (shape, ordering=ordering, with_offsets=True)
 
-        point_ids = np.arange (point_count, dtype=np.int32)
-        point_ids.shape = shape
-
-        c_ul = point_ids[:-1,:-1].flatten ()
-        c_ur = point_ids[:-1,1:].flatten ()
-        c_lr = point_ids[1:,1:].flatten ()
-        c_ll = point_ids[1:,:-1].flatten ()
-
-        c = np.array (zip (c_ur, c_ul, c_ll, c_lr), dtype=np.int32)
-        o = np.arange (4, c.size+1, 4, dtype=np.int32)
-        #self._set_connectivity (c, o)
-
-        super (Structured, self).__init__ (x, y, shape, connectivity=c, offset=o, indexing=indexing)
-        #super (Structured, self).__init__ (x, y, shape, indexing=indexing, set_connectivity=False)
-
+        super (Structured, self).__init__ (x, y, shape, connectivity=c,
+                                           offset=o, **kwds)
 
 if __name__ == '__main__':
     import doctest

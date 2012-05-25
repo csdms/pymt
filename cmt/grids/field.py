@@ -11,8 +11,14 @@ class GridField (Unstructured, IField):
     def __init__ (self, *args, **kwargs):
         super (GridField, self).__init__ (*args, **kwargs) 
         self._fields = {}
+        self._field_units = {}
 
-    def add_field (self, field_name, val, centering='zonal'):
+    def add_field (self, field_name, val, centering='zonal', units='-'):
+        try:
+            val.shape = val.size
+        except AttributeError:
+            val = np.array (val)
+
         if centering not in centering_choices:
             raise CenteringValueError (centering)
 
@@ -22,13 +28,46 @@ class GridField (Unstructured, IField):
             raise DimensionError (val.size, self.get_point_count ())
 
         self._fields[field_name] = val
-        self._fields[field_name].shape = val.size
+        self._field_units[field_name] = units
+        #self._fields[field_name].shape = val.size
 
     def get_field (self, field_name):
         return self._fields[field_name]
+    def get_field_units (self, field_name):
+        return self._field_units[field_name]
+    def get_point_fields (self):
+        fields = {}
+        for (field, array) in self._fields.items ():
+            if array.size == self.get_point_count ():
+                fields[field] = array
+        return fields
+    def get_cell_fields (self):
+        fields = {}
+        for (field, array) in self._fields.items ():
+            if array.size == self.get_cell_count ():
+                fields[field] = array
+        return fields
+
+    def items (self):
+        return self._fields.items ()
+    def keys (self):
+        return self._fields.keys ()
+    def values (self):
+        return self._fields.values ()
+    def has_field (self, name):
+        return self._fields.has_key (name)
+
+class UnstructuredField (GridField):
+    pass
 
 class StructuredField (Structured, GridField):
-    def add_field (self, field_name, val, centering='zonal'):
+    def add_field (self, field_name, val, centering='zonal', units='-'):
+        try:
+            ndim = val.ndim
+        except AttributeError:
+            val = np.array (val)
+            ndim = val.ndim
+
         if centering=='zonal':
             if val.ndim > 1 and np.any (val.shape != self.get_shape ()-1):
                 raise DimensionError (val.shape, self.get_shape ()-1)
@@ -36,7 +75,7 @@ class StructuredField (Structured, GridField):
             if val.ndim > 1 and np.any (val.shape != self.get_shape ()):
                 raise DimensionError (val.shape, self.get_shape ())
         try:
-            super (StructuredField, self).add_field (field_name, val, centering=centering)
+            super (StructuredField, self).add_field (field_name, val, centering=centering, units=units)
         except DimensionError, CenteringValueError:
             raise
 

@@ -26,7 +26,8 @@ class AttributeError (Error):
         return '%s: %s' % (self.attr, self.msg)
 
 class UnstructuredPoints (IGrid):
-    def __init__ (self, x, y, set_connectivity=False):
+    def __init__ (self, x, y, set_connectivity=False,
+                  units=['-', '-', '-']):
         #super (UnstructuredPoints, self).__init__ (x, y, [], [])
 
         assert (len (x) == len (y))
@@ -48,6 +49,10 @@ class UnstructuredPoints (IGrid):
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
+        #self._units = ['-']*(3-len (units)) + list (units)
+        self._units = list (units)
+        #self._units = units[::-1]
+
         super (UnstructuredPoints, self).__init__ ()
 
     def get_x (self):
@@ -56,6 +61,26 @@ class UnstructuredPoints (IGrid):
         return self._coords[-2]
     def get_z (self):
         return self._coords[0]
+    def get_x_units (self):
+        try:
+            return self._units[-1]
+        except IndexError:
+            return '-'
+    def get_y_units (self):
+        try:
+            return self._units[-2]
+        except IndexError:
+            return '-'
+    def get_z_units (self):
+        try:
+            return self._units[-3]
+        except IndexError:
+            return '-'
+    def get_coordinate_units (self, i):
+        try:
+            return self._units[i]
+        except IndexError:
+            return '-'
     def get_connectivity (self):
         return self._connectivity
     def get_offset (self):
@@ -116,11 +141,16 @@ Create the grid,
     >>> print o
     [3 6]
     """
-    def __init__ (self, x, y, connectivity=[], offset=[], set_connectivity=True):
+    def __init__ (self, x, y, connectivity=[], offset=[], **kwds):
+        set_connectivity = kwds.pop ('set_connectivity', True)
+        #connectivity = kwds.pop ('connectivity', [])
+        #offset = kwds.pop ('offset', [])
+
         if len (connectivity)>0 and set_connectivity:
             self._set_connectivity (connectivity, offset)
 
-        super (Unstructured, self).__init__ (x, y, set_connectivity=False)
+        kwds['set_connectivity'] = False
+        super (Unstructured, self).__init__ (x, y, **kwds)
 
         #self._cell_count = self._offset.size
 

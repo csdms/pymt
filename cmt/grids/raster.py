@@ -26,17 +26,25 @@ Create a grid of length 2 in the x direction, and 3 in the y direction.
     [ 2. 1.]
     >>> print g.get_origin ()
     [ 0. 0.5]
+    >>> print g.get_x_units ()
+    -
+    >>> print g.get_y_units ()
+    -
 
 -----------
 ij-indexing
 -----------
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
-    >>> g = UniformRectilinear ((2,3), (1,2), (.5, 0), indexing='ij')
+    >>> g = UniformRectilinear ((2,3), (1,2), (.5, 0), indexing='ij', units=('m', 'km'))
     >>> print g.get_x ()
     [ 0. 2. 4. 0. 2. 4.]
     >>> print g.get_y ()
     [ 0.5 0.5 0.5 1.5 1.5 1.5]
+    >>> print ','.join ([g.get_x_units (), g.get_y_units (), g.get_z_units ()])
+    km,m,-
+    >>> print ','.join ([g.get_coordinate_units (i) for i in [0,1,2]])
+    m,km,-
     >>> print g.get_shape ()
     [2 3]
     >>> print g.get_spacing ()
@@ -46,7 +54,7 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
     >>> print g.get_offset ()
     [4 8]
     >>> print g.get_connectivity ()
-    [1 0 3 4 2 1 4 5]
+    [0 1 4 3 1 2 5 4]
 
 Uniform rectilinear grid of points
 ----------------------------------
@@ -87,7 +95,11 @@ from igrid import IField
 from rectilinear import Rectilinear, RectilinearPoints
 
 class UniformRectilinearPoints (RectilinearPoints):
-    def __init__ (self, shape, spacing, origin, indexing='xy', set_connectivity=False):
+    #def __init__ (self, shape, spacing, origin, indexing='xy', set_connectivity=False):
+    def __init__ (self, shape, spacing, origin, **kwds):
+        kwds.setdefault ('indexing', 'xy')
+        kwds.setdefault ('set_connectivity', False)
+
         assert (len (shape) == len (spacing) == len (origin))
 
         xi = []
@@ -97,11 +109,12 @@ class UniformRectilinearPoints (RectilinearPoints):
         self._spacing = np.array (spacing, dtype=np.float64)
         self._origin = np.array (origin, dtype=np.float64)
 
-        if indexing=='xy':
+        if kwds['indexing']=='xy':
             self._origin = self._origin[::-1]
             self._spacing = self._spacing[::-1]
 
-        super (UniformRectilinearPoints, self).__init__ (*xi, indexing=indexing, set_connectivity=set_connectivity)
+        #super (UniformRectilinearPoints, self).__init__ (*xi, indexing=indexing, set_connectivity=set_connectivity)
+        super (UniformRectilinearPoints, self).__init__ (*xi, **kwds)
 
     def get_spacing (self):
         """Spacing between nodes in each direction"""
@@ -126,8 +139,11 @@ Create a rectilinear grid with uniform spacing in the x and y directions.
 :returns: An instance of a UniformRectilinear grid.
 :rtype: UniformRectilinear
     """
-    def __init__ (self, shape, spacing, origin, indexing='xy'):
-        super (UniformRectilinear, self).__init__ (shape, spacing, origin, indexing=indexing, set_connectivity=False)
+    #def __init__ (self, shape, spacing, origin, indexing='xy'):
+    def __init__ (self, shape, spacing, origin, **kwds):
+        kwds['set_connectivity'] = False
+        super (UniformRectilinear, self).__init__ (shape, spacing, origin,
+                                                   **kwds)
 
 if __name__ == '__main__':
     import doctest
