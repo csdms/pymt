@@ -187,12 +187,14 @@ class NoMapperError (MapperError):
     def __str__ (self):
         return 'No mapper to map %s to %s' % (self._src, self._dst)
 
-mappers = [NearestVal (), CellToPoint (), PointToCell ()]
+#mappers = [NearestVal (), CellToPoint (), PointToCell ()]
+mappers = [NearestVal, CellToPoint, PointToCell]
 
 def find_mapper (dst_grid, src_grid):
     """Find appropriate mappers to map bewteen two grid-like objects"""
     choices = []
-    for mapper in mappers:
+    for cls in mappers:
+        mapper = cls ()
         if mapper.test (dst_grid, src_grid):
             choices.append (mapper)
 
