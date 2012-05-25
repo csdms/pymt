@@ -16,15 +16,14 @@ class NearestVal (IGridMapper):
     def run (self, src_values, dest_values=None):
         if dest_values is None:
             dest_values = np.zeros (len (self._i))
-        for (j, i) in zip (range (len(self._i)), self._i):
+        for (j, i) in enumerate (self._i):
             if src_values[i]>-999:
                 dest_values[j] = src_values[i]
         return dest_values
 
     def test (self, dst_grid, src_grid):
-        return True
-        #return (all (np.diff (dst_grid.get_offset ())==1) and
-        #        all (np.diff (src_grid.get_offset ())==1))
+        return (all (np.diff (dst_grid.get_offset ())==1) and
+                all (np.diff (src_grid.get_offset ())==1))
     def name (self):
         return 'PointToPoint'
 
