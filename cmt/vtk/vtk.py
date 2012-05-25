@@ -1,14 +1,39 @@
 #! /bin/env python
+"""
+Examples
+========
+
+Define a grid that consists of two trianges that share two points.
+
+::
+
+       (2) - (3)
+      /   \  /
+    (0) - (1)
+
+Create the grid,
+    >>> from cmt.vtk import tofile
+
+    >>> from cmt.grids import GridField
+    >>> g = GridField ([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6])
+    >>> g.add_field ('Elevation',  [1., 2., 3, 4], centering='point')
+    >>> g.add_field ('Temperature',  [10., 20., 30., 40.], centering='point')
+    >>> g.add_field ('Cell Elevation', [1., 2.], centering='zonal')
+    >>> g.add_field ('Cell Temperature', [10., 20.], centering='zonal')
+    >>> tofile (g, 'tri.vtu', format='appended', encoding='base64')
+
+
+"""
 import os
 import sys
 import xml.dom.minidom
 
 import numpy as np
 
-from encoders import encode
+from cmt.vtk import encode
 
-from types import *
-from xml import *
+#from types import *
+#from xml import *
 
 valid_encodings = ['ascii', 'base64', 'raw']
 valid_formats = ['ascii', 'base64', 'raw', 'appended']
@@ -69,6 +94,27 @@ class VtkWriter (xml.dom.minidom.Document):
       file = open (path, 'w')
       file.write (self.toprettyxml ())
       file.close ()
+
+def assemble_vtk_elements (element):
+    root = element['VTKFile']
+    grid = element['Grid']
+    piece = element['Piece']
+    for section in ['Points', 'Coordinates', 'PointData', 'Cells', 'CellData']:
+        try:
+            piece.appendChild (element[section])
+        except KeyError:
+            pass
+        except EmptyElementError:
+            pass
+    grid.appendChild (piece)
+    root.appendChild (grid)
+
+    try:
+        root.appendChild (element['AppendedData'])
+    except KeyError:
+        pass
+
+    return root
 
 class VTKDatabase (VtkWriter):
     def write (self, path, **kwargs):

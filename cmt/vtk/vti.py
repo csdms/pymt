@@ -22,10 +22,10 @@ Create a uniform rectilinear grid that looks like the following,
 >>> g.write ('rect.vti')
 """
 from cmt.grid import VTKGridUniformRectilinear
-from vtk import VtkWriter
+from cmt.vtk import VtkWriter
 
-from vtktypes import VtkUniformRectilinear
-from vtkxml import *
+from cmt.vtk.vtktypes import VtkUniformRectilinear
+from cmt.vtk.vtkxml import *
 
 def extent_string (shape):
     return '0 %d 0 %d 0 0' % (shape[1], shape[0])

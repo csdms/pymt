@@ -1,6 +1,6 @@
 #! /bin/env python
 
-from cmt.encoders import ASCIIEncoder, RawEncoder, Base64Encoder
+from cmt.vtk import ASCIIEncoder, RawEncoder, Base64Encoder
 
 class VtkEndian (object):
     def __init__ (self, endian):
@@ -36,10 +36,18 @@ class VtkCellType (object):
         self.name = name
     def __str__ (self):
         return self.name
+    def __int__ (self):
+        return self.id
 VtkVertex = VtkCellType ('Vertex', 1)
 VtkLine = VtkCellType ('Line', 3)
 VtkTriangle = VtkCellType ('Triangle', 5)
+VtkQuad = VtkCellType ('Quad', 9)
 VtkPolygon = VtkCellType ('Polygon', 7)
+
+edge_count_to_type = {1: VtkVertex,
+                      2: VtkLine,
+                      3: VtkTriangle,
+                      4: VtkQuad}
 
 class VtkGridType (object):
     def __init__ (self, name):

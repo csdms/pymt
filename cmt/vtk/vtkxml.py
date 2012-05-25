@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import xml.dom.minidom
 #from cmt.encoders import ASCIIEncoder, RawEncoder, Base64Encoder
-from encoders import encode
+from cmt.vtk import encode
 from vtktypes import sys_to_vtk_endian, np_to_vtk_type
 
 class VtkElement (object, xml.dom.minidom.Element):

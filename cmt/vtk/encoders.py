@@ -40,8 +40,13 @@ class Base64Encoder (object):
         as_str = base64.b64encode (as_str)
         block_size = base64.b64encode (np.array (len (as_str), dtype=np.int32).tostring ())
         return block_size + as_str
+    def decode (self, array):
+        pass
 
 encoders = {'ascii': ASCIIEncoder (), 'raw': RawEncoder (), 'base64': Base64Encoder ()}
 def encode (array, encoding='ascii'):
     return encoders[encoding].encode (array)
+
+def decode (array, encoding='raw'):
+    return encoders[encoding].decode (array)
 
