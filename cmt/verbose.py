@@ -1,8 +1,9 @@
+from __future__ import print_function
+
 import os
 import sys
 import logging
 
-from csdms_utils import Verbose
 
 level_string = {'DEBUG': 10, 'INFO': 20, 'WARNING': 30, 'ERROR': 40}
 
@@ -25,6 +26,19 @@ class CMTLogger (logging.Logger):
         formatter = logging.Formatter ('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter (formatter)
         self.addHandler (ch)
+
+class Verbose (object):
+  def __init__ (self, verbosity=0, log=sys.stderr):
+    self._verbosity = verbosity
+    self._log = log
+  def __call__ (self, verbosity, msg):
+    if verbosity <= self._verbosity:
+      print (self.construct_msg (verbosity, msg), file=self._log)
+  def construct_msg (self, verbosity, msg):
+    if verbosity == 0:
+      return msg
+    else:
+      return '*'*verbosity + ' ' + msg
 
 class CMTVerbose (Verbose):
   """
