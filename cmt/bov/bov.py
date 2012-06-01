@@ -6,7 +6,8 @@ import ConfigParser
 
 import numpy as np
 
-from cmt import VTKGridUniformRectilinear, VTKGridPoints
+#from cmt import VTKGridUniformRectilinear, VTKGridPoints
+from cmt.grids import RasterField
 
 class BovError (Exception):
     pass
@@ -80,9 +81,6 @@ def fromfile (file, allow_singleton=True):
 
     >>> grid = fromfile ('test_points.bov', allow_singleton=False)
 
-    #>>> grid.get_shape () #doctest: +NORMALIZE_WHITESPACE
-    #array([10, 10])
-
     >>> data = grid.point_data ('Elevation')
     >>> print data.max ()
     5.0
@@ -91,12 +89,6 @@ def fromfile (file, allow_singleton=True):
     >>> data.shape
     (10, 10)
 
-    #>>> grid.get_spacing () #doctest: +NORMALIZE_WHITESPACE
-    #array([ 1., 1.])
-    #>>> grid.get_shape () #doctest: +NORMALIZE_WHITESPACE
-    #array([10, 10])
-    #>>> grid.get_origin () #doctest: +NORMALIZE_WHITESPACE
-    #array([ 0., 0.])
     """
     header = {}
     with open (file, 'r') as f:
@@ -160,30 +152,166 @@ def fromfile (file, allow_singleton=True):
 
     shape = header['DATA_SIZE']
     origin = header['BRICK_ORIGIN']
-    spacing = header['BRICK_SIZE']/shape
+    spacing = header['BRICK_SIZE']/(shape-1)
 
+    grid = RasterField (shape, spacing, origin, indexing='ij')
     if header.has_key ('CENTERING') and header['CENTERING'] == 'zonal':
-        grid = VTKGridUniformRectilinear (shape, spacing, origin)
-        #grid = BovFile (shape, spacing, origin)
-
-        grid.add_cell_data (header['VARIABLE'], data)
-        #grid.set_attrs (header)
+        grid.add_field (header['VARIABLE'], data, centering='zonal')
     else:
-        size = header['BRICK_SIZE']
-        x = np.linspace (origin[0], origin[0]+size[0], shape[0])
-        y = np.linspace (origin[1], origin[1]+size[1], shape[1])
-        #x = np.arange (shape[0], dtype=np.float64)*spacing[0] + origin[0]
-        #y = np.arange (shape[1], dtype=np.float64)*spacing[1] + origin[1]
-        (X, Y) = np.meshgrid (x, y)
-        grid = VTKGridPoints (X, Y)
-        grid.add_point_data (header['VARIABLE'], data)
+        grid.add_field (header['VARIABLE'], data, centering='point')
+
+    #grid.add_field (header['VARIABLE'], data, centering=header['
+    #if header.has_key ('CENTERING') and header['CENTERING'] == 'zonal':
+    #    grid = VTKGridUniformRectilinear (shape, spacing, origin)
+    #    #grid = BovFile (shape, spacing, origin)
+
+    #    grid.add_cell_data (header['VARIABLE'], data)
+    #    #grid.set_attrs (header)
+    #else:
+    #    size = header['BRICK_SIZE']
+    #    x = np.linspace (origin[0], origin[0]+size[0], shape[0])
+    #    y = np.linspace (origin[1], origin[1]+size[1], shape[1])
+    #    #x = np.arange (shape[0], dtype=np.float64)*spacing[0] + origin[0]
+    #    #y = np.arange (shape[1], dtype=np.float64)*spacing[1] + origin[1]
+    #    (X, Y) = np.meshgrid (x, y)
+    #    grid = VTKGridPoints (X, Y)
+    #    grid.add_point_data (header['VARIABLE'], data)
 
     #grid = VTKGridUniformRectilinear (shape, spacing, origin)
 
     return (grid, header)
 
+def array_tofile (file, array, name='', spacing=(1., 1.), origin=(0., 0.), no_clobber=False, options={}):
+    files_written = []
+    (base, ext) = os.path.splitext (file)
+    if len (ext)>0 and ext != '.bov':
+        raise BadFileExtension (ext)
 
-class BovFile (VTKGridUniformRectilinear):
+    spacing = np.array (spacing, dtype=np.float64)
+    origin = np.array (origin, dtype=np.float64)
+    shape = np.array (array.shape, dtype=np.int64)
+    size = shape * spacing
+
+    if len (shape)<3:
+        shape = np.append (shape, [1]*(3-len (shape)))
+    if len (origin)<3:
+        origin = np.append (origin, [1.]*(3-len (origin)))
+    if len (size)<3:
+        size = np.append (size, [1.]*(3-len (size)))
+
+    vars = [(name, array)]
+
+    for (var, vals) in vars:
+        dat_file = '%s_%s.dat' % (base, var)
+        bov_file = '%s_%s.bov' % (base, var)
+
+        if no_clobber:
+            if os.path.isfile (bov_file):
+                raise FileExists (bov_file)
+            if os.path.isfile (dat_file):
+                raise FileExists (dat_file)
+
+        #try:
+        #    vals = grid.cell_data (var)
+        #except (AttributeError, TypeError):
+        #    raise TypeError ('\'%s\' object is not grid-like' % type (grid))
+
+        vals.tofile (dat_file)
+
+        header = dict (DATA_FILE=dat_file,
+                       DATA_SIZE=array_to_str (shape),
+                       BRICK_ORIGIN=array_to_str (origin),
+                       BRICK_SIZE=array_to_str (size),
+                       DATA_ENDIAN=sys_to_bov_endian[sys.byteorder],
+                       DATA_FORMAT=np_to_bov_type[str (vals.dtype)],
+                       VARIABLE=var)
+
+        header.update (options)
+        with open (bov_file, 'w') as f:
+            for item in header.items ():
+                f.write ('%s: %s\n' % item)
+
+        files_written.append (bov_file)
+    return files_written
+
+def tofile (file, grid, var_name=None, no_clobber=False, options={}):
+    """
+    Write a grid-like object to a BOV file.
+
+    :param file: Name of the BOV file to write
+    :type file: string
+    :param grid: A uniform rectilinear grid-like object
+    :type grid: Grid-like
+
+    Required methods for grid:
+        * get_shape
+        * get_origin
+        * get_spacing
+        * items
+        * get_field
+
+    :returns: A list of the files written.
+    """
+    files_written = []
+    (base, ext) = os.path.splitext (file)
+    if len (ext)>0 and ext != '.bov':
+        raise BadFileExtension (ext)
+
+    try:
+        shape = grid.get_shape ()
+        origin = grid.get_origin ()
+        size = grid.get_shape ()*grid.get_spacing ()
+    except (AttributeError, TypeError):
+        raise TypeError ('\'%s\' object is not grid-like' % type (grid))
+
+    if len (shape)<3:
+        shape = np.append (shape, [1]*(3-len (shape)))
+    if len (origin)<3:
+        origin = np.append (origin, [1.]*(3-len (origin)))
+    if len (size)<3:
+        size = np.append (size, [1.]*(3-len (size)))
+
+    if var_name is None:
+        vars = grid.items ()
+    else:
+        vars = (var_name, grid.get_field (var_name))
+
+    for (var, vals) in vars:
+        dat_file = '%s_%s.dat' % (base, var)
+        bov_file = '%s_%s.bov' % (base, var)
+
+        if no_clobber:
+            if os.path.isfile (bov_file):
+                raise FileExists (bov_file)
+            if os.path.isfile (dat_file):
+                raise FileExists (dat_file)
+
+        #try:
+        #    vals = grid.cell_data (var)
+        #except (AttributeError, TypeError):
+        #    raise TypeError ('\'%s\' object is not grid-like' % type (grid))
+
+        vals.tofile (dat_file)
+
+        header = dict (DATA_FILE=dat_file,
+                       DATA_SIZE=array_to_str (shape),
+                       BRICK_ORIGIN=array_to_str (origin),
+                       BRICK_SIZE=array_to_str (size),
+                       DATA_ENDIAN=sys_to_bov_endian[sys.byteorder],
+                       DATA_FORMAT=np_to_bov_type[str (vals.dtype)],
+                       VARIABLE=var)
+
+        header.update (options)
+        with open (bov_file, 'w') as f:
+            for item in header.items ():
+                f.write ('%s: %s\n' % item)
+
+        files_written.append (bov_file)
+    return files_written
+
+
+#class BovFile (VTKGridUniformRectilinear):
+class BovFile (RasterField):
     """
     >>> bov = BovFile ((400, 300), (2., 1.), (0., 0.))
     >>> x = bov.get_x_coordinates ()
@@ -260,39 +388,10 @@ class BovFile (VTKGridUniformRectilinear):
     def get_attr (self, attr):
         return self.attrs[attr]
 
-class BovDatabase (BovFile):
-    """
-    >>> bov = BovDatabase ((400, 300), (2., 1.), (0., 0.))
-    >>> x = bov.get_x_coordinates ()
-    >>> y = bov.get_y_coordinates ()
-    >>> (X, Y) = np.meshgrid (y[:-1], x[:-1])
-
-    >>> z = np.sin (np.sqrt(X**2+Y**2)*np.pi/300)
-    >>> bov.add_cell_data ('Elevation', z)
-    >>> bov.tobov ('db')
-
-    >>> z = z*2
-    >>> bov.add_cell_data ('Elevation', z)
-    >>> bov.tobov ('db')
-    """
-    format = '%s_%04d%s'
-    def tobov (self, path, **kwargs):
-        (base, file) = os.path.split (path)
-        (root, ext) = os.path.splitext (file)
-
-        try:
-            next_file = self.format % (root, self._count, ext)
-        except AttributeError:
-            self._count = 0
-            next_file = self.format % (root, self._count, ext)
-
-        files = super (BovDatabase, self).tobov (os.path.join (base, next_file), **kwargs)
-
-        self._count += 1
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()                                                                                                           
+    doctest.testmod() 
 
     #import cProfile
     #cProfile.run ('doctest.testmod()', 'bov.prof')
