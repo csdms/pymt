@@ -3,6 +3,19 @@ import types
 import namespace as ns
 import os.path
 
+from dialog import ConfigDialog
+
+def substitute_mapping (mapping):
+    new_map = {}
+    for (key, value) in mapping.items ():
+        try:
+            t = Template (value)
+            new_map[key] = t.safe_substitute (mapping)
+        except TypeError:
+            new_map[key] = value
+
+    return new_map
+
 class Error (Exception):
   """Base class for exceptions in this module"""
   pass
@@ -17,9 +30,10 @@ class FileTypeError (Error):
 
 class TemplateFile (object):
   def __init__ (self):
-    self._dict = {}
-    self._template = None
-    self._contents = None
+      #super (TemplateFile, self).__init__ ()
+      self._dict = {}
+      self._template = None
+      self._contents = None
 
   def set_template (self, template):
     self._template = Template (template)
@@ -52,13 +66,15 @@ class TemplateFile (object):
 
   def tofile (self, file, mapping):
     f = open (file, 'w')
-    f.write (self.tostr (mapping))
+    #f.write (self.tostr (mapping))
+    f.write (self._template.safe_substitute (mapping))
     f.close ()
 
   def tostr (self, mapping):
-    return self.substitute (mapping)
+    #return self.substitute (mapping)
+    return self._template.safe_substitute (mapping)
 
-class TemplateFiles (object):
+class TemplateFiles (TemplateFile):
   """
   >>> import os
 
@@ -142,11 +158,11 @@ class TemplateFiles (object):
 
   """
   def __init__ (self):
-    self._files = []
+      super (TemplateFiles, self).__init__ ()
+      self._files = []
 
   def add_file (self, src, rename=None):
     (root, ext) = os.path.splitext (src)
-    print 'source file is %s' % src
     if rename is None and ext != '.in':
       raise FileTypeError (src)
 
@@ -155,27 +171,53 @@ class TemplateFiles (object):
       dest = root
     else:
       dest = rename
-    print 'dest file is %s' % dest
 
     self._files.append ((src, dest))
 
-  def substitute (self, mapping, todir='.', rename=None):
+  def add_files (self, srcs, dests, delim=','):
+      src_files = srcs.split (delim)
+      dst_files = dests.split (delim)
+      for (src, dst) in zip (src_files, dst_files):
+          self.add_file (src, rename=dst)
+
+  def substitute (self, mapping, todir='.', rename=None, **kwargs):
     for (src, dest) in self._files:
-      t = TemplateFile ()
-      t.scan_template (src)
+      #print '%s: Substituting: %s -> %s' % (__file__, src, dest)
+      #for (key, value) in mapping.items ():
+      #  print '%s: %s = %s' % (__file__, key, value)
+      #t = TemplateFile ()
+      try:
+          super (TemplateFiles, self).scan_template (src)
+          #t.scan_template (src)
+      except Exception as e:
+          print '%s: Error scanning: %s: %s' % (__file__, src, e)
+      try:
+          mapping = substitute_mapping (mapping)
+      except Exception as e:
+          print '%s: Error substituting mapping: %s: %s' % (__file__, src, e)
+      try:
+          dest = Template (dest).substitute (mapping)
+      except Exception as e:
+          print '%s: Error substituting: %s: %s' % (__file__, src, e)
+          print dest
+          print mapping
       if rename is None:
         dest = os.path.join (todir, dest)
       else:
         dest = os.path.join (todir, rename)
-      t.tofile (dest, mapping)
+      #t.tofile (dest, mapping)
+      super (TemplateFiles, self).tofile (dest, mapping, **kwargs)
+  def tostr (self, mapping, **kwargs):
+      strings = []
+      for (src, dest) in self._files:
+          super (TemplateFiles, self).scan_template (src)
+          mapping = substitute_mapping (mapping)
+          dest = Template (dest).substitute (mapping)
+          strings.append (super (TemplateFiles, self).tostr (mapping, **kwargs))
+      return os.linesep.join (strings)
 
-class CMTTemplateFiles (TemplateFiles):
-  def substitute (self, mapping, todir='.', base=None):
-    if base is not None:
-      mapping = ns.extract_base (mapping, base)
-    TemplateFiles.substitute (self, mapping, todir)
 
-class CMTTemplateFile (TemplateFile):
+class CMTTemplateFile (TemplateFile, ConfigDialog):
   """
   >>> import namespace as ns
   >>> template = "Depth = ${Depth}, Gravity = ${Gravity}"
@@ -195,19 +237,154 @@ class CMTTemplateFile (TemplateFile):
 
   >>> f.tostr ({}, base='/Base/Var')
   'Depth = ${Depth}, Gravity = ${Gravity}'
+
+  >>> contents = \"\"\"
+  ... <dialog name="Parameters">
+  ...   <tab name="Parameters">
+  ...     <entry name="/Base/Var/Depth">
+  ...       <replace string="SeaLevel">
+  ...         0.
+  ...       </replace>
+  ...     </entry>
+  ...     <entry name="/Base/Var/Gravity">
+  ...       <replace string="Earth">
+  ...         9.81
+  ...       </replace>
+  ...       <replace string="Mars">
+  ...         3.711
+  ...       </replace>
+  ...     </entry>
+  ...   </tab>
+  ... </dialog>
+  ... \"\"\"
+  >>> import StringIO
+
+  >>> file = StringIO.StringIO (contents)
+  >>> mapping = {'/Base/Var/Depth': 'SeaLevel', '/Base/Var/Gravity': 'Earth'}
+  >>> f.tostr (mapping, base='/Base/Var/', cfg_file=file)
+  u'Depth = 0., Gravity = 9.81'
+
+  >>> file = StringIO.StringIO (contents)
+  >>> mapping = {'/Base/Var/Depth': 'SeaLevel', '/Base/Var/Gravity': 'Mars'}
+  >>> f.tostr (mapping, base='/Base/Var/', cfg_file=file)
+  u'Depth = 0., Gravity = 3.711'
+
   """
+  def __init__ (self):
+      super (CMTTemplateFile, self).__init__ ()
   def substitute (self, mapping, base=None):
     if base is not None:
       mapping = ns.extract_base (mapping, base)
-    return TemplateFile.substitute (self, mapping)
-  def tofile (self, file, mapping, base=None):
+    return super (CMTTemplateFile, self).substitute (mapping)
+    #return TemplateFile.substitute (self, mapping)
+  def tofile (self, file, mapping, base=None, cfg_file=None):
+    if cfg_file is not None:
+        print 'Reading cfg file %s' % cfg_file
+        cfg_file = self.read (cfg_file)
+        print 'Read cfg file %s' % cfg_file
+        entry_maps = self.all_maps ()
+        #print mapping.keys ()
+        if base is not None:
+            entry_maps = ns.extract_base (entry_maps, base)
+        for (entry, map) in entry_maps.items ():
+            print entry, map
+            try:
+                var = mapping[entry]
+                mapping[entry] = map[var]
+            except KeyError:
+                pass
+
+    #if base is not None:
+    #  mapping = ns.extract_base (mapping, base)
+    #TemplateFile.tofile (self, file, mapping)
+    print 'this is the mapping'
+    print mapping
+    return super (CMTTemplateFile, self).tofile (file, mapping)
+  def tostr (self, mapping, base=None, cfg_file=None):
+    if cfg_file is not None:
+        self.read (cfg_file)
+        entry_maps = self.all_maps ()
+        #print mapping.keys ()
+        for (entry, map) in entry_maps.items ():
+            #print entry, map
+            try:
+                var = mapping[entry]
+                mapping[entry] = map[var]
+            except KeyError:
+                pass
+
     if base is not None:
-      mapping = ns.extract_base (mapping, base)
-    TemplateFile.tofile (self, file, mapping)
-  def tostr (self, mapping, base=None):
-    if base is not None:
-      mapping = ns.extract_base (mapping, base)
-    return TemplateFile.tostr (self, mapping)
+        mapping = ns.extract_base (mapping, base)
+
+    return super (CMTTemplateFile, self).tostr (mapping)
+    #return TemplateFile.tostr (self, mapping)
+
+class CMTTemplateFiles (TemplateFiles, CMTTemplateFile):
+  """
+  >>> import os
+
+  Create a file to use as a template.  Template files should have a '.in'
+  extension.
+
+  >>> f = open ('file1_cmt.txt.in', 'w')
+  >>> f.write ('Depth = ${Depth}, Gravity = ${Gravity}')
+  >>> f.close ()
+
+  Define a dictionary to fill values of the template
+
+  >>> mapping = {'Depth': 'SeaLevel', 'Gravity': 'Mars'}
+
+  Create a list of template files and add our template to it.
+
+  >>> t = CMTTemplateFiles ()
+  >>> t.add_file ('file1_cmt.txt.in')
+
+  Substitute values from the dictionary to the new file based on the template.
+  The name of the new file is the name of the template minus the '.in'
+  extension.
+
+  >>> contents = \"\"\"
+  ... <dialog name="Parameters">
+  ...   <tab name="Parameters">
+  ...     <entry name="/Base/Var/Depth">
+  ...       <replace string="SeaLevel">
+  ...         0.
+  ...       </replace>
+  ...     </entry>
+  ...     <entry name="/Base/Var/Gravity">
+  ...       <replace string="Earth">
+  ...         9.81
+  ...       </replace>
+  ...       <replace string="Mars">
+  ...         3.711
+  ...       </replace>
+  ...     </entry>
+  ...   </tab>
+  ... </dialog>
+  ... \"\"\"
+  >>> import StringIO
+
+  >>> file = StringIO.StringIO (contents)
+  >>> mapping = {'/Base/Var/Depth': 'SeaLevel', '/Base/Var/Gravity': 'Earth'}
+  >>> t.tostr (mapping, base='/Base/Var/', cfg_file=file)
+  u'Depth = 0., Gravity = 9.81'
+
+  >>> file = StringIO.StringIO (contents)
+  >>> t.substitute (mapping, base='/Base/Var/', cfg_file=file)
+
+  Check the output file to make sure it matches the template.
+
+  >>> f = open ('file1_cmt.txt', 'r')
+  >>> f.read ()
+  'Depth = 0., Gravity = 9.81'
+  >>> f.close ()
+  """
+  def substitute (self, mapping, todir='.', base=None, cfg_file=None):
+      if base is not None:
+          mapping = ns.extract_base (mapping, base)
+      super (CMTTemplateFiles, self).substitute (mapping, todir, base=base, cfg_file=cfg_file)
+  def tostr (self, mapping, base=None, cfg_file=None):
+      return super (CMTTemplateFiles, self).tostr (mapping, base=base, cfg_file=cfg_file)
 
 hydrotrend_template = """
 Waipaoa 50yrs present
