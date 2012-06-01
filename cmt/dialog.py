@@ -6,6 +6,15 @@
 ...       <label><![CDATA[Stop <b>time</b> &deg;]]></label>
 ...       <help_brief>Simulation stop time (in years)</help_brief>
 ...       <default>100</default>
+...       <replace string='year'>
+...         1
+...       </replace>
+...       <replace string='decade'>
+...         10
+...       </replace>
+...       <replace string='century'>
+...         100
+...       </replace>
 ...       <range>
 ...         <min>1</min>
 ...         <max>10000</max>
@@ -14,6 +23,7 @@
 ...     </entry>
 ...     <entry name="TimeStep">
 ...       <label>Time step</label>
+...       <unit>Days</unit>
 ...       <help_brief>Simulation time step (in years)</help_brief>
 ...       <default>1</default>
 ...       <range>
@@ -39,12 +49,18 @@
 ...       <help_brief>Directory containing input files</help_brief>
 ...       <default>/data/sims/sedflux/Adriatic</default>
 ...       <type>String</type>
+...       <replace string="GUI">
+...         ./Adriatic
+...       </replace>
 ...     </entry>
 ...     <entry name="OutputDir">
 ...       <label>Output directory</label>
 ...       <help_brief>Directory containing output files</help_brief>
 ...       <default>${cwd}</default>
 ...       <type>String</type>
+...       <replace string="GUI">
+...         . 
+...       </replace>
 ...     </entry>
 ...   </tab>
 ... </dialog>
@@ -78,6 +94,9 @@ u'Simulation stop time (in years)'
 >>> dialog.range ('Parameters', 'StopTime')
 [1.0, 10000.0]
 
+>>> dialog.label ('Parameters', 'TimeStep')
+u'Time step [Days]'
+
 >>> dialog.type ('Parameters', 'NNodes')
 <type 'int'>
 >>> dialog.default ('Parameters', 'NNodes')
@@ -89,6 +108,25 @@ u'Number of nodes'
 >>> dialog.help ('Parameters', 'NNodes')
 u'Number of computational nodes'
 
+>>> map = dialog.map ('Files and Directories', 'InputDir')
+>>> map.keys ()
+['InputDir']
+>>> map['InputDir'].items ()
+[(u'GUI', u'./Adriatic')]
+>>> map = dialog.map ('Files and Directories', 'OutputDir')
+>>> map.keys ()
+['OutputDir']
+>>> map['OutputDir'].items ()
+[(u'GUI', u'.')]
+>>> items = dialog.all_maps ().items ()
+>>> items.sort ()
+>>> [item[0] for item in items]
+[u'InputDir', u'OutputDir', u'StopTime']
+>>> stop_items = items[2][1].items ()
+>>> stop_items.sort ()
+>>> stop_items
+[(u'century', u'100'), (u'decade', u'10'), (u'year', u'1')]
+
 === Get an entry as a dictionary ===
 
 >>> entry = dialog.get_entry ('Parameters', 'NNodes').items ()
@@ -99,7 +137,8 @@ u'Number of computational nodes'
  ('label', u'Number of nodes'),
  ('name', u'NNodes'),
  ('range', [3, 100000]),
- ('type', <type 'int'>)]
+ ('type', <type 'int'>),
+ ('unit', None)]
 
 >>> entry = dialog.get_entry ('Parameters', 'NNodes')
 >>> entry['type'] == types.IntType
@@ -117,14 +156,15 @@ True
  ('label', u'Input directory'),
  ('name', u'InputDir'),
  ('range', None),
- ('type', (<type 'str'>, <type 'unicode'>))]
+ ('type', (<type 'str'>, <type 'unicode'>)),
+ ('unit', None)]
 [('default', ...),
  ('help', u'Directory containing output files'),
  ('label', u'Output directory'),
  ('name', u'OutputDir'),
  ('range', None),
- ('type', (<type 'str'>, <type 'unicode'>))]
-
+ ('type', (<type 'str'>, <type 'unicode'>)),
+ ('unit', None)]
 >>> import os
 >>> entry = dialog.get_entry ('Files and Directories', 'OutputDir')
 >>> entry['default'] == os.getcwd ()
@@ -163,13 +203,15 @@ u'OutputFile'
  ('label', u'Depth file'),
  ('name', u'Depth'),
  ('range', None),
- ('type', (<type 'str'>, <type 'unicode'>))]
+ ('type', (<type 'str'>, <type 'unicode'>)),
+ ('unit', None)]
 [('default', u'OFF'),
  ('help', u'Output file prefix for variable, Slope {cb;OFF;<site>_<case>_Slope}'),
  ('label', u'Slope file'),
  ('name', u'Slope'),
  ('range', None),
- ('type', (<type 'str'>, <type 'unicode'>))]
+ ('type', (<type 'str'>, <type 'unicode'>)),
+ ('unit', None)]
 
 #>>> dialog = ConfigDialog ()
 #>>> dialog.read ('/data1/progs/cca/project/csdms_eric/data/Child.xml')
@@ -300,6 +342,34 @@ import xml.dom.minidom
 
 import namespace as ns
 
+import re, htmlentitydefs
+
+##
+# Removes HTML or XML character references and entities from a text string.
+#
+# @param text The HTML (or XML) source text.
+# @return The plain text, as a Unicode string, if necessary.
+def unescape(text):
+    def fixup(m):
+        text = m.group(0)
+        if text[:2] == "&#":
+            # character reference
+            try:
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        else:
+            # named entity
+            try:
+                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+            except KeyError:
+                pass
+        return text # leave as is
+    return re.sub("&#?\w+;", fixup, text)
+
 def sanity ():
   """
   Import sanity.
@@ -358,6 +428,43 @@ class ParseError (Error):
   def __str__ (self):
     return self.msg
 
+class NoTabError (Error):
+  """Exception raised for a missing tab"""
+  def __init__ (self, tab_name, msg):
+    self.msg = msg
+    self.tab_name = tab_name
+  def __str__ (self):
+    return ': '.join ([self.tab_name, self.msg])
+  
+class NoEntryError (Error):
+  """Exception raised for a missing entry"""
+  def __init__ (self, entry_name, msg):
+    self.msg = msg
+    self.entry_name = entry_name
+  def __str__ (self):
+    return ': '.join ([self.entry_name, self.msg])
+  
+class NoDataError (Error):
+  """Exception raised for a data entry"""
+  def __init__ (self, data_name, msg):
+    self.msg = msg
+    self.data_name = data_name
+  def __str__ (self):
+    return ': '.join ([self.data_name, self.msg])
+  
+class InvalidEntryElementError (Error):
+  """Exception raised for a bad map entry"""
+  def __init__ (self, tab, entry, msg):
+    self.msg = msg
+    self.tab = tab
+    self.entry = entry
+  def __str__ (self):
+    return ': '.join ([self.tab, self.entry, self.msg])
+
+class DuplicateElementError (InvalidEntryElementError):
+  """Exception raised for a duplicate element"""
+  pass
+
 class ConfigEntry (object):
   """
   >>> entry = ConfigEntry ('NNodes', 'Int')
@@ -380,7 +487,7 @@ class ConfigEntry (object):
   [1, 10000]
   """
   def __init__ (self, name, type, default=None, help=None, label=None,
-                      range=None):
+                      range=None, unit=None):
     """Create a key/value type entry
 
     'name' is a string that identifies the entry.
@@ -404,6 +511,7 @@ class ConfigEntry (object):
     attr['type'] = self._get_type (type)
     attr['help'] = help
     attr['label'] = label
+    attr['unit'] = unit
     if default is not None:
       attr['default'] = self._get_default (default)
     else:
@@ -416,6 +524,8 @@ class ConfigEntry (object):
 
   def set_label (self, label):
     self.d['label'] = unicode (label)
+  def set_unit (self, unit):
+    self.d['unit'] = unit
   def set_help (self, help):
     self.d['help'] = unicode (help)
   def set_range (self, range):
@@ -468,7 +578,10 @@ class ConfigEntryOutputFile (ConfigEntry):
     ConfigEntry.__init__ (self, name, 'String')
     (head, tail) = ns.split (name)
     self.set_label ('%s file' % tail)
-    self.set_help ('Output file prefix for variable, %s {cb;OFF;<site>_<case>_%s}' % (tail, tail))
+    if name.startswith ('/Sedflux'):
+        self.set_help ('Output file prefix for variable, %s {cb;OFF;<case>_%s}' % (tail, tail))
+    else:
+        self.set_help ('Output file prefix for variable, %s {cb;OFF;<site>_<case>_%s}' % (tail, tail))
     self.set_default ('OFF')
 
 class ConfigEntryComboBox (ConfigEntry):
@@ -576,6 +689,8 @@ class ConfigDialog (object):
     if dialog.attributes.has_key ('namespace'):
       self._namespace = dialog.attributes['namespace'].value
 
+    return os.path.abspath (file)
+
   def name (self):
     dialogs = self._dom.getElementsByTagName ('dialog')
     if len (dialogs) != 1:
@@ -596,7 +711,8 @@ class ConfigDialog (object):
     for tab in self._dom.getElementsByTagName ('tab'):
       if tab.attributes['name'].value == name:
         return tab
-    return None
+    raise NoTabError (name, 'No tab')
+    #return None
 
   def entry_names (self, name):
     tab = self.tab (name)
@@ -605,12 +721,19 @@ class ConfigDialog (object):
       entries.append (entry.attributes['name'].value)
     return entries
 
+  def all_entry_names (self):
+      entries = []
+      for tab in self.tab_names ():
+          entries.extend ([(tab, e) for e in self.entry_names (tab)])
+      return entries
+
   def entry (self, tab_name, name):
     tab = self.tab (tab_name)
     for entry in tab.getElementsByTagName ('entry'):
       if entry.attributes['name'].value == name:
         return entry
-    return None
+    raise NoEntryError (':'.join ([tab_name, name]), 'No entry')
+    #return None
 
   def entry_type (self, tab_name, name):
     tab = self.tab (tab_name)
@@ -622,7 +745,22 @@ class ConfigDialog (object):
           return 'Editable'
     
   def label (self, tab, entry):
-    return self.data (tab, entry, 'label')
+    #label = self.data (tab, entry, 'label')
+    #unit = self.data (tab, entry, 'unit')
+    try:
+      label = ' '.join ([self.data (tab, entry, 'label'),
+                         '['+self.data (tab, entry, 'unit')+']'])
+    except NoDataError:
+      label = self.data (tab, entry, 'label')
+    return label
+    #return self.data (tab, entry, 'label')
+  def unit (self, tab, entry):
+    try:
+      unit = self.data (tab, entry, 'unit')
+    except NoDataError:
+      unit = None
+    return unit
+    #return self.data (tab, entry, 'unit')
   def help (self, tab, entry):
     return self.data (tab, entry, 'help_brief')
   def default (self, tab, entry):
@@ -660,19 +798,72 @@ class ConfigDialog (object):
       elif type is types.IntType:
         return [int (float (val)) for val in min_max]
 
-  def data (self, tab_name, entry_name, data_name):
+  def map (self, tab, entry):
+      try:
+        to_strings = self.data (tab, entry, 'replace', no_duplicates=False)
+      except NoDataError:
+          raise
+      attrs = self.attributes (tab, entry, 'replace', no_duplicates=False)
+
+      map = {}
+      for (to_string, attr) in zip (to_strings, attrs):
+        try:
+          from_string = attr['string'].value.strip ()
+        except KeyError:
+          raise InvalidEntryElementError (tab, entry, "Missing 'string' attribute")
+        map[from_string] = to_string.strip ()
+
+      return {entry: map}
+
+  def all_maps (self):
+    map = {}
+    for entry in self.all_entry_names ():
+        try:
+            map.update (self.map (*entry))
+        except NoDataError:
+            pass
+    return map
+
+  def attributes (self, tab_name, entry_name, data_name, no_duplicates=True):
+    labels = self._get_element (tab_name, entry_name, data_name, no_duplicates)
+    return [label.attributes for label in labels]
+
+  def data (self, tab_name, entry_name, data_name, no_duplicates=True):
+    try:
+        labels = self._get_element (tab_name, entry_name, data_name, no_duplicates)
+    except NoDataError:
+        raise
+    except DuplicateElementError:
+        raise
+
+    data = []
+    for label in labels:
+      try:
+        str = label.attributes['value'].value
+      except KeyError:
+        str = label.childNodes[0].data
+
+      if str.startswith ('<html>') and str.endswith ('</html>'):
+        data_str = unescape (str[6:-7])
+      else:
+        data_str = self._substitute (str)
+      data.append (data_str)
+
+    if no_duplicates:
+        return data[0]
+    else:
+        return data
+
+  def _get_element (self, tab_name, entry_name, data_name, no_duplicates=True):
     entry = self.entry (tab_name, entry_name)
     labels = entry.getElementsByTagName (data_name)
-    label = labels[0]
-
-    try:
-      str = label.attributes['value'].value
-    except KeyError:
-      str = label.childNodes[0].data
-
-    data_str = self._substitute (str)
-    #data_str = self._substitute (labels[0].childNodes[0].data)
-    return data_str
+    if len (labels)==0:
+      raise NoDataError (': '.join ([tab_name, entry_name, data_name]),
+                         'Missing element')
+    elif len (labels)>1 and no_duplicates:
+      raise DuplicateElementError (': '.join ([tab_name, entry_name, data_name]),
+                         'Duplicate elements')
+    return labels
 
   def _substitute (self, str):
     from string import Template
@@ -691,6 +882,7 @@ class ConfigDialog (object):
       entry = ConfigEntry (entry_name, self.type (tab, entry_name))
 
       entry.set_label (self.label (tab, entry_name))
+      entry.set_unit (self.unit (tab, entry_name))
       entry.set_help (self.help (tab, entry_name))
       entry.set_default (self.default (tab, entry_name))
       entry.set_range (self.range (tab, entry_name))
