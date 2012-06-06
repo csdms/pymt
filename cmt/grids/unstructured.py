@@ -90,6 +90,8 @@ class UnstructuredPoints (IGrid):
         return self._point_count
     def get_cell_count (self):
         return self._cell_count
+    def get_vertex_count (self):
+        return len (self._connectivity)
 
 class Unstructured (UnstructuredPoints):
     """

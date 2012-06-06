@@ -48,6 +48,7 @@ import string
 import numpy as np
 
 from cmt.grids import RectilinearField
+from cmt.grids import NonStructuredGridError, NonUniformGridError
 
 class Error (Exception):
     pass
@@ -233,8 +234,6 @@ def field_tofile (field, path, append=False, attrs={}, time=None,
                   time_units='days', time_reference='00:00:00 UTC'):
     import netCDF4 as nc
 
-    spacing = remove_singleton (field.get_spacing (), field.get_shape ())
-
     if os.path.isfile (path) and append:
         mode = 'a'
     else:
@@ -243,7 +242,8 @@ def field_tofile (field, path, append=False, attrs={}, time=None,
 
     set_attributes (attrs, root)
     set_dimensions (field, root)
-    set_variables (field, root, time, time_units, time_reference)
+    set_variables (field, root, time=time, time_units=time_units,
+                   time_reference=time_reference)
 
 def set_attributes (attrs, root):
     for (key, val) in attrs.items ():
@@ -252,9 +252,19 @@ def set_attributes (attrs, root):
 dimension_name = ['nz', 'ny', 'nx']
 
 def set_dimensions (field, root):
+    try:
+        _set_structured_dimensions (field, root)
+    except (NonStructuredGridError, NonUniformGridError):
+        _set_unstructured_dimensions (field, root)
+
+def _set_structured_dimensions (field, root):
     # Define dimensions
 
-    shape = remove_singleton (field.get_shape (), field.get_shape ())
+    try:
+        shape = remove_singleton (field.get_shape (), field.get_shape ())
+    except (NonStructuredGridError, NonUniformGridError):
+        raise
+
     names = dimension_name[-len (shape):]
 
     dims = root.dimensions
@@ -262,6 +272,18 @@ def set_dimensions (field, root):
         if not name in dims:
             root.createDimension (name, dimen)
 
+    if not 'nt' in dims:
+        nt = root.createDimension ('nt', None)
+
+def _set_unstructured_dimensions (field, root):
+    dimensions = dict (n_points = field.get_point_count (),
+                       n_cells = field.get_cell_count (),
+                       n_vertices = field.get_vertex_count ())
+
+    dims = root.dimensions
+    for (name, dimen) in dimensions.items ():
+        if not name in dims:
+            root.createDimension (name, dimen)
     if not 'nt' in dims:
         nt = root.createDimension ('nt', None)
 
@@ -278,11 +300,21 @@ np_to_nc_type = {
     'uint32': 'u4',
     'uint64': 'u8'}
 
-def set_variables (field, root, time=None, time_units='days',
-                   time_reference='00:00:00 UTC'):
+def set_variables (field, root, **kwds):
+    try:
+        _set_structured_variables (field, root, **kwds)
+    except (NonStructuredGridError, NonUniformGridError):
+        _set_unstructured_variables (field, root, **kwds)
+
+def _set_structured_variables (field, root, time=None, time_units='days',
+                               time_reference='00:00:00 UTC'):
     # Define and assign variables
 
-    shape = remove_singleton (field.get_shape (), field.get_shape ())
+    try:
+        shape = remove_singleton (field.get_shape (), field.get_shape ())
+    except (NonStructuredGridError, NonUniformGridError):
+        raise
+
     spacing = remove_singleton (field.get_spacing (), field.get_shape ())
     origin = remove_singleton (field.get_origin (), field.get_shape ())
     dim_names = dimension_name[-len (shape):]
@@ -319,6 +351,78 @@ def set_variables (field, root, time=None, time_units='days',
             var = root.createVariable (var_name,
                                        np_to_nc_type[str (array.dtype)],
                                        ['nt'] + dim_names)
+        var[n_times,:] = array.flat
+        var.units = field.get_field_units (var_name)
+        var.long_name = var_name
+
+    try:
+        var = vars['dummy']
+    except KeyError:
+        var = root.createVariable ('dummy',
+                                   np_to_nc_type[str (array.dtype)],
+                                   ())
+    var[0] = 0.
+    var.units = '-'
+    var.long_name = 'dummy'
+
+def _set_unstructured_variables (field, root, time=None, time_units='days',
+                                 time_reference='00:00:00 UTC'):
+    vars = root.variables
+    try:
+        t = vars['t']
+    except KeyError:
+        t = root.createVariable ('t', 'f8', ('nt', ))
+        t.units = ' '.join ([time_units, 'since', time_reference])
+        t.long_name = 'time'
+    n_times = len (t)
+    if time is not None:
+        t[n_times] = time
+    else:
+        t[n_times] = n_times
+
+    try:
+        x = vars['x']
+    except KeyError:
+        x = root.createVariable ('x', 'f8', ('n_points', ))
+        x[:] = field.get_x ()
+    try:
+        y = vars['y']
+    except KeyError:
+        y = root.createVariable ('y', 'f8', ('n_points', ))
+        y[:] = field.get_y ()
+
+    try:
+        c = vars['connectivity']
+    except KeyError:
+        c = root.createVariable ('connectivity', 'i8', ('n_vertices', ))
+        c[:] = field.get_connectivity ()
+
+    try:
+        o = vars['offset']
+    except KeyError:
+        o = root.createVariable ('offset', 'i8', ('n_cells', ))
+        o[:] = field.get_offset ()
+
+    fields = field.get_point_fields ()
+    for (var_name, array) in fields.items ():
+        try:
+            var = vars[var_name]
+        except KeyError:
+            var = root.createVariable (var_name,
+                                       np_to_nc_type[str (array.dtype)],
+                                       ('nt', 'n_points'))
+        var[n_times,:] = array.flat
+        var.units = field.get_field_units (var_name)
+        var.long_name = var_name
+
+    fields = field.get_cell_fields ()
+    for (var_name, array) in fields.items ():
+        try:
+            var = vars[var_name]
+        except KeyError:
+            var = root.createVariable (var_name,
+                                       np_to_nc_type[str (array.dtype)],
+                                       ('nt', 'n_cells'))
         var[n_times,:] = array.flat
         var.units = field.get_field_units (var_name)
         var.long_name = var_name
