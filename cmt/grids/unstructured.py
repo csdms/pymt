@@ -76,6 +76,21 @@ class UnstructuredPoints (IGrid):
             return self._units[-3]
         except IndexError:
             return '-'
+    def set_x_units (self, units):
+        try:
+            self._units[-1] = units
+        except IndexError:
+            pass
+    def set_y_units (self, units):
+        try:
+            self._units[-2] = units
+        except IndexError:
+            pass
+    def set_z_units (self, units):
+        try:
+            self._units[-3] = units
+        except IndexError:
+            pass
     def get_coordinate_units (self, i):
         try:
             return self._units[i]

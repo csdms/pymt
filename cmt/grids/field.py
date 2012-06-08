@@ -35,6 +35,11 @@ class GridField (Unstructured, IField):
         return self._fields[field_name]
     def get_field_units (self, field_name):
         return self._field_units[field_name]
+    def set_field_units (self, field_name, units):
+        try:
+            self._field_units[field_name] = units
+        except KeyError:
+            pass
     def get_point_fields (self):
         fields = {}
         for (field, array) in self._fields.items ():
