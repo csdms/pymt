@@ -1,43 +1,5 @@
 #! /bin/env python
-"""
-Examples
-========
 
-An unstructured grid
---------------------
-
-Define a grid that consists of two trianges that share two points.
-
-::
-
-       (2) - (3)
-      /   \  /
-    (0) - (1)
-
-Create the grid,
-
-    >>> g = VtkUnstructuredWriter ([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6])
-    >>> g.add_point_data ('Elevation', [1., 2., 3, 4])
-    >>> g.add_point_data ('Temperature', [10., 20., 30., 40.])
-    >>> g.add_cell_data ('Cell Elevation', [1., 2.])
-    >>> g.add_cell_data ('Cell Temperature', [10., 20.])
-    >>> g.write ('tri.vtu', format='appended', encoding='base64')
-
-    >>> (x, y) = np.meshgrid ([-1., 1., 3., 5.], [-.5, .5, 1.5])
-    >>> c = [0, 4, 5, 1, 1, 5, 6, 2, 2, 6, 7, 3, 4, 8, 9, 5, 5, 9, 10, 6, 6, 10, 11, 7]
-    >>> o = [4, 8, 12, 16, 20, 24]
-    >>> g = VtkUnstructuredWriter (x, y, c, o, encoding='base64')
-    >>> g.add_point_data ('Elevation', np.arange (12.))
-    >>> g.add_cell_data ('Cell Elevation', [1., 2., 3, 4, 5, 6])
-    >>> g.write ('rect.vtu', format='appended', encoding='base64')
-
-    >>> pq = PrintQueue (g)
-    >>> pq.push ('Elevation')
-    >>> pq.push ('Cell Elevation')
-
-    >>> pq.print ()
-
-"""
 import os
 
 import numpy as np
@@ -46,7 +8,7 @@ import numpy as np
 from cmt.grids import GridField
 from cmt.vtk import VtkWriter
 
-from vtktypes import VtkUnstructured, edge_count_to_type, VtkPolygon
+from vtktypes import VtkUnstructured, edge_count_to_type, VtkPolygon, vtk_to_np_type
 from vtkxml import *
 
 #class VtkUnstructuredWriter (VTKGrid, VtkWriter):
@@ -264,8 +226,91 @@ class VtkDatabase (object):
         self._count += 1
 
 from xml.etree.ElementTree import ElementTree as ET
+from collections import namedtuple
+
+DataArray = namedtuple ('DataArray', ['name', 'data'])
+Piece = namedtuple ('Piece', ['points', 'cells', 'point_data', 'cell_data'])
+Point = namedtuple ('Point', ['x', 'y', 'z'])
+Cell = namedtuple ('Cell', ['connectivity', 'offsets', 'types'])
+
+def parse_data_array (data_array):
+    assert (data_array.tag == 'DataArray')
+
+    name = data_array.get ('Name')
+    noc = data_array.get ('NumberOfComponents', default='1')
+    type = data_array.get ('type')
+    format = data_array.get ('format', default='ascii')
+
+    noc = int (noc)
+
+    assert (format == 'ascii')
+
+    data = [float (val) for val in data_array.text.split ()]
+    array = np.array (data, dtype=vtk_to_np_type[type])
+
+    components = []
+    for i in range (noc):
+        components.append (array[i::noc])
+
+    return DataArray (name, components)
+
+def parse_all_data_array (element):
+    d = {}
+    for data_array in element.findall ('DataArray'):
+        data = parse_data_array (data_array)
+        d[data.name] = data.data
+
+    return d
+
+def parse_points (points):
+    assert (points.tag == 'Points')
+
+    data = parse_data_array (points.find ('DataArray'))
+
+    n_points = len (data.data[0])
+    components = data.data
+    for i in range (3-len (data.data)):
+        components.append (np.zeros (n_points))
+
+    return Point (components[0], components[1], components[2])
+
+
+def parse_cells (cells):
+    assert (cells.tag == 'Cells')
+
+    d = parse_all_data_array (cells)
+    for (key, value) in d.items ():
+        d[key] = value[0]
+
+    return Cell (**d)
+
+def parse_piece (piece):
+    assert (piece.tag == 'Piece')
+
+    cell_count = int (piece.get ('NumberOfCells'))
+    point_count = int (piece.get ('NumberOfPoints'))
+
+    points = parse_points (piece.find ('Points'))
+    cells = parse_cells (piece.find ('Cells'))
+
+    point_data = parse_all_data_array (piece.find ('PointData'))
+    cell_data = parse_all_data_array (piece.find ('CellData'))
+
+    assert (cell_count == len (cells.offsets))
+    assert (cell_count == len (cells.types))
+    assert (point_count == len (points.x))
+    assert (point_count == len (points.y))
+    assert (point_count == len (points.z))
+    
+    return Piece (points=points, cells=cells,
+                  point_data=point_data, cell_data=cell_data)
+
+from cmt.grids import UnstructuredField
 
 def fromfile (file):
+    """
+    >>> fromfile ('SeaFloorElevation_0499.vtu')
+    """
 
     tree = ET ()
     tree.parse (file)
@@ -280,19 +325,33 @@ def fromfile (file):
     if type is None or version is None or byte_order is None:
         raise MissingAttributeError ()
 
-    data = root.find ('AppendedData')
-    if data is not None:
-        appended_data = data.text
-        #appended_data = decode (data.text, encoding=data.get ('encoding', 'base64'))
+    #data = root.find ('AppendedData')
+    #if data is not None:
+    #    appended_data = data.text
+    #    #appended_data = decode (data.text, encoding=data.get ('encoding', 'base64'))
 
     grid = root.find (type)
-    piece = grid.find ('Piece')
+    piece = parse_piece (grid.find ('Piece'))
 
-    # For UnstructuredGrid
-    cell_count = piece.get ('NumberOfCells')
-    point_count = piece.get ('NumberOfPoints')
+    points = piece.points
+    cells = piece.cells
+
+    field = UnstructuredField (points.x, points.y, cells.connectivity, cells.offsets)
+    for (key, val) in piece.point_data.items ():
+        field.add_field (key, val, centering='point')
+    for (key, val) in piece.cell_data.items ():
+        field.add_field (key, val, centering='zonal')
+
+    return field
+
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    #doctest.testmod()
+
+    field = fromfile ('SeaFloorElevation_0499.vtu')
+
+    from cmt.nc import field_tofile
+
+    field_tofile (field, 'test.ncu')
 

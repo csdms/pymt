@@ -15,6 +15,20 @@ class VtkElement (object, xml.dom.minidom.Element):
     def setAttributes (self, **kwargs):
         for (attr, value) in kwargs.items ():
             self.setAttribute (attr, str (value))
+    def getAttributes (self, names=None):
+        attrs = {}
+
+        if names is None:
+            for i in range (self.attributes.length):
+                attr = self.attributes.item (i)
+                attrs[attr.localName] = attr.value
+        else:
+            for i in range (self.attributes.length):
+                attr = self.attributes.item (i)
+                if attr.localName in names:
+                    attrs[attr.localName] = attr.value
+
+        return attrs
 
 class VtkTextElement (xml.dom.minidom.Text):
     def __init__ (self, text):

@@ -29,6 +29,10 @@ VtkFloat64 = VtkType ('Float64', 8)
 np_to_vtk_type = {'uint8': VtkUInt8,
                   'int32': VtkInt32, 'int64': VtkInt64,
                   'float32': VtkFloat32, 'float64': VtkFloat64}
+vtk_to_np_type = {'UInt8': 'uint8', 'Int32': 'int32',
+                  'Int64': 'int64', 'Float32': 'float32',
+                  'Float64': 'float64'}
+
 
 class VtkCellType (object):
     def __init__ (self, name, id):
