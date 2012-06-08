@@ -232,6 +232,58 @@ def tofile (field, path, units={}):
 
 def field_tofile (field, path, append=False, attrs={}, time=None,
                   time_units='days', time_reference='00:00:00 UTC'):
+    """
+Define a field that consists of two trianges that share two points.
+
+::
+
+       (2) - (3)
+      /   \  /
+    (0) - (1)
+
+
+    >>> from cmt.grids import UnstructuredField
+    >>> field = UnstructuredField ([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6], units=('m', 'm'))
+
+Put some data at the points.
+
+    >>> data = np.arange (4)
+    >>> field.add_field ('point_field', data, centering='point', units='m')
+
+Put some data at the cells.
+
+    >>> data = np.arange (2)
+    >>> field.add_field ('cell_field', data, centering='zonal', units='m^2')
+
+Write the NetCDF file.
+
+    >>> field_tofile (field, 'unstructured_grid_test.nc', append=False)
+
+Check the values from the file.
+
+    >>> import netCDF4 as nc
+    >>> root = nc.Dataset ('unstructured_grid_test.nc', 'r', format='NETCDF4')
+    >>> dims = root.dimensions.keys ()
+    >>> dims.sort ()
+    >>> print ', '.join (dims)
+    n_cells, n_points, n_vertices, nt
+
+    >>> vars = root.variables
+    >>> print vars['x'][:]
+    [ 0. 2. 1. 3.]
+    >>> print vars['y'][:]
+    [ 0. 0. 1. 1.]
+
+    >>> print vars['point_field'].long_name
+    point_field
+    >>> print vars['point_field'].units
+    m
+
+    >>> print vars['cell_field'].long_name
+    cell_field
+    >>> print vars['cell_field'].units
+    m^2
+    """
     import netCDF4 as nc
 
     if os.path.isfile (path) and append:
@@ -385,11 +437,15 @@ def _set_unstructured_variables (field, root, time=None, time_units='days',
     except KeyError:
         x = root.createVariable ('x', 'f8', ('n_points', ))
         x[:] = field.get_x ()
+        x.units = field.get_x_units ()
+        x.long_name = 'distance_in_x_dimension'
     try:
         y = vars['y']
     except KeyError:
         y = root.createVariable ('y', 'f8', ('n_points', ))
         y[:] = field.get_y ()
+        y.units = field.get_y_units ()
+        y.long_name = 'distance_in_y_dimension'
 
     try:
         c = vars['connectivity']
@@ -478,7 +534,7 @@ def field_to_nc (field, root):
 
 def fromfile (file, allow_singleton=True):
     """
-    >>> file_url = 'http://csdms.colorado.edu/thredds/dodsC/benchmark/elevation/ramp_bathymetry.nc'
+    >>> file_url = 'http://csdms.colorado.edu/thredds/dodsC/benchmark/sample/ramp_bathymetry.nc'
     >>> fields = fromfile (file_url)
 
     >>> print len (fields)
@@ -489,16 +545,16 @@ def fromfile (file, allow_singleton=True):
     >>> field = fields[0][1]
 
     >>> x = field.get_x_coordinates ()
-    >>> len (x) == 40
+    >>> len (x) == 42
     True
 
     >>> y = field.get_y_coordinates ()
-    >>> len (y) == 80
+    >>> len (y) == 82
     True
 
-    >>> all (x == np.arange (40)*500.)
+    >>> all (x == np.arange (42)*500.-500.)
     True
-    >>> all (y == np.arange (80)*500.)
+    >>> all (y == np.arange (82)*500.-500.)
     True
 
     >>> print field.get_x_units ()
@@ -547,5 +603,5 @@ def fromfile (file, allow_singleton=True):
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
+    doctest.testmod (optionflags=(doctest.NORMALIZE_WHITESPACE or doctest.REPORT_ONLY_FIRST_FAILURE))
 
