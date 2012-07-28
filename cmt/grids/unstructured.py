@@ -26,32 +26,38 @@ class AttributeError (Error):
         return '%s: %s' % (self.attr, self.msg)
 
 class UnstructuredPoints (IGrid):
-    def __init__ (self, x, y, set_connectivity=False,
-                  units=['-', '-', '-']):
-        #super (UnstructuredPoints, self).__init__ (x, y, [], [])
+    def __init__ (self, *args, **kwds):
+        set_connectivity = kwds.pop ('set_connectivity', False)
+        units = kwds.pop ('units', ['-', '-', '-'])
 
-        assert (len (x) == len (y))
+        assert (len (args)<=3)
+        assert (len (args)>=1)
 
-        x = np.array (x, dtype=np.float64)
-        y = np.array (y, dtype=np.float64)
-        x.shape = x.size
-        y.shape = y.size
+        x = np.array (args[0], dtype=np.float64)
+        n_points = x.size
 
-        self._point_count = x.size
+        try:
+            y = np.array (args[1], dtype=np.float64)
+        except IndexError:
+            y = np.zeros (n_points, dtype=np.float64)
+        try:
+            z = np.array (args[2], dtype=np.float64)
+        except IndexError:
+            z = np.zeros (n_points, dtype=np.float64)
 
-        self._coords = (np.zeros (x.shape, dtype=np.float64), y, x)
+        for coord in [x, y, z]:
+            assert (coord.size == n_points)
+            coord.shape = n_points
+        self._point_count = n_points
 
-        for coord in self._coords:
-            coord.shape = coord.size
+        self._coords = (z, y, x)
 
         if set_connectivity:
             self._connectivity = np.arange (self._point_count, dtype=np.int32)
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
-        #self._units = ['-']*(3-len (units)) + list (units)
         self._units = list (units)
-        #self._units = units[::-1]
 
         super (UnstructuredPoints, self).__init__ ()
 
@@ -120,7 +126,7 @@ Define a grid that consists of two trianges that share two points.
 
 Create the grid,
 
-    >>> g = Unstructured ([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6])
+    >>> g = Unstructured ([0, 2, 1, 3], [0, 0, 1, 1], connectivity=[0, 2, 1, 2, 3, 1], offset=[3, 6])
     >>> g.get_point_count ()
     4
     >>> g.get_cell_count ()
@@ -157,19 +163,66 @@ Create the grid,
     dtype('int32')
     >>> print o
     [3 6]
-    """
-    def __init__ (self, x, y, connectivity=[], offset=[], **kwds):
-        set_connectivity = kwds.pop ('set_connectivity', True)
-        #connectivity = kwds.pop ('connectivity', [])
-        #offset = kwds.pop ('offset', [])
 
-        if len (connectivity)>0 and set_connectivity:
-            self._set_connectivity (connectivity, offset)
+1D Grid of points
+-----------------
+
+Define a grid that consists of points in a line.
+
+::
+
+    (0) ----- (1) -- (2) - (3)
+
+Create the grid,
+
+    >>> g = Unstructured ([0., 6., 9., 11.], connectivity=[0, 1, 2, 3], offset=[1, 2, 3, 4])
+    >>> g.get_point_count ()
+    4
+    >>> g.get_cell_count ()
+    4
+
+3D Grid
+-------
+
+Eight point that form a unit cube.
+
+    >>> x = [0, 1, 0, 1, 0, 1, 0, 1]
+    >>> y = [0, 0, 1, 1, 0, 0, 1, 1]
+    >>> z = [0, 0, 0, 0, 1, 1, 1, 1]
+    >>> g = Unstructured (x, y, z, connectivity=[0, 1, 2, 3, 4, 5, 6, 7], offset=[8])
+    >>> g.get_point_count ()
+    8
+    >>> g.get_cell_count ()
+    1
+    >>> print g.get_x ()
+    [ 0. 1. 0. 1. 0. 1. 0. 1.]
+    >>> print g.get_y ()
+    [ 0. 0. 1. 1. 0. 0. 1. 1.]
+    >>> print g.get_z ()
+    [ 0. 0. 0. 0. 1. 1. 1. 1.]
+
+
+    """
+    def __init__ (self, *args, **kwds):
+        set_connectivity = kwds.pop ('set_connectivity', True)
+        connectivity = kwds.get ('connectivity', [])
+        offset = kwds.get ('offset', [])
+
+        if set_connectivity:
+            try:
+                o = kwds['offset']
+            except KeyError:
+                o = args[-1]
+                args = args[:-1]
+            try:
+                c = kwds['connectivity']
+            except KeyError:
+                c = args[-1]
+                args = args[:-1]
+            self._set_connectivity (c, o)
 
         kwds['set_connectivity'] = False
-        super (Unstructured, self).__init__ (x, y, **kwds)
-
-        #self._cell_count = self._offset.size
+        super (Unstructured, self).__init__ (*args, **kwds)
 
     def _set_connectivity (self, connectivity, offset):
         self._connectivity  = np.array (connectivity, dtype=np.int32)

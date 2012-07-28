@@ -87,6 +87,37 @@ The connectivity runs from 0 to one less than the number of points.
 
     >>> all (g.get_connectivity ()==np.arange (g.get_point_count ()))
     True
+
+
+1D-grid of points
+-----------------
+    >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='xy', set_connectivity=True)
+    >>> print g.get_x ()
+    [ 0.5 1.5 2.5 3.5 4.5]
+
+    >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='ij', set_connectivity=True)
+    >>> print g.get_x ()
+    [ 0.5 1.5 2.5 3.5 4.5]
+
+3D-grid of cells
+----------------
+
+    >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='xy')
+    >>> print g.get_x ()
+    [-1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2.]
+    >>> print g.get_y ()
+    [ 0. 0. 0. 0. 2. 2. 2. 2. 4. 4. 4. 4. 0. 0. 0. 0. 2. 2. 2. 2. 4. 4. 4. 4.]
+    >>> print g.get_z ()
+    [ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4.]
+
+    >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='ij')
+    >>> print g.get_x ()
+    [ 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4.]
+    >>> print g.get_y ()
+    [ 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4.]
+    >>> print g.get_z ()
+    [-1. -1. -1. -1. -1. -1. 0. 0. 0. 0. 0. 0. 1. 1. 1. 1. 1. 1. 2. 2. 2. 2. 2. 2.]
+
 """
 
 import numpy as np
@@ -95,7 +126,6 @@ from igrid import IField
 from rectilinear import Rectilinear, RectilinearPoints
 
 class UniformRectilinearPoints (RectilinearPoints):
-    #def __init__ (self, shape, spacing, origin, indexing='xy', set_connectivity=False):
     def __init__ (self, shape, spacing, origin, **kwds):
         kwds.setdefault ('indexing', 'xy')
         kwds.setdefault ('set_connectivity', False)
@@ -109,11 +139,10 @@ class UniformRectilinearPoints (RectilinearPoints):
         self._spacing = np.array (spacing, dtype=np.float64)
         self._origin = np.array (origin, dtype=np.float64)
 
-        if kwds['indexing']=='xy':
-            self._origin = self._origin[::-1]
-            self._spacing = self._spacing[::-1]
+        if kwds['indexing']=='xy' and len (shape)>1:
+            self._origin = self._origin[1::-1]
+            self._spacing = self._spacing[1::-1]
 
-        #super (UniformRectilinearPoints, self).__init__ (*xi, indexing=indexing, set_connectivity=set_connectivity)
         super (UniformRectilinearPoints, self).__init__ (*xi, **kwds)
 
     def get_spacing (self):

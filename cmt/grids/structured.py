@@ -22,18 +22,18 @@ Create a grid of length 2 in the x direction, and 3 in the y direction.
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
-    >>> g = Structured (x.flatten (), y.flatten (), (4, 3), indexing='ij')
+    >>> g = Structured (y.flatten (), x.flatten (), (3, 4), indexing='ij')
     >>> print g.get_x ()
-    [ 1. 2. 3. 1. 2. 3. 1. 2. 3. 1. 2. 3.]
+    [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
     >>> print g.get_y ()
-    [ 1. 1. 1. 2. 2. 2. 4. 4. 4. 8. 8. 8.]
+    [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
     >>> print g.get_shape ()
-    [4 3]
+    [3 4]
 
     >>> print g.get_offset () # doctest: +NORMALIZE_WHITESPACE
     [ 4 8 12 16 20 24]
     >>> print g.get_connectivity () # doctest: +NORMALIZE_WHITESPACE
-    [ 0 1 4 3 1 2 5 4 3 4 7 6 4 5 8 7 6 7 10 9 7 8 11 10]
+    [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
 Structured grid of points
 -------------------------
@@ -41,15 +41,15 @@ Structured grid of points
 The same grid as the previous example but without any cells - just points.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
-    >>> g = StructuredPoints (x.flatten (), y.flatten (), (4, 3), indexing='ij', set_connectivity=True)
+    >>> g = StructuredPoints (y.flatten (), x.flatten (), (3, 4), indexing='ij', set_connectivity=True)
     >>> print g.get_x ()
-    [ 1. 2. 3. 1. 2. 3. 1. 2. 3. 1. 2. 3.]
+    [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
     >>> print g.get_y ()
-    [ 1. 1. 1. 2. 2. 2. 4. 4. 4. 8. 8. 8.]
+    [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
     >>> print g.get_shape ()
-    [4 3]
+    [3 4]
 
-The number of points are the same, but the number of cells is not 0.
+The number of points are the same, but the number of cells is now 0.
 
     >>> g.get_point_count ()
     12
@@ -66,6 +66,48 @@ The connectivity runs from 0 to one less than the number of points.
     >>> all (g.get_connectivity ()==np.arange (g.get_point_count ()))
     True
 
+1D Grid of line segments
+------------------------
+
+    >>> g = Structured ([-1, 2, 3, 6], (4, ))
+    >>> print g.get_x ()
+    [-1. 2. 3. 6.]
+    >>> print g.get_y ()
+    [ 0. 0. 0. 0.]
+    >>> print g.get_shape ()
+    [4]
+
+    >>> print g.get_offset () # doctest: +NORMALIZE_WHITESPACE
+    [2 4 6]
+    >>> print g.get_connectivity () # doctest: +NORMALIZE_WHITESPACE
+    [0 1 1 2 2 3]
+
+
+3D Grid of cubes
+----------------
+
+    >>> x = [0, 1, 0, 1, 0, 1, 0, 1]
+    >>> y = [0, 0, 1, 1, 0, 0, 1, 1]
+    >>> z = [0, 0, 0, 0, 1, 1, 1, 1]
+
+    >>> g = Structured (x, y, z, (2, 2, 2))
+
+    >>> print g.get_x ()
+    [ 0. 1. 0. 1. 0. 1. 0. 1.]
+    >>> print g.get_y ()
+    [ 0. 0. 1. 1. 0. 0. 1. 1.]
+    >>> print g.get_z ()
+    [ 0. 0. 0. 0. 1. 1. 1. 1.]
+
+    >>> print g.get_connectivity ()
+    [0 1 3 2 4 5 7 6]
+    >>> print g.get_offset ()
+    [8]
+
+    >>> g = Structured (x, y, z, (2, 2, 2), ordering='ccw')
+    >>> print g.get_connectivity ()
+    [1 0 2 3 5 4 6 7]
+
 """
 import numpy as np
 from meshgrid import meshgrid
@@ -74,29 +116,20 @@ from unstructured import Unstructured, UnstructuredPoints
 from connectivity import get_connectivity
 
 class StructuredPoints (UnstructuredPoints):
-    #def __init__ (self, x, y, shape, indexing='xy', set_connectivity=True, **kwargs):
-    def __init__ (self, x, y, shape, **kwds):
+    def __init__ (self, *args, **kwds):
         kwds.setdefault ('set_connectivity', True)
         indexing = kwds.pop ('indexing', 'xy')
 
-        x = np.array (x, dtype=np.float64)
-        y = np.array (y, dtype=np.float64)
+        self._shape = np.array (args[-1], dtype=np.int64)
 
-        assert (len (x) == len (y))
-        assert (x.size == np.prod (shape))
+        coords = [arg for arg in args[:-1]]
+        if indexing == 'ij':
+            coords = coords[::-1]
 
-        if indexing == 'xy':
-            x.shape = shape
-            y.shape = shape
-        else:
-            (y, x) = (x.reshape (shape[::-1]).T.copy (),
-                      y.reshape (shape[::-1]).T.copy ())
+        assert (len (coords) >= 1)
+        assert (len (coords) <= 3)
 
-        self._shape = np.array (x.shape, dtype=np.int64)
-
-        super (StructuredPoints, self).__init__ (x, y, **kwds)
-
-        #self._shape = np.array (x.shape, dtype=np.int64)
+        super (StructuredPoints, self).__init__ (*coords, **kwds)
 
     def get_shape (self):
         """The shape of the structured grid."""
@@ -121,18 +154,21 @@ Create a structured rectilinear grid.
 
 
     """
-    #def __init__ (self, x, y, shape, indexing='xy', set_connectivity=True):
-    def __init__ (self, x, y, shape, **kwds):
+    def __init__ (self, *args, **kwds):
         kwds.setdefault ('indexing', 'xy')
         kwds.setdefault ('set_connectivity', True)
         ordering = kwds.pop ('ordering', 'cw')
         if not ordering in ['cw', 'ccw']:
             raise TypeError ("ordering not understood (valid choices are 'cw' or 'ccw')")
 
-        (c, o) = get_connectivity (shape, ordering=ordering, with_offsets=True)
+        shape = args[-1]
 
-        super (Structured, self).__init__ (x, y, shape, connectivity=c,
-                                           offset=o, **kwds)
+        if kwds['set_connectivity']:
+            (c, o) = get_connectivity (shape, ordering=ordering, with_offsets=True)
+            self._set_connectivity (c, o)
+            kwds['set_connectivity'] = False
+
+        super (Structured, self).__init__ (*args, **kwds)
 
 if __name__ == '__main__':
     import doctest

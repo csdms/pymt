@@ -163,6 +163,59 @@ size or shape doesn't match raise an exception.
         ...
     DimensionError: 1 != 2
 
+1D-Field
+--------
+
+    >>> g = RasterField ((6, ), (1.5, ), (0.5, ), indexing='ij')
+    >>> g.get_point_count ()
+    6
+    >>> g.get_cell_count ()
+    5
+
+    >>> point_data = np.arange (6.)
+    >>> g.add_field ('Point Data', point_data, centering='point')
+
+    >>> cell_data = np.arange (5.)*10.
+    >>> g.add_field ('Cell Data', cell_data, centering='zonal')
+
+    >>> g.get_field ('Cell Data')
+    array([ 0., 10., 20., 30., 40.])
+
+    >>> g.get_field ('Point Data')
+    array([ 0., 1., 2., 3., 4., 5.])
+
+3D-Field
+--------
+
+    >>> g = RasterField ((4, 3, 2), (1.5, 1., 3), (0.5, 0, -.5 ), indexing='ij')
+    >>> g.get_point_count ()
+    24
+    >>> g.get_cell_count ()
+    6
+
+    >>> g.add_field ('Point Data', g.get_x (), centering='point')
+
+    >>> cell_data = np.arange (6.)*10.
+    >>> g.add_field ('Cell Data', cell_data, centering='zonal')
+
+    >>> g.get_field ('Cell Data')
+    array([ 0., 10., 20., 30., 40., 50.])
+
+    >>> print g.get_field ('Point Data')
+    [-0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5]
+
+    >>> print g.get_shape ()
+    [4 3 2]
+
+    >>> g.get_x ().size == g.get_field ('Point Data').size
+    True
+    >>> x = g.get_x ()
+    >>> x.shape
+    (24,)
+    >>> x.shape = g.get_shape ()
+    >>> x.shape
+    (4, 3, 2)
+
     """
     pass
 
