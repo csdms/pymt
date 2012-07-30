@@ -17,14 +17,6 @@ Examples
 >>> f.get_coordinate_units (1)
 'km'
 
-#>>> tofile (f, 'test.nc', units=dict (Elevation='meters', Temperature='C'))
-#Imported Nio version: 1.4.0
-#Imported Nio version: 1.4.0
-#>>> os.path.isfile ('./test_Elevation.nc')
-#True
-#>>> os.path.isfile ('./test_Temperature.nc')
-#True
-
 >>> attrs = dict (description='Example nc file', author='Eric')
 >>> field_tofile (f, 'test00.nc', attrs=attrs, append=True)
 
@@ -33,13 +25,45 @@ Examples
 >>> f.add_field ('Elevation', data, centering='point')
 >>> f.add_field ('Temperature', data*10, centering='point')
 
-#>>> tofile (f, 'test.nc', units=dict (Elevation='meters', Temperature='C'))
-#Imported Nio version: 1.4.0
-#Imported Nio version: 1.4.0
-#>>> os.path.isfile ('./test_Elevation_1.nc')
-#True
-#>>> os.path.isfile ('./test_Temperature_1.nc')
-#True
+
+
+
+>>> f = RasterField ((2, 3, 4), (1, 2, 3), (-1, 0, 1), indexing='ij', units=('mm', 'm', 'km'))
+>>> data = np.arange (24.)
+>>> f.add_field ('Temperature', data*10, centering='point', units='C')
+>>> f.add_field ('Elevation', data, centering='point', units='meters')
+>>> f.add_field ('Velocity', data*100, centering='point', units='m/s')
+>>> f.add_field ('Temp', data*2, centering='point', units='F')
+>>> f.get_coordinate_units (0) == f.get_z_units (), f.get_z_units ()
+(True, 'mm')
+>>> f.get_coordinate_units (1) == f.get_y_units (), f.get_y_units ()
+(True, 'm')
+>>> f.get_coordinate_units (2) == f.get_x_units (), f.get_x_units ()
+(True, 'km')
+
+>>> attrs = dict (description='Example 3D nc file', author='Eric')
+>>> field_tofile (f, 'test-3d-00.nc', attrs=attrs, append=True)
+
+
+
+>>> f = RasterField ((12, ), (1, ), (-1, ), indexing='ij', units=('m', ))
+>>> data = np.arange (12.)
+>>> f.add_field ('Elevation', data, centering='point')
+
+>>> attrs = dict (description='Example 1D nc file', author='Eric')
+>>> field_tofile (f, 'test-1d-00.nc', attrs=attrs, append=True)
+
+
+
+>>> f = RasterField ((1, ), (0, ), (0, ), indexing='ij', units=('m', ))
+
+>>> attrs = dict (description='Example 0D nc file', author='Eric')
+>>> for i in range (10):
+...     f.add_field ('Elevation', i, centering='point')
+...     field_tofile (f, 'test-0d-00.nc', attrs=attrs, append=True)
+
+
+
 """
 
 import os
@@ -369,8 +393,13 @@ def _set_structured_variables (field, root, time=None, time_units='days',
 
     spacing = remove_singleton (field.get_spacing (), field.get_shape ())
     origin = remove_singleton (field.get_origin (), field.get_shape ())
-    dim_names = dimension_name[-len (shape):]
-    var_names = variable_name[-len (shape):]
+
+    if len (shape) > 0:
+        dim_names = dimension_name[-len (shape):]
+        var_names = variable_name[-len (shape):]
+    else:
+        dim_names = []
+        var_names = []
 
     vars = root.variables
 
@@ -403,7 +432,10 @@ def _set_structured_variables (field, root, time=None, time_units='days',
             var = root.createVariable (var_name,
                                        np_to_nc_type[str (array.dtype)],
                                        ['nt'] + dim_names)
-        var[n_times,:] = array.flat
+        if array.size > 1:
+            var[n_times,:] = array.flat
+        else:
+            var[n_times] = array[0]
         var.units = field.get_field_units (var_name)
         var.long_name = var_name
 
