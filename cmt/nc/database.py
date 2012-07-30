@@ -3,7 +3,7 @@
 import os
 import string
 
-from cmt.nc import writer_from_shape, remove_singleton, DimensionError
+from cmt.nc import writer_from_shape, remove_singleton, DimensionError, field_tofile
 from cmt.grids import GridTypeError
 
 class IDatabase (object):
@@ -35,7 +35,6 @@ Elevation_time_series.nc.
     >>> db = Database ()
     >>> db.open ('Elevation_time_series.nc', 'Elevation')
     >>> db.write (field)
-    Imported Nio version: 1.4.0
     >>> os.path.isfile ('./Elevation_time_series.nc')
     True
 
@@ -53,14 +52,13 @@ Elevation_time_series_0000.nc.
     >>> field.add_field ('Elevation', data, centering='point')
 
     >>> db.write (field)
-    Imported Nio version: 1.4.0
     >>> os.path.isfile ('./Elevation_time_series_0000.nc')
     True
 
     >>> db.close ()
 
     """
-    def open (self, path, var_name, **kwargs):
+    def open (self, path, var_name, **kwds):
         self.close ()
 
         (root, ext) = os.path.splitext (path)
@@ -69,46 +67,33 @@ Elevation_time_series_0000.nc.
         self._path = path
         self._template = '%s_%%04d%s' % (root, ext)
 
-    def write (self, field):
-        array = field.get_field (self._var_name)
+    def write (self, field, **kwds):
+        kwds.setdefault ('append', True)
 
-        try:
-            self._writer.write (array)
-        except AttributeError:
-            # There is no _writer. Create a new one based of the shape of field.
+        if kwds['append']:
             try:
-                spacing = remove_singleton (field.get_spacing (), field.get_shape ())
-                shape = remove_singleton (field.get_shape (), field.get_shape ())
-            except BadGridtypeError:
-                print 'NetCDF only supports uniform rectilinear grids'
-                raise
+                if (self._point_count != field.get_point_count () or
+                    self._cell_count != field.get_cell_count ()):
 
-            writer = writer_from_shape (shape)
-            try:
-                self._writer = writer (shape, spacing)
-            except RankError:
-                print 'Unable to create writer'
-                raise
-            self._writer.open (self._path, self._var_name)
-            self.write (field)
-        except DimensionError:
-            # Error is raised if the dimension has changed. If it has, write the
-            # array to a new file rather than appending to the currently opened
-            # file.
-            self.close ()
-            new_path = self._next_file_name ()
-            self.open (new_path, self._var_name)
+                    self._path = self._next_file_name ()
+            except AttributeError:
+                pass
 
-            self.write (field)
+            self._point_count = field.get_point_count ()
+            self._cell_count = field.get_cell_count ()
+        else:
+            self._path = self._next_file_name ()
+
+        field_tofile (field, self._path, **kwds)
 
     def close (self):
         try:
-            self._writer.close ()
-            del self._writer
+            del self._count
         except AttributeError:
             pass
         try:
-            del self._count
+            del self._point_count
+            del self._cell_count
         except AttributeError:
             pass
 
@@ -122,4 +107,8 @@ Elevation_time_series_0000.nc.
             self._count += 1
 
         return next_file_name
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod ()
 
