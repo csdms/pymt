@@ -147,7 +147,7 @@ Point on cell edges
 A big mapper
 ============
 
->>> (m, n) = (200, 400)
+>>> (m, n) = (20, 40)
 >>> (src_x, src_y) = np.meshgrid (range (m), range (n))
 >>> src = UnstructuredPoints (src_x, src_y)
 >>> dst = UniformRectilinear ((m+1,n+1), (1, 1), (-.5, -.5))

@@ -22,8 +22,9 @@ class NearestVal (IGridMapper):
         return dest_values
 
     def test (self, dst_grid, src_grid):
-        return (all (np.diff (dst_grid.get_offset ())==1) and
-                all (np.diff (src_grid.get_offset ())==1))
+        #return (all (np.diff (dst_grid.get_offset ())==1) and
+        #        all (np.diff (src_grid.get_offset ())==1))
+        return True
     def name (self):
         return 'PointToPoint'
 

@@ -33,7 +33,7 @@ class PointToCell (IGridMapper):
         assert (src_values.size == self._src_point_count)
         if dst_vals is None:
             dst_vals = np.array ([bad_val]*self._dst_cell_count, dtype=np.float)
-        assert (dst_values.size == self._dst_cell_count)
+        assert (dst_vals.size == self._dst_cell_count)
 
         for (cell_id, point_ids) in self._map.items ():
             if all (src_values[point_ids]>bad_val):
@@ -41,8 +41,10 @@ class PointToCell (IGridMapper):
         return dst_vals
 
     def test (self, dst_grid, src_grid):
-        return (all (np.diff (src_grid.get_offset ())==1) and
-                all (np.diff (dst_grid.get_offset ())>2))
+        #return (all (np.diff (src_grid.get_offset ())==1) and
+        #        all (np.diff (dst_grid.get_offset ())>2))
+        return all (np.diff (dst_grid.get_offset ())>2)
+
 
     def name (self):
         return 'PointToCell'
