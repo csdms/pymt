@@ -33,7 +33,7 @@ class VtkUnstructuredWriter (GridField, VtkWriter):
       element ['Piece'] = VtkPieceElement (NumberOfPoints=self.get_point_count (),
                                            NumberOfCells=self.get_cell_count ())
 
-      element ['Points'] = VtkPointsElement (self.get_coordinates (), append=data, encoding=encoding)
+      element ['Points'] = VtkPointsElement (self.get_xyz (), append=data, encoding=encoding)
       #element ['PointData'] = VtkPointDataElement (self._point_values, append=data, encoding=encoding)
       element ['PointData'] = VtkPointDataElement (self.get_point_fields (), append=data, encoding=encoding)
       element ['Cells'] = VtkCellsElement (self.get_connectivity (), self.get_offset (),
@@ -54,7 +54,7 @@ class VtkUnstructuredWriter (GridField, VtkWriter):
       return VtkPieceElement (NumberOfPoints=self.get_point_count (),
                               NumberOfCells=self.get_cell_count ())
   def points (self):
-      return VtkPointsElement (self.get_coordinates (), append=data)
+      return VtkPointsElement (self.xyz (), append=data)
   def point_data (self):
       #return VtkPointDataElement (self._point_values, append=data)
       return VtkPointDataElement (self.get_point_fields (), append=data)
@@ -88,8 +88,8 @@ class VtkUnstructuredWriter (GridField, VtkWriter):
                   type = 7
               types.append (type)
           return np.array (types, dtype=np.uint8)
-  def get_coordinates (self):
-      return (self.get_x (), self.get_y (), self.get_z ())
+  #def get_coordinates (self):
+  #    return (self.get_x (), self.get_y (), self.get_z ())
 
 def get_vtk_types (grid):
     offsets = grid.get_offset ()

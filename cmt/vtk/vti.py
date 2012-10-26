@@ -16,12 +16,17 @@ Create a uniform rectilinear grid that looks like the following,
      |     |     |     |
     (8) - (9) - (10)-(11)
 
->>> g = VtkUniformRectilinearWriter ([2, 3], [1, 2.], encoding='base64')
->>> g.add_point_data ('Elevation', np.arange (12.))
->>> g.add_cell_data ('Cell Elevation', [1., 2., 3, 4, 5, 6])
+>>> g = VtkUniformRectilinearWriter ([4, 3], [2, 1.], [0, 0], encoding='base64')
+>>> g.get_point_count ()
+12
+>>> g.get_cell_count ()
+6
+>>> g.add_field ('Elevation', np.arange (12.), centering='point')
+>>> g.add_field ('Cell Elevation', [1., 2., 3, 4, 5, 6], centering='zonal')
 >>> g.write ('rect.vti')
 """
-from cmt.grid import VTKGridUniformRectilinear
+from cmt.grids import RasterField
+#from cmt.grid import VTKGridUniformRectilinear
 from cmt.vtk import VtkWriter
 
 from cmt.vtk.vtktypes import VtkUniformRectilinear
@@ -34,7 +39,8 @@ def origin_string (origin, spacing):
 def spacing_string (spacing):
     return '%f %f 0.' % (spacing[1], spacing[0])
 
-class VtkUniformRectilinearWriter (VTKGridUniformRectilinear, VtkWriter):
+#class VtkUniformRectilinearWriter (VTKGridUniformRectilinear, VtkWriter):
+class VtkUniformRectilinearWriter (RasterField, VtkWriter):
   _vtk_grid_type = VtkUniformRectilinear
 
   def __init__ (self, *args, **kwargs):
@@ -47,20 +53,27 @@ class VtkUniformRectilinearWriter (VTKGridUniformRectilinear, VtkWriter):
       else:
           data = None
 
-      shape = self.get_shape ()
-      origin = self.get_origin ()
-      spacing = self.get_spacing ()
+      #shape = self.get_shape ()
+      #origin = self.get_origin ()
+      #spacing = self.get_spacing ()
+
+      extent = VtkExtent (self.get_shape ()[::-1])
+      origin = VtkOrigin (self.get_origin ()[::-1], self.get_spacing ()[::-1])
+      spacing = VtkSpacing (self.get_spacing ()[::-1])
 
       element = {}
       element ['VTKFile'] = VtkRootElement (VtkUniformRectilinear)
       element ['Grid'] = VtkGridElement (VtkUniformRectilinear,
-                                         WholeExtent=extent_string (shape),
-                                         Origin=origin_string (origin, spacing),
-                                         Spacing=spacing_string (spacing))
-      element ['Piece'] = VtkPieceElement (Extent=extent_string (shape))
+                                         WholeExtent=extent,
+                                         Origin=origin,
+                                         Spacing=spacing)
+                                         #WholeExtent=extent_string (shape),
+                                         #Origin=origin_string (origin, spacing),
+                                         #Spacing=spacing_string (spacing))
+      element ['Piece'] = VtkPieceElement (Extent=extent)
 
-      element ['PointData'] = VtkPointDataElement (self._point_values, append=data, encoding=encoding)
-      element ['CellData'] = VtkCellDataElement (self._cell_values, append=data, encoding=encoding)
+      element ['PointData'] = VtkPointDataElement (self.get_point_fields (), append=data, encoding=encoding)
+      element ['CellData'] = VtkCellDataElement (self.get_cell_fields (), append=data, encoding=encoding)
 
       if data is not None:
           element['AppendedData'] = data

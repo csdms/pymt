@@ -8,6 +8,60 @@ import xml.dom.minidom
 from cmt.vtk import encode
 from vtktypes import sys_to_vtk_endian, np_to_vtk_type
 
+class VtkExtent (object):
+    def __init__ (self, shape):
+        assert (len (shape)<=3)
+
+        self._shape = shape
+
+        self._extent = []
+        for n in shape:
+            self._extent.append ((0, n-1))
+        for n in xrange (3-len (shape)):
+            self._extent.append ((0, 0))
+
+        self._extent_str = ' '.join (['%d %d' % x for x in self._extent])
+        
+    def __str__ (self):
+        return self._extent_str
+        
+class VtkOrigin (object):
+    def __init__ (self, origin, spacing):
+        assert (len (spacing)<=3)
+        assert (len (spacing)==len (origin))
+
+        self._spacing = spacing
+        self._cell_origin = origin
+
+        self._cell_origin = []
+        for (dx, x0) in zip (spacing, origin):
+            self._cell_origin.append (x0 - dx*.5)
+
+        for n in xrange (3-len (origin)):
+            self._cell_origin.append (0.)
+
+        self._origin_str = ' '.join (['%f' % x for x in self._cell_origin])
+        
+    def __str__ (self):
+        return self._origin_str
+    
+class VtkSpacing (object):
+    def __init__ (self, spacing):
+        assert (len (spacing)<=3)
+
+        self._spacing = spacing
+
+        self._padded_spacing = []
+        for dx in spacing:
+            self._padded_spacing.append (dx)
+        for n in xrange (3-len (spacing)):
+            self._padded_spacing.append (0.)
+
+        self._spacing_str = ' '.join (['%f' % x for x in self._padded_spacing])
+        
+    def __str__ (self):
+        return self._spacing_str
+    
 class VtkElement (object, xml.dom.minidom.Element):
     def __init__ (self, name, **kwargs):
         xml.dom.minidom.Element.__init__ (self, str (name), namespaceURI='VTK')
@@ -84,16 +138,29 @@ class VtkAppendedDataElement (VtkElement):
 
 class VtkPointsElement (VtkDataElement):
     def __init__ (self, coords, **kwargs):
-        xyz = np.vstack (coords).transpose ().flatten ()
+        n_components = 3
+        xyz = []
+        for i in xrange (n_components):
+            try:
+                xyz.append (coords[i])
+            except IndexError:
+                xyz.append (np.array (coords[0])*0)
+        xyz = np.vstack (xyz).transpose ().flatten ()
         VtkDataElement.__init__ (self, 'Points', **kwargs)
-        self.addData (xyz, 'Coordinates', NumberOfComponents=len (coords), **kwargs)
+        self.addData (xyz, 'Coordinates', NumberOfComponents=n_components, **kwargs)
 
 class VtkCoordinatesElement (VtkDataElement):
     def __init__ (self, xyz, **kwargs):
         VtkDataElement.__init__ (self, 'Coordinates', **kwargs)
-        self.addData (xyz[0], 'x_coordinatess', NumberOfComponents=1, **kwargs)
-        self.addData (xyz[1], 'y_coordinatess', NumberOfComponents=1, **kwargs)
-        self.addData (xyz[2], 'z_coordinatess', NumberOfComponents=1, **kwargs)
+        for (i, label) in enumerate (['x', 'y', 'z']):
+            try:
+                self.addData (xyz[i], label +'_coordinates', NumberOfComponents=1, **kwargs)
+            except IndexError:
+                self.addData (np.array (xyz[0])*0., label +'_coordinates', NumberOfComponents=1, **kwargs)
+
+        #self.addData (xyz[0], 'x_coordinates', NumberOfComponents=1, **kwargs)
+        #self.addData (xyz[1], 'y_coordinates', NumberOfComponents=1, **kwargs)
+        #self.addData (xyz[2], 'z_coordinates', NumberOfComponents=1, **kwargs)
 
 class VtkCellsElement (VtkDataElement):
     def __init__ (self, connectivity, offset, types, **kwargs):
