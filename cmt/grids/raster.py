@@ -140,8 +140,8 @@ class UniformRectilinearPoints (RectilinearPoints):
         self._origin = np.array (origin, dtype=np.float64)
 
         if kwds['indexing']=='xy' and len (shape)>1:
-            self._origin = self._origin[1::-1]
-            self._spacing = self._spacing[1::-1]
+            self._origin = self._origin[::-1]
+            self._spacing = self._spacing[::-1]
 
         super (UniformRectilinearPoints, self).__init__ (*xi, **kwds)
 
