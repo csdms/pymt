@@ -4,155 +4,124 @@ import unittest
 from cmt.grids import Rectilinear, RectilinearPoints
 import numpy as np
 
-class BaseRectilinearTest (object):
-    def test_point_count (self):
-        self.assertEqual (self.point_count, self.grid.get_point_count ())
+class TestRectilinearGrid (unittest.TestCase):
 
-    def test_cell_count (self):
-        self.assertEqual (self.cell_count, self.grid.get_cell_count ())
+    def assert_point_count (self, grid, point_count):
+        self.assertEqual (point_count, grid.get_point_count ())
+    def assert_cell_count (self, grid, cell_count):
+        self.assertEqual (cell_count, grid.get_cell_count ())
 
-    def test_x (self):
-        self.assertListEqual (self.x, list (self.grid.get_x ()))
+    def assert_shape (self, grid, shape):
+        self.assertListEqual (list (grid.get_shape ()), list (shape))
+    def assert_spacing (self, grid, spacing):
+        self.assertListEqual (list (grid.get_spacing ()), list (spacing))
+    def assert_origin (self, grid, origin):
+        self.assertListEqual (list (grid.get_origin ()), list (origin))
 
-    def test_y (self):
-        self.assertListEqual (self.y, list (self.grid.get_y ()))
+    def assert_x (self, grid, x):
+        self.assertListEqual (list (x), list (grid.get_x ()))
+    def assert_y (self, grid, y):
+        self.assertListEqual (list (y), list (grid.get_y ()))
+    def assert_z (self, grid, z):
+        self.assertListEqual (list (z), list (grid.get_z ()))
 
-    def test_shape (self):
-        shape = self.grid.get_shape ()
-        self.assertEqual (len (shape), len (self.shape))
-        self.assertListEqual (list (self.shape), list (shape))
+    def assert_offset (self, grid, offset):
+        self.assertListEqual (list (offset), list (grid.get_offset ()))
+    def assert_connectivity (self, grid, connectivity):
+        self.assertListEqual (list (connectivity), list (grid.get_connectivity ()))
 
-    def test_units (self):
-        self.assertEqual (self.x_units, self.grid.get_x_units ())
-        self.assertEqual (self.y_units, self.grid.get_y_units ())
+    def test_xy_indexing (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.])
+        self.assert_point_count (grid, 12)
+        self.assert_cell_count (grid, 6)
+        self.assert_shape (grid, (3, 4))
+        self.assert_x (grid, [1., 2., 4., 8.,
+                              1., 2., 4., 8.,
+                              1., 2., 4., 8.])
+        self.assert_y (grid, [1., 1., 1., 1.,
+                              2., 2., 2., 2.,
+                              3., 3., 3., 3.])
 
-        self.assertEqual (self.x_units, self.grid.get_x_units ())
-        self.assertEqual (self.y_units, self.grid.get_y_units ())
-        self.assertEqual (self.z_units, self.grid.get_z_units ())
+    def test_ij_indexing (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
+        self.assert_point_count (grid, 12)
+        self.assert_cell_count (grid, 6)
+        self.assert_shape (grid, (4, 3))
+        self.assert_x (grid, [1., 2., 3., 1., 2., 3.,
+                              1., 2., 3., 1., 2., 3.])
+        self.assert_y (grid, [1., 1., 1., 2., 2., 2.,
+                              4., 4., 4., 8., 8., 8.])
+        self.assert_connectivity (grid, [0, 1, 4, 3,
+                                         1, 2, 5, 4,
+                                         3, 4, 7, 6,
+                                         4, 5, 8, 7,
+                                         6, 7, 10, 9,
+                                         7, 8, 11, 10])
 
-        self.assertEqual (self.y_units, self.grid.get_coordinate_units (0))
-        self.assertEqual (self.x_units, self.grid.get_coordinate_units (1))
-        self.assertEqual (self.z_units, self.grid.get_coordinate_units (2))
+    def test_grid_of_points (self):
+        grid = RectilinearPoints ([1., 2., 4., 8.], [1., 2., 3.],
+                                  indexing='ij', set_connectivity=True)
+        self.assert_point_count (grid, 12)
+        self.assert_cell_count (grid, 0)
+        self.assert_shape (grid, (4, 3))
+        self.assert_x (grid, [1., 2., 3., 1., 2., 3.,
+                              1., 2., 3., 1., 2., 3.])
+        self.assert_y (grid, [1., 1., 1., 2., 2., 2.,
+                              4., 4., 4., 8., 8., 8.])
+        self.assert_connectivity (grid, np.arange (grid.get_point_count ())) 
+        self.assert_offset (grid, np.arange (1, grid.get_point_count ()+1))
 
-    def test_offset (self):
-        o = self.grid.get_offset ()
-        self.assertListEqual (range (4, (self.cell_count+1)*4, 4), list (o))
+    def test_1d_grid (self):
+        grid = Rectilinear ([1,3,4,5,6], set_connectivity=True)
+        self.assert_point_count (grid, 5)
+        self.assert_cell_count (grid, 4)
+        self.assert_shape (grid, (5, ))
+        self.assert_x (grid, [1., 3., 4., 5., 6.])
+        self.assert_y (grid, [0., 0., 0., 0., 0.])
+        self.assert_connectivity (grid, [0, 1, 1, 2, 2, 3, 3, 4])
+        self.assert_offset (grid, [2, 4, 6, 8])
 
-class TestGridsRectilinearXYIndexing (BaseRectilinearTest, unittest.TestCase):
-    point_count = 12
-    cell_count = 6
-    shape = (3, 4)
-    x = [ 1., 2., 4., 8., 1., 2., 4., 8., 1., 2., 4., 8.]
-    y = [ 1., 1., 1., 1., 2., 2., 2., 2., 3., 3., 3., 3.]
-    x_units = '-'
-    y_units = '-'
-    z_units = '-'
+    def test_3d_xy_indexing (self):
+        grid = Rectilinear ([0, 1, 2, 3], [4, 5, 6], [7, 8],
+                            set_connectivity=True, indexing='xy')
+        self.assert_point_count (grid, 24)
+        self.assert_cell_count (grid, 6)
+        self.assert_shape (grid, (2, 3, 4))
+        self.assert_x (grid, [0., 1., 2., 3., 0., 1., 2., 3.,
+                              0., 1., 2., 3., 0., 1., 2., 3.,
+                              0., 1., 2., 3., 0., 1., 2., 3.])
+        self.assert_y (grid, [4., 4., 4., 4., 5., 5., 5., 5.,
+                              6., 6., 6., 6., 4., 4., 4., 4.,
+                              5., 5., 5., 5., 6., 6., 6., 6.])
+        self.assert_z (grid, [7., 7., 7., 7., 7., 7.,
+                              7., 7., 7., 7., 7., 7.,
+                              8., 8., 8., 8., 8., 8.,
+                              8., 8., 8., 8., 8., 8.])
+        self.assert_offset (grid, 8. * np.arange (1, grid.get_cell_count () + 1))
 
-    def setUp (self):
-        self.grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.])
+    def test_3d_ij_indexing (self):
+        grid = Rectilinear ([0, 1, 2, 3], [4, 5, 6], [7, 8],
+                            set_connectivity=True, indexing='ij')
+        self.assert_point_count (grid, 24)
+        self.assert_cell_count (grid, 6)
+        self.assert_shape (grid, (4, 3, 2))
+        self.assert_x (grid, [7., 8., 7., 8., 7., 8.,
+                              7., 8., 7., 8., 7., 8.,
+                              7., 8., 7., 8., 7., 8.,
+                              7., 8., 7., 8., 7., 8.])
+        self.assert_y (grid, [4., 4., 5., 5., 6., 6.,
+                              4., 4., 5., 5., 6., 6.,
+                              4., 4., 5., 5., 6., 6.,
+                              4., 4., 5., 5., 6., 6.])
+        self.assert_z (grid, [0., 0., 0., 0., 0., 0.,
+                              1., 1., 1., 1., 1., 1.,
+                              2., 2., 2., 2., 2., 2.,
+                              3., 3., 3., 3., 3., 3.])
+        self.assert_offset (grid, 8. * np.arange (1, grid.get_cell_count () + 1))
 
-class TestGridsRectilinearIJIndexing (BaseRectilinearTest, unittest.TestCase):
-    point_count = 12
-    cell_count = 6
-    shape = (4, 3)
-    x = [ 1., 2., 3., 1., 2., 3., 1., 2., 3., 1., 2., 3.]
-    y = [ 1., 1., 1., 2., 2., 2., 4., 4., 4., 8., 8., 8.]
-    x_units = '-'
-    y_units = '-'
-    z_units = '-'
-
-    def setUp (self):
-        self.grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
-
-    def test_connectivity (self):
-        c = self.grid.get_connectivity ()
-        self.assertListEqual ([0, 1, 4, 3, 1, 2, 5, 4, 3, 4, 7, 6, 4, 5, 8, 7, 6, 7, 10, 9, 7, 8, 11, 10],
-                              list (c))
-
-class TestGridsRectilinearPoints (BaseRectilinearTest, unittest.TestCase):
-    point_count = 12
-    cell_count = 0
-    shape = (4, 3)
-    x = [ 1., 2., 3., 1., 2., 3., 1., 2., 3., 1., 2., 3.]
-    y = [ 1., 1., 1., 2., 2., 2., 4., 4., 4., 8., 8., 8.]
-    x_units = '-'
-    y_units = '-'
-    z_units = '-'
-
-    def setUp (self):
-        self.grid = RectilinearPoints ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij', set_connectivity=True)
-
-    def test_connectivity (self):
-        c = self.grid.get_connectivity ()
-        self.assertTrue (np.all (c == np.arange (self.point_count)))
-
-    def test_offset (self):
-        o = self.grid.get_offset ()
-        self.assertTrue (np.all (o == np.arange (1, self.point_count+1)))
-
-class TestGridsRectilinear1D (BaseRectilinearTest, unittest.TestCase):
-    point_count = 5
-    cell_count = 4
-    shape = (5, )
-    x = [ 1., 3., 4., 5., 6.]
-    y = [0., 0., 0., 0., 0.]
-    x_units = '-'
-    y_units = '-'
-    z_units = '-'
-
-    def setUp (self):
-        self.grid = Rectilinear ([1,3,4,5,6], set_connectivity=True)
-
-    def test_connectivity (self):
-        c = self.grid.get_connectivity ()
-        self.assertListEqual ([0, 1, 1, 2, 2, 3, 3, 4], list (c))
-
-    def test_offset (self):
-        o = self.grid.get_offset ()
-        self.assertListEqual ([2, 4, 6, 8], list (o))
-
-class TestGridsRectilinearXYIndexing3D (BaseRectilinearTest, unittest.TestCase):
-    point_count = 24
-    cell_count = 6
-    shape = (2, 3, 4)
-    x = [ 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.]
-    y = [ 4., 4., 4., 4., 5., 5., 5., 5., 6., 6., 6., 6., 4., 4., 4., 4., 5., 5., 5., 5., 6., 6., 6., 6.]
-    z = [ 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 8., 8., 8., 8., 8., 8., 8., 8., 8., 8., 8., 8.]
-    x_units = '-'
-    y_units = '-'
-    z_units = '-'
-
-
-    def setUp (self):
-        self.grid = Rectilinear ([0, 1, 2, 3], [4, 5, 6], [7, 8], set_connectivity=True, indexing='xy')
-
-    def test_z (self):
-        self.assertListEqual (self.z, list (self.grid.get_z ()))
-
-    def test_offset (self):
-        o = self.grid.get_offset ()
-        self.assertListEqual (list (8. * np.arange (1, self.cell_count+1)), list (o))
-
-class TestGridsRectilinearIJIndexing3D (BaseRectilinearTest, unittest.TestCase):
-    point_count = 24
-    cell_count = 6
-    shape = (4, 3, 2)
-    x = [ 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8.]
-    y = [ 4., 4., 5., 5., 6., 6., 4., 4., 5., 5., 6., 6., 4., 4., 5., 5., 6., 6., 4., 4., 5., 5., 6., 6.]
-    z = [ 0., 0., 0., 0., 0., 0., 1., 1., 1., 1., 1., 1., 2., 2., 2., 2., 2., 2., 3., 3., 3., 3., 3., 3.]
-    x_units = '-'
-    y_units = '-'
-    z_units = '-'
-
-    def setUp (self):
-        self.grid = Rectilinear ([0, 1, 2, 3], [4, 5, 6], [7, 8], set_connectivity=True, indexing='ij')
-
-    def test_z (self):
-        self.assertListEqual (self.z, list (self.grid.get_z ()))
-
-    def test_offset (self):
-        o = self.grid.get_offset ()
-        self.assertListEqual (list (8. * np.arange (1, self.cell_count+1)), list (o))
+def suite ():
+    suite = unittest.TestLoader ().loadTestsFromTestCase (TestRectilinearGrid)
+    return suite
 
 if __name__ == '__main__':
     unittest.main ()
