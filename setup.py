@@ -13,5 +13,6 @@ setup (name='cmt',
        install_requires = ['Shapely'],
        packages=['cmt', 'cmt.vtk', 'cmt.bov', 'cmt.nc', 'cmt.components', 'cmt.bmi', 'cmt.grids', 'cmt.mappers', 'cmt.scanners'],
        scripts=['scripts/scrape_html_block', 'scripts/vtu2ncu.py', 'scripts/quickstart.py', 'scripts/prmscan.py'],
-       test_suite='cmt.grids.tests',
+       test_suite='cmt.tests.test_cmt',
+       #test_suite='cmt.grids.tests',
       )
