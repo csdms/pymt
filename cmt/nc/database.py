@@ -5,6 +5,9 @@ import string
 
 from cmt.nc import writer_from_shape, remove_singleton, DimensionError, field_tofile
 from cmt.grids import GridTypeError
+from cmt.verbose import CMTLogger
+
+logger = CMTLogger ('NcDatabase', 20)
 
 class IDatabase (object):
     def __init__ (self):
@@ -69,6 +72,10 @@ Elevation_time_series_0000.nc.
 
     def write (self, field, **kwds):
         kwds.setdefault ('append', True)
+
+        logger.debug ('Number of points is %d' % field.get_point_count ())
+        logger.debug ('Number of cells is %d' % field.get_cell_count ())
+        logger.debug ('Shape of field is %s' % field.get_shape ())
 
         if kwds['append']:
             try:

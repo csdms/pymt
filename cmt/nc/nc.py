@@ -73,6 +73,9 @@ import numpy as np
 
 from cmt.grids import RectilinearField
 from cmt.grids import NonStructuredGridError, NonUniformGridError
+from cmt.verbose import CMTLogger
+
+logger = CMTLogger ('NetCDF', 20)
 
 class Error (Exception):
     pass
@@ -95,8 +98,10 @@ def remove_singleton (array, shape):
         return remove_singleton (np.array (array), np.array (shape))
     else:
         return array[shape>1]
-
-import csdms_utils
+try:
+    import csdms_utils
+except ImportError:
+    print 'Unable to import csdms_utils'
 
 class NetcdfWriter (object):
     valid_keywords = set (['dtype', 'var_units', 'time_units', 'time_long_name',
@@ -245,14 +250,14 @@ def tofile (field, path, units={}):
             path = file_name.substitute (var_name=var_name)
             nc_file.open (path, var_name, var_units=units_name)
         except Exception as e:
-            print "ncgs: %s: Unable to open: %s" % (path, e)
+            logger.warning ("ncgs: %s: Unable to open: %s" % (path, e))
         else:
             nc_file.write (array)
         finally:
             try:
                 nc_file.close ()
             except AttributeError:
-                print 'Unable to close'
+                logger.warning ('Unable to close')
 
 def field_tofile (field, path, append=False, attrs={}, time=None,
                   time_units='days', time_reference='00:00:00 UTC'):
@@ -442,9 +447,7 @@ def _set_structured_variables (field, root, time=None, time_units='days',
     try:
         var = vars['dummy']
     except KeyError:
-        var = root.createVariable ('dummy',
-                                   np_to_nc_type[str (array.dtype)],
-                                   ())
+        var = root.createVariable ('dummy', 'f8', ())
     var[0] = 0.
     var.units = '-'
     var.long_name = 'dummy'
@@ -518,9 +521,8 @@ def _set_unstructured_variables (field, root, time=None, time_units='days',
     try:
         var = vars['dummy']
     except KeyError:
-        var = root.createVariable ('dummy',
-                                   np_to_nc_type[str (array.dtype)],
-                                   ())
+        var = root.createVariable ('dummy', 'f8', ())
+
     var[0] = 0.
     var.units = '-'
     var.long_name = 'dummy'
