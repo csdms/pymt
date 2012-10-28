@@ -3,8 +3,14 @@
 import numpy as np
 from scipy.spatial import KDTree
 from imapper import IGridMapper
-from cmt.mapper import IncompatibleGridError
+from cmt.mappers import IncompatibleGridError
 
+#try:
+#    from esmp import *
+#except ImportError:
+#    import warnings
+#    warnings.warn ('Unable to import ESMP for cmt.mappers.esmp', RuntimeWarning)
+#from esmp import *
 import ESMP
 
 class EsmpMapper (IGridMapper):

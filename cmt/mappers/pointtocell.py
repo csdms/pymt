@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.spatial import KDTree
 from imapper import IGridMapper
-from cmt.mapper import IncompatibleGridError
+from cmt.mappers import IncompatibleGridError
 
 class PointToCell (IGridMapper):
     def initialize (self, dst_grid, src_grid):

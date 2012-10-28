@@ -168,25 +168,6 @@ from pointtopoint import NearestVal
 from celltopoint import CellToPoint
 from pointtocell import PointToCell
 
-class MapperError (Exception):
-    """Base class for error in this package."""
-    pass
-
-class IncompatibleGridError (MapperError):
-    """Error to indicate that the source grid cannot be mapped to the destination."""
-    def __init__ (self, dst, src):
-        self._src = src
-        self._dst = dst
-    def __str__ (self):
-        return 'Unable to map %s to %s' % (self._src, self._dst)
-
-class NoMapperError (MapperError):
-    def __init__ (self, dst, src):
-        self._src = src
-        self._dst = dst
-    def __str__ (self):
-        return 'No mapper to map %s to %s' % (self._src, self._dst)
-
 #mappers = [NearestVal (), CellToPoint (), PointToCell ()]
 mappers = [NearestVal, CellToPoint, PointToCell]
 
