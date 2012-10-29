@@ -7,7 +7,7 @@ import numpy as np
 from cmt.grids import RasterField, UnstructuredField
 from cmt.nc import field_tofile
 
-class TestNC (unittest.TestCase):
+class TestNc (unittest.TestCase):
     nc_files = dict (
         test_0d='test-0d-00.nc',
         test_1d='test-1d-00.nc',
