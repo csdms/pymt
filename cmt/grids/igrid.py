@@ -35,7 +35,7 @@ class NonUniformGridError (GridTypeError):
     """Error to indicate a grid is not a uniform rectilinear grid"""
     type = 'uniform rectilinear'
 
-class NonStructuredGridError (NonUniformGridError):
+class NonStructuredGridError (GridTypeError):
     """Error to indicate a grid is not a structured grid"""
     type = 'structured'
 

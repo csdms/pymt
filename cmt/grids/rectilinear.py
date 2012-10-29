@@ -204,6 +204,9 @@ class RectilinearPoints (StructuredPoints):
         [ 0. 1.]
         """
         return self._z_coordinates
+    def get_xyz_coordinates (self):
+        return (self.get_x_coordinates (), self.get_y_coordinates (),
+                self.get_z_coordinates ())
 
 class Rectilinear (RectilinearPoints, Structured):
     """

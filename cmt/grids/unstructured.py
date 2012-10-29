@@ -33,6 +33,8 @@ class UnstructuredPoints (IGrid):
         assert (len (args)<=3)
         assert (len (args)>=1)
 
+        self._n_dims = len (args)
+
         x = np.array (args[0], dtype=np.float64)
         n_points = x.size
 
@@ -61,12 +63,18 @@ class UnstructuredPoints (IGrid):
 
         super (UnstructuredPoints, self).__init__ ()
 
+    def get_dim_count (self):
+        return self._n_dims
     def get_x (self):
         return self._coords[-1]
     def get_y (self):
         return self._coords[-2]
     def get_z (self):
         return self._coords[0]
+    def get_xyz (self):
+        return self._coords[-1:-self._n_dims-1:-1]
+        #return self._coords[-1::-1]
+
     def get_x_units (self):
         try:
             return self._units[-1]
@@ -130,6 +138,8 @@ Create the grid,
     >>> g.get_point_count ()
     4
     >>> g.get_cell_count ()
+    2
+    >>> g.get_dim_count ()
     2
 
     >>> x = g.get_x ()
