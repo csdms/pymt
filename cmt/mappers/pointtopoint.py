@@ -13,12 +13,17 @@ class NearestVal (IGridMapper):
         tree = KDTree (zip (src_grid.get_x (), src_grid.get_y ()))
         (self._l, self._i) = tree.query (zip (dest_grid.get_x (),
                                               dest_grid.get_y ()))
+
     def run (self, src_values, dest_values=None):
         if dest_values is None:
             dest_values = np.zeros (len (self._i))
+        elif not isinstance (dest_values, np.ndarray):
+            raise TypeError ('Destination array must be a numpy array')
+
         for (j, i) in enumerate (self._i):
-            if src_values[i]>-999:
-                dest_values[j] = src_values[i]
+            if src_values.flat[i]>-999:
+                dest_values.flat[j] = src_values.flat[i]
+
         return dest_values
 
     def test (self, dst_grid, src_grid):
