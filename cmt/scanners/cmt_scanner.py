@@ -3,9 +3,10 @@
 import sys
 import os
 import StringIO
+import collections
 from warnings import warn
 
-from cmt.scanners import (InputParameterScanner, findall)
+from cmt.scanners import (InputParameterScanner, findall, adopt_children)
 from xml.etree.ElementTree import Element
 
 class Error (Exception):
@@ -21,25 +22,29 @@ class BadUnits (Error):
     def __str__ (self):
         return ', '.join (self._units)
 class BadType (Error):
-    def __init__ (self, typ):
+    def __init__ (self, type):
         self._type = type
     def __str__ (self):
-        return ', '.join (self._type)
+        return self._type
 
 from string import Template
 pre_text = Template ("""
-#@group Input File and Directories
-#    @param InputDir
-#        @brief Input directory
-#        @description Path to input files.
-#        @type file[GUI]
-#        @default GUI
+#@group General
 #    @param SimulationName
 #        @brief Simulation name
 #        @description Name of the simulation
 #        @default ${model_short_name}
 #        @type string
+#    @param run_duration = 100
+#        @brief Run duration
+#        @description Run duration
+#        @type float
+#        @units d
+#        @range 1, inf
 """)
+#@file InputDir = GUI
+#    @brief Input directory
+#    @description Path to input files.
 post_text = Template ("""
 #@group About
 #    @param model_name = ${model_long_name}
@@ -53,15 +58,16 @@ post_text = Template ("""
 #        @description Model version number
 """)
 output_text = Template ("""
-#    @param dir = $${cwd}
+#    @param Dir = $${cwd}
 #        @brief Output directory
 #        @description Path to output files
-#    @param interval = 10
+#    @param Interval = 10
 #        @brief Output interval
 #        @description Interval between output files
 #        @units d
 #        @type int
-#    @param format = NC
+#        @range 1, inf
+#    @param FileFormat = NC
 #        @brief File format
 #        @description File format for output files
 #        @type choice[NC, VTK]
@@ -77,16 +83,20 @@ required_tags = [
 
 tag_map = {
     'brief': 'label',
-    'description': 'help',
+    'description': 'help_brief',
     'group': 'tab',
     'param': 'entry',
+    'units': 'unit',
+    'file': 'entry',
 }
 type_to_inf = {
     'float': str (sys.float_info.max),
-    'int': str (sys.maxint),
+    'int': str (2**32 / 2 - 1),
+    #'int': str (sys.maxint),
 }
 
 type_map = {
+    'BOOLEAN': 'Int',
     'INTEGER': 'Int',
     'INT': 'Int',
     'LONG': 'Int',
@@ -102,6 +112,12 @@ def fix_type (type):
         raise BadType (type)
 
 class CmtScanner (InputParameterScanner):
+    def update (self, that):
+        this_model = self.root ().find ('model')
+        that_model = that.root ().find ('model')
+
+        adopt_children (this_model, that_model)
+
     @staticmethod
     def hook (buffer):
         from tempfile import TemporaryFile
@@ -126,6 +142,8 @@ class CmtScanner (InputParameterScanner):
     @staticmethod
     def guess_type (entry):
         type = 'string'
+        if entry.attrib['name'] in ['model_version']:
+            return 'string'
         try:
             default_str = entry.find ('default').text
             try:
@@ -144,10 +162,20 @@ class CmtScanner (InputParameterScanner):
     @staticmethod
     def translate (root):
 
+        # Any param tags without a group will be added to a new group
+        # called "Params"
+        orphans = CmtScanner.find_orphans (root, 'param', 'group')
+        if len (orphans) > 0:
+            new_parent = CmtScanner.adopt_orphans (root, orphans, 'group', 'Params')
+            root.append (new_parent)
+
+        # Map tag names to CMT names (param -> entry, etc.)
         for (from_tag, to_tag) in tag_map.items ():
             for node in findall (root, from_tag):
                 node.tag = to_tag
 
+        # If an entry doesn't have a label, set it to be the name of the
+        # entry.
         for entry in findall (root, 'entry'):
             if entry.find ('label') is None:
                 label = Element ('label')
@@ -156,14 +184,18 @@ class CmtScanner (InputParameterScanner):
                 warn ('LABEL tag not present. Using NAME attribute.',
                      RuntimeWarning)
 
+        # If an entry doesn't have a help tag, create one that is just whose
+        # text is the same as the label.
         for entry in findall (root, 'entry'):
-            if entry.find ('help') is None:
-                help = Element ('help')
+            if entry.find ('help_brief') is None:
+                help = Element ('help_brief')
                 help.text = entry.find ('label').text
                 entry.append (help)
                 warn ('HELP tag not present. Using LABEL tag.',
                      RuntimeWarning)
 
+        # If an entry's type is a file or choice, add text to the end of the
+        # help message to tell CMT to use dropdox, or combobox.
         for entry in findall (root, 'entry'):
             try:
                 type = entry.find ('type')
@@ -171,7 +203,11 @@ class CmtScanner (InputParameterScanner):
             except AttributeError:
                 pass
             else:
-                help = entry.find ('help')
+                help = entry.find ('help_brief')
+                if type_str.lower () == 'boolean':
+                    type.text = 'choice[0,1]'
+                    type_str = type.text
+
                 if type_str.startswith ('choice'):
                     options = type_str[type_str.find ('[')+1: type_str.find (']')]
                     options = options.split (',')
@@ -179,13 +215,18 @@ class CmtScanner (InputParameterScanner):
                     help.text += '{' + ';'.join (['dl'] + options) + '}'
                     entry.remove (type)
                 elif type_str.startswith ('file'):
-                    options = type_str[type_str.find ('[')+1: type_str.find (']')]
-                    options = options.split (',')
-                    options = [o.strip () for o in options]
-                    options = ['Enter path to file'] + options
+                    default = entry.find ('default').text
+                    if type_str.find (']') > type_str.find ('['):
+                        options = type_str[type_str.find ('[')+1: type_str.find (']')]
+                        options = options.split (',')
+                        options = [o.strip () for o in options]
+                    else:
+                        options = []
+                    options = [default, 'Path to file'] + options
                     help.text += '{' + ';'.join (['cb+bb'] + options) + '}'
                     entry.remove (type)
 
+        # Guess at a type of an entry if one isn't provided.
         for entry in findall (root, 'entry'):
             if entry.find ('type') is None:
                 type = Element ('type')
@@ -194,31 +235,51 @@ class CmtScanner (InputParameterScanner):
                 warn ('TYPE tag not present. Using %s for TYPE.' % type.text,
                       RuntimeWarning)
 
+        # Convert type names to proper CMT type names.
         for type in findall (root, 'type'):
             type.text = fix_type (type.text)
 
+        # Set up ranges for an entry, if applicable. Convert the string "inf"
+        # to appropriate float or int maximums (or mininums for "-inf").
         for entry in findall (root, 'entry'):
-            range = entry.find ('range')
+            (type, range) = (entry.find ('type'), entry.find ('range'))
+
+            type_str = type.text.strip ().lower ()
+            if type_str == 'string':
+                continue
+
+            if type_str not in type_to_inf.keys ():
+                warn ('TYPE does not have a default range (%s).' % type_str,
+                     RuntimeWarning)
+                continue
+
             try:
                 limits = range.text.split (',')
             except AttributeError:
-                range = Element ('range')
                 limits = ['-inf', 'inf']
-                warn ('LIMITS tag not present. Using -inf, inf')
 
-            type = entry.find ('type')
-            if type.text not in type_to_inf.keys ():
-                continue
+                range = Element ('range')
+                entry.append (range)
+                warn ('LIMITS tag not present. Using -inf, inf')
 
             for (i, tag) in enumerate (['min', 'max']):
                 e = Element (tag)
                 e.text = limits[i].strip ()
                 if e.text == 'inf':
-                    e.text = type_to_inf[type.text]
+                    e.text = type_to_inf[type_str]
                 elif e.text == '-inf':
-                    e.text = '-' + type_to_inf[type.text]
+                    e.text = '-' + type_to_inf[type_str]
                 range.append (e)
             range.text = ''
+
+        tabs = findall (root, 'tab')
+        names = [t.attrib['name'] for t in tabs]
+        tab_count = collections.Counter (names)
+        for tab in tab_count:
+            if tab_count[tab] > 1:
+                indices = [i for i, x in enumerate (names) if x == tab]
+                for i in indices[1:]:
+                    adopt_children (tabs[indices[0]], tabs[i])
 
     @staticmethod
     def check_required (root):
@@ -256,46 +317,139 @@ class CmtScanner (InputParameterScanner):
         return vars
 
     @staticmethod
-    def group_output_params (root):
+    def find_orphans (root, child_tag, parent_tag, attrs={}):
         parent_map = dict((c, p) for p in root.getiterator() for c in p)
 
-        #params = CmtScanner.output_params (root)
-        params = findall (root, 'param', dict (arg='out'))
+        children = findall (root, child_tag, attrs=attrs)
 
         orphans = []
-        groups = set ()
-        for var in params:
-            parent = parent_map[var]
-            if parent.tag != 'group':
-                orphans.append (var)
-            else:
-                groups.add (parent)
-                try:
-                    parent_map[parent].remove (parent)
-                except (KeyError, ValueError):
-                    pass
+        parents = set ()
+        for child in children:
+            parent = parent_map[child]
+            if parent.tag != parent_tag:
+                orphans.append (child)
+            #else:
+            #    parents.add (parent)
+            #    try:
+            #        parent_map[parent].remove (parent)
+            #    except (KeyError, ValueError):
+            #        pass
+
+        return orphans
+
+    @staticmethod
+    def adopt_orphans (root, orphans, parent_tag, parent_name):
 
         if len (orphans) > 0:
-            group_names = [g.attrib['name'] for g in groups]
-            group_name = 'Output'
+            parent_map = dict((c, p) for p in root.getiterator() for c in p)
+
+            existing_parents = findall (root, parent_tag)
+            existing_parent_names = [g.attrib['name'] for g in existing_parents]
+
+            unique_parent_name = parent_name
             i = 0
-            while (not group_name in group_names):
-                group_name = 'Output %d' % i
+            while (unique_parent_name in existing_parent_names):
+                unique_parent_name = '%s %d' % (parent_name, i)
                 i += 1
 
-            group = Element ('group')
-            group.attrib['name'] = group_name
+            parent = Element (parent_tag)
+            parent.attrib['name'] = unique_parent_name
             for orphan in orphans:
                 parent_map[orphan].remove (orphan)
-                group.append (orphan)
-            groups.add (group)
+                parent.append (orphan)
+        else:
+            parent = None
 
-        return list (groups)
+        return parent
 
+    @staticmethod
+    def find_all_parents (root, child_tag, attrs={}):
+        parents = set ()
+
+        parent_map = dict((c, p) for p in root.getiterator() for c in p)
+        children = findall (root, child_tag, attrs=attrs)
+        for child in children:
+            parent = parent_map[child]
+            parents.add (parent)
+            try:
+                parent_map[parent].remove (parent)
+            except (KeyError, ValueError):
+                pass
+        return list (parents)
+
+    @staticmethod
+    def group_file_params (roots):
+        # Look for file tags and put them into a single group.
+        #files_groups = []
+
+        parent = Element ('group')
+        parent.attrib['name'] = 'Input Files'
+
+        for root in roots:
+            parent_map = dict((c, p) for p in root.getiterator() for c in p)
+
+            files = findall (root, 'file')
+            if len (files) > 0:
+                parent.extend (files)
+
+            # NOTE: Remove children after iteration. Not doing this can cause odd behavior
+            for file in files:
+                orphans = []
+                for child in iter (file):
+                    if child.tag not in ['brief', 'description', 'default']:
+                        orphans.append (child)
+
+                for orphan in orphans:
+                    file.remove (orphan)
+                parent_map[file].extend (orphans)
+
+        if len (list (parent)) > 0:
+            return [parent]
+        else:
+            return []
+
+    @staticmethod
+    def group_output_params (root):
+        output_groups = []
+
+        orphans = CmtScanner.find_orphans (root, 'param', 'group', dict (arg='out'))
+        if len (orphans) > 0:
+            new_parent = CmtScanner.adopt_orphans (root, orphans, 'group', 'Output')
+            output_groups.append (new_parent)
+
+        output_groups.extend (CmtScanner.find_all_parents (root, 'param', dict (arg='out')))
+
+        return output_groups
     @staticmethod
     def set_namespace (root, tag, ns, attrs={}):
         for node in findall (root, tag, attrs):
             node.attrib['name'] = os.path.join (ns, node.attrib['name'])
+
+    @staticmethod
+    def translate_files_group (root, md):
+        ns = '/%s/Input/Var/%s/' % (md['model_short_name'], root.attrib['name'])
+
+        CmtScanner.translate (root)
+
+        entries = findall (root, 'entry')
+
+        for entry in entries:
+            default = entry.find ('default')
+            #if not default:
+            if default is None:
+                default = Element ('default')
+                default.text = '${SimulationName}'
+                entry.append (default)
+            default_file = default.text
+            default.text = 'GUI'
+
+            help = entry.find ('help_brief')
+            help.text += '{' + ';'.join (['cb', 'GUI', 'Path to file']) + '}'
+
+            replace = Element ('replace')
+            replace.attrib['string'] = 'GUI'
+            replace.text = '<![CDATA[<html>&#36;%s</html>]]>' % default_file
+            entry.append (replace)
 
     @staticmethod
     def translate_output_group (root, md):
@@ -334,6 +488,9 @@ class CmtScanner (InputParameterScanner):
 
         #self.set_namespace (root, 'param',
         #                    '/%s/Input/Var/' % md['model_short_name'])
+        files_groups = self.group_file_params (root.findall ('model'))
+        for node in files_groups:
+            self.translate_files_group (node, md)
 
         output_groups = self.group_output_params (root.find ('model'))
         for node in output_groups:
@@ -348,7 +505,7 @@ class CmtScanner (InputParameterScanner):
 
         dialog = Element ('dialog')
         tabs = findall (root, 'tab')
-        dialog.extend (pre + tabs + output_groups + post)
+        dialog.extend (pre + files_groups + tabs + output_groups + post)
 
         self.parent[0] = dialog
 

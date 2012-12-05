@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+import sys
 from xml.etree.ElementTree import Element, tostring
 
 from plex import *
@@ -40,6 +41,8 @@ def _findall (parent, tag, attrs={}):
     return matches
 
 def findall (parent, tag, attrs={}):
+    # Find all nodes that have a given tag and set of attributes.
+
     matches = _findall (parent, tag, attrs=attrs)
     if parent.tag == tag:
         try:
@@ -53,6 +56,35 @@ def findall (parent, tag, attrs={}):
     assert (len (matches) == len (set (matches)))
 
     return matches
+
+def find_with_attrib (parent, tag, attribs = {}):
+    # Find the first child of a parent that has a given tag and
+    # a given set of attributes. Returns an element instance or
+    # None.
+
+    for match in parent.findall (tag):
+        if node_has_attributes (match, attribs):
+            return match
+
+    return None
+
+def node_has_attributes (node, attribs, exclusive=False):
+    # Does a node's attributes match those of a given dictionary? If 
+    # the exclusive keyword is True, the node's attributes must be
+    # limited to those of the given attriutes.
+    if exclusive and set (node.attrib.keys ()) != set (attribs.keys ()):
+        return False
+
+    try:
+        for (k, v) in attribs.items ():
+            if node.attrib[k] != v:
+                raise MatchError
+    except (KeyError, MatchError):
+        pass
+    else:
+        return True
+
+    return False
 
 valid_parents = set ([
     'root', 'param', 'file', 'group', 'model', 'document'
@@ -123,6 +155,52 @@ verbatim = (Str ('@verbatim') +
 not_annotation = Rep1 (AnyBut ('#\n'))
 annotation = Bol + Str ('#')
 
+def _adopt_children (parent, foster_parent):
+    adopted = []
+    for child in foster_parent:
+        match = parent_has_child (parent, child)
+        if match is None:
+            adopted.append ((child, foster_parent, parent))
+        else:
+            adopted.extend (_adopt_children (match, child))
+    #parent.extend (adopted)
+
+    return adopted
+
+def adopt_children (parent, foster_parent):
+    # Add children as elements of parent. If a parent element matches
+    # one contained in children, that element will adopt the children
+    # of the child element.
+    if not isinstance (foster_parent, Element):
+        raise TypeError ('A single Element must be given as a foster parent.')
+
+    adopted = _adopt_children (parent, foster_parent)
+
+    if len (adopted) > 0:
+        for (o, p, np) in adopted:
+            p.remove (o)
+
+        for (o, p, np) in adopted:
+            np.append (o)
+
+def compare_nodes (node1, node2, keys=[]):
+    if node1.tag == node2.tag:
+        for key in keys:
+            try:
+                if node1.attrib[key] != node2.attrib[key]:
+                    return False
+            except KeyError:
+                return False
+    else:
+        return False
+    return True
+
+def parent_has_child (parent, child):
+    for my_child in iter (parent):
+        if compare_nodes (my_child, child, keys=['name']):
+            return my_child
+    return None
+
 class InputParameterScanner (object, Scanner):
     def __init__ (self, file):
         Scanner.__init__ (self, self.lexicon, file)
@@ -145,6 +223,13 @@ class InputParameterScanner (object, Scanner):
             return param.find ('default').text
         except ValueError:
             return None
+
+    def update (self, that):
+        self.root ().extend (list (that.root ()))
+
+    def find (self, tag):
+        tags = findall (self.root (), tag)
+        return [t.attrib['name'] for t in tags]
 
     def as_dict (self):
         d = {}
@@ -326,7 +411,7 @@ class InputParameterScanner (object, Scanner):
     @staticmethod
     def construct_element (cmd, args, text):
         element = Element (cmd)
-        if cmd == 'param':
+        if cmd in ['param', 'file']:
             try:
                 (text, default) = text.split ('=')
                 e = Element ('default')
