@@ -99,17 +99,21 @@ Print another set of fields...
 import os
 import sys
 from string import Template
+from collections import namedtuple
 
 import numpy
 
 from cmt.grids import DimensionError, NonUniformGridError, NonStructuredGridError
 from cmt.grids import RasterField, StructuredField, UnstructuredField
+from cmt.verbose import CMTLogger
 import cmt.vtk
 import cmt.bov
 
 from cmt.bov import Database as BovDatabase
 from cmt.vtk import Database as VtkDatabase
 from cmt.nc import Database as NcDatabase
+
+logger = CMTLogger ('printqueue', 20)
 
 class Error (Exception):
     pass
@@ -158,11 +162,39 @@ class FieldCollection (object):
     def get_grid_values (self, name):
         return self._fields[name].get_field (name)
 
+def fix_unknown_shape (shape, size):
+    """
+    >>> print fix_unknown_shape ((4, 3), 12)
+    [4 3]
+    >>> print fix_unknown_shape ((4, -1), 12)
+    [4 3]
+    """
+    new_shape = np.array (shape, dtype=np.int64)
+
+    if -1 in new_shape:
+        known_dims = [dim_len for dim_len in shape if dim_len>0]
+
+        # Allow only 1 unknown dimension, and ensure the size of the unknown
+        # dimension is an integer.
+        assert (len (known_dims) == len (shape)-1)
+        assert (size % np.prod (known_dims) == 0)
+
+        new_shape[new_shape<=0] = size / np.prod (known_dims)
+
+    return new_shape
+
+#PrintItem = namedtuple ('PrintItem', 'db field')
+class PrintItem (object):
+    def __init__ (self, db, field):
+        self.db = db
+        self.field = field
+
+
 class PrintQueue (object):
     """A print queue for a collection of fields
     """
-    #def __init__ (self, fields, template='${var}_${count}', format='vtk', prefix='.'):
-    def __init__ (self, fields, template='${var}', format='vtk', prefix='.'):
+    def __init__ (self, fields, template='${var}', format='vtk',
+                  prefix='.'):
         """
         :param fields: A collection of fields
         :type fields: Field-collection
@@ -184,15 +216,143 @@ class PrintQueue (object):
         self._format = format
         self._suffix = '.vtu'
         #self._printer = _printers[self._format]
-        print 'PQ: Getting printer for %s' % self._format
+        logger.debug ('Getting printer for %s' % self._format)
         try:
             self._printer = format_to_printer (self._format)
         except FormatError:
             self._printer = format_to_printer ('vtk')
             self._format = 'vtk'
-        print 'PQ: Printer format is %s' % self._format
+        logger.debug ('Printer format is %s' % self._format)
 
         self._queue = []
+
+    def _construct_print_field (self, var_name):
+        logger.debug ('calling get_grid_values')
+        try:
+            data = self._fields.get_grid_values (var_name)
+        except Exception as e:
+            logger.error ('Unable to get values (%s)' % e)
+
+        logger.debug ('called get_grid_values')
+        logger.debug ('data shape is %s' % np.array (data.shape))
+        logger.debug ('data is %s' % data)
+
+        try:
+            logger.debug ('Checking if grid is raster...')
+
+            shape = self._fields.get_grid_shape (var_name)
+            if shape is None:
+                raise NonStructuredGridError
+            logger.debug ('Shape is %s' % shape)
+
+            if len (shape) == 1 and shape[0] == 1:
+                spacing = np.array ([1.])
+            else:
+                spacing = self._fields.get_grid_spacing (var_name)
+                if spacing is None:
+                    raise NonUniformGridError
+            logger.debug ('Spacing is %s' % spacing)
+
+            if len (shape) == 1 and shape[0] == 1:
+                origin = np.array ([0.])
+            else:
+                try:
+                    origin = self._fields.get_grid_origin (var_name)
+                except AttributeError:
+                    origin = self._fields.get_grid_lower_left (var_name)
+
+            logger.debug ('Shape is %s' % shape)
+            logger.debug ('Spacing is %s' % spacing)
+            logger.debug ('Origin is %s' % origin)
+
+            shape = fix_unknown_shape (shape, data.size)
+            logger.debug ('Shape is %s' % shape)
+
+            try:
+                field = RasterField (shape, spacing, origin, indexing='ij')
+            except Exception as e:
+                logger.error ('There was an error: %s' % e)
+        except NonUniformGridError:
+            logger.debug ('Checking if grid is structured...')
+            shape = self._fields.get_grid_shape (var_name)
+            logger.debug ('Shape is %s' % shape)
+            x = self._fields.get_grid_x (var_name)
+            y = self._fields.get_grid_y (var_name)
+            field = StructuredField (x, y, shape)
+        except NonStructuredGridError:
+            logger.debug ('Checking if grid is unstructured...')
+            x = self._fields.get_grid_x (var_name)
+            y = self._fields.get_grid_y (var_name)
+            c = self._fields.get_grid_connectivity (var_name)
+            o = self._fields.get_grid_offset (var_name)
+            field = UnstructuredField (x, y, c, o)
+
+        logger.debug ('Adding variable %s to field...' % var_name)
+        try:
+            try:
+                field.add_field (var_name, data, centering='zonal')
+            except DimensionError:
+                field.add_field (var_name, data, centering='point')
+        except Exception as e:
+            logger.error ('Unable to add varaible to field (%s)' % e)
+        else:
+            logger.debug ('Variable added')
+
+        return field
+
+    def _reconstruct_print_field (self, item):
+        """
+        Reconstruct a PrintItem's field with new data. If the size of the
+        new data no longer matches the number of points or cell in the grid,
+        then reconstruct the entire field as it has changed size.
+        """
+        logger.debug ('var names are %s', ', '.join (item.field.keys ()))
+        for var_name in item.field.keys ():
+            logger.debug ('resetting variable %s' % var_name)
+            data = self._fields.get_grid_values (var_name)
+
+            if data.size == item.field.get_point_count ():
+                item.field.add_field (var_name, data, centering='point')
+            elif data.size == item.field.get_cell_count ():
+                item.field.add_field (var_name, data, centering='zonal')
+            else:
+                logger.debug ('mesh size has changed')
+                logger.debug ('%d != %d or %d' % (data.size, item.field.get_point_count (), item.field.get_cell_count ()))
+                item.field = self._construct_print_field (var_name)
+                logger.debug ('new var names are %s', ', '.join (item.field.keys ()))
+                return
+        return
+
+    def _construct_file_name (self, var_name, template=None, format=None, prefix=None):
+        logger.debug ('var is %s' % var_name)
+        logger.debug ('template is %s' % template)
+        if template is None:
+            file = self._template.safe_substitute (var=var_name)
+        else:
+            file = Template (template).safe_substitute (var=var_name)
+        logger.debug ('file name is %s' % file)
+
+        if format is None:
+            format = self._format
+
+        (root, ext) = os.path.splitext (file)
+        if len (ext) == 0:
+            ext = format_to_ext (format, default='')
+        logger.debug ('file extension is %s' % ext)
+        logger.debug ('file root is %s' % root)
+
+        logger.debug ('prefix is %s' % prefix)
+        logger.debug ('_prefix is %s' % self._prefix)
+        if not os.path.isabs (file):
+            try:
+                file = os.path.join (prefix, root+ext)
+            except (AttributeError, TypeError):
+                file = os.path.join (self._prefix, root+ext)
+        else:
+            file = root+ext
+        logger.debug ('file name is %s' % file)
+
+        return file
 
     def push (self, var_name, template=None, format=None, prefix=None):
         """ Push a variable onto the print queue.
@@ -201,86 +361,40 @@ class PrintQueue (object):
         :type var_name: string
 
         """
-        print 'PQ: Pushing var %s' % var_name
-        try:
-            print 'PQ: Raster?'
-            shape = self._fields.get_grid_shape (var_name)
-            print 'PQ: Shape is ', shape
-            if shape is None:
-                raise NonStructuredGridError
-            spacing = self._fields.get_grid_spacing (var_name)
-            print 'PQ: Spacing is ', spacing
-            if spacing is None:
-                raise NonUniformGridError
-            try:
-                origin = self._fields.get_grid_origin (var_name)
-            except AttributeError:
-                origin = self._fields.get_grid_lower_left (var_name)
-            print 'PQ: Shape is ', shape
-            print 'PQ: Spacing is ', spacing
-            print 'PQ: Origin is ', origin
-            try:
-                field = RasterField (shape, spacing, origin, indexing='ij')
-            except Exception as e:
-                print 'PQ: There was an error: %s' % e
-            print 'PQ: Field is ', field
-        except NonUniformGridError:
-            print 'PQ: Structured?'
-            shape = self._fields.get_grid_shape (var_name)
-            print 'PQ: Shape is ', shape
-            x = self._fields.get_grid_x (var_name)
-            y = self._fields.get_grid_y (var_name)
-            field = StructuredField (x, y, shape)
-        except NonStructuredGridError:
-            print 'PQ: Untructured?'
-            x = self._fields.get_grid_x (var_name)
-            print 'PQ: x is ', x
-            y = self._fields.get_grid_y (var_name)
-            print 'PQ: y is ', y
-            c = self._fields.get_grid_connectivity (var_name)
-            print 'PQ: c is ', c
-            o = self._fields.get_grid_offset (var_name)
-            print 'PQ: o is ', o
-            field = UnstructuredField (x, y, c, o)
-            print 'PQ: field is', field
-
-        #x = self._fields.get_grid_x (var_name)
-        #y = self._fields.get_grid_y (var_name)
-        #c = self._fields.get_grid_connectivity (var_name)
-        #o = self._fields.get_grid_offset (var_name)
-        #field = UnstructuredField (x, y, c, o)
-
-        data = self._fields.get_grid_values (var_name)
-        print 'PQ: data is', data
-        try:
-            field.add_field (var_name, data, centering='zonal')
-        except DimensionError:
-            field.add_field (var_name, data, centering='point')
-
-        if template is not None:
-            file = Template (template).safe_substitute (var=var_name)
-        else:
-            file = self._template.safe_substitute (var=var_name)
+        logger.debug ('Pushing var %s onto queue' % var_name)
 
         if format is None:
             format = self._format
-        (root, ext) = os.path.splitext (file)
-        if len (ext)==0:
-            ext = format_to_ext (format, default='')
 
-        if not os.path.isabs (file):
-            try:
-                file = os.path.join (prefix, root+ext)
-            except (AttributeError, TypeError):
-                file = os.path.join (self._prefix, root+ext)
-        else:
-            file = root+ext
+        logger.debug ('Constructing file name')
+        file = self._construct_file_name (var_name, template, format, prefix)
+        logger.debug ('File name is %s' % file)
+
+        #if template is not None:
+        #    file = Template (template).safe_substitute (var=var_name)
+        #else:
+        #    file = self._template.safe_substitute (var=var_name)
+
+        #if format is None:
+        #    format = self._format
+        #(root, ext) = os.path.splitext (file)
+        #if len (ext)==0:
+        #    ext = format_to_ext (format, default='')
+
+        #if not os.path.isabs (file):
+        #    try:
+        #        file = os.path.join (prefix, root+ext)
+        #    except (AttributeError, TypeError):
+        #        file = os.path.join (self._prefix, root+ext)
+        #else:
+        #    file = root+ext
 
         try:
             printer = format_to_printer (format)
         except FormatError:
             printer = format_to_printer (self._format)
         db = printer ()
+        logger.debug ('Created database')
 
         #try:
         #    db = _printers[format] ()
@@ -294,9 +408,14 @@ class PrintQueue (object):
             pass
         finally:
             db.open (file, var_name)
+        logger.debug ('Opened database')
 
-        #self._queue.append ((field, file))
-        self._queue.append ((db, field))
+        field = self._construct_print_field (var_name)
+        logger.debug ('Constructed print field')
+
+        #self._queue.append ((db, field))
+        self._queue.append (PrintItem (db, field))
+        logger.debug ('Added to queue')
 
     def print_all (self, **kwargs):
         """ Print each variable in the queue
@@ -305,23 +424,35 @@ class PrintQueue (object):
         #    file = Template (file).substitute (count=self._count)
         #    self._printer (field, file, **kwargs)
         #self._count += 1
-        print 'PQ: printing each var in database'
-        for (db, field) in self._queue:
-            print 'PQ: printing var'
-            print 'PQ: field is ', field
-            print 'PQ: db is ', db
+        logger.debug ('printing each var in database')
+        #for (db, field) in self._queue:
+        for item in self._queue:
+            logger.debug ('printing var')
 
-            for var_name in field.keys ():
-                print 'PQ: resetting variable %s' % var_name
-                data = self._fields.get_grid_values (var_name)
-                try:
-                    field.add_field (var_name, data, centering='zonal')
-                except DimensionError:
-                    field.add_field (var_name, data, centering='point')
+            #for var_name in item.field.keys ():
+            #    print 'PQ: resetting variable %s' % var_name
+            #    data = self._fields.get_grid_values (var_name)
 
-            print 'PQ: writing field to file'
-            db.write (field)
-        print 'PQ: done printing each var in database'
+            #    if data.size == item.field.get_point_count ():
+            #        field.add_field (var_name, data, centering='point')
+            #    elif data.size == item.field.get_cell_count ():
+            #        field.add_field (var_name, data, centering='zonal')
+            #    else:
+            #        item.field = self._construct_field (var_name)
+
+            #    try:
+            #        field.add_field (var_name, data, centering='zonal')
+            #    except DimensionError:
+            #        field.add_field (var_name, data, centering='point')
+
+            self._reconstruct_print_field (item)
+            logger.debug ('writing field to file')
+            try:
+                item.db.write (item.field)
+            except Exception as e:
+                logger.error ('error writing field to file (%s)' % e)
+        logger.debug ('done printing each var in database')
+
     def close (self):
         pass
 
@@ -330,14 +461,9 @@ _TIMER_EPS = np.finfo (np.float64).eps
 
 class TimedPrintQueue (PrintQueue):
     def __init__ (self, *args, **kwargs):
-        try:
-            self._interval = kwargs['interval']
-        except KeyError:
-            self._interval = 0.
-        else:
-            del kwargs['interval']
-
+        self._interval = kwargs.pop ('interval', 0.)
         self._next = self._interval
+
         super (TimedPrintQueue, self).__init__ (*args, **kwargs)
 
     def push (self, var_name, **kwargs):
@@ -351,15 +477,15 @@ class TimedPrintQueue (PrintQueue):
         super (TimedPrintQueue, self).push (var_name, **kwargs)
 
     def print_all (self, time, **kwargs):
-        print 'TPQ: Printing at %f' % time
+        logger.debug ('Printing at %f' % time)
         if time>=self._next:
-            print 'TPQ: Old print time %f' % self._next
+            logger.debug ('Old print time %f' % self._next)
             super (TimedPrintQueue, self).print_all (**kwargs)
             try:
                 self._next = time - time%self._interval + self._interval
             except ZeroDivisionError:
                 self._next = time + _TIMER_EPS
-            print 'TPQ: New print time %f' % self._next
+            logger.debug ('New print time %f' % self._next)
 
     def next_print_time (self):
         return self._next
@@ -446,6 +572,7 @@ there is no counter in the file name.
         :type globs: Dictionary-like
 
         """
+        logger.debug ('creating timed print queue')
         format = globs.get ('FileFormat', 'vtk')
         prefix = globs.get ('Dir', '.')
         template = '${var}'
@@ -457,9 +584,12 @@ there is no counter in the file name.
         self._globs = globs
         self._fields = fields
         self._vars = []
+        logger.debug ('prefix is %s' % prefix)
+        logger.debug ('created timed print queue')
 
-        #super (CmiTimedPrintQueue, self).__init__ (fields, format=format,
-        #                                           prefix=prefix, template=template)
+        super (CmiTimedPrintQueue, self).__init__ (
+            fields, format=format, prefix=prefix, template=template)
+
     def push (self, locals):
         # Look for variables in this namespace. The namespace is 'Var', so
         # look for keys that look like Var/<var_name>
@@ -468,66 +598,68 @@ there is no counter in the file name.
             (head, tail) = ns.split (key)
             if head=='Var':
                 vars.append (tail)
-        print 'PQ: found vars: %s' % ','.join (vars)
+        for var in vars:
+            logger.debug ('found vars: %s' % var)
 
-        # Look for variables to print. Look at the values for Var/<var_name>
-        # keys. If the value doesn't indicate not to print, then use the
-        # value as a file name.
+        # Look for variables to print. Look at the values for
+        # Var/<var_name> keys. If the value doesn't indicate not to print,
+        # then use the value as a file name.
         vars_to_print = []
         for var in vars:
             file = locals[ns.join ('Var', var)]
-            print 'PQ: The var %s' % ns.join ('Var', var) 
-            print 'PQ: Is this a file %s' % file
             if file.lower () not in ['off', 'no', 'false']:
                 vars_to_print.append (var)
-        print 'PQ: found vars to print: %s' % ','.join (vars_to_print)
+        for var in vars_to_print:
+            logger.debug ('found var to print: %s' % var)
 
-        # Variable specific attributes. Use global attributes if specific ones are
-        # not found.
+        # Variable specific attributes. Use global attributes if specific
+        # ones are not found.
         template = '${var}'
-        prefix = locals.get ('Dir', None)
-        format = locals.get ('FileFormat', None)
         base = locals.get ('SimulationName', '')
         if len (base)>0:
             template = base + '_' + template
-        print 'PQ: found vars template: %s' % template
+        logger.debug ('found vars template: %s' % template)
 
-        interval = locals.get ('Interval', 0.)
-        print 'PQ: found interval: %s' % interval
-        print 'PQ: found format: %s' % format
-        print 'PQ: found prefix: %s' % prefix
+        if len (vars_to_print) == 0:
+            locals['interval'] = sys.float_info.max
+            logger.info ('No variables to print.')
 
-        # Add each variable to print to the queue.
-        #for var in vars_to_print:
-        #    super (CmiTimedPrintQueue, self).push (var, template=template, format=format,
-        #                                           prefix=prefix)
+        # Translate keys to kwds for TimedPrintQueue.__init__
+        kwds = dict (template=template)
+        for (kwd, key) in zip (['format', 'prefix', 'interval'],
+                               ['FileFormat', 'Dir', 'Interval']):
+            try:
+                kwds[kwd] = locals[key]
+            except KeyError:
+                pass
 
         try:
-            q = TimedPrintQueue (self._fields, format=format, prefix=prefix,
-                                 template=template, interval=interval)
+            q = TimedPrintQueue (self._fields, **kwds)
         except Exception as e:
-            print e
-        print 'PQ: created time print queue'
+            logger.error ('%s' % e)
+        logger.debug ('created time print queue')
 
         for var in vars_to_print:
-            print 'PQ: push var: %s' % var
-            q.push (var, format=format, prefix=prefix, template=template)
-        print 'PQ: append vars'
+            logger.debug ('Pushing var onto queue: %s' % var)
+            q.push (var)
         self._vars.append (q)
-        print 'PQ: done'
 
     def add_files (self, var_prefix):
         locals = ns.extract_base (self._globs, var_prefix)
         self.push (locals)
 
     def print_all (self, time, **kwargs):
-        print 'PQ: Printing everything'
+        logger.debug ('Printing everything')
         for q in self._vars:
-            print 'PQ: Printing at %f' % time
+            logger.debug ('Printing at %f' % time)
             q.print_all (time)
 
     def next_print_time (self):
-        return min ([q.next_print_time () for q in self._vars])
+        if self._vars:
+            return min ([q.next_print_time () for q in self._vars])
+        else:
+            return sys.float_info.max
+            #return None
 
 class CmiPrintQueue (object):
     def __init__ (self, fields, globs={}):
