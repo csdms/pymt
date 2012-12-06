@@ -12,7 +12,8 @@ def main ():
 
     parser = argparse.ArgumentParser (description='Parse CSDMS parameter annotation')
     parser.add_argument ('file', type=argparse.FileType ('r'), nargs='+')
-    parser.add_argument ('--format', choices=['raw', 'cmt', 'fill'], default='raw',
+    parser.add_argument ('-o', '--output', type=argparse.FileType ('w'), default='-')
+    parser.add_argument ('--format', choices=['raw', 'cmt'], default='raw',
                          help='Output format')
 
     args = parser.parse_args ()
@@ -32,13 +33,7 @@ def main ():
     for scanner in scanners[1:]:
         root.update (scanner)
 
-    if args.format == 'fill':
-        try:
-            print (root.fill_contents ())
-        except MissingKeyError as e:
-            print ('ERROR: Missing key for %s in prm file.' % e, sys.stderr)
-    else:
-        print (root.to_xml ())
+    print (root.to_xml (), file=args.output)
 
 if __name__ == '__main__':
     main ()
