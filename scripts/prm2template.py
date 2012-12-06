@@ -27,7 +27,7 @@ def main ():
                 scanner.scan_file ()
 
             out_file = scanner.get_text ('file', 'default',
-                                         default = file + '.in')
+                                         default=file) + '.in'
 
             print ('Writing template file %s...' % out_file)
             try:
