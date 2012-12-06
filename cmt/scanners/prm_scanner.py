@@ -140,7 +140,6 @@ tq_string = (
 stringlit = sq_string | dq_string | tq_string
 
 command_start = Bol + Str ('#')
-#command = command_start + Rep (indentation) + key + Rep (AnyBut ('\n'))
 key = Str ('@') + name
 command_arg = Str ('[') + name + Str (']')
 command_text = Rep (AnyBut ('\n')) + lineterm
@@ -151,7 +150,6 @@ verbatim = (Str ('@verbatim') +
             Rep(AnyBut('\\\n"') | (Str("\\") + AnyChar)) +
             Rep (indentation) + command)
 
-#not_annotation = Bol + AnyBut ('#') + Rep (AnyBut ('\n')) + lineterm
 not_annotation = Rep1 (AnyBut ('#\n'))
 annotation = Bol + Str ('#')
 
@@ -205,7 +203,6 @@ class InputParameterScanner (object, Scanner):
     def __init__ (self, file):
         Scanner.__init__ (self, self.lexicon, file)
         self.indentation_stack = [0]
-        #self.begin ('indent')
         self.begin ('')
         self.parent = [Element ('document')]
         self._last_element = self.parent[0]
@@ -231,6 +228,13 @@ class InputParameterScanner (object, Scanner):
         tags = findall (self.root (), tag)
         return [t.attrib['name'] for t in tags]
 
+    def get_text (self, tag, attrib, default=None):
+        tags = findall (self.root (), tag)
+        try:
+            return tags[0].find (attrib).text
+        except IndexError:
+            return default
+
     def as_dict (self):
         d = {}
         params = findall (self.root (), 'param')
@@ -243,7 +247,8 @@ class InputParameterScanner (object, Scanner):
         return d
 
     def contents (self):
-        return os.linesep.join (self._contents)
+        #return os.linesep.join (self._contents)
+        return ''.join (self._contents)
 
     def fill_contents (self):
         from string import Template
@@ -256,6 +261,8 @@ class InputParameterScanner (object, Scanner):
         return self.indentation_stack[-1]
 
     def newline_action (self, text):
+        #self._contents.append (os.linesep)
+        self._contents.append (text)
         return 'newline'
 
     def indentation_action (self, text):
@@ -341,7 +348,6 @@ class InputParameterScanner (object, Scanner):
             self.indentation_action (text[:indent])
             self.command_action (text[indent:])
     def begin_annotation (self, text):
-        #print 'start annotation: %s' % text
         self.begin ('annotation')
 
     def command_action (self, text):
@@ -381,30 +387,9 @@ class InputParameterScanner (object, Scanner):
         self._current_args = []
 
 
-    def command_action_old (self, text):
-        start_of_command = text.find ('@')
-        #(cmd, args) = text[start_of_command+1:].split (None, 1)
-        #self.indentation_action (text[1:start_of_command])
-        #print 'Indent is', start_of_command-1
-
-        (cmd, args) = text.split (None, 1)
-        cmd = cmd[1:]
-
-        if cmd not in valid_keys:
-            raise BadKeyError (cmd)
-
-        self.begin ('')
-        self.produce (cmd.upper (), ' '.join (args.split ()))
-
-        element = self.construct_element (cmd, args)
-
-        self.have_child (element)
-        self._last_element = element
-
     def scan_file (self):
         while 1:
             token, text = self.read ()
-            #print token, text
             if token is None:
                 break
 
@@ -430,74 +415,22 @@ class InputParameterScanner (object, Scanner):
         return element
 
     def not_annotation_action (self, text):
-        #print 'not annotation: >%s<' % text.strip ()
-        self._contents.append (text.strip ())
+        self._contents.append (text)
         self.begin ('')
 
     def blank_annotation_action (self, text):
         self.begin ('')
 
-    lex = Lexicon ([
-        (name, 'name'),
-        (number, 'number'),
-        (stringlit, 'string'),
-        (punctuation, TEXT),
-        (lineterm, newline_action),
-        (comment, IGNORE),
-        (spaces, IGNORE),
-        (escaped_newline, IGNORE),
-        #(verbatim, verbatim_action),
-        State ('indent', [
-            (blank_line, IGNORE),
-            (indentation, indentation_action),
-        ]),
-        (multiline, begin_multiline),
-        State ('multiline', [
-            (Eof | Empty | (Rep (indentation) + command), end_multiline),
-            (Rep1 (name | punctuation | number | indentation) + Str ('\n'), in_multiline),
-        ]),
-        (command, command_action),
-    ])
-
     lexicon = Lexicon ([
-        #(name, 'name'),
-        #(number, 'number'),
-        #(stringlit, 'string'),
-        #(punctuation, TEXT),
-        #(comment, IGNORE),
-        #(spaces, IGNORE),
-        #(escaped_newline, IGNORE),
-        #(verbatim, verbatim_action),
         (annotation, begin_annotation),
         (not_annotation, not_annotation_action),
         (lineterm, newline_action),
-        #State ('indent', [
-        #    (blank_line, IGNORE),
-        #    (indentation, indentation_action),
-        #]),
-        #(multiline, begin_multiline),
-        #State ('multiline', [
-        #    (Eof | Empty | (Rep (indentation) + command), end_multiline),
-        #    (Rep1 (name | punctuation | number | indentation) + Str ('\n'), in_multiline),
-        #]),
-        #(command, command_action),
+        (blank_line, newline_action),
 
         State ('annotation', [
-            #(name, 'name'),
-            #(number, 'number'),
-            #(stringlit, 'string'),
-            #(punctuation, TEXT),
-            #(lineterm, newline_action),
-            #(comment, IGNORE),
-            #(spaces, IGNORE),
-            #(escaped_newline, IGNORE),
             (indentation, indentation_action),
             (key, command_action),
-            #(command_arg, command_args_action),
-            #(command_text, command_text_action),
             (blank_line, blank_annotation_action),
-            #(not_annotation, not_annotation_action),
-            #(lineterm, newline_action),
         ]),
 
         State ('annotation_arg', [
@@ -508,7 +441,5 @@ class InputParameterScanner (object, Scanner):
         State ('annotation_text', [
             (command_text, command_text_action),
         ]),
-
-        (blank_line, IGNORE),
     ])
 
