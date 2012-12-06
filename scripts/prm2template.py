@@ -26,10 +26,8 @@ def main ():
                 scanner = InputParameterScanner (f)
                 scanner.scan_file ()
 
-            out_file = scanner.find ('file')
-
-            assert (len (out_file) <= 1)
-            out_file = out_file[0] + '.in'
+            out_file = scanner.get_text ('file', 'default',
+                                         default = file + '.in')
 
             print ('Writing template file %s...' % out_file)
             try:
