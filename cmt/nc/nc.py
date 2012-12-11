@@ -326,6 +326,8 @@ Check the values from the file.
     set_variables (field, root, time=time, time_units=time_units,
                    time_reference=time_reference)
 
+    root.close ()
+
 def set_attributes (attrs, root):
     for (key, val) in attrs.items ():
         setattr (root, key, val)
