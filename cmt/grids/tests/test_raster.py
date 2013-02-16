@@ -73,7 +73,6 @@ class TestRasterGrid (unittest.TestCase):
         self.assert_spacing (grid, (1., ))
         self.assert_origin (grid, (0.5, ))
         self.assert_x (grid, [0.5, 1.5, 2.5, 3.5, 4.5])
-        self.assert_y (grid, [0., 0., 0., 0., 0.])
         self.assert_connectivity (grid, np.arange (grid.get_point_count ()))
         self.assert_offset (grid, np.arange (1, grid.get_point_count ()+1))
 
