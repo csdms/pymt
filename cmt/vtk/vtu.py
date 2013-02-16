@@ -33,7 +33,9 @@ class VtkUnstructuredWriter (GridField, VtkWriter):
       element ['Piece'] = VtkPieceElement (NumberOfPoints=self.get_point_count (),
                                            NumberOfCells=self.get_cell_count ())
 
-      element ['Points'] = VtkPointsElement (self.get_xyz (), append=data, encoding=encoding)
+      element ['Points'] = VtkPointsElement (
+          field.get_coordinate (range (field.get_dim_count ())),
+          append=data, encoding=encoding)
       #element ['PointData'] = VtkPointDataElement (self._point_values, append=data, encoding=encoding)
       element ['PointData'] = VtkPointDataElement (self.get_point_fields (), append=data, encoding=encoding)
       element ['Cells'] = VtkCellsElement (self.get_connectivity (), self.get_offset (),
@@ -112,7 +114,7 @@ def get_vtu_elements (field, format='ascii', encoding='ascii'):
     element ['Piece'] = VtkPieceElement (NumberOfPoints=field.get_point_count (),
                                            NumberOfCells=field.get_cell_count ())
 
-    coords = (field.get_x (), field.get_y (), field.get_z ())
+    coords = field.get_coordinate (range (field.get_dim_count ()))
     types = get_vtk_types (field)
 
     element ['Points'] = VtkPointsElement (coords, append=data, encoding=encoding)
