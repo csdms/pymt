@@ -54,8 +54,14 @@ class TestNcDatabase (unittest.TestCase):
 
         db.close ()
 
-        with self.open_nc_file (nc_file) as root:
-            self.assert_dimension_keys (root, ['nx', 'ny', 'nt'])
+        try:
+            root = self.open_nc_file (nc_file)
+        except Exception:
+            raise AssertionError ('%s: Could not open' % nc_file)
+        else:
+            self.assert_dimension_keys (root, ['n_points', 'n_cells',
+                                               'n_vertices', 'nx', 'ny',
+                                               'nt'])
             self.assert_var_names (root, ['Elevation', 'x', 'y', 't', 'dummy'])
 
             self.assert_dimension_size (root, 'nx', 3)
@@ -71,6 +77,8 @@ class TestNcDatabase (unittest.TestCase):
             self.assert_var_values (root, 'y', [0., 1.])
             self.assert_var_name (root, 'Elevation', 'Elevation')
             self.assert_var_units (root, 'Elevation', '-')
+        finally:
+            root.close ()
 
     def test_2d_changing_shape (self):
         #Create field and add some data to it that we will write to a
@@ -102,8 +110,14 @@ class TestNcDatabase (unittest.TestCase):
 
         db.close ()
 
-        with self.open_nc_file ('Temperature_time_series_0000.nc') as root:
-            self.assert_dimension_keys (root, ['nx', 'ny', 'nt'])
+        try:
+            root = self.open_nc_file ('Temperature_time_series_0000.nc')
+        except Exception:
+            raise AssertionError ('%s: Could not open' % nc_file)
+        else:
+            self.assert_dimension_keys (root, ['n_points', 'n_cells',
+                                               'n_vertices', 'nx', 'ny',
+                                               'nt'])
             self.assert_var_names (root, ['Temperature', 'x', 'y', 't', 'dummy'])
 
             self.assert_dimension_size (root, 'nx', 3)
@@ -118,6 +132,8 @@ class TestNcDatabase (unittest.TestCase):
             self.assert_var_values (root, 'y', [0., 1., 2.])
             self.assert_var_name (root, 'Temperature', 'Temperature')
             self.assert_var_units (root, 'Temperature', '-')
+        finally:
+            root.close ()
 
     def assert_dimension_size (self, root, dimension, expected_size):
         size = len (root.dimensions[dimension])
