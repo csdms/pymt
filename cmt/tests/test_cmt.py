@@ -9,6 +9,7 @@ from cmt.grids.tests.test_field import *
 from cmt.grids.tests.test_esmp import *
 from cmt.nc.tests.test_nc import *
 from cmt.nc.tests.test_database import *
+from cmt.vtk.tests.test_vtk import *
 from cmt.mappers.tests.test_mapper import *
 from cmt.scanners.tests.test_scanners import *
 from test_printqueue import *

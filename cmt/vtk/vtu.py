@@ -132,7 +132,7 @@ from cmt.vtk import InvalidFormatError, InvalidEncodingError
 from cmt.vtk import assemble_vtk_elements
 from cmt.vtk import valid_formats, valid_encodings
 
-def tofile (field, path, format='ascii', encoding='ascii'):
+def tofile (field, path, **kwds):
     """Write a field-like object to a VTK file.
 
     :param file: A field-like object
@@ -151,6 +151,9 @@ def tofile (field, path, format='ascii', encoding='ascii'):
         * get_point_fields
         
     """
+    format = kwds.get ('format', 'ascii')
+    encoding = kwds.get ('encoding', 'ascii')
+
     if format not in valid_formats:
         raise InvalidFormatError (format)
     if encoding not in valid_encodings:
