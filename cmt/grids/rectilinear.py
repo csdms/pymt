@@ -137,9 +137,6 @@ class RectilinearPoints (StructuredPoints):
         assert (n_dim>=1)
         assert (n_dim<=3)
 
-        #if kwds['indexing'] == 'xy':
-        #    args = args[::-1]
-
         coords = []
         for arg in args:
             coords.append (np.array (arg, dtype=np.float64))
@@ -149,8 +146,6 @@ class RectilinearPoints (StructuredPoints):
                 XI = meshgrid (*coords[::-1], indexing='ij')[::-1]
             else:
                 XI = meshgrid (*coords, indexing='ij')
-            #XI = meshgrid (*coords, indexing='ij')
-            #XI = meshgrid (*coords, indexing=kwds['indexing'])
         else:
             XI = [np.array (args[0], dtype=np.float64)]
 
@@ -169,16 +164,6 @@ class RectilinearPoints (StructuredPoints):
         except IndexError:
             self._z_coordinates = np.zeros (1, dtype=np.float64)
 
-        #if False and n_dim >= 2:
-        #    if kwds['indexing'] == 'ij':
-        #        self._x_coordinates = np.array (args[1], dtype=np.float64)
-        #        self._y_coordinates = np.array (args[0], dtype=np.float64)
-        #    else:
-        #        self._x_coordinates = np.array (args[0], dtype=np.float64)
-        #        self._y_coordinates = np.array (args[1], dtype=np.float64)
-
-        #kwds['indexing'] = 'xy'
-        #args = XI[::-1]
         args = XI
         args.append (shape)
         super (RectilinearPoints, self).__init__ (*args, **kwds)

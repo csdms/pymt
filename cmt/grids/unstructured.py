@@ -96,11 +96,11 @@ class UnstructuredPoints (IGrid):
         return tuple (self._coords[axis, inds])
 
     def get_x_units (self):
-        self.get_coordinate_units (0)
+        return self.get_coordinate_units (0)
     def get_y_units (self):
-        self.get_coordinate_units (1)
+        return self.get_coordinate_units (1)
     def get_z_units (self):
-        self.get_coordinate_units (2)
+        return self.get_coordinate_units (2)
     def set_x_units (self, units):
         try:
             self._units[0] = units
