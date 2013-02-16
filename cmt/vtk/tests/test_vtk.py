@@ -23,7 +23,7 @@ class TestVtk (unittest.TestCase):
             except OSError:
                 pass
 
-class TestUniformRectilinear (TestVtk):
+class TestUniformRectilinearVtk (TestVtk):
     vtk_files = dict (
         test_0d='test-0d-00.vtk',
         test_1d='test-1d-00.vtk',
@@ -93,7 +93,7 @@ class TestUniformRectilinear (TestVtk):
 
         self.assertTrue (os.path.isfile (vtk_file))
 
-class TestRectilinear (TestVtk):
+class TestRectilinearVtk (TestVtk):
     vtk_files = dict (
         test_0d='test-0d-00-rectilinear.vtk',
         test_1d='test-1d-00-rectilinear.vtk',
@@ -137,7 +137,7 @@ class TestRectilinear (TestVtk):
 
         self.assertTrue (os.path.isfile (vtk_file))
 
-class TestStructured (TestVtk):
+class TestStructuredVtk (TestVtk):
     vtk_files = dict (
         test_0d='test-0d-00-structured.vtk',
         test_1d='test-1d-00-structured.vtk',
@@ -179,7 +179,7 @@ class TestStructured (TestVtk):
 
         self.assertTrue (os.path.isfile (vtk_file))
 
-class TestUnstructured (TestVtk):
+class TestUnstructuredVtk (TestVtk):
     vtk_files = dict (
         test_0d='test-0d-00.vtu',
         test_1d='test-1d-00.vtu',
