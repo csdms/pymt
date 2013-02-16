@@ -115,25 +115,83 @@ from igrid import IGrid, IField
 from unstructured import Unstructured, UnstructuredPoints
 from connectivity import get_connectivity
 
+def _default_coordinate_names (n_dims, indexing='xy'):
+    default_names = ['x', 'y', 'z']
+    names = default_names[:n_dims]
+    if indexing == 'ij':
+        names = names[::-1]
+    return names
+
+def _default_coordinate_units (n_dims, indexing='xy'):
+    return ['-'] * n_dims
+
 class StructuredPoints (UnstructuredPoints):
     def __init__ (self, *args, **kwds):
         kwds.setdefault ('set_connectivity', True)
         indexing = kwds.pop ('indexing', 'xy')
+        coordinate_names = kwds.pop (
+            'coordinate_names', _default_coordinate_names (len (args) - 1,
+                                                           indexing=indexing))
+        coordinate_units = kwds.pop (
+            'units', _default_coordinate_units (len (args) - 1,
+                                                indexing=indexing))
 
         self._shape = np.array (args[-1], dtype=np.int64)
 
         coords = [arg for arg in args[:-1]]
         if indexing == 'ij':
             coords = coords[::-1]
+            coordinate_names = coordinate_names[::-1]
+            coordinate_units = coordinate_units[::-1]
 
         assert (len (coords) >= 1)
         assert (len (coords) <= 3)
 
+        kwds['units'] = coordinate_units
+        kwds['coordinate_names'] = coordinate_names
+
         super (StructuredPoints, self).__init__ (*coords, **kwds)
 
-    def get_shape (self):
-        """The shape of the structured grid."""
-        return self._shape
+    def get_shape (self, remove_singleton=False, indexing='ij'):
+        """The shape of the structured grid with the given indexing.
+        
+        Use remove_singleton=False to include singleton dimensions.
+        """
+        shape = self._shape.copy ()
+        if remove_singleton:
+            shape = shape[shape>1]
+
+        if indexing == 'xy':
+            shape = shape[::-1]
+
+        return shape
+
+    def get_coordinate_units (self, i, indexing='xy'):
+        if indexing == 'ij':
+            return super (StructuredPoints, self).get_coordinate_units (
+                self.get_dim_count () - (i+1))
+        else:
+            return super (StructuredPoints, self).get_coordinate_units (i)
+    def get_coordinate_name (self, i, indexing='xy'):
+        if indexing == 'ij':
+            return super (StructuredPoints, self).get_coordinate_name (
+                self.get_dim_count () - (i+1))
+        else:
+            return super (StructuredPoints, self).get_coordinate_name (i)
+    def get_coordinate (self, i, indexing='xy'):
+        if indexing == 'ij':
+            return super (StructuredPoints, self).get_coordinate (
+                self.get_dim_count () - (i+1))
+        else:
+            return super (StructuredPoints, self).get_coordinate (i)
+    def get_point_coordinates (self, *args, **kwds):
+        axes = np.array ([kwds.get ('axis', [])], dtype=np.int64)
+        indexing = kwds.pop ('indexing', 'xy')
+
+        if indexing == 'ij' and len (axes) > 0:
+            kwds['axis'] = self.get_dim_count () - (axes + 1)
+        return super (StructuredPoints, self).get_point_coordinates (*args, **kwds)
+
 
 class Structured (StructuredPoints, Unstructured):
     """

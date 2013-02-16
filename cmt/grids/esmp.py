@@ -4,7 +4,7 @@
 Examples
 ========
 
-Create a grids that looks like this,
+Create a grid that looks like this,
 
 ::
 
@@ -313,6 +313,9 @@ class EsmpStructuredField (EsmpStructured, EsmpField):
             super (EsmpStructuredField, self).add_field (field_name, val, centering=centering)
         except DimensionError, CenteringValueError:
             raise
+
+class EsmpUnstructuredField (EsmpUnstructured, EsmpField):
+    pass
 
 #class EsmpStructuredField (EsmpRectilinear, EsmpField):
 #    pass

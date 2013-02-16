@@ -45,15 +45,15 @@ class IGrid (object):
     """An interface for a grid object that represents a structured or unstructured
        grid of nodes and elements.
     """
-    def get_shape (self):
-        """Return the shape of the grid"""
-        raise NonStructuredGridError
-    def get_spacing (self):
-        """Return the spacing of the grid"""
-        raise NonUniformGridError
-    def get_origin (self):
-        """Return the spacing of the grid"""
-        raise NonUniformGridError
+    #def get_shape (self):
+    #    """Return the shape of the grid"""
+    #    raise NonStructuredGridError
+    #def get_spacing (self):
+    #    """Return the spacing of the grid"""
+    #    raise NonUniformGridError
+    #def get_origin (self):
+    #    """Return the spacing of the grid"""
+    #    raise NonUniformGridError
     def get_x (self):
         """Return the x-coordinates of the grid nodes."""
         pass

@@ -20,7 +20,7 @@ class IField (IGrid):
         pass
 
 class UniformRectilinear (IGrid):
-    def __init__ (self, shape, spacing, origin):
+    def __init__ (self, shape, spacing, origin, units='-'):
         assert (len (shape) == len (spacing) == len (origin))
 
         self._shape = np.array (shape, dtype=np.int64)

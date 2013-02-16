@@ -4,12 +4,65 @@ import unittest
 from cmt.grids import RasterField, DimensionError
 import numpy as np
 
-class TestField (unittest.TestCase):
+class TestRasterField (unittest.TestCase):
     def assert_field_values (self, field, name, expected_values):
         values = field.get_field (name)
         self.assertListEqual (list (values), list (expected_values))
 
-    def test_raster_field_2d (self):
+    def test_2d_point_fields (self):
+        # Create a field that looks like this,
+        #
+        #    (0) --- (1) --- (2)
+        #     |       |       |
+        #     |   0   |   1   |
+        #     |       |       |
+        #    (3) --- (4) --- (5)
+
+        g = RasterField ((2,3), (1,2), (0, 0), indexing='ij')
+
+        data = np.arange (6)
+        g.add_field ('point_var_1', data, centering='point')
+        g.add_field ('point_var_2', data*2, centering='point')
+
+        data = np.arange (2)
+        g.add_field ('cell_var', data, centering='zonal')
+
+        fields = g.get_point_fields ()
+        self.assertEqual (len (fields), 2)
+        self.assertTrue (fields.has_key ('point_var_1'))
+        self.assertTrue (fields.has_key ('point_var_2'))
+
+        self.assert_field_values (g, 'point_var_1', [0, 1, 2, 3, 4, 5])
+        self.assert_field_values (g, 'point_var_2', [0, 2, 4, 6, 8, 10])
+
+    def test_2d_cell_fields (self):
+        # Create a field that looks like this,
+        #
+        #    (0) --- (1) --- (2)
+        #     |       |       |
+        #     |   0   |   1   |
+        #     |       |       |
+        #    (3) --- (4) --- (5)
+
+        g = RasterField ((2,3), (1,2), (0, 0), indexing='ij')
+
+        data = np.arange (6)
+        g.add_field ('point_var_1', data, centering='point')
+        g.add_field ('point_var_2', data*2, centering='point')
+
+        data = np.arange (2)
+        g.add_field ('cell_var_1', data, centering='zonal')
+        g.add_field ('cell_var_2', data*2, centering='zonal')
+
+        fields = g.get_cell_fields ()
+        self.assertEqual (len (fields), 2)
+        self.assertTrue (fields.has_key ('cell_var_1'))
+        self.assertTrue (fields.has_key ('cell_var_2'))
+
+        self.assert_field_values (g, 'cell_var_1', [0, 1])
+        self.assert_field_values (g, 'cell_var_2', [0, 2])
+
+    def test_2d (self):
         # Create a field that looks like this,
         #
         #    (0) --- (1) --- (2)
@@ -131,7 +184,7 @@ class TestField (unittest.TestCase):
         self.assertListEqual (list (connectivity), list (grid.get_connectivity ()))
 
 def suite ():
-    suite = unittest.TestLoader ().loadTestsFromTestCase (TestRasterGrid)
+    suite = unittest.TestLoader ().loadTestsFromTestCase (TestRasterField)
     return suite
 
 if __name__ == '__main__':

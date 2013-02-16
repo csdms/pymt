@@ -77,7 +77,7 @@ class TestRectilinearGrid (unittest.TestCase):
         self.assert_cell_count (grid, 4)
         self.assert_shape (grid, (5, ))
         self.assert_x (grid, [1., 3., 4., 5., 6.])
-        self.assert_y (grid, [0., 0., 0., 0., 0.])
+        #self.assert_y (grid, [0., 0., 0., 0., 0.])
         self.assert_connectivity (grid, [0, 1, 1, 2, 2, 3, 3, 4])
         self.assert_offset (grid, [2, 4, 6, 8])
 
@@ -118,6 +118,102 @@ class TestRectilinearGrid (unittest.TestCase):
                               2., 2., 2., 2., 2., 2.,
                               3., 3., 3., 3., 3., 3.])
         self.assert_offset (grid, 8. * np.arange (1, grid.get_cell_count () + 1))
+
+class TestRectilinearGridUnits (unittest.TestCase):
+    def test_2d_units_ij_indexing_by_name (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
+                            units=['y_units', 'x_units'])
+
+        self.assertEqual (grid.get_x_units (), 'x_units')
+        self.assertEqual (grid.get_y_units (), 'y_units')
+
+    def test_2d_units_xy_indexing_by_name (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy',
+                            units=['x_units', 'y_units'])
+
+        self.assertEqual (grid.get_x_units (), 'x_units')
+        self.assertEqual (grid.get_y_units (), 'y_units')
+
+    def test_2d_units_ij_indexing_by_coordinate (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
+                            units=['y_units', 'x_units'])
+
+        self.assertEqual (grid.get_coordinate_units (0), 'x_units')
+        self.assertEqual (grid.get_coordinate_units (1), 'y_units')
+
+    def test_2d_units_xy_indexing_by_coordinate (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
+                            units=['y_units', 'x_units'])
+
+        self.assertEqual (grid.get_coordinate_units (0), 'x_units')
+        self.assertEqual (grid.get_coordinate_units (1), 'y_units')
+
+class TestRectilinearGridCoordinateNames (unittest.TestCase):
+    def test_2d_coordinate_name_ij_default (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
+
+        self.assertEqual (grid.get_coordinate_name (0), 'x')
+        self.assertEqual (grid.get_coordinate_name (1), 'y')
+
+    def test_2d_coordinate_name_xy_default (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy')
+
+        self.assertEqual (grid.get_coordinate_name (0), 'x')
+        self.assertEqual (grid.get_coordinate_name (1), 'y')
+
+    def test_2d_coordinate_name_ij_indexing (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
+                            coordinate_names=['longitude', 'latitude'])
+
+        self.assertEqual (grid.get_coordinate_name (0), 'latitude')
+        self.assertEqual (grid.get_coordinate_name (1), 'longitude')
+
+    def test_2d_coordinate_name_xy_indexing (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy',
+                            coordinate_names=['latitude', 'longitude'])
+
+        self.assertEqual (grid.get_coordinate_name (0), 'latitude')
+        self.assertEqual (grid.get_coordinate_name (1), 'longitude')
+
+    def test_2d_coordinate_name_ij_indexing_with_kwds (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
+                            coordinate_names=['latitude', 'longitude'])
+
+        self.assertEqual (grid.get_coordinate_name (0, indexing='ij'), 'latitude')
+        self.assertEqual (grid.get_coordinate_name (1, indexing='ij'), 'longitude')
+
+        self.assertEqual (grid.get_coordinate_name (0, indexing='xy'), 'longitude')
+        self.assertEqual (grid.get_coordinate_name (1, indexing='xy'), 'latitude')
+
+class TestRectilinearGridCoordinates (unittest.TestCase):
+    def test_2d_coordinates_ij_default (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
+
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0),
+                                      np.array ([1., 2., 3.] * 4)))
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1),
+                                      np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
+
+    def test_2d_coordinates_xy_default (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy')
+
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0),
+                                      np.array ([1., 2., 4., 8.] * 3)))
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1),
+                                      np.tile ([1., 2., 3.], (4, 1)).T.flat))
+
+    def test_2d_coordinates_ij_indexing_with_kwds (self):
+        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
+
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0, indexing='xy'),
+                                      np.array ([1., 2., 3.] * 4)))
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1, indexing='xy'),
+                                      np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
+
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0, indexing='ij'),
+                                      np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
+        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1, indexing='ij'),
+                                      np.array ([1., 2., 3.] * 4)))
 
 def suite ():
     suite = unittest.TestLoader ().loadTestsFromTestCase (TestRectilinearGrid)

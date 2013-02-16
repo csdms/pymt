@@ -137,42 +137,52 @@ class RectilinearPoints (StructuredPoints):
         assert (n_dim>=1)
         assert (n_dim<=3)
 
-        if kwds['indexing'] == 'xy':
-            args = args[::-1]
+        #if kwds['indexing'] == 'xy':
+        #    args = args[::-1]
 
         coords = []
         for arg in args:
             coords.append (np.array (arg, dtype=np.float64))
 
         if n_dim > 1:
-            XI = meshgrid (*coords, indexing='ij')
+            if kwds['indexing'] == 'xy':
+                XI = meshgrid (*coords[::-1], indexing='ij')[::-1]
+            else:
+                XI = meshgrid (*coords, indexing='ij')
+            #XI = meshgrid (*coords, indexing='ij')
+            #XI = meshgrid (*coords, indexing=kwds['indexing'])
         else:
             XI = [np.array (args[0], dtype=np.float64)]
 
         shape = XI[0].shape
 
-        self._x_coordinates = np.array (args[-1], dtype=np.float64)
+        if kwds['indexing'] == 'xy':
+            coords = coords[::-1]
+
+        self._x_coordinates = np.array (coords[-1], dtype=np.float64)
         try:
-            self._y_coordinates = np.array (args[-2], dtype=np.float64)
+            self._y_coordinates = np.array (coords[-2], dtype=np.float64)
         except IndexError:
             self._y_coordinates = np.zeros (1, dtype=np.float64)
         try:
-            self._z_coordinates = np.array (args[-3], dtype=np.float64)
+            self._z_coordinates = np.array (coords[-3], dtype=np.float64)
         except IndexError:
             self._z_coordinates = np.zeros (1, dtype=np.float64)
 
-        if False and n_dim >= 2:
-            if kwds['indexing'] == 'ij':
-                self._x_coordinates = np.array (args[1], dtype=np.float64)
-                self._y_coordinates = np.array (args[0], dtype=np.float64)
-            else:
-                self._x_coordinates = np.array (args[0], dtype=np.float64)
-                self._y_coordinates = np.array (args[1], dtype=np.float64)
+        #if False and n_dim >= 2:
+        #    if kwds['indexing'] == 'ij':
+        #        self._x_coordinates = np.array (args[1], dtype=np.float64)
+        #        self._y_coordinates = np.array (args[0], dtype=np.float64)
+        #    else:
+        #        self._x_coordinates = np.array (args[0], dtype=np.float64)
+        #        self._y_coordinates = np.array (args[1], dtype=np.float64)
 
-        kwds['indexing'] = 'xy'
-        args = XI[::-1]
+        #kwds['indexing'] = 'xy'
+        #args = XI[::-1]
+        args = XI
         args.append (shape)
         super (RectilinearPoints, self).__init__ (*args, **kwds)
+
 
     def get_x_coordinates (self):
         """
@@ -207,6 +217,31 @@ class RectilinearPoints (StructuredPoints):
     def get_xyz_coordinates (self):
         return (self.get_x_coordinates (), self.get_y_coordinates (),
                 self.get_z_coordinates ())
+
+    def get_axis_coordinates (self, axis=None, indexing='ij'):
+        assert (indexing in ['xy', 'ij'])
+
+        if axis is None:
+            coords = [self.get_x_coordinates (),
+                      self.get_y_coordinates (),
+                      self.get_z_coordinates ()]
+            if indexing == 'ij':
+                return coords[::-1]
+            else:
+                return coords
+        else:
+            n_dims = self.get_dim_count ()
+            assert (axis < n_dims)
+
+            if indexing == 'ij':
+                axis = n_dims - axis - 1
+
+            if axis == 0:
+                return self.get_x_coordinates ()
+            elif axis == 1:
+                return self.get_y_coordinates ()
+            elif axis == 2:
+                return self.get_z_coordinates ()
 
 class Rectilinear (RectilinearPoints, Structured):
     """

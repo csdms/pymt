@@ -25,91 +25,113 @@ class AttributeError (Error):
     def __str__ (self):
         return '%s: %s' % (self.attr, self.msg)
 
+
 class UnstructuredPoints (IGrid):
     def __init__ (self, *args, **kwds):
         set_connectivity = kwds.pop ('set_connectivity', False)
-        units = kwds.pop ('units', ['-', '-', '-'])
+        units = kwds.pop ('units', ['-'] * len (args))
+        coordinate_names = kwds.pop ('coordinate_names', ['x', 'y', 'z'][:len (args)])
+        self._attrs = kwds.pop ('attrs', {})
 
         assert (len (args)<=3)
         assert (len (args)>=1)
 
         self._n_dims = len (args)
 
-        x = np.array (args[0], dtype=np.float64)
-        n_points = x.size
-
+        coords = []
+        for arg in args:
+            coords.append (np.array (arg, dtype=np.float64).flat)
         try:
-            y = np.array (args[1], dtype=np.float64)
-        except IndexError:
-            y = np.zeros (n_points, dtype=np.float64)
-        try:
-            z = np.array (args[2], dtype=np.float64)
-        except IndexError:
-            z = np.zeros (n_points, dtype=np.float64)
+            self._coords = np.vstack (coords)
+        except ValueError:
+            raise ValueError ('Coordinate array lengths must be equal')
+        self._units = list (units)
+        self._coordinate_name = list (coordinate_names)
 
-        for coord in [x, y, z]:
-            assert (coord.size == n_points)
-            coord.shape = n_points
-        self._point_count = n_points
-
-        self._coords = (z, y, x)
+        self._point_count = self._coords.shape[1]
 
         if set_connectivity:
             self._connectivity = np.arange (self._point_count, dtype=np.int32)
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
-        self._units = list (units)
-
         super (UnstructuredPoints, self).__init__ ()
 
+    def get_attrs (self):
+        return self._attrs
     def get_dim_count (self):
         return self._n_dims
     def get_x (self):
-        return self._coords[-1]
+        try:
+            return self._coords[0]
+        except IndexError:
+            raise IndexError ('Dimension out of bounds')
     def get_y (self):
-        return self._coords[-2]
+        try:
+            return self._coords[1]
+        except IndexError:
+            raise IndexError ('Dimension out of bounds')
     def get_z (self):
-        return self._coords[0]
+        try:
+            return self._coords[2]
+        except IndexError:
+            raise IndexError ('Dimension out of bounds')
     def get_xyz (self):
-        return self._coords[-1:-self._n_dims-1:-1]
-        #return self._coords[-1::-1]
+        return self._coords
+
+    def get_point_coordinates (self, *args, **kwds):
+        axis = kwds.pop ('axis', None)
+
+        assert (len (args) < 2)
+
+        if len (args) == 0:
+            inds = np.arange (self.get_point_count ())
+        else:
+            inds = args
+
+        if axis is None:
+            axis = np.arange (self.get_dim_count ())
+            axis.shape = (self.get_dim_count (), 1)
+
+        return tuple (self._coords[axis, inds])
 
     def get_x_units (self):
-        try:
-            return self._units[-1]
-        except IndexError:
-            return '-'
+        self.get_coordinate_units (0)
     def get_y_units (self):
-        try:
-            return self._units[-2]
-        except IndexError:
-            return '-'
+        self.get_coordinate_units (1)
     def get_z_units (self):
-        try:
-            return self._units[-3]
-        except IndexError:
-            return '-'
+        self.get_coordinate_units (2)
     def set_x_units (self, units):
         try:
-            self._units[-1] = units
+            self._units[0] = units
         except IndexError:
-            pass
+            raise IndexError ('Dimension out of bounds')
     def set_y_units (self, units):
         try:
-            self._units[-2] = units
+            self._units[1] = units
         except IndexError:
-            pass
+            raise IndexError ('Dimension out of bounds')
     def set_z_units (self, units):
         try:
-            self._units[-3] = units
+            self._units[2] = units
         except IndexError:
-            pass
-    def get_coordinate_units (self, i):
+            raise IndexError ('Dimension out of bounds')
+    def get_coordinate_units (self, i, **kwds):
         try:
             return self._units[i]
         except IndexError:
-            return '-'
+            raise IndexError ('Dimension out of bounds')
+    def get_coordinate_name (self, i, **kwds):
+        try:
+            return self._coordinate_name[i]
+        except IndexError:
+            raise IndexError ('Dimension out of bounds')
+    def get_coordinate (self, i, **kwds):
+        try:
+            return self._coords[i]
+        except IndexError:
+            raise IndexError ('Dimension out of bounds')
+
     def get_connectivity (self):
         return self._connectivity
     def get_offset (self):

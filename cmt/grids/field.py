@@ -1,5 +1,7 @@
 #! /bin/env python
 
+import types
+
 import numpy as np
 from igrid import IField, DimensionError, CenteringValueError, centering_choices
 from raster import UniformRectilinear
@@ -7,13 +9,28 @@ from rectilinear import Rectilinear
 from structured import Structured
 from unstructured import Unstructured
 
+def combine_args_to_list (*args, **kwds):
+    if len (args) == 0:
+        args = kwds.get ('default', [])
+    args = list (args)
+    combined_args = []
+    for arg in args:
+        if isinstance (arg, types.StringTypes):
+            combined_args.append (arg)
+        else:
+            combined_args.extend (arg)
+    return combined_args
+
 class GridField (Unstructured, IField):
     def __init__ (self, *args, **kwargs):
         super (GridField, self).__init__ (*args, **kwargs) 
         self._fields = {}
         self._field_units = {}
 
-    def add_field (self, field_name, val, centering='zonal', units='-'):
+    def add_field (self, field_name, val, centering='zonal', units='-',
+                   exist_action='clobber', time=None):
+        assert (exist_action in ['clobber', 'append'])
+
         try:
             val.shape = val.size
         except AttributeError:
@@ -27,12 +44,33 @@ class GridField (Unstructured, IField):
         elif centering!='zonal' and val.size != self.get_point_count ():
             raise DimensionError (val.size, self.get_point_count ())
 
-        self._fields[field_name] = val
+        self._field_times = {}
+        if not self._fields.has_key (field_name) or exist_action == 'clobber':
+            self._fields[field_name] = [val]
+            self._field_times[field_name] = [time]
+        else:
+            self._fields[field_name].append (val)
+            self._field_times[field_name].append (time)
         self._field_units[field_name] = units
+
         #self._fields[field_name].shape = val.size
 
+    def pop_field (self, field_name, *args, **kwds):
+        return_with_time = kwds.get ('return_with_time', False)
+
+        field = self._fields[field_name].pop (*args)
+        if return_with_time:
+            time =  self._field_times[field_name].pop (*args)
+            return (time, field)
+        else:
+            return field
+
     def get_field (self, field_name):
-        return self._fields[field_name]
+        if len (self._fields[field_name]) == 1:
+            return self._fields[field_name][0]
+        else:
+            return self._fields[field_name]
+
     def get_field_units (self, field_name):
         return self._field_units[field_name]
     def set_field_units (self, field_name, units):
@@ -40,17 +78,29 @@ class GridField (Unstructured, IField):
             self._field_units[field_name] = units
         except KeyError:
             pass
-    def get_point_fields (self):
+    def get_point_fields (self, *args):
+        names = combine_args_to_list (*args, default=self._fields.keys ())
+
         fields = {}
-        for (field, array) in self._fields.items ():
+        for name in names:
+            array = self.get_field (name)
             if array.size == self.get_point_count ():
-                fields[field] = array
+                fields[name] = array
         return fields
-    def get_cell_fields (self):
+
+        #fields = {}
+        #for (field, array) in self._fields.items ():
+        #    if array.size == self.get_point_count ():
+        #        fields[field] = array
+        #return fields
+    def get_cell_fields (self, *args):
+        names = combine_args_to_list (*args, default=self._fields.keys ())
+
         fields = {}
-        for (field, array) in self._fields.items ():
+        for name in names:
+            array = self.get_field (name)
             if array.size == self.get_cell_count ():
-                fields[field] = array
+                fields[name] = array
         return fields
 
     def items (self):

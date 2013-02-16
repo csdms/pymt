@@ -1,4 +1,5 @@
 
+from assertions import *
 from raster import *
 from rectilinear import *
 from structured import *
