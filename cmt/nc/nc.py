@@ -79,24 +79,35 @@ from cmt.verbose import CMTLogger
 
 logger = CMTLogger ('NetCDF', 20)
 
+
 class Error (Exception):
     pass
+
+
 class DimensionError (Error):
     def __init__ (self, dim0, dim1):
         self._dim0 = 'x'.join ([str (d) for d in dim0])
         self._dim1 = 'x'.join ([str (d) for d in dim1])
+
     def __str__ (self):
         return '%s: Dimension mismatch (should be %s)' % (self._dim1, self._dim0)
+
+
 class RankError(Error):
     def __init__ (self, rank):
         self._rank = rank
+
     def __str__ (self):
         return '%d: Grid rank must be <= 3' % self._rank
+
+
 class BadFileError (Error):
     def __init__ (self, msg):
         self._msg = msg
+
     def __str__ (self):
         return self._msg
+
 
 def remove_singleton (array, shape):
     try:
@@ -104,11 +115,15 @@ def remove_singleton (array, shape):
     except AttributeError:
         return remove_singleton (np.array (array), np.array (shape))
     else:
-        return array[shape>1]
+        return array[shape > 1]
+
+
 try:
     import csdms_utils
 except ImportError:
-    print 'Unable to import csdms_utils'
+    from warnings import warn
+    warn('Unable to import csdms_utils', RuntimeWarning)
+
 
 class NetcdfWriter (object):
     valid_keywords = set (['dtype', 'var_units', 'time_units', 'time_long_name',
@@ -171,6 +186,7 @@ class NetcdfWriter (object):
         except ValueError:
             raise DimensionError (self._shape, array.shape)
 
+
 class NcpsWriter (NetcdfWriter):
     def __init__ (self, *args, **kwargs):
         super (NcpsWriter, self).__init__ (*args, **kwargs)
@@ -190,6 +206,7 @@ class NcpsWriter (NetcdfWriter):
         super (NcpsWriter, self).write (array)
         self._nc_file.add_profile (array, self._var_name, self._time)
         self._time += 1
+
 
 class NcgsWriter (NetcdfWriter):
     def __init__ (self, *args, **kwargs):
@@ -231,6 +248,7 @@ class NccsWriter (NetcdfWriter):
         super (NccsWriter, self).write (array)
         self._nc_file.add_cube (array, self._var_name)
 
+
 def writer_from_shape (shape):
     if len (shape)==1:
         return NcpsWriter
@@ -239,6 +257,7 @@ def writer_from_shape (shape):
     elif len (shape)==3:
         return NccsWriter
     raise RankError (len (shape))
+
 
 def tofile (field, path, units={}):
     spacing = remove_singleton (field.get_spacing (), field.get_shape ())
@@ -265,6 +284,7 @@ def tofile (field, path, units={}):
                 nc_file.close ()
             except AttributeError:
                 logger.warning ('Unable to close')
+
 
 def field_tofile (field, path, append=False, attrs={}, time=None,
                   time_units='days', time_reference='00:00:00 UTC',
@@ -339,19 +359,13 @@ Check the values from the file.
 
     root.close ()
 
+
 def set_attributes (attrs, root):
     for (key, val) in attrs.items ():
         setattr (root, key, val)
 
 dimension_name = ['nz', 'ny', 'nx']
 
-#def set_dimensions (field, root):
-#    if is_uniform_rectilinear (field) or is_rectilinear (field):
-#        _set_rectilinear_dimensions (field, root)
-#    elif is_structured (field):
-#        _set_structured_dimensions (field, root)
-#    elif is_unstructured (field):
-#        _set_unstructured_dimensions (field, root)
 
 def _set_spatial_dimensions (root, field):
     """
@@ -385,12 +399,14 @@ def _set_spatial_dimensions (root, field):
     if 'n_vertices' not in root.dimensions and field.get_vertex_count () > 0:
         root.createDimension ('n_vertices', field.get_vertex_count ())
 
+
 def _set_temporal_dimension (root):
     """
     Add the time dimension. This is an unlimited dimension.
     """
     if 'nt' not in root.dimensions:
         nt = root.createDimension ('nt', None)
+
 
 def _set_structured_dimensions (field, root):
     # Define dimensions
@@ -424,6 +440,7 @@ def _set_structured_dimensions (field, root):
     if not 'nt' in dims:
         nt = root.createDimension ('nt', None)
 
+
 def _set_rectilinear_dimensions (field, root):
 
     assert_is_rectilinear (field, strict=False)
@@ -440,6 +457,7 @@ def _set_rectilinear_dimensions (field, root):
     if not 'nt' in dims:
         nt = root.createDimension ('nt', None)
 
+
 def _set_unstructured_dimensions (field, root):
 
     assert_is_unstructured (field)
@@ -455,8 +473,9 @@ def _set_unstructured_dimensions (field, root):
     if not 'nt' in dims:
         nt = root.createDimension ('nt', None)
 
-variable_name = ['z', 'y', 'x']
-np_to_nc_type = {
+
+_VARIABLE_NAME = ['z', 'y', 'x']
+_NP_TO_NC_TYPE = {
     'float32': 'f4',
     'float64': 'f8',
     'int8': 'i1',
@@ -468,13 +487,6 @@ np_to_nc_type = {
     'uint32': 'u4',
     'uint64': 'u8'}
 
-#def set_variables (field, root, **kwds):
-#    if is_uniform_rectilinear (field) or is_rectilinear (field):
-#        _set_rectilinear_variables (field, root, **kwds)
-#    elif is_structured (field):
-#        _set_structured_variables (field, root, **kwds)
-#    elif is_unstructured (field):
-#        _set_unstructured_variables (field, root, **kwds)
 
 # TODO: Double-check that this function is still needed.
 def _add_dummy_variable (root):
@@ -491,6 +503,7 @@ def _add_dummy_variable (root):
     var[0] = 0.
     var.units = '-'
     var.long_name = 'dummy'
+
 
 def _add_time_variable (root, time, **kwds):
     """
@@ -513,6 +526,7 @@ def _add_time_variable (root, time, **kwds):
         t[n_times] = time
     else:
         t[n_times] = n_times
+
 
 def _add_spatial_variables (root, field, **kwds):
     """
@@ -569,6 +583,7 @@ def _add_spatial_variables (root, field, **kwds):
             o = root.createVariable ('offset', 'i8', ('n_cells', ))
             o[:] = field.get_offset ()
 
+
 def _add_variables_at_points (root, field):
     vars = root.variables
 
@@ -593,7 +608,7 @@ def _add_variables_at_points (root, field):
             var = vars[var_name]
         except KeyError:
             var = root.createVariable (var_name,
-                                       np_to_nc_type[str (array.dtype)],
+                                       _NP_TO_NC_TYPE[str (array.dtype)],
                                        ['nt'] + dim_names)
         if array.size > 1:
             var[n_times,:] = array.flat
@@ -602,6 +617,7 @@ def _add_variables_at_points (root, field):
 
         var.units = field.get_field_units (var_name)
         var.long_name = var_name
+
 
 def _add_variables_at_cells (root, field):
     vars = root.variables
@@ -629,7 +645,7 @@ def _add_variables_at_cells (root, field):
             var = vars[var_name]
         except KeyError:
             var = root.createVariable (var_name,
-                                       np_to_nc_type[str (array.dtype)],
+                                       _NP_TO_NC_TYPE[str (array.dtype)],
                                        ['nt'] + dim_names)
         if array.size > 1:
             var[n_times,:] = array.flat
@@ -638,6 +654,7 @@ def _add_variables_at_cells (root, field):
 
         var.units = field.get_field_units (var_name)
         var.long_name = var_name
+
 
 def _set_structured_variables (field, root, time=None, time_units='days',
                                time_reference='00:00:00 UTC'):
@@ -648,7 +665,7 @@ def _set_structured_variables (field, root, time=None, time_units='days',
 
     if len (shape) > 0:
         dim_names = dimension_name[-len (shape):]
-        var_names = variable_name[-len (shape):]
+        var_names = _VARIABLE_NAME[-len (shape):]
     else:
         dim_names = []
         var_names = []
@@ -693,7 +710,7 @@ def _set_structured_variables (field, root, time=None, time_units='days',
             var = vars[var_name]
         except KeyError:
             var = root.createVariable (var_name,
-                                       np_to_nc_type[str (array.dtype)],
+                                       _NP_TO_NC_TYPE[str (array.dtype)],
                                        ['nt'] + dim_names)
         if array.size > 1:
             var[n_times,:] = array.flat
@@ -703,6 +720,7 @@ def _set_structured_variables (field, root, time=None, time_units='days',
         var.long_name = var_name
 
     _add_dummy_variable (root)
+
 
 def _set_rectilinear_variables (field, root, time=None, time_units='days',
                                 time_reference='00:00:00 UTC'):
@@ -715,7 +733,7 @@ def _set_rectilinear_variables (field, root, time=None, time_units='days',
 
     if len (shape) > 0:
         dim_names = dimension_name[-len (shape):]
-        var_names = variable_name[-len (shape):]
+        var_names = _VARIABLE_NAME[-len (shape):]
         coords = coords[-len (shape):]
     else:
         dim_names = []
@@ -751,7 +769,7 @@ def _set_rectilinear_variables (field, root, time=None, time_units='days',
             var = vars[var_name]
         except KeyError:
             var = root.createVariable (var_name,
-                                       np_to_nc_type[str (array.dtype)],
+                                       _NP_TO_NC_TYPE[str (array.dtype)],
                                        ['nt'] + dim_names)
         if array.size > 1:
             var[n_times,:] = array.flat
@@ -761,6 +779,7 @@ def _set_rectilinear_variables (field, root, time=None, time_units='days',
         var.long_name = var_name
 
     _add_dummy_variable (root)
+
 
 def _set_unstructured_variables (field, root, time=None, time_units='days',
                                  time_reference='00:00:00 UTC'):
@@ -813,7 +832,7 @@ def _set_unstructured_variables (field, root, time=None, time_units='days',
             var = vars[var_name]
         except KeyError:
             var = root.createVariable (var_name,
-                                       np_to_nc_type[str (array.dtype)],
+                                       _NP_TO_NC_TYPE[str (array.dtype)],
                                        ('nt', 'n_points'))
         var[n_times,:] = array.flat
         var.units = field.get_field_units (var_name)
@@ -825,13 +844,14 @@ def _set_unstructured_variables (field, root, time=None, time_units='days',
             var = vars[var_name]
         except KeyError:
             var = root.createVariable (var_name,
-                                       np_to_nc_type[str (array.dtype)],
+                                       _NP_TO_NC_TYPE[str (array.dtype)],
                                        ('nt', 'n_cells'))
         var[n_times,:] = array.flat
         var.units = field.get_field_units (var_name)
         var.long_name = var_name
 
     _add_dummy_variable (root)
+
 
 def field_to_nc (field, root):
     shape = field.get_shape ()
@@ -871,6 +891,7 @@ def field_to_nc (field, root):
         except KeyError:
             var = root.createVariable (var_name, 'f8', ('nt', 'nx', 'ny'))
         var[n_times,:,:] = array
+
 
 def fromfile (file, allow_singleton=True, just_grid=False):
     """
@@ -930,6 +951,7 @@ def fromfile (file, allow_singleton=True, just_grid=False):
     else:
         raise BadFileError ('Unknown grid type')
 
+
 def _from_uniform_file (root, just_grid=False):
     vars = root.variables
 
@@ -968,6 +990,7 @@ def _from_uniform_file (root, just_grid=False):
         return fields
     else:
         return fields[0]
+
 
 def _from_structured_file (root, just_grid=False):
     vars = root.variables
@@ -1012,6 +1035,7 @@ def _from_structured_file (root, just_grid=False):
     else:
         return fields[0]
 
+
 def _from_unstructured_file (root, just_grid=False):
     vars = root.variables
 
@@ -1050,6 +1074,7 @@ def _from_unstructured_file (root, just_grid=False):
     else:
         return fields[0]
 
+
 def _assert_grid_is_uniform (root):
     # A grid is uniform (rectilinear) if:
     #  len (nx) == len (x)
@@ -1083,6 +1108,7 @@ def _assert_grid_is_uniform (root):
             except AssertionError:
                 raise AssertionError ('Grid is not uniform (len (%s) != n_points)' %
                                       name)
+
 
 def _assert_grid_is_structured (root):
     # A grid is structured if:
@@ -1131,6 +1157,7 @@ def _assert_grid_is_structured (root):
             except AssertionError:
                 raise AssertionError ('Grid is not structured (bad point count for %s)' % name)
 
+
 def _assert_grid_is_unstructured (root):
     dims = root.dimensions
     vars = root.variables
@@ -1170,6 +1197,7 @@ def _assert_grid_is_unstructured (root):
             except AssertionError:
                 raise AssertionError ('Grid is not unstructured (bad point count for %s)' % name)
 
+
 def _guess_grid_type (root):
     try:
         _assert_grid_is_unstructured (root)
@@ -1197,9 +1225,11 @@ def _guess_grid_type (root):
 
     return None
 
+
 def set_dimensions (field, root):
     _set_spatial_dimensions (root, field)
     _set_temporal_dimension (root)
+
 
 def set_variables (field, root, **kwds):
     # TODO: time keyword is required. It should be an argument.
