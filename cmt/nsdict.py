@@ -12,9 +12,8 @@
 NamespaceDict({'/bar': 'baz'})
 >>> d['/foo/baz'] = 'bar'
 >>> keys = d['/foo'].keys()
->>> keys.sort()
->>> keys
-['/bar', '/baz']
+>>> keys == set(['/bar', '/baz', '/'])
+True
 
 >>> d = NamespaceDict(sep='.')
 >>> d['.foo.bar'] = 'baz'
@@ -27,12 +26,11 @@ NamespaceDict({'/bar': 'baz'})
 NamespaceDict({'.bar': 'baz'})
 >>> d['.foo.baz'] = 'bar'
 >>> keys = d['.foo'].keys()
->>> keys.sort()
->>> keys
-['.bar', '.baz']
+>>> keys == set(['.', '.bar', '.baz'])
+True
 
 >>> d = NamespaceDict({'/foo/bar/': 'baz', '/foo/baz': 'bar'})
->>> set(d.keys()) == set(['/foo/bar', '/foo/baz'])
+>>> set(d.keys()) == set(['/', '/foo', '/foo/bar', '/foo/baz'])
 True
 >>> set(d.values()) == set(['baz', 'bar'])
 True
@@ -154,7 +152,7 @@ class NamespaceDict(dict):
         return [part for part in path.split(self._sep) if len(part) > 0]
 
     def _iter_paths(self, path):
-        yield '/'
+        yield self._sep
         parts = self._split(path)
         base = ''
         for part in parts:
