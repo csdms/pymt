@@ -1,8 +1,29 @@
 #! /usr/bin/env python
+"""
+>>> status = OrderedTaskStatus()
+>>> status.start_task('create')
+>>> print status
+creating
+>>> status.complete_task()
+>>> print status
+created
+
+>>> status.start_task('initialize')
+>>> print status
+initializing
+>>> status.start_task('initialize')
+>>> print status
+initializing
+
+>>> status.complete_task()
+>>> print status
+initialized
+
+"""
 
 import types
 
-from cmt.handler.task_status import TaskStatus
+from cmt.task_status import TaskStatus
 
 
 class OrderedTaskStatus(object):
