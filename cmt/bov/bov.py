@@ -272,13 +272,16 @@ def tofile (file, grid, var_name=None, no_clobber=False, options={}):
         size = np.append (size, [1.]*(3-len (size)))
 
     if var_name is None:
-        vars = grid.items ()
+        vars = grid.get_point_fields().items()
+        #vars = grid.items ()
     else:
-        vars = (var_name, grid.get_field (var_name))
+        vars = (var_name, grid.get_field(var_name))
 
     for (var, vals) in vars:
-        dat_file = '%s_%s.dat' % (base, var)
-        bov_file = '%s_%s.bov' % (base, var)
+        #dat_file = '%s_%s.dat' % (base, var)
+        #bov_file = '%s_%s.bov' % (base, var)
+        dat_file = '%s.dat' % (base, )
+        bov_file = '%s.bov' % (base, )
 
         if no_clobber:
             if os.path.isfile (bov_file):
