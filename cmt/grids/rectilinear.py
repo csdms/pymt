@@ -60,14 +60,14 @@ The connectivity runs from 0 to one less than the number of points.
 1D Rectilinear grid
 -------------------
 
-    >>> g = Rectilinear ([1,3,4,5,6], set_connectivity=True)
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
+    >>> g = Rectilinear([1,3,4,5,6], set_connectivity=True)
+    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
     [ 1. 3. 4. 5. 6.]
-    >>> assert (g.get_point_count () == 5)
-    >>> assert (g.get_cell_count () == 4)
-    >>> print g.get_connectivity ()
+    >>> assert(g.get_point_count () == 5)
+    >>> assert(g.get_cell_count () == 4)
+    >>> print g.get_connectivity()
     [0 1 1 2 2 3 3 4]
-    >>> print g.get_offset ()
+    >>> print g.get_offset()
     [2 4 6 8]
 
 

@@ -12,9 +12,9 @@ Create a grid of length 2 in the x direction, and 3 in the y direction.
     12
     >>> g.get_cell_count ()
     6
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
     >>> print g.get_shape ()
     [3 4]
@@ -23,9 +23,9 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
     >>> g = Structured (y.flatten (), x.flatten (), (3, 4), indexing='ij')
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
     >>> print g.get_shape ()
     [3 4]
@@ -42,9 +42,9 @@ The same grid as the previous example but without any cells - just points.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
     >>> g = StructuredPoints (y.flatten (), x.flatten (), (3, 4), indexing='ij', set_connectivity=True)
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
     >>> print g.get_shape ()
     [3 4]
@@ -69,17 +69,19 @@ The connectivity runs from 0 to one less than the number of points.
 1D Grid of line segments
 ------------------------
 
-    >>> g = Structured ([-1, 2, 3, 6], (4, ))
-    >>> print g.get_x ()
+    >>> g = Structured([-1, 2, 3, 6], (4, ))
+    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
     [-1. 2. 3. 6.]
-    >>> print g.get_y ()
-    [ 0. 0. 0. 0.]
-    >>> print g.get_shape ()
+    >>> print g.get_y()
+    Traceback (most recent call last):
+            ...
+    IndexError: Dimension out of bounds
+    >>> print g.get_shape()
     [4]
 
-    >>> print g.get_offset () # doctest: +NORMALIZE_WHITESPACE
+    >>> print g.get_offset() # doctest: +NORMALIZE_WHITESPACE
     [2 4 6]
-    >>> print g.get_connectivity () # doctest: +NORMALIZE_WHITESPACE
+    >>> print g.get_connectivity() # doctest: +NORMALIZE_WHITESPACE
     [0 1 1 2 2 3]
 
 
@@ -92,11 +94,11 @@ The connectivity runs from 0 to one less than the number of points.
 
     >>> g = Structured (x, y, z, (2, 2, 2))
 
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 1. 0. 1. 0. 1. 0. 1.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 1. 1. 0. 0. 1. 1.]
-    >>> print g.get_z ()
+    >>> print g.get_z () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 0. 0. 1. 1. 1. 1.]
 
     >>> print g.get_connectivity ()

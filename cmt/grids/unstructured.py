@@ -6,6 +6,8 @@ from igrid import IGrid, IField
 
 class Error (Exception):
     pass
+
+
 class DimensionError (Error):
     def __init__ (self, dim0, dim1):
         try:
@@ -169,7 +171,7 @@ Create the grid,
     <type 'numpy.ndarray'>
     >>> x.dtype
     dtype('float64')
-    >>> print x
+    >>> print x #doctest:+NORMALIZE_WHITESPACE
     [ 0. 2. 1. 3.]
 
     >>> y = g.get_y ()
@@ -177,7 +179,7 @@ Create the grid,
     <type 'numpy.ndarray'>
     >>> y.dtype
     dtype('float64')
-    >>> print y
+    >>> print y #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 1. 1.]
 
     >>> c = g.get_connectivity ()
@@ -226,11 +228,11 @@ Eight point that form a unit cube.
     8
     >>> g.get_cell_count ()
     1
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 1. 0. 1. 0. 1. 0. 1.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 1. 1. 0. 0. 1. 1.]
-    >>> print g.get_z ()
+    >>> print g.get_z () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 0. 0. 1. 1. 1. 1.]
 
 

@@ -16,16 +16,16 @@ Create a grid of length 2 in the x direction, and 3 in the y direction.
     6
     >>> g.get_cell_count ()
     2
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0.5 1.5 0.5 1.5 0.5 1.5]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 2. 2. 4. 4.]
     >>> print g.get_shape ()
     [3 2]
     >>> print g.get_spacing ()
-    [ 2. 1.]
+    [ 2.  1.]
     >>> print g.get_origin ()
-    [ 0. 0.5]
+    [ 0.   0.5]
     >>> print g.get_x_units ()
     -
     >>> print g.get_y_units ()
@@ -37,20 +37,28 @@ ij-indexing
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> g = UniformRectilinear ((2,3), (1,2), (.5, 0), indexing='ij', units=('m', 'km'))
-    >>> print g.get_x ()
+    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
     [ 0. 2. 4. 0. 2. 4.]
-    >>> print g.get_y ()
+    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
     [ 0.5 0.5 0.5 1.5 1.5 1.5]
-    >>> print ','.join ([g.get_x_units (), g.get_y_units (), g.get_z_units ()])
-    km,m,-
-    >>> print ','.join ([g.get_coordinate_units (i) for i in [0,1,2]])
-    m,km,-
+    >>> print ','.join([g.get_x_units(), g.get_y_units()])
+    km,m
+    >>> g.get_z_units()
+    Traceback (most recent call last):
+            ...
+    IndexError: Dimension out of bounds
+    >>> print ','.join([g.get_coordinate_units(i) for i in [0, 1]])
+    m,km
+    >>> g.get_coordinate_units(2)
+    Traceback (most recent call last):
+            ...
+    IndexError: Dimension out of bounds
     >>> print g.get_shape ()
     [2 3]
     >>> print g.get_spacing ()
-    [ 1. 2.]
+    [ 1.  2.]
     >>> print g.get_origin ()
-    [ 0.5 0. ]
+    [ 0.5  0. ]
     >>> print g.get_offset ()
     [4 8]
     >>> print g.get_connectivity ()
@@ -62,16 +70,16 @@ Uniform rectilinear grid of points
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> g = UniformRectilinearPoints ((2,3), (1,2), (.5, 0), indexing='ij', set_connectivity=True)
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 2. 4. 0. 2. 4.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 0.5 0.5 0.5 1.5 1.5 1.5]
     >>> print g.get_shape ()
     [2 3]
     >>> print g.get_spacing ()
-    [ 1. 2.]
+    [ 1.  2.]
     >>> print g.get_origin ()
-    [ 0.5 0. ]
+    [ 0.5  0. ]
 
     >>> g.get_point_count ()
     6
@@ -92,30 +100,30 @@ The connectivity runs from 0 to one less than the number of points.
 1D-grid of points
 -----------------
     >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='xy', set_connectivity=True)
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0.5 1.5 2.5 3.5 4.5]
 
     >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='ij', set_connectivity=True)
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0.5 1.5 2.5 3.5 4.5]
 
 3D-grid of cells
 ----------------
 
     >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='xy')
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [-1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 0. 0. 2. 2. 2. 2. 4. 4. 4. 4. 0. 0. 0. 0. 2. 2. 2. 2. 4. 4. 4. 4.]
-    >>> print g.get_z ()
+    >>> print g.get_z () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4.]
 
     >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='ij')
-    >>> print g.get_x ()
+    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4.]
-    >>> print g.get_y ()
+    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4.]
-    >>> print g.get_z ()
+    >>> print g.get_z () #doctest:+NORMALIZE_WHITESPACE
     [-1. -1. -1. -1. -1. -1. 0. 0. 0. 0. 0. 0. 1. 1. 1. 1. 1. 1. 2. 2. 2. 2. 2. 2.]
 
 """
