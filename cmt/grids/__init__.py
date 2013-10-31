@@ -1,18 +1,7 @@
+from cmt.grids.raster import UniformRectilinear
+from cmt.grids.rectilinear import RectilinearPoints, Rectilinear
+from cmt.grids.structured import Structured
+from cmt.grids.unstructured import Unstructured
 
-from assertions import *
-from raster import *
-from rectilinear import *
-from structured import *
-from unstructured import *
-from field import *
-from igrid import *
-try:
-    from esmp import *
-except ImportError:
-    from warnings import warn
-    warn ('ESMF mapper disabled', RuntimeWarning)
-try:
-    from map import *
-except (ImportError, OSError):
-    from warnings import warn
-    warn ('CSDMS mapper disabled', RuntimeWarning)
+from cmt.grids.assertions import (is_uniform_rectilinear, is_rectilinear,
+                                  is_structured, is_unstructured)
