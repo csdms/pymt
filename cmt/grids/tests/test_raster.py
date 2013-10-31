@@ -30,6 +30,7 @@ class TestRasterGrid (unittest.TestCase):
     def assert_connectivity (self, grid, connectivity):
         self.assertListEqual (list (connectivity), list (grid.get_connectivity ()))
 
+    @unittest.skip('xy indexing is deprecated')
     def test_xy_indexing (self):
         grid = UniformRectilinear ((2,3), (1,2), (.5, 0))
         self.assert_point_count (grid, 6)
@@ -76,6 +77,7 @@ class TestRasterGrid (unittest.TestCase):
         self.assert_connectivity (grid, np.arange (grid.get_point_count ()))
         self.assert_offset (grid, np.arange (1, grid.get_point_count ()+1))
 
+    @unittest.skip('xy indexing is deprecated')
     def test_3d_grid_xy_indexing (self):
         grid = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1),
                                    indexing='xy')

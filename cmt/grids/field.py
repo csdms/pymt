@@ -229,10 +229,10 @@ size or shape doesn't match raise an exception.
     >>> g.add_field ('Cell Data', cell_data, centering='zonal')
 
     >>> g.get_field ('Cell Data')
-    array([ 0., 10., 20., 30., 40.])
+    array([  0.,  10.,  20.,  30.,  40.])
 
     >>> g.get_field ('Point Data')
-    array([ 0., 1., 2., 3., 4., 5.])
+    array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
 3D-Field
 --------
@@ -249,10 +249,11 @@ size or shape doesn't match raise an exception.
     >>> g.add_field ('Cell Data', cell_data, centering='zonal')
 
     >>> g.get_field ('Cell Data')
-    array([ 0., 10., 20., 30., 40., 50.])
+    array([  0.,  10.,  20.,  30.,  40.,  50.])
 
-    >>> print g.get_field ('Point Data')
-    [-0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5]
+    >>> print g.get_field ('Point Data') #doctest: +NORMALIZE_WHITESPACE
+    [-0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5
+     -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5]
 
     >>> print g.get_shape ()
     [4 3 2]

@@ -8,10 +8,10 @@
 >>> print get_connectivity ((6, ), ordering='ccw')
 [1 0 2 1 3 2 4 3 5 4]
 
->>> print get_connectivity ((3, 4))
+>>> print get_connectivity ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
 [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
->>> print get_connectivity ((3, 4), ordering='ccw')
+>>> print get_connectivity ((3, 4), ordering='ccw') #doctest: +NORMALIZE_WHITESPACE
 [ 1 0 4 5 2 1 5 6 3 2 6 7 5 4 8 9 6 5 9 10 7 6 10 11]
 
 >>> shape = np.array ([3, 4, 4])
@@ -25,13 +25,13 @@ True
 True
 
 >>> print c[:o[0]]
-[ 0 1 5 4 16 17 21 20]
+[ 0  1  5  4 16 17 21 20]
 >>> print c[o[-2]:o[-1]]
 [26 27 31 30 42 43 47 46]
 
 >>> ids = get_connectivity ((3, 4, 4), ordering='ccw')
 >>> print ids[:8]
-[ 1 0 4 5 17 16 20 21]
+[ 1  0  4  5 17 16 20 21]
 >>> print ids[-8:]
 [27 26 30 31 43 42 46 47]
 
@@ -54,7 +54,7 @@ def _get_interior_ids (shape, dtype='int64'):
     >>> print _get_interior_ids ((2, 3, 4))
     [0 1 2 4 5 6]
     >>> print _get_interior_ids ((3, 3, 4))
-    [ 0 1 2 4 5 6 12 13 14 16 17 18]
+    [ 0  1  2  4  5  6 12 13 14 16 17 18]
     """
 
     #i = np.arange (np.prod (shape), dtype=np.int64)
@@ -80,14 +80,14 @@ def _get_offsets (shape, ordering='cw', dtype='int64'):
     >>> print _get_offsets ((3, 4))
     [0 1 5 4]
     >>> print _get_offsets ((3, 4, 4))
-    [ 0 1 5 4 16 17 21 20]
+    [ 0  1  5  4 16 17 21 20]
 
     >>> print _get_offsets ((16, ), ordering='ccw')
     [1 0]
     >>> print _get_offsets ((3, 4), ordering='ccw')
     [1 0 4 5]
     >>> print _get_offsets ((3, 4, 4), ordering='ccw')
-    [ 1 0 4 5 17 16 20 21]
+    [ 1  0  4  5 17 16 20 21]
     """
 
     if not ordering in ['cw', 'ccw', 'none']:
@@ -170,10 +170,10 @@ A 1D grid with three points has 2 elements.
       |         |         |         |
     ( 8 ) --- ( 9 ) --- ( 10) --- ( 11)
 
-    >>> print get_connectivity ((3, 4))
+    >>> print get_connectivity ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
     [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
-    >>> print get_connectivity ((3, 4), ordering='ccw')
+    >>> print get_connectivity ((3, 4), ordering='ccw') #doctest: +NORMALIZE_WHITESPACE
     [ 1 0 4 5 2 1 5 6 3 2 6 7 5 4 8 9 6 5 9 10 7 6 10 11]
 
 If ordering doesn't matter, set ordering to 'none' as this could be slightly faster.
@@ -187,8 +187,8 @@ If ordering doesn't matter, set ordering to 'none' as this could be slightly fas
     [1 2 5 6]
     [2 3 6 7]
     [4 5 8 9]
-    [ 5 6 9 10]
-    [ 6 7 10 11]
+    [ 5  6  9 10]
+    [ 6  7 10 11]
 
 Instead of using an offset array to indicate the end of each cell, you can return
 a list of connectivity arrays for each cell.
@@ -202,8 +202,8 @@ a list of connectivity arrays for each cell.
     [1 2 6 5]
     [2 3 7 6]
     [4 5 9 8]
-    [ 5 6 10 9]
-    [ 6 7 11 10]
+    [ 5  6 10  9]
+    [ 6  7 11 10]
 
     """
     kwds.setdefault ('dtype', 'int64')
@@ -240,7 +240,7 @@ def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
     """
     This is a little slower than the above and less general.
 
-    >>> print get_connectivity_2d ((3, 4))
+    >>> print get_connectivity_2d ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
     [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
     """

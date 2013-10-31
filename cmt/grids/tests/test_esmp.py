@@ -1,24 +1,37 @@
 #! /usr/bin/env python import unittest
 
 import unittest
-from cmt.grids import (EsmpRasterField, EsmpRectilinear, EsmpStructured,
-                       EsmpUnstructured, EsmpUniformRectilinear,
-                       EsmpRectilinearField,
-                       DimensionError)
-from cmt.grids import run_regridding
 import numpy as np
 
-import ESMP
+try:    
+    import ESMP
+except ImportError:
+    _WITH_ESMP = False
+else:
+    _WITH_ESMP = True
+    from cmt.grids.esmp import (EsmpRasterField, EsmpRectilinear,
+                                EsmpStructured, EsmpUnstructured,
+                                EsmpUniformRectilinear, EsmpRectilinearField,
+                                DimensionError)
+    from cmt.grids.esmp import run_regridding
 
+
+@unittest.skipUnless(_WITH_ESMP, 'ESMP is not available')
 class TestEsmp (unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
-        ESMP.ESMP_Initialize()
+        try:
+            ESMP.ESMP_Initialize()
+        except NameError:
+            pass
 
     @classmethod
     def tearDownClass (cls):
-        ESMP.ESMP_Finalize()
+        try:
+            ESMP.ESMP_Finalize()
+        except NameError:
+            pass
 
     #@unittest.skip ('skip')
     def test_2d (self):

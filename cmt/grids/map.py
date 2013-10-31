@@ -21,11 +21,11 @@ Create a rectilinear grid that is 2x3,
 Numbers in parens are node IDs, and numbers in square brackets are
 cell IDs.
 
->>> g = RectilinearMap ([0, 1, 2], [0, 2])
+>>> g = RectilinearMap ([0, 2], [0, 1, 2])
 >>> g.get_x ()
-array([ 0., 1., 2., 0., 1., 2.])
+array([ 0.,  1.,  2.,  0.,  1.,  2.])
 >>> g.get_y ()
-array([ 0., 0., 0., 2., 2., 2.])
+array([ 0.,  0.,  0.,  2.,  2.,  2.])
 
 Node 1 is shared by both cell 0, and 1; node 5 only is part of cell 1.
 

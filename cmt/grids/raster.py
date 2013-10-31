@@ -7,31 +7,6 @@ Examples
 Create a grid that consists of 2x3 nodes using 'xy' and 'ij' indexing.
 
 -----------
-xy-indexing
------------
-Create a grid of length 2 in the x direction, and 3 in the y direction.
-
-    >>> g = UniformRectilinear ((2,3), (1,2), (.5, 0))
-    >>> g.get_point_count ()
-    6
-    >>> g.get_cell_count ()
-    2
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
-    [ 0.5 1.5 0.5 1.5 0.5 1.5]
-    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 2. 2. 4. 4.]
-    >>> print g.get_shape ()
-    [3 2]
-    >>> print g.get_spacing ()
-    [ 2.  1.]
-    >>> print g.get_origin ()
-    [ 0.   0.5]
-    >>> print g.get_x_units ()
-    -
-    >>> print g.get_y_units ()
-    -
-
------------
 ij-indexing
 -----------
 Create a grid of length 2 in the i direction, and 3 in the j direction.
@@ -99,24 +74,12 @@ The connectivity runs from 0 to one less than the number of points.
 
 1D-grid of points
 -----------------
-    >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='xy', set_connectivity=True)
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
-    [ 0.5 1.5 2.5 3.5 4.5]
-
     >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='ij', set_connectivity=True)
     >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
     [ 0.5 1.5 2.5 3.5 4.5]
 
 3D-grid of cells
 ----------------
-
-    >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='xy')
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
-    [-1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2. -1. 0. 1. 2.]
-    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 0. 0. 2. 2. 2. 2. 4. 4. 4. 4. 0. 0. 0. 0. 2. 2. 2. 2. 4. 4. 4. 4.]
-    >>> print g.get_z () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4. 4.]
 
     >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='ij')
     >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
@@ -137,7 +100,7 @@ class UniformRectilinearPoints (RectilinearPoints):
     def __init__ (self, shape, spacing, origin, **kwds):
         kwds.setdefault ('indexing', 'xy')
         kwds.setdefault ('set_connectivity', False)
-
+        #assert(indexing == 'ij')
         assert (len (shape) == len (spacing) == len (origin))
 
         xi = []
@@ -147,9 +110,9 @@ class UniformRectilinearPoints (RectilinearPoints):
         self._spacing = np.array (spacing, dtype=np.float64)
         self._origin = np.array (origin, dtype=np.float64)
 
-        if kwds['indexing']=='xy' and len (shape)>1:
-            self._origin = self._origin[::-1]
-            self._spacing = self._spacing[::-1]
+        #if kwds['indexing']=='xy' and len (shape)>1:
+        #    self._origin = self._origin[::-1]
+        #    self._spacing = self._spacing[::-1]
 
         super (UniformRectilinearPoints, self).__init__ (*xi, **kwds)
 

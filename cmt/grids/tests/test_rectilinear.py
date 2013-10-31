@@ -4,6 +4,10 @@ import unittest
 from cmt.grids import Rectilinear, RectilinearPoints
 import numpy as np
 
+
+from cmt.grids.tests.test_utils import NumpyArrayMixIn
+
+
 class TestRectilinearGrid (unittest.TestCase):
 
     def assert_point_count (self, grid, point_count):
@@ -30,6 +34,7 @@ class TestRectilinearGrid (unittest.TestCase):
     def assert_connectivity (self, grid, connectivity):
         self.assertListEqual (list (connectivity), list (grid.get_connectivity ()))
 
+    @unittest.skip('xy indexing is deprecated')
     def test_xy_indexing (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.])
         self.assert_point_count (grid, 12)
@@ -81,6 +86,7 @@ class TestRectilinearGrid (unittest.TestCase):
         self.assert_connectivity (grid, [0, 1, 1, 2, 2, 3, 3, 4])
         self.assert_offset (grid, [2, 4, 6, 8])
 
+    @unittest.skip('xy indexing is deprecated')
     def test_3d_xy_indexing (self):
         grid = Rectilinear ([0, 1, 2, 3], [4, 5, 6], [7, 8],
                             set_connectivity=True, indexing='xy')
@@ -119,6 +125,7 @@ class TestRectilinearGrid (unittest.TestCase):
                               3., 3., 3., 3., 3., 3.])
         self.assert_offset (grid, 8. * np.arange (1, grid.get_cell_count () + 1))
 
+
 class TestRectilinearGridUnits (unittest.TestCase):
     def test_2d_units_ij_indexing_by_name (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
@@ -127,6 +134,7 @@ class TestRectilinearGridUnits (unittest.TestCase):
         self.assertEqual (grid.get_x_units (), 'x_units')
         self.assertEqual (grid.get_y_units (), 'y_units')
 
+    @unittest.skip('xy indexing is deprecated')
     def test_2d_units_xy_indexing_by_name (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy',
                             units=['x_units', 'y_units'])
@@ -138,9 +146,10 @@ class TestRectilinearGridUnits (unittest.TestCase):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
                             units=['y_units', 'x_units'])
 
-        self.assertEqual (grid.get_coordinate_units (0), 'x_units')
-        self.assertEqual (grid.get_coordinate_units (1), 'y_units')
+        self.assertEqual(grid.get_coordinate_units(0), 'y_units')
+        self.assertEqual(grid.get_coordinate_units(1), 'x_units')
 
+    @unittest.skip('xy indexing is deprecated')
     def test_2d_units_xy_indexing_by_coordinate (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
                             units=['y_units', 'x_units'])
@@ -148,26 +157,29 @@ class TestRectilinearGridUnits (unittest.TestCase):
         self.assertEqual (grid.get_coordinate_units (0), 'x_units')
         self.assertEqual (grid.get_coordinate_units (1), 'y_units')
 
+
 class TestRectilinearGridCoordinateNames (unittest.TestCase):
     def test_2d_coordinate_name_ij_default (self):
-        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
+        grid = Rectilinear([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
 
-        self.assertEqual (grid.get_coordinate_name (0), 'x')
-        self.assertEqual (grid.get_coordinate_name (1), 'y')
+        self.assertEqual(grid.get_coordinate_name(0), 'y')
+        self.assertEqual(grid.get_coordinate_name(1), 'x')
 
+    @unittest.skip('xy indexing is deprecated')
     def test_2d_coordinate_name_xy_default (self):
-        grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy')
+        grid = Rectilinear([1., 2., 4., 8.], [1., 2., 3.], indexing='xy')
 
-        self.assertEqual (grid.get_coordinate_name (0), 'x')
-        self.assertEqual (grid.get_coordinate_name (1), 'y')
+        self.assertEqual(grid.get_coordinate_name(0), 'x')
+        self.assertEqual(grid.get_coordinate_name(1), 'y')
 
     def test_2d_coordinate_name_ij_indexing (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
                             coordinate_names=['longitude', 'latitude'])
 
-        self.assertEqual (grid.get_coordinate_name (0), 'latitude')
-        self.assertEqual (grid.get_coordinate_name (1), 'longitude')
+        self.assertEqual(grid.get_coordinate_name (0), 'longitude')
+        self.assertEqual(grid.get_coordinate_name (1), 'latitude')
 
+    @unittest.skip('xy indexing is deprecated')
     def test_2d_coordinate_name_xy_indexing (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy',
                             coordinate_names=['latitude', 'longitude'])
@@ -179,21 +191,24 @@ class TestRectilinearGridCoordinateNames (unittest.TestCase):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij',
                             coordinate_names=['latitude', 'longitude'])
 
-        self.assertEqual (grid.get_coordinate_name (0, indexing='ij'), 'latitude')
-        self.assertEqual (grid.get_coordinate_name (1, indexing='ij'), 'longitude')
+        self.assertEqual(grid.get_coordinate_name(0), 'latitude')
+        self.assertEqual(grid.get_coordinate_name(1), 'longitude')
 
-        self.assertEqual (grid.get_coordinate_name (0, indexing='xy'), 'longitude')
-        self.assertEqual (grid.get_coordinate_name (1, indexing='xy'), 'latitude')
+        #self.assertEqual (grid.get_coordinate_name (0, indexing='xy'), 'longitude')
+        #self.assertEqual (grid.get_coordinate_name (1, indexing='xy'), 'latitude')
 
-class TestRectilinearGridCoordinates (unittest.TestCase):
+
+class TestRectilinearGridCoordinates (unittest.TestCase, NumpyArrayMixIn):
     def test_2d_coordinates_ij_default (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
 
-        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0),
-                                      np.array ([1., 2., 3.] * 4)))
-        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1),
-                                      np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
+        self.assertArrayEqual(grid.get_point_coordinates(axis=0),
+                              np.array([1., 1., 1., 2., 2., 2.,
+                                        4., 4., 4., 8., 8., 8.]))
+        self.assertArrayEqual(grid.get_point_coordinates(axis=1),
+                              np.array([1., 2., 3.] * 4))
 
+    @unittest.skip('xy indexing is deprecated')
     def test_2d_coordinates_xy_default (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='xy')
 
@@ -205,15 +220,16 @@ class TestRectilinearGridCoordinates (unittest.TestCase):
     def test_2d_coordinates_ij_indexing_with_kwds (self):
         grid = Rectilinear ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
 
-        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0, indexing='xy'),
-                                      np.array ([1., 2., 3.] * 4)))
-        self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1, indexing='xy'),
-                                      np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
+        #self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0, indexing='xy'),
+        #                              np.array ([1., 2., 3.] * 4)))
+        #self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1, indexing='xy'),
+        #                              np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
 
         self.assertTrue (np.allclose (grid.get_point_coordinates (axis=0, indexing='ij'),
                                       np.tile ([1., 2., 4., 8.], (3, 1)).T.flat))
         self.assertTrue (np.allclose (grid.get_point_coordinates (axis=1, indexing='ij'),
                                       np.array ([1., 2., 3.] * 4)))
+
 
 def suite ():
     suite = unittest.TestLoader ().loadTestsFromTestCase (TestRectilinearGrid)
