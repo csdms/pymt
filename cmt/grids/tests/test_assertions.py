@@ -1,12 +1,13 @@
 #! /usr/bin/env python
 
 import unittest
-from cmt.grids import RectilinearPoints
+import numpy as np
+
 from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
                        Unstructured)
 from cmt.grids import (is_uniform_rectilinear, is_rectilinear, is_structured,
                        is_unstructured)
-import numpy as np
+
 
 class TestUniformRectilinearAssertions (unittest.TestCase):
     def test_is_uniform_rectilinear (self):
