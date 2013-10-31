@@ -113,50 +113,44 @@ The connectivity runs from 0 to one less than the number of points.
 """
 import warnings
 import numpy as np
-from meshgrid import meshgrid
-from igrid import IGrid, IField
-from unstructured import Unstructured, UnstructuredPoints
-from connectivity import get_connectivity
+
+from cmt.grids import Unstructured, UnstructuredPoints
+from cmt.grids.meshgrid import meshgrid
+from cmt.grids.igrid import IGrid, IField
+from cmt.grids.connectivity import get_connectivity
 from cmt.grids.utils import (get_default_coordinate_names,
                              get_default_coordinate_units)
 
 
-class StructuredPoints (UnstructuredPoints):
-    def __init__ (self, *args, **kwds):
+class StructuredPoints(UnstructuredPoints):
+    def __init__(self, *args, **kwds):
         """StructuredPoints(x0 [, x1 [, x2]], shape)
         """
-        kwds.setdefault ('set_connectivity', True)
-        indexing = kwds.pop ('indexing', 'xy')
+        (coordinates, shape) = (args[:-1], args[-1])
+
+        assert(len(coordinates) >= 1)
+        assert(len(coordinates) <= 3)
+
+        kwds.setdefault('set_connectivity', True)
+        indexing = kwds.pop('indexing', 'xy')
 
         if indexing != 'ij':
             warnings.warn('only ij indexing is supported', RuntimeWarning)
             indexing = 'ij'
 
         coordinate_names = kwds.pop(
-            'coordinate_names', get_default_coordinate_names(len(args) - 1))
+            'coordinate_names', get_default_coordinate_names(len(coordinates)))
         coordinate_units = kwds.pop(
-            'units', get_default_coordinate_units(len(args) - 1))
+            'units', get_default_coordinate_units(len(coordinates)))
 
-        self._shape = np.array (args[-1], dtype=np.int64)
-
-        #coords = [arg for arg in args[:-1]]
-        #if indexing == 'ij':
-        #    coords = coords[::-1]
-        #    coordinate_names = coordinate_names[::-1]
-        #    coordinate_units = coordinate_units[::-1]
-
-        coordinates = args[:-1]
-        assert(len(coordinates) >= 1)
-        assert(len(coordinates) <= 3)
+        self._shape = np.array(shape, dtype=np.int64)
 
         kwds['units'] = coordinate_units
         kwds['coordinate_names'] = coordinate_names
 
-        #super (StructuredPoints, self).__init__ (*coords, **kwds)
-        super(StructuredPoints, self).__init__ (*coordinates, **kwds)
+        super(StructuredPoints, self).__init__(*coordinates, **kwds)
 
-    #def get_shape (self, remove_singleton=False, indexing='ij'):
-    def get_shape (self, remove_singleton=False):
+    def get_shape(self, remove_singleton=False):
         """The shape of the structured grid with the given indexing.
         
         Use remove_singleton=False to include singleton dimensions.
@@ -165,45 +159,22 @@ class StructuredPoints (UnstructuredPoints):
         if remove_singleton:
             shape = shape[shape > 1]
 
-        #if indexing == 'xy':
-        #    shape = shape[::-1]
-
         return shape
 
-    #def get_coordinate_units (self, i, indexing='xy'):
     def get_coordinate_units(self, i):
-        #if indexing == 'ij':
-        #    return super (StructuredPoints, self).get_coordinate_units (
-        #        self.get_dim_count () - (i+1))
-        #else:
         return super(StructuredPoints, self).get_coordinate_units(i)
 
-    #def get_coordinate_name (self, i, indexing='xy'):
-    def get_coordinate_name (self, i):
-        #if indexing == 'ij':
-        #    return super (StructuredPoints, self).get_coordinate_name (
-        #        self.get_dim_count () - (i+1))
-        #else:
+    def get_coordinate_name(self, i):
         return super(StructuredPoints, self).get_coordinate_name(i)
 
-    #def get_coordinate(self, i, indexing='xy'):
     def get_coordinate(self, i):
-        #if indexing == 'ij':
-        #    return super (StructuredPoints, self).get_coordinate (
-        #        self.get_dim_count () - (i+1))
-        #else:
         return super(StructuredPoints, self).get_coordinate(i)
 
     def get_point_coordinates(self, *args, **kwds):
-        #axes = np.array([kwds.get ('axis', [])], dtype=np.int64)
-        #indexing = kwds.pop ('indexing', 'xy')
-
-        #if indexing == 'ij' and len (axes) > 0:
-        #    kwds['axis'] = self.get_dim_count () - (axes + 1)
         return super(StructuredPoints, self).get_point_coordinates(*args, **kwds)
 
 
-class Structured (StructuredPoints, Unstructured):
+class Structured(StructuredPoints, Unstructured):
     """
 Create a structured rectilinear grid.
 
@@ -213,7 +184,7 @@ Create a structured rectilinear grid.
 :type y: array_like
 :param shape: 1-D array of y-coordinates of nodes.
 
-:keyword indexing: Cartesian ('xy', default) or matrix ('ij') indexing of output.
+:keyword indexing: Cartesian('xy', default) or matrix('ij') indexing of output.
 :type indexing:  string [xy|ij]
 
 :returns: An instance of a Structured grid.
@@ -222,24 +193,24 @@ Create a structured rectilinear grid.
 
 
     """
-    def __init__ (self, *args, **kwds):
-        kwds.setdefault ('indexing', 'xy')
-        kwds.setdefault ('set_connectivity', True)
-        ordering = kwds.pop ('ordering', 'cw')
+    def __init__(self, *args, **kwds):
+        kwds.setdefault('indexing', 'xy')
+        kwds.setdefault('set_connectivity', True)
+        ordering = kwds.pop('ordering', 'cw')
         if not ordering in ['cw', 'ccw']:
-            raise TypeError ("ordering not understood (valid choices are 'cw' or 'ccw')")
+            raise TypeError("ordering not understood (valid choices are 'cw' or 'ccw')")
 
         shape = args[-1]
 
         if kwds['set_connectivity']:
-            (c, o) = get_connectivity (shape, ordering=ordering, with_offsets=True)
-            self._set_connectivity (c, o)
+            (c, o) = get_connectivity(shape, ordering=ordering,
+                                      with_offsets=True)
+            self._set_connectivity(c, o)
             kwds['set_connectivity'] = False
 
-        super (Structured, self).__init__ (*args, **kwds)
+        super(Structured, self).__init__(*args, **kwds)
+
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
-
-
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -1,8 +1,9 @@
 #! /bin/env python
 
 import numpy as np
-from meshgrid import meshgrid
-from igrid import IGrid, IField
+
+from cmt.grids.meshgrid import meshgrid
+from cmt.grids.igrid import IGrid
 from cmt.grids.utils import (get_default_coordinate_units,
                              get_default_coordinate_names,
                              assert_arrays_are_equal_size,
@@ -10,36 +11,36 @@ from cmt.grids.utils import (get_default_coordinate_units,
                              args_as_numpy_arrays)
 
 
-class Error (Exception):
+class Error(Exception):
     pass
 
 
-class DimensionError (Error):
-    def __init__ (self, dim0, dim1):
+class DimensionError(Error):
+    def __init__(self, dim0, dim1):
         try:
-            self.src_dim = tuple (dim0)
+            self.src_dim = tuple(dim0)
         except TypeError:
             self.src_dim = (dim0)
         try:
-            self.dst_dim = tuple (dim1)
+            self.dst_dim = tuple(dim1)
         except TypeError:
             self.dst_dim = (dim1)
 
-    def __str__ (self):
+    def __str__(self):
         return '%s != %s' % (self.src_dim, self.dst_dim)
 
 
-class AttributeError (Error):
-    def __init__ (self, msg):
+class AttributeError(Error):
+    def __init__(self, msg):
         self.msg = msg
         self.attr = attr
 
-    def __str__ (self):
+    def __str__(self):
         return '%s: %s' % (self.attr, self.msg)
 
 
 class UnstructuredPoints(IGrid):
-    def __init__ (self, *args, **kwds):
+    def __init__(self, *args, **kwds):
         """
         UnstructuredPoints(x0 [, x1 [, x2]])
         """
@@ -56,20 +57,17 @@ class UnstructuredPoints(IGrid):
 
         self._n_dims = len(args)
         self._point_count = args[0].size
-        #self._point_count = len(args[0])
 
         self._coords = coordinates_to_numpy_matrix(*args)
         self._units = list(units)
         self._coordinate_name = list(coordinate_names)
-        #self._units = list(units)[::-1]
-        #self._coordinate_name = list(coordinate_names)[::-1]
 
         if set_connectivity:
             self._connectivity = np.arange(self._point_count, dtype=np.int32)
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
-        super(UnstructuredPoints, self).__init__ ()
+        super(UnstructuredPoints, self).__init__()
 
     def get_attrs(self):
         return self._attrs
@@ -81,38 +79,39 @@ class UnstructuredPoints(IGrid):
         try:
             return self._coords[-1]
         except IndexError:
-            raise IndexError ('Dimension out of bounds')
+            raise IndexError('Dimension out of bounds')
 
     def get_y(self):
         try:
             return self._coords[-2]
         except IndexError:
-            raise IndexError ('Dimension out of bounds')
+            raise IndexError('Dimension out of bounds')
 
     def get_z(self):
         try:
             return self._coords[-3]
         except IndexError:
-            raise IndexError ('Dimension out of bounds')
+            raise IndexError('Dimension out of bounds')
 
     def get_xyz(self):
         return self._coords
 
     def get_point_coordinates(self, *args, **kwds):
-        axis = kwds.pop ('axis', None)
+        axis = kwds.pop('axis', None)
 
-        assert (len (args) < 2)
+        assert(len(args) < 2)
 
-        if len (args) == 0:
-            inds = np.arange (self.get_point_count ())
+        if len(args) == 0:
+            inds = np.arange(self.get_point_count())
         else:
             inds = args
 
         if axis is None:
-            axis = np.arange (self.get_dim_count ())
-            axis.shape = (self.get_dim_count (), 1)
+            axis = np.arange(self.get_dim_count())
+            axis.shape = (self.get_dim_count(), 1)
 
-        return tuple (self._coords[axis, inds])
+        return tuple(self._coords[axis, inds])
+
 
     def get_x_units(self):
         return self.get_coordinate_units(-1)
@@ -175,7 +174,7 @@ class UnstructuredPoints(IGrid):
         return len(self._connectivity)
 
 
-class Unstructured (UnstructuredPoints):
+class Unstructured(UnstructuredPoints):
     """
 Define a grid that consists of two trianges that share two points.
 
@@ -187,41 +186,41 @@ Define a grid that consists of two trianges that share two points.
 
 Create the grid,
 
-    >>> g = Unstructured ([0, 0, 1, 1], [0, 2, 1, 3],
-    ...                   connectivity=[0, 2, 1, 2, 3, 1], offset=[3, 6])
-    >>> g.get_point_count ()
+    >>> g = Unstructured([0, 0, 1, 1], [0, 2, 1, 3],
+    ...                  connectivity=[0, 2, 1, 2, 3, 1], offset=[3, 6])
+    >>> g.get_point_count()
     4
-    >>> g.get_cell_count ()
+    >>> g.get_cell_count()
     2
-    >>> g.get_dim_count ()
+    >>> g.get_dim_count()
     2
 
-    >>> x = g.get_x ()
-    >>> type (x)
+    >>> x = g.get_x()
+    >>> type(x)
     <type 'numpy.ndarray'>
     >>> x.dtype
     dtype('float64')
     >>> print x #doctest:+NORMALIZE_WHITESPACE
     [ 0. 2. 1. 3.]
 
-    >>> y = g.get_y ()
-    >>> type (y)
+    >>> y = g.get_y()
+    >>> type(y)
     <type 'numpy.ndarray'>
     >>> y.dtype
     dtype('float64')
     >>> print y #doctest:+NORMALIZE_WHITESPACE
     [ 0. 0. 1. 1.]
 
-    >>> c = g.get_connectivity ()
-    >>> type (c)
+    >>> c = g.get_connectivity()
+    >>> type(c)
     <type 'numpy.ndarray'>
     >>> c.dtype
     dtype('int32')
     >>> print c
     [0 2 1 2 3 1]
 
-    >>> o = g.get_offset ()
-    >>> type (o)
+    >>> o = g.get_offset()
+    >>> type(o)
     <type 'numpy.ndarray'>
     >>> o.dtype
     dtype('int32')
@@ -267,10 +266,10 @@ Eight point that form a unit cube.
 
 
     """
-    def __init__ (self, *args, **kwds):
-        set_connectivity = kwds.pop ('set_connectivity', True)
-        connectivity = kwds.get ('connectivity', [])
-        offset = kwds.get ('offset', [])
+    def __init__(self, *args, **kwds):
+        set_connectivity = kwds.pop('set_connectivity', True)
+        connectivity = kwds.get('connectivity', [])
+        offset = kwds.get('offset', [])
 
         if set_connectivity:
             try:
@@ -283,20 +282,20 @@ Eight point that form a unit cube.
             except KeyError:
                 c = args[-1]
                 args = args[:-1]
-            self._set_connectivity (c, o)
+            self._set_connectivity(c, o)
 
         kwds['set_connectivity'] = False
-        super (Unstructured, self).__init__ (*args, **kwds)
+        super(Unstructured, self).__init__(*args, **kwds)
 
-    def _set_connectivity (self, connectivity, offset):
-        self._connectivity  = np.array (connectivity, dtype=np.int32)
-        self._offset  = np.array (offset, dtype=np.int32)
+    def _set_connectivity(self, connectivity, offset):
+        self._connectivity  = np.array(connectivity, dtype=np.int32)
+        self._offset  = np.array(offset, dtype=np.int32)
         self._connectivity.shape = self._connectivity.size
         self._offset.shape = self._offset.size
         self._cell_count = self._offset.size
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
 

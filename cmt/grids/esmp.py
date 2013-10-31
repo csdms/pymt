@@ -204,18 +204,13 @@ Map values on points
 
 import numpy as np
 
-from cmt.grids.raster import UniformRectilinear
-from cmt.grids.rectilinear import Rectilinear
-from cmt.grids.structured import Structured
-from cmt.grids.unstructured import Unstructured
-from cmt.grids.igrid import IGrid, IField, DimensionError,CenteringValueError, centering_choices
-#try:
-#    from esmp import *
-#except ImportError:
-#    import warnings
-#    warnings.warn ('Unable to import ESMP for cmt.grids.esmp', RuntimeWarning)
-from esmp import *
+from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
+                       Unstructured)
+from cmt.grids.igrid import (IGrid, IField, DimensionError,
+                             CenteringValueError, centering_choices)
+
 import ESMP
+
 
 class EsmpGrid (IGrid):
     def __init__ (self):
@@ -256,17 +251,22 @@ class EsmpGrid (IGrid):
             self._connectivity[last_offset:offset] = c[::-1]
             last_offset = offset
 
+
 class EsmpUnstructured (Unstructured, EsmpGrid):
     name = 'ESMPUnstructured'
+
 
 class EsmpStructured (Structured, EsmpGrid):
     name = 'ESMPStructured'
 
+
 class EsmpRectilinear (Rectilinear, EsmpGrid):
     name = 'ESMPRectilinear'
 
+
 class EsmpUniformRectilinear (UniformRectilinear, EsmpStructured):
     name = 'ESMPUniformRectilinear'
+
 
 class EsmpField (IField):
     def __init__ (self, *args, **kwargs):
@@ -301,6 +301,7 @@ class EsmpField (IField):
     def as_esmp (self, field_name):
         return self._fields[field_name]
 
+
 class EsmpStructuredField (EsmpStructured, EsmpField):
     def add_field (self, field_name, val, centering='zonal'):
         if centering=='zonal':
@@ -314,17 +315,18 @@ class EsmpStructuredField (EsmpStructured, EsmpField):
         except DimensionError, CenteringValueError:
             raise
 
+
 class EsmpUnstructuredField (EsmpUnstructured, EsmpField):
     pass
 
-#class EsmpStructuredField (EsmpRectilinear, EsmpField):
-#    pass
+
 class EsmpRectilinearField (EsmpRectilinear, EsmpStructuredField):
     pass
-#class EsmpRasterField (EsmpUniformRectilinear, EsmpGrid, EsmpField):
+
 
 class EsmpRasterField (EsmpUniformRectilinear, EsmpRectilinearField):
     pass
+
 
 def run_regridding(srcfield, dstfield, method=ESMP.ESMP_REGRIDMETHOD_CONSERVE,
                    unmapped=ESMP.ESMP_UNMAPPEDACTION_ERROR):
@@ -343,7 +345,7 @@ def run_regridding(srcfield, dstfield, method=ESMP.ESMP_REGRIDMETHOD_CONSERVE,
 
     return dstfield
 
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
-

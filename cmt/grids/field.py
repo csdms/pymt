@@ -3,11 +3,12 @@
 import types
 
 import numpy as np
-from igrid import IField, DimensionError, CenteringValueError, centering_choices
-from raster import UniformRectilinear
-from rectilinear import Rectilinear
-from structured import Structured
-from unstructured import Unstructured
+
+from cmt.grids.igrid import (IField, DimensionError, CenteringValueError,
+                             CENTERING_CHOICES)
+from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
+                       Unstructured)
+
 
 def combine_args_to_list (*args, **kwds):
     if len (args) == 0:
@@ -20,6 +21,7 @@ def combine_args_to_list (*args, **kwds):
         else:
             combined_args.extend (arg)
     return combined_args
+
 
 class GridField (Unstructured, IField):
     def __init__ (self, *args, **kwargs):
@@ -36,7 +38,7 @@ class GridField (Unstructured, IField):
         except AttributeError:
             val = np.array (val)
 
-        if centering not in centering_choices:
+        if centering not in CENTERING_CHOICES:
             raise CenteringValueError (centering)
 
         if centering=='zonal' and val.size != self.get_cell_count ():
@@ -112,8 +114,10 @@ class GridField (Unstructured, IField):
     def has_field (self, name):
         return self._fields.has_key (name)
 
+
 class UnstructuredField (GridField):
     pass
+
 
 class StructuredField (Structured, GridField):
     def add_field (self, field_name, val, centering='zonal', units='-'):
@@ -134,8 +138,11 @@ class StructuredField (Structured, GridField):
         except DimensionError, CenteringValueError:
             raise
 
+
 class RectilinearField (Rectilinear, StructuredField):
     pass
+
+
 class RasterField (UniformRectilinear, StructuredField):
     """
 Create a field that looks like this,

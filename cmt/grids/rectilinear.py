@@ -102,11 +102,12 @@ The connectivity runs from 0 to one less than the number of points.
 """
 
 import numpy as np
-from cmt.grids.meshgrid import meshgrid
-from structured import Structured, StructuredPoints
 
-class RectilinearPoints (StructuredPoints):
-    def __init__ (self, *args, **kwds):
+from cmt.grids.meshgrid import meshgrid
+from cmt.grids import Structured, StructuredPoints
+
+class RectilinearPoints(StructuredPoints):
+    def __init__(self, *args, **kwds):
         kwds.setdefault('set_connectivity', False)
         kwds.setdefault('indexing', 'xy')
 
@@ -119,86 +120,76 @@ class RectilinearPoints (StructuredPoints):
             coords.append(np.array(arg, dtype=np.float64))
 
         if n_dim > 1:
-            #if kwds['indexing'] == 'xy':
-            #    XI = meshgrid (*coords[::-1], indexing='ij')[::-1]
-            #else:
             XI = meshgrid(*coords, indexing='ij')
         else:
-            XI = [np.array (args[0], dtype=np.float64)]
+            XI = [np.array(args[0], dtype=np.float64)]
 
         shape = XI[0].shape
-
-        #if kwds['indexing'] == 'xy':
-        #    coords = coords[::-1]
 
         self._x_coordinates = np.array(coords[-1], dtype=np.float64)
         try:
             self._y_coordinates = np.array(coords[-2], dtype=np.float64)
         except IndexError:
             pass
-            #self._y_coordinates = np.zeros (1, dtype=np.float64)
+
         try:
             self._z_coordinates = np.array(coords[-3], dtype=np.float64)
         except IndexError:
             pass
-            #self._z_coordinates = np.zeros (1, dtype=np.float64)
 
         args = XI + [shape]
-        super(RectilinearPoints, self).__init__ (*args, **kwds)
+        super(RectilinearPoints, self).__init__(*args, **kwds)
 
-
-    def get_x_coordinates (self):
+    def get_x_coordinates(self):
         """
-        >>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-        >>> print g.get_x_coordinates ()
+        >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
+        >>> print g.get_x_coordinates()
         [ 4.  5.]
         """
         return self._x_coordinates
-    def get_y_coordinates (self):
+
+    def get_y_coordinates(self):
         """
-        >>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-        >>> print g.get_y_coordinates ()
+        >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
+        >>> print g.get_y_coordinates()
         [ 2.  3.]
         """
         return self._y_coordinates
+
     def get_z_coordinates(self):
         """
-        >>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-        >>> print g.get_z_coordinates ()
+        >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
+        >>> print g.get_z_coordinates()
         [ 0.  1.]
         """
         return self._z_coordinates
+
     def get_xyz_coordinates(self):
-        return (self.get_x_coordinates (), self.get_y_coordinates (),
-                self.get_z_coordinates ())
+        return(self.get_x_coordinates(), self.get_y_coordinates(),
+               self.get_z_coordinates())
 
     def get_axis_coordinates(self, axis=None, indexing='ij'):
-        #assert (indexing in ['xy', 'ij'])
         assert(indexing == 'ij')
 
         if axis is None:
-            coords = [self.get_x_coordinates (),
-                      self.get_y_coordinates (),
-                      self.get_z_coordinates ()]
-            if indexing == 'ij':
-                return coords[::-1]
-            else:
-                return coords
+            return [self.get_z_coordinates(),
+                    self.get_y_coordinates(),
+                    self.get_x_coordinates()]
         else:
-            n_dims = self.get_dim_count ()
-            assert (axis < n_dims)
+            n_dims = self.get_dim_count()
+            assert(axis < n_dims)
 
-            if indexing == 'ij':
-                axis = n_dims - axis - 1
+            axis = n_dims - axis - 1
 
             if axis == 0:
-                return self.get_x_coordinates ()
+                return self.get_x_coordinates()
             elif axis == 1:
-                return self.get_y_coordinates ()
+                return self.get_y_coordinates()
             elif axis == 2:
-                return self.get_z_coordinates ()
+                return self.get_z_coordinates()
 
-class Rectilinear (RectilinearPoints, Structured):
+
+class Rectilinear(RectilinearPoints, Structured):
     """
 Create a rectilinear grid.
 
@@ -215,12 +206,11 @@ Create a rectilinear grid.
 :returns: An instance of a Rectilinear grid.
 :rtype: Rectilinear
     """
-    def __init__ (self, *args, **kwds):
+    def __init__(self, *args, **kwds):
         kwds['set_connectivity'] = True 
-        super (Rectilinear, self).__init__ (*args, **kwds)
+        super(Rectilinear, self).__init__(*args, **kwds)
+
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
-
-
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

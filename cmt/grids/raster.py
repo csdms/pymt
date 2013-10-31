@@ -93,37 +93,35 @@ The connectivity runs from 0 to one less than the number of points.
 
 import numpy as np
 from meshgrid import meshgrid
-from igrid import IField
-from rectilinear import Rectilinear, RectilinearPoints
+from cmt.grids.igrid import IField
+from cmt.grids import Rectilinear, RectilinearPoints
 
-class UniformRectilinearPoints (RectilinearPoints):
-    def __init__ (self, shape, spacing, origin, **kwds):
-        kwds.setdefault ('indexing', 'xy')
-        kwds.setdefault ('set_connectivity', False)
-        #assert(indexing == 'ij')
-        assert (len (shape) == len (spacing) == len (origin))
+
+class UniformRectilinearPoints(RectilinearPoints):
+    def __init__(self, shape, spacing, origin, **kwds):
+        kwds.setdefault('indexing', 'xy')
+        kwds.setdefault('set_connectivity', False)
+        assert(len(shape) == len(spacing) == len(origin))
 
         xi = []
-        for (nx, dx, x0) in zip (shape, spacing, origin):
-            xi.append (np.arange (nx, dtype=np.float64)*dx + x0)
+        for (nx, dx, x0) in zip(shape, spacing, origin):
+            xi.append(np.arange(nx, dtype=np.float64) * dx + x0)
 
-        self._spacing = np.array (spacing, dtype=np.float64)
-        self._origin = np.array (origin, dtype=np.float64)
+        self._spacing = np.array(spacing, dtype=np.float64)
+        self._origin = np.array(origin, dtype=np.float64)
 
-        #if kwds['indexing']=='xy' and len (shape)>1:
-        #    self._origin = self._origin[::-1]
-        #    self._spacing = self._spacing[::-1]
+        super(UniformRectilinearPoints, self).__init__(*xi, **kwds)
 
-        super (UniformRectilinearPoints, self).__init__ (*xi, **kwds)
-
-    def get_spacing (self):
+    def get_spacing(self):
         """Spacing between nodes in each direction"""
         return self._spacing
-    def get_origin (self):
+
+    def get_origin(self):
         """Coordinates of the grid's lower-left corner"""
         return self._origin
 
-class UniformRectilinear (UniformRectilinearPoints, Rectilinear):
+
+class UniformRectilinear(UniformRectilinearPoints, Rectilinear):
     """
 Create a rectilinear grid with uniform spacing in the x and y directions.
 
@@ -139,14 +137,11 @@ Create a rectilinear grid with uniform spacing in the x and y directions.
 :returns: An instance of a UniformRectilinear grid.
 :rtype: UniformRectilinear
     """
-    #def __init__ (self, shape, spacing, origin, indexing='xy'):
-    def __init__ (self, shape, spacing, origin, **kwds):
+    def __init__(self, shape, spacing, origin, **kwds):
         kwds['set_connectivity'] = False
-        super (UniformRectilinear, self).__init__ (shape, spacing, origin,
-                                                   **kwds)
+        super(UniformRectilinear, self).__init__(shape, spacing, origin,
+                                                 **kwds)
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
-
-
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

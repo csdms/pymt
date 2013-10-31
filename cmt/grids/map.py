@@ -53,46 +53,43 @@ True
 from shapely.geometry import Point
 from shapely.geometry import asPoint, asLineString, asPolygon
 
-from cmt.grids.unstructured import Unstructured, UnstructuredPoints
-from cmt.grids.structured import Structured
-from cmt.grids.rectilinear import Rectilinear
-from cmt.grids.raster import UniformRectilinear
-from cmt.grids.igrid import IGrid
+from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
+                       Unstructured, UnstructuredPoints)
 
-class UnstructuredMap (Unstructured):
-#class UnstructuredMap (IGrid):
+
+class UnstructuredMap(Unstructured):
     name = 'Unstructured'
-    def __init__ (self, *args, **kwargs):
-        super (UnstructuredMap, self).__init__ (*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(UnstructuredMap, self).__init__(*args, **kwargs)
 
         self._point = {}
         last_offset = 0
-        for (cell_id, offset) in enumerate (self._offset):
+        for (cell_id, offset) in enumerate(self._offset):
             cell = self._connectivity[last_offset:offset]
             last_offset = offset
 
             for point_id in cell:
                 try:
-                    self._point[point_id].append (cell_id)
+                    self._point[point_id].append(cell_id)
                 except KeyError:
                     self._point[point_id] = [cell_id]
 
-        (point_x, point_y) = (self.get_x (), self.get_y ())
+        (point_x, point_y) = (self.get_x(), self.get_y())
         self._polys = []
         last_offset = 0
-        for (cell_id, offset) in enumerate (self._offset):
+        for (cell_id, offset) in enumerate(self._offset):
             cell = self._connectivity[last_offset:offset]
             last_offset = offset
 
-            (x, y) = (point_x.take (cell), point_y.take (cell))
-            if len (x)>2:
-                self._polys.append (asPolygon (zip (x, y)))
-            elif len (x)==2:
-                self._polys.append (asLineString (zip (x, y)))
+            (x, y) = (point_x.take(cell), point_y.take(cell))
+            if len(x) > 2:
+                self._polys.append(asPolygon(zip(x, y)))
+            elif len(x) == 2:
+                self._polys.append(asLineString(zip(x, y)))
             else:
-                self._polys.append (asPoint (zip (x, y)))
+                self._polys.append(asPoint(zip(x, y)))
 
-    def get_shared_cells (self, point_id):
+    def get_shared_cells(self, point_id):
         """
         :param point_id: ID of a point in the grid.
         :type point_id: int
@@ -102,7 +99,7 @@ class UnstructuredMap (Unstructured):
         """
         return self._point[point_id]
 
-    def is_in_cell (self, x, y, cell_id):
+    def is_in_cell(self, x, y, cell_id):
         """
         Check if a point is in a cell.
 
@@ -114,25 +111,32 @@ class UnstructuredMap (Unstructured):
         :returns: True if the point (x, y) is contained in the cell.
         :rtype: bool
         """
-        pt = Point ((x,y))
-        return self._polys[cell_id].contains (pt) or self._polys[cell_id].touches (pt)
+        pt = Point((x,y))
+        return (self._polys[cell_id].contains(pt) or
+                self._polys[cell_id].touches(pt))
 
-class UnstructuredPointsMap (UnstructuredPoints):
+
+class UnstructuredPointsMap(UnstructuredPoints):
     name = 'UnstructuredPoints'
-    def get_shared_cells (self, point_id):
+    def get_shared_cells(self, point_id):
         return []
-    def is_in_cell (self, x, y, cell_id):
+
+    def is_in_cell(self, x, y, cell_id):
         return False
 
-class StructuredMap (Structured, UnstructuredMap):
+
+class StructuredMap(Structured, UnstructuredMap):
     name = 'Structured'
-class RectilinearMap (Rectilinear, UnstructuredMap):
+
+
+class RectilinearMap(Rectilinear, UnstructuredMap):
     name = 'Rectilinear'
-class UniformRectilinearMap (UniformRectilinear, UnstructuredMap):
+
+
+class UniformRectilinearMap(UniformRectilinear, UnstructuredMap):
     name = 'UniformRectilinear'
+
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
-
-
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -39,6 +39,7 @@ True
 
 import numpy as np
 
+
 def _get_interior_ids (shape, dtype='int64'):
     """
     Get indices to the interior nodes of a structured grid. These are
@@ -56,22 +57,13 @@ def _get_interior_ids (shape, dtype='int64'):
     >>> print _get_interior_ids ((3, 3, 4))
     [ 0  1  2  4  5  6 12 13 14 16 17 18]
     """
-
-    #i = np.arange (np.prod (shape), dtype=np.int64)
-    #interior = np.ones (i.size, dtype=np.bool)
-    #d_prod = 1
-    #for d in shape[::-1]:
-    #    np.logical_and (interior, (i/d_prod+1)%d, interior)
-    #    d_prod *= d
-
-    #return i[interior]
-
     i = np.arange (np.prod (shape), dtype=dtype)
     i.shape = shape
     obj = []
     for d in shape:
         obj.append (slice (0, d-1))
     return i[obj].flatten ()
+
 
 def _get_offsets (shape, ordering='cw', dtype='int64'):
     """
@@ -111,6 +103,7 @@ def _get_offsets (shape, ordering='cw', dtype='int64'):
             offsets = np.append (offsets, new_offsets)
 
     return offsets
+
 
 def get_connectivity (shape, **kwds):
     """
@@ -236,6 +229,7 @@ a list of connectivity arrays for each cell.
     else:
         return c
 
+
 def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
     """
     This is a little slower than the above and less general.
@@ -269,6 +263,7 @@ def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
         c[3::4] = c_lr
 
     return c
+
 
 def get_connectivity_1d (shape, ordering='cw', dtype='int64'):
     assert (len (shape)==1)
