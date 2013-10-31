@@ -114,7 +114,7 @@ The connectivity runs from 0 to one less than the number of points.
 import warnings
 import numpy as np
 
-from cmt.grids import Unstructured, UnstructuredPoints
+from .unstructured import Unstructured, UnstructuredPoints
 from cmt.grids.meshgrid import meshgrid
 from cmt.grids.igrid import IGrid, IField
 from cmt.grids.connectivity import get_connectivity

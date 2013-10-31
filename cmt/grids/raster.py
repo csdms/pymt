@@ -94,7 +94,8 @@ The connectivity runs from 0 to one less than the number of points.
 import numpy as np
 from meshgrid import meshgrid
 from cmt.grids.igrid import IField
-from cmt.grids import Rectilinear, RectilinearPoints
+#from cmt.grids import Rectilinear, RectilinearPoints
+from .rectilinear import Rectilinear, RectilinearPoints
 
 
 class UniformRectilinearPoints(RectilinearPoints):

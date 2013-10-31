@@ -3,31 +3,15 @@
 import numpy as np
 
 from cmt.grids.meshgrid import meshgrid
-from cmt.grids.igrid import IGrid
+from cmt.grids.igrid import IGrid, DimensionError
 from cmt.grids.utils import (get_default_coordinate_units,
                              get_default_coordinate_names,
                              assert_arrays_are_equal_size,
                              coordinates_to_numpy_matrix,
                              args_as_numpy_arrays)
 
-
 class Error(Exception):
     pass
-
-
-class DimensionError(Error):
-    def __init__(self, dim0, dim1):
-        try:
-            self.src_dim = tuple(dim0)
-        except TypeError:
-            self.src_dim = (dim0)
-        try:
-            self.dst_dim = tuple(dim1)
-        except TypeError:
-            self.dst_dim = (dim1)
-
-    def __str__(self):
-        return '%s != %s' % (self.src_dim, self.dst_dim)
 
 
 class AttributeError(Error):
