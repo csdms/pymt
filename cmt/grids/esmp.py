@@ -1,5 +1,4 @@
 #! /bin/env python
-
 """
 Examples
 ========
@@ -207,9 +206,20 @@ import numpy as np
 from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
                        Unstructured)
 from cmt.grids.igrid import (IGrid, IField, DimensionError,
-                             CenteringValueError, centering_choices)
+                             CenteringValueError, CENTERING_CHOICES)
 
-import ESMP
+try:
+    import ESMP
+except ImportError:
+    import warnings
+    warnings.warn('unable to import ESMP', ImportWarning)
+    _WITH_ESMP = False
+else:
+    _WITH_ESMP = True
+
+
+if not _WITH_ESMP:
+    __doc__ = "This module is not available as no ESMP installation was found"
 
 
 class EsmpGrid (IGrid):
@@ -275,7 +285,7 @@ class EsmpField (IField):
 
     def add_field (self, field_name, val, centering='zonal'):
 
-        if centering not in centering_choices:
+        if centering not in CENTERING_CHOICES:
             raise CenteringValueError (centering)
 
         if centering=='zonal' and val.size != self.get_cell_count ():
@@ -328,14 +338,18 @@ class EsmpRasterField (EsmpUniformRectilinear, EsmpRectilinearField):
     pass
 
 
-def run_regridding(srcfield, dstfield, method=ESMP.ESMP_REGRIDMETHOD_CONSERVE,
-                   unmapped=ESMP.ESMP_UNMAPPEDACTION_ERROR):
-    '''
+def run_regridding(srcfield, dstfield, **kwds):
+    """
+    run_regridding(source_field, destination_field,
+                   method=ESMP_REGRIDMETHOD_CONSERVE,
+                   unmapped=ESMP_UNMAPPEDACTION_ERROR)
+
     PRECONDITIONS: Two ESMP_Fields have been created and a regridding operation 
                    is desired from 'srcfield' to 'dstfield'.
     POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
-    '''
-    #print 'Running an ESMF regridding operation. . .'
+    """
+    method = kwds.get('method', ESMP.ESMP_REGRIDMETHOD_CONSERVE)
+    unmapped = kwds.get('unmapped', ESMP.ESMP_UNMAPPEDACTION_ERROR)
 
     # call the regridding functions
     routehandle = ESMP.ESMP_FieldRegridStore(srcfield, dstfield,
