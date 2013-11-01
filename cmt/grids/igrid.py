@@ -14,12 +14,13 @@ class DimensionError(Error):
         try:
             self.src_dim = tuple(dim0)
         except TypeError:
-            self.src_dim = (dim0, )
+            self.src_dim = dim0
 
         try:
             self.dst_dim = tuple(dim1)
         except TypeError:
-            self.dst_dim = (dim1, )
+            self.dst_dim = dim1
+
     def __str__(self):
         return '%s != %s' % (self.src_dim, self.dst_dim)
 
