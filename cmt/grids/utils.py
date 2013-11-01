@@ -1,6 +1,10 @@
 import numpy as np
 
 
+from cmt.grids.assertions import (is_rectilinear, is_structured,
+                                  is_unstructured)
+
+
 def get_default_coordinate_units(n_dims):
     if n_dims <= 0 or n_dims > 3:
         raise ValueError('dimension must be between one and three')
@@ -40,3 +44,37 @@ def coordinates_to_numpy_matrix(*args):
     for (dim, arg) in enumerate(args):
         coords[dim][:] = arg.flatten()
     return coords
+
+
+def non_singleton_axes(grid):
+    shape = grid.get_shape()
+    (indices, ) = np.where(shape > 1)
+    return indices
+
+
+def non_singleton_shape(grid):
+    shape = grid.get_shape()
+    (indices, ) = np.where(shape > 1)
+    return shape[indices]
+
+
+def non_singleton_coordinate_names(grid):
+    indices = non_singleton_axes(grid)
+    return grid.get_coordinate_name(indices)
+
+
+def non_singleton_dimension_names(grid):
+    coordinate_names = non_singleton_coordinate_names(grid)
+    return np.array(['n' + name for name in coordinate_names])
+
+
+def non_singleton_dimension_shape(grid):
+    if is_rectilinear(grid, strict=False):
+        shape = non_singleton_dimension_names(grid)
+        return shape[:, np.newaxis]
+    elif is_structured(grid, strict=True):
+        shape = non_singleton_dimension_names(grid)
+        return np.tile(shape, (len(shape), 1))
+    elif is_unstructured(grid, strict=True):
+        shape = np.array(['n_points'])
+        return np.tile(shape, (grid.get_dim_count(), 1))
