@@ -43,8 +43,8 @@ class UnstructuredPoints(IGrid):
         self._point_count = args[0].size
 
         self._coords = coordinates_to_numpy_matrix(*args)
-        self._units = list(units)
-        self._coordinate_name = list(coordinate_names)
+        self._units = np.array(units)
+        self._coordinate_name = np.array(coordinate_names)
 
         if set_connectivity:
             self._connectivity = np.arange(self._point_count, dtype=np.int32)
