@@ -47,9 +47,13 @@ def coordinates_to_numpy_matrix(*args):
 
 
 def non_singleton_axes(grid):
-    shape = grid.get_shape()
-    (indices, ) = np.where(shape > 1)
-    return indices
+    try:
+        shape = grid.get_shape()
+    except AttributeError:
+        return np.arange(grid.get_dim_count())
+    else:
+        (indices, ) = np.where(shape > 1)
+        return indices
 
 
 def non_singleton_shape(grid):
@@ -64,8 +68,11 @@ def non_singleton_coordinate_names(grid):
 
 
 def non_singleton_dimension_names(grid):
-    coordinate_names = non_singleton_coordinate_names(grid)
-    return np.array(['n' + name for name in coordinate_names])
+    if is_structured(grid, strict=False):
+        coordinate_names = non_singleton_coordinate_names(grid)
+        return np.array(['n' + name for name in coordinate_names])
+    else:
+        return np.array(['n_points'])
 
 
 def non_singleton_dimension_shape(grid):
