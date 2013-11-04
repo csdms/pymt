@@ -96,6 +96,14 @@ class UnstructuredPoints(IGrid):
 
         return tuple(self._coords[axis, inds])
 
+    def get_axis_coordinates(self, axis=None, indexing='ij'):
+        assert(indexing == 'ij')
+
+        if axis is None:
+            return self._coords
+        else:
+            assert(axis < self.get_dim_count())
+            return self._coords[axis]
 
     def get_x_units(self):
         return self.get_coordinate_units(-1)
