@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from sys import maxint as MAXINT
+
 from cmt.grids.meshgrid import meshgrid
 from cmt.grids.igrid import IGrid, DimensionError
 from cmt.grids.utils import (get_default_coordinate_units,
@@ -164,6 +166,22 @@ class UnstructuredPoints(IGrid):
 
     def get_vertex_count(self):
         return len(self._connectivity)
+
+    def get_connectivity_as_matrix(self, fill_val=MAXINT):
+        nodes_per_cell = np.diff(self._offset)
+
+        max_vertices = max(self._offset[0], nodes_per_cell.max())
+        matrix = np.empty((self._cell_count, max_vertices), dtype=np.int)
+
+        offset = self._offset[0]
+        matrix[0, :offset] = self._connectivity[:offset]
+        matrix[0, offset:] = fill_val
+        for (cell, offset) in enumerate(self._offset[:-1]):
+            n_vertices = nodes_per_cell[cell]
+            matrix[cell + 1, :n_vertices] = self._connectivity[offset: offset + n_vertices ]
+            matrix[cell + 1, n_vertices:] = fill_val
+
+        return matrix
 
 
 class Unstructured(UnstructuredPoints):
