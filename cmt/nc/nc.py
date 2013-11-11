@@ -6,7 +6,7 @@ Examples
 
 >>> from cmt.grids import RasterField
 >>> import numpy as np
->>> f = RasterField ((3,2), (2.,1), (0,0.5), indexing='ij', units=('m', 'km'))
+>>> f = RasterField ((3,2), (2.,1), (0,0.5), units=('m', 'km'))
 >>> data = np.arange (6.)
 >>> f.add_field ('Temperature', data*10, centering='point', units='C')
 >>> f.add_field ('Elevation', data, centering='point', units='meters')
@@ -20,7 +20,7 @@ Examples
 >>> attrs = dict (description='Example nc file', author='Eric')
 >>> field_tofile (f, 'test00.nc', attrs=attrs, append=True)
 
->>> f = RasterField ((6,1), (1,1), (0,0), indexing='ij')
+>>> f = RasterField ((6,1), (1,1), (0,0))
 >>> data = np.arange (6.)
 >>> f.add_field ('Elevation', data, centering='point')
 >>> f.add_field ('Temperature', data*10, centering='point')
@@ -28,7 +28,7 @@ Examples
 
 
 
->>> f = RasterField ((2, 3, 4), (1, 2, 3), (-1, 0, 1), indexing='ij', units=('mm', 'm', 'km'))
+>>> f = RasterField ((2, 3, 4), (1, 2, 3), (-1, 0, 1), units=('mm', 'm', 'km'))
 >>> data = np.arange (24.)
 >>> f.add_field ('Temperature', data*10, centering='point', units='C')
 >>> f.add_field ('Elevation', data, centering='point', units='meters')
@@ -46,7 +46,7 @@ Examples
 
 
 
->>> f = RasterField ((12, ), (1, ), (-1, ), indexing='ij', units=('m', ))
+>>> f = RasterField ((12, ), (1, ), (-1, ), units=('m', ))
 >>> data = np.arange (12.)
 >>> f.add_field ('Elevation', data, centering='point')
 
@@ -55,7 +55,7 @@ Examples
 
 
 
->>> f = RasterField ((1, ), (0, ), (0, ), indexing='ij', units=('m', ))
+>>> f = RasterField ((1, ), (0, ), (0, ), units=('m', ))
 
 >>> attrs = dict (description='Example 0D nc file', author='Eric')
 >>> for i in range (10):
@@ -72,7 +72,7 @@ import string
 import numpy as np
 
 from cmt.grids import RectilinearField, StructuredField, UnstructuredField
-from cmt.grids import NonStructuredGridError, NonUniformGridError
+#from cmt.grids import NonStructuredGridError, NonUniformGridError
 from cmt.grids import (is_uniform_rectilinear, is_rectilinear, is_structured,
                        is_unstructured)
 from cmt.verbose import CMTLogger
@@ -327,9 +327,9 @@ Check the values from the file.
 
     >>> vars = root.variables
     >>> print vars['x'][:]
-    [ 0. 2. 1. 3.]
+    [ 0.  2.  1.  3.]
     >>> print vars['y'][:]
-    [ 0. 0. 1. 1.]
+    [ 0.  0.  1.  1.]
 
     >>> print vars['point_field'].long_name
     point_field
