@@ -88,7 +88,7 @@ class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count())
         field.add_field('air_temperature', data, centering='point', units='F')
 
-        nc = NetcdfStructuredField(
+        nc = NetcdfRectilinearField(
             self.unique_name(prefix='rectilinear.1d.', suffix='.nc'), field)
 
     def test_2d_points(self):
@@ -96,7 +96,7 @@ class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field('air__temperature', data, centering='point', units='F')
 
-        nc = NetcdfStructuredField(
+        nc = NetcdfRectilinearField(
             self.unique_name(prefix='rectilinear.2d.', suffix='.nc'), field)
 
     def test_3d_points(self):
@@ -107,7 +107,7 @@ class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field('air__temperature', data, centering='point', units='F')
 
-        nc = NetcdfStructuredField(
+        nc = NetcdfRectilinearField(
             self.unique_name(prefix='rectilinear.3d.', suffix='.nc'), field)
 
 

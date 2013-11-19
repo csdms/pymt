@@ -37,10 +37,11 @@ def assert_valid_netcdf_format(format):
 def open_netcdf(path, mode='r', format='NETCDF3_CLASSIC', append=False):
     assert_valid_netcdf_format(format)
 
-    if os.path.isfile(path) and append:
-        mode = 'a'
-    else:
-        mode = 'w'
+    if mode != 'r':
+        if os.path.isfile(path) and append:
+            mode = 'a'
+        else:
+            mode = 'w'
 
     if format == 'NETCDF3_CLASSIC':
         root = nc3.netcdf_file(path, mode, version=1)

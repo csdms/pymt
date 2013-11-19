@@ -11,7 +11,7 @@ class NetcdfField(object):
         self._path = path
         self._field = field
 
-        self._root = open_netcdf(path, format=format, append=append)
+        self._root = open_netcdf(path, mode='w', format=format, append=append)
 
         self._set_mesh_topology()
         self._set_node_variable_data()
@@ -19,6 +19,10 @@ class NetcdfField(object):
         self._set_time_variable()
 
         self._root.close()
+
+    @property
+    def type(self):
+        return 'unknown'
 
     @property
     def field(self):
@@ -42,6 +46,10 @@ class NetcdfField(object):
 
     @property
     def face_connectivity(self):
+        return 'face_nodes_connectivity'
+
+    @property
+    def face_node_connectivity(self):
         return 'face_nodes'
 
     @property
@@ -76,10 +84,10 @@ class NetcdfField(object):
         except IndexError:
             pass
 
-    def create_variable(self, name, *args):
+    def create_variable(self, name, *args, **kwds):
         if not self.has_variable(name):
             try:
-                self._root.createVariable(name, *args)
+                self._root.createVariable(name, *args, **kwds)
             except ValueError as error:
                 print 'error is', error
                 print args
@@ -124,6 +132,8 @@ class NetcdfField(object):
                 'topology_dimension': self.topology_dimension,
                 'node_coordinates': ' '.join(self.node_coordinates),
                 'face_connectivity': self.face_connectivity,
+                'face_node_connectivity': self.face_node_connectivity,
+                'type': self.type,
             })
 
     def _set_time_dimension(self):
@@ -187,6 +197,14 @@ class NetcdfField(object):
 
 class NetcdfRectilinearField(NetcdfField):
     @property
+    def type(self):
+        return 'rectilinear'
+
+    @property
+    def node_coordinates(self):
+        return gutils.non_singleton_dimension_names(self.field)
+
+    @property
     def topology_dimension(self):
         return len(gutils.non_singleton_shape(self.field))
 
@@ -217,13 +235,18 @@ class NetcdfRectilinearField(NetcdfField):
 
 class NetcdfStructuredField(NetcdfRectilinearField):
     @property
+    def type(self):
+        return 'structured'
+
+    @property
     def node_data_dimensions(self):
         return gutils.non_singleton_dimension_names(self._field)
 
     @property
     def node_coordinates(self):
-        names = gutils.non_singleton_dimension_names(self._field)
-        return ['node_' + name for name in names]
+        return gutils.non_singleton_dimension_names(self._field)
+        #names = gutils.non_singleton_dimension_names(self._field)
+        #return ['node_' + name for name in names]
 
     def _set_mesh_dimensions(self):
         NetcdfRectilinearField._set_mesh_dimensions(self)
@@ -245,6 +268,10 @@ class NetcdfStructuredField(NetcdfRectilinearField):
 
 
 class NetcdfUnstructuredField(NetcdfStructuredField):
+    @property
+    def type(self):
+        return 'unstructured'
+
     @property
     def node_coordinates(self):
         names = []
@@ -275,6 +302,7 @@ class NetcdfUnstructuredField(NetcdfStructuredField):
         self.create_dimension('n_node', self.node_count)
         self.create_dimension('n_face', self.face_count)
         self.create_dimension('n_vertex', self.vertex_count)
+        self.create_dimension('n_max_face_nodes', self.field.get_max_vertices())
 
     def _set_mesh_coordinate_data(self):
         dims = self.node_data_dimensions
@@ -290,16 +318,29 @@ class NetcdfUnstructuredField(NetcdfStructuredField):
                       })
 
     def _set_face_node_connectivity_data(self):
-        self.create_variable('face_nodes', 'i8', ('n_vertex', ))
+        self.create_variable('face_nodes_connectivity', 'i8', ('n_vertex', ))
         self.set_variable(
-            'face_nodes', self.field.get_connectivity(),
+            'face_nodes_connectivity', self.field.get_connectivity(),
             attrs={'cf_role': 'face_node_connectivity',
-                   'long_name': 'Maps every face to its corner nodes.'
+                   'long_name': 'Maps every face to its corner nodes.',
+                   'start_index': 0,
                   })
 
         self.create_variable('face_nodes_offset', 'i8', ('n_face', ))
         self.set_variable(
             'face_nodes_offset', self.field.get_offset(),
             attrs={'cf_role': 'face_node_offset',
-                   'long_name': 'Maps face index into connectivity array'
+                   'long_name': 'Maps face index into connectivity array',
+                  })
+
+        (connectivity, fill_val) = self.field.get_connectivity_as_matrix()
+
+        self.create_variable('face_nodes', 'i8',
+                             ('n_face', 'n_max_face_nodes'),
+                             fill_value=fill_val)
+        self.set_variable(
+            'face_nodes', connectivity,
+            attrs={'cf_role': 'face_node_connectivity',
+                   'long_name': 'Maps every face to its corner nodes.',
+                   'start_index': 0,
                   })

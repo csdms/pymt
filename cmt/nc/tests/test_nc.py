@@ -251,7 +251,7 @@ class TestStructured(NetcdfMixIn):
             raise AssertionError ('%s: Could not open' % nc_file)
         else:
             self.assertDataVariableNames (root, ['mesh', 'Elevation', 'x', 'time'])
-            self.assertDimensionsEqual (root, ['node_x', 'x', 'time'])
+            self.assertDimensionsEqual (root, ['x', 'time'])
             self.assertDataVariableArrayEqual (root, 'x', [1, 2, 4, 5])
 
             self.assertDataVariableLongNameEqual (root, 'Elevation', 'Elevation')
@@ -287,8 +287,7 @@ class TestStructured(NetcdfMixIn):
             self.assertDataVariableNames(root, ['mesh', 'Temperature', 'Elevation',
                                          'Velocity', 'Temp',
                                          'x', 'y', 'time'])
-            self.assertDimensionsEqual(root, ['node_x', 'node_y',
-                                              'x', 'y', 'time'])
+            self.assertDimensionsEqual(root, ['x', 'y', 'time'])
             self.assertDataVariableArrayEqual(root, 'x', np.array([[2., 3.],
                                                         [2., 3.],
                                                         [2., 3.]]))
@@ -339,14 +338,17 @@ class TestUnstructured(NetcdfMixIn):
 
         root = self.open_as_netcdf(nc_file)
 
-        self.assertDataVariableNames(root, ['mesh', 'point_field', 'cell_field',
-                                     'node_x', 'node_y', 'time',
-                                     'face_nodes', 'face_nodes_offset'])
-        self.assertDimensionsEqual(root, ['n_face', 'n_node', 'n_vertex', 'time'])
+        self.assertDataVariableNames(
+            root, ['mesh', 'point_field', 'cell_field', 'node_x', 'node_y',
+                   'time', 'face_nodes', 'face_nodes_offset',
+                   'face_nodes_connectivity'])
+        self.assertDimensionsEqual(root, ['n_face', 'n_node', 'n_vertex',
+                                          'n_max_face_nodes', 'time'])
         self.assertDataVariableArrayEqual(root, 'node_x', [0., 2., 1., 3.])
         self.assertDataVariableArrayEqual(root, 'node_y', [0., 0., 1., 1.])
         self.assertDataVariableArrayEqual(root, 'face_nodes_offset', [3, 6])
-        self.assertDataVariableArrayEqual(root, 'face_nodes', [0, 2, 1, 2, 3, 1])
+        self.assertDataVariableArrayEqual(root, 'face_nodes',
+                                          np.array([[0, 2, 1], [2, 3, 1]]))
 
         self.assertDataVariableLongNameEqual(root, 'point_field', 'point_field')
         self.assertDataVariableLongNameEqual(root, 'cell_field', 'cell_field')
