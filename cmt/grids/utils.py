@@ -70,9 +70,10 @@ def non_singleton_coordinate_names(grid):
 def non_singleton_dimension_names(grid):
     if is_structured(grid, strict=False):
         coordinate_names = non_singleton_coordinate_names(grid)
-        return np.array(['n' + name for name in coordinate_names])
+        #return np.array(['n' + name for name in coordinate_names])
+        return coordinate_names
     else:
-        return np.array(['n_points'])
+        return np.array(['n_node'])
 
 
 def non_singleton_dimension_shape(grid):
@@ -83,5 +84,31 @@ def non_singleton_dimension_shape(grid):
         shape = non_singleton_dimension_names(grid)
         return np.tile(shape, (len(shape), 1))
     elif is_unstructured(grid, strict=True):
-        shape = np.array(['n_points'])
+        shape = np.array(['n_node'])
         return np.tile(shape, (grid.get_dim_count(), 1))
+
+
+def _find_first(array, value):
+    try:
+        return np.where(array == value)[0][0]
+    except IndexError:
+        return len(array)
+
+
+def connectivity_matrix_as_array(face_nodes, bad_val):
+    nodes_per_face = np.empty(face_nodes.shape[0], dtype=np.int)
+    for (face_id, face) in enumerate(face_nodes):
+        nnodes = _find_first(face, bad_val)
+        if nnodes > 0:
+            nodes_per_face[face_id] = _find_first(face, bad_val)
+        else:
+            raise ValueError('face contains no nodes')
+    offsets = np.cumsum(nodes_per_face)
+
+    connectivity = np.empty(offsets[-1], dtype=int)
+    offset = 0
+    for (n_nodes, face) in zip(nodes_per_face, face_nodes):
+        connectivity[offset: offset + n_nodes] = face[:n_nodes]
+        offset += n_nodes
+
+    return (connectivity, offsets)

@@ -12,6 +12,7 @@ from cmt.grids.utils import (get_default_coordinate_units,
                              coordinates_to_numpy_matrix,
                              args_as_numpy_arrays)
 
+
 class Error(Exception):
     pass
 
@@ -167,6 +168,10 @@ class UnstructuredPoints(IGrid):
     def get_vertex_count(self):
         return len(self._connectivity)
 
+    def get_max_vertices(self):
+        nodes_per_cell = np.diff(self._offset)
+        return max(self._offset[0], nodes_per_cell.max())
+
     def get_connectivity_as_matrix(self, fill_val=MAXINT):
         nodes_per_cell = np.diff(self._offset)
 
@@ -181,7 +186,13 @@ class UnstructuredPoints(IGrid):
             matrix[cell + 1, :n_vertices] = self._connectivity[offset: offset + n_vertices ]
             matrix[cell + 1, n_vertices:] = fill_val
 
-        return matrix
+        return (matrix, fill_val)
+
+    def nodes_per_cell(self):
+        offsets = np.empty(self.get_cell_count() + 1, dtype=int)
+        (offsets[0], offsets[1:]) = (0, self._offset[:])
+
+        return np.diff(offsets)
 
 
 class Unstructured(UnstructuredPoints):
@@ -304,8 +315,7 @@ Eight point that form a unit cube.
         self._offset.shape = self._offset.size
         self._cell_count = self._offset.size
 
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-
-
