@@ -50,9 +50,9 @@ def find_unknown_dimension(shape):
 def fix_unknown_shape(shape, size):
     """
     >>> print fix_unknown_shape((4, 3), 12)
-    [4 3]
+    (4, 3)
     >>> print fix_unknown_shape((4, -1), 12)
-    [4 3]
+    (4, 3)
     """
     if len(shape) > 0:
         new_shape = np.array(shape)
