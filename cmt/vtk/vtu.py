@@ -4,14 +4,14 @@ import os
 
 import numpy as np
 
-#from cmt.grid import VTKGrid
-from cmt.grids import GridField
-from cmt.vtk import VtkWriter
+from ..grids.field import GridField
+from .vtk import VtkWriter
 
-from vtktypes import VtkUnstructured, edge_count_to_type, VtkPolygon, vtk_to_np_type
-from vtkxml import *
+from .vtktypes import (VtkUnstructured, edge_count_to_type, VtkPolygon,
+                       vtk_to_np_type)
+from .vtkxml import *
 
-#class VtkUnstructuredWriter (VTKGrid, VtkWriter):
+
 class VtkUnstructuredWriter (GridField, VtkWriter):
   _vtk_grid_type = VtkUnstructured
 

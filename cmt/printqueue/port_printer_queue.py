@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 
 
-from cmt.printqueue.port_printer import (VtkPortPrinter, NcPortPrinter,
-                                         BovPortPrinter)
+from ..printqueue.port_printer import (VtkPortPrinter, NcPortPrinter,
+                                       BovPortPrinter)
 
 
 _PRINTERS = {

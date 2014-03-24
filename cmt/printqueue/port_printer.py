@@ -7,10 +7,10 @@ import warnings
 import numpy as np
 
 
-from cmt.grids import RasterField, StructuredField, UnstructuredField
-from cmt.bov import Database as BovDatabase
-from cmt.vtk import Database as VtkDatabase
-from cmt.nc import Database as NcDatabase
+from ..grids import RasterField, StructuredField, UnstructuredField
+from ..bov.database import Database as BovDatabase
+from ..vtk.vtu import Database as VtkDatabase
+from ..nc.database import Database as NcDatabase
 
 
 class Error(Exception):

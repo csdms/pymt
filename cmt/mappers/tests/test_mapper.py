@@ -130,8 +130,8 @@ class TestMapper (unittest.TestCase):
                                    UnstructuredPoints)
         (m, n) = (20, 40)
         (src_x, src_y) = np.meshgrid (range (m), range (n))
-        src = UnstructuredPoints (src_x, src_y)
-        dst = UniformRectilinear ((m+1,n+1), (1, 1), (-.5, -.5))
+        src = UnstructuredPoints (src_y, src_x)
+        dst = UniformRectilinear ((n+1,m+1), (1, 1), (-.5, -.5))
 
         mapper = PointToCell ()
         mapper.initialize (dst, src)
@@ -139,7 +139,6 @@ class TestMapper (unittest.TestCase):
         src_vals = np.arange (src.get_point_count (), dtype=np.float)
         dst_vals = np.zeros (dst.get_cell_count (), dtype=np.float)-1
         dummy = mapper.run (src_vals, dst_vals)
-
         self.assertListEqual (list (dst_vals), list (src_vals))
 
 def suite ():

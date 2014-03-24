@@ -1,4 +1,5 @@
 import unittest
+import sys
 
 import numpy as np
 
@@ -55,16 +56,21 @@ class TestUnstructuredGrid(unittest.TestCase, NumpyArrayMixIn):
     def test_connectivity_as_matrix_same_shape(self):
         grid = Unstructured([0, 0, 1, 1], [0, 2, 1, 3],
                             connectivity=[0, 2, 1, 2, 3, 1], offset=[3, 6])
-        self.assertArrayEqual(grid.get_connectivity_as_matrix(),
-                              np.array([[0, 2, 1], [2, 3, 1]]))
+        self.assertArrayEqual(grid.get_connectivity(),
+                              np.array([0, 2, 1, 2, 3, 1]))
+        mat, fill_val = grid.get_connectivity_as_matrix()
+        self.assertArrayEqual(mat, np.array([[0, 2, 1], [2, 3, 1]]))
+        self.assertEqual(fill_val, sys.maxint)
 
     def test_connectivity_as_matrix_mixed_shapes(self):
         grid = Unstructured([0, 1, 2, 1, 2], [0, 0, 0, 1, 1],
                             connectivity=[0, 1, 3, 1, 2, 4, 3], offset=[3, 7])
-        self.assertArrayEqual(grid.get_connectivity_as_matrix(fill_val=-1),
-                              np.array([[0, 1, 3, -1], [1, 2, 4, 3]]))
+        mat, fill_val = grid.get_connectivity_as_matrix(fill_val=-1)
+        self.assertArrayEqual(mat, np.array([[0, 1, 3, -1], [1, 2, 4, 3]]))
+        self.assertEqual(fill_val, -1)
 
         grid = Unstructured([0, 1, 2, 1, 2], [0, 0, 0, 1, 1],
                             connectivity=[3, 1, 2, 4, 0, 3, 1], offset=[4, 7])
-        self.assertArrayEqual(grid.get_connectivity_as_matrix(fill_val=999),
-                              np.array([[3, 1, 2, 4], [0, 3, 1, 999]]))
+        mat, fill_val = grid.get_connectivity_as_matrix(fill_val=999)
+        self.assertArrayEqual(mat, np.array([[3, 1, 2, 4], [0, 3, 1, 999]]))
+        self.assertEqual(fill_val, 999)
