@@ -35,3 +35,20 @@ def test_uniform_rectilinear_nc():
 
     assert_isfile_and_remove('glacier_top_surface__slope.nc')
 
+
+def test_from_string():
+    port = UniformRectilinearGridPort()
+    ini_string = """
+[print.air__density]
+format=vtk
+
+[print.glacier_top_surface__slope]
+format=nc
+    """
+    queue = ppq.PortPrinterQueue.from_string(ini_string, port)
+    queue.open()
+    queue.write()
+    queue.close()
+
+    assert_isfile_and_remove('glacier_top_surface__slope.nc')
+    assert_isfile_and_remove('air__density_0000.vtu')

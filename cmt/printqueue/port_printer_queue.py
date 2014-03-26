@@ -1,9 +1,11 @@
 #! /usr/bin/env python
 
 from StringIO import StringIO
+from ConfigParser import ConfigParser
 
 from ..printqueue.port_printer import (VtkPortPrinter, NcPortPrinter,
                                        BovPortPrinter)
+from ..utils.prefix import (names_with_prefix, strip_prefix)
 
 
 _PRINTERS = {
@@ -72,12 +74,14 @@ class PortPrinterQueue(object):
 
     @classmethod
     def from_string(cls, source, port, prefix='print'):
-        config = ConfigParser.readfp(StringIO(source))
+        config = ConfigParser()
+        config.readfp(StringIO(source))
         return cls._from_config(config, port, prefix=prefix)
 
     @classmethod
     def from_path(cls, path, port, prefix='print'):
-        config = ConfigParser.read(path)
+        config = ConfigParser()
+        config.read(path)
         return cls._from_config(config, port, prefix=prefix)
 
     @classmethod
@@ -85,5 +89,5 @@ class PortPrinterQueue(object):
         ppq = cls(port)
         for section in names_with_prefix(config.sections(), prefix):
             var_name_to_print = strip_prefix(section, prefix)
-            ppq.append(var_name_to_print, confg.get(section, 'format'))
+            ppq.append(var_name_to_print, format=config.get(section, 'format'))
         return ppq
