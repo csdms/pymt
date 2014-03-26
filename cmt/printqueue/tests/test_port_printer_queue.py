@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 
 import cmt.printqueue.port_printer_queue as ppq
-
-from printqueue_test_utils import (UniformRectilinearGridPort,
-                                   assert_isfile_and_remove)
+from cmt.testing.ports import UniformRectilinearGridPort
+from cmt.testing.assertions import assert_isfile_and_remove
 
 
 def test_uniform_rectilinear_vtk():

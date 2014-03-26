@@ -1,7 +1,6 @@
 from cmt.printqueue.port_printer import VtkPortPrinter
-
-from printqueue_test_utils import (UniformRectilinearGridPort,
-                                   assert_isfile_and_remove)
+from cmt.testing.ports import UniformRectilinearGridPort
+from cmt.testing.assertions import assert_isfile_and_remove
 
 
 def test_one_file():
