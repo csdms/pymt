@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from StringIO import StringIO
 
 from ..printqueue.port_printer import (VtkPortPrinter, NcPortPrinter,
                                        BovPortPrinter)
@@ -68,3 +69,21 @@ class PortPrinterQueue(object):
     def close(self):
         for printer in self._queue:
             printer.close()
+
+    @classmethod
+    def from_string(cls, source, port, prefix='print'):
+        config = ConfigParser.readfp(StringIO(source))
+        return cls._from_config(config, port, prefix=prefix)
+
+    @classmethod
+    def from_path(cls, path, port, prefix='print'):
+        config = ConfigParser.read(path)
+        return cls._from_config(config, port, prefix=prefix)
+
+    @classmethod
+    def _from_config(cls, config, port, prefix='print'):
+        ppq = cls(port)
+        for section in names_with_prefix(config.sections(), prefix):
+            var_name_to_print = strip_prefix(section, prefix)
+            ppq.append(var_name_to_print, confg.get(section, 'format'))
+        return ppq
