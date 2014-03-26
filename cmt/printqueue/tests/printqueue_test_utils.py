@@ -1,21 +1,14 @@
 #! /usr/bin/env python
 
 import os
-import unittest
-
 import numpy as np
 
 
-class TestPortPrinterBase(unittest.TestCase):
-    def _assert_and_remove(self, expected_files):
-        missing_files = []
-        for expected_file in expected_files:
-            if os.path.isfile(expected_file):
-                os.remove(expected_file)
-            else:
-                missing_files.append(expected_file)
-        if len(missing_files) > 0:
-            self.fail('missing files: %s' % ', '.join(expected_files))
+def assert_isfile_and_remove(filename):
+    if os.path.isfile(filename):
+        os.remove(filename)
+    else:
+        raise AssertionError('%s is not a file' % filename)
 
 
 class UniformRectilinearGridPort(object):
