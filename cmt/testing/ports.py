@@ -1,14 +1,4 @@
-#! /usr/bin/env python
-
-import os
 import numpy as np
-
-
-def assert_isfile_and_remove(filename):
-    if os.path.isfile(filename):
-        os.remove(filename)
-    else:
-        raise AssertionError('%s is not a file' % filename)
 
 
 class UniformRectilinearGridPort(object):
