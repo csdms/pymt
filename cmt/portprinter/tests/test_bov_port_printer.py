@@ -1,4 +1,4 @@
-from cmt.printqueue.port_printer import BovPortPrinter
+from cmt.portprinter.port_printer import BovPortPrinter, PortPrinter
 from cmt.testing.ports import UniformRectilinearGridPort
 from cmt.testing.assertions import assert_isfile_and_remove
 
@@ -48,3 +48,12 @@ def test_time_series():
 
     for filename in expected_files:
         assert_isfile_and_remove(filename)
+
+
+def test_from_string():
+    ini_string = """
+[print.air__temperature]
+format=bov
+port=air_port
+    """
+    printer = PortPrinter.from_string(ini_string, 'print.air__temperature')

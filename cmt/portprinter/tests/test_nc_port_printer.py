@@ -1,4 +1,4 @@
-from cmt.printqueue.port_printer import NcPortPrinter
+from cmt.portprinter.port_printer import NcPortPrinter
 from cmt.testing.ports import UniformRectilinearGridPort
 from cmt.testing.assertions import assert_isfile_and_remove
 
