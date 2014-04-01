@@ -5,7 +5,7 @@ import unittest
 
 import numpy as np
 
-import cmt.printqueue.port_printer as pp
+import cmt.portprinter.utils as pp
 
 
 class TestFixArrayShape(unittest.TestCase):
