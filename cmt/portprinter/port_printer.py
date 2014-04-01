@@ -55,21 +55,21 @@ class PortPrinter(object):
         self._field = _reconstruct_port_as_field(self._port, self._field)
 
     @classmethod
-    def from_string(cls, source, section, prefix='print'):
+    def from_string(cls, source, prefix='print'):
         config = ConfigParser()
         config.readfp(StringIO(source))
-        return cls._from_config(config, section, prefix=prefix)
+        return cls._from_config(config, prefix=prefix)
 
     @classmethod
-    def from_path(cls, path, section, prefix='print'):
+    def from_path(cls, path, prefix='print'):
         config = ConfigParser()
         config.read(path)
-        return cls._from_config(config, section, prefix=prefix)
+        return cls._from_config(config, prefix=prefix)
 
     @classmethod
-    def _from_config(cls, config, section, prefix='print'):
+    def _from_config(cls, config, prefix='print'):
         printers = []
-        for section in names_with_prefix(prefix):
+        for section in names_with_prefix(config.sections(), prefix):
             printers.append(cls.from_dict({
                 'port': config.get(section, 'port'),
                 'format': config.get(section, 'format'),
