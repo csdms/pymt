@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 
 def prefix_is_empty(prefix):
     """Check if a namespace prefix is empty. A prefix is empty if it's None,
@@ -12,10 +14,13 @@ def names_with_prefix(names, prefix):
     """Find names that begin with a common *prefix*. In this case, names
     are a series ``.``-separated words, much like module names.
 
-    Return a ``set`` of all names that begin with *prefix*.
+    Returns a ``list`` of all names that begin with *prefix*. The order of
+    matched names is maintained.
 
     >>> names_with_prefix(['foo.bar', 'foobar.baz'], 'foo')
-    set(['foo.bar'])
+    ['foo.bar']
+    >>> names_with_prefix(['foo.bar', 'foo.bar', 'foo.foo'], 'foo')
+    ['foo.bar', 'foo.baz', 'foo.foo']
     """
     if prefix_is_empty(prefix):
         return set(names)
@@ -23,11 +28,12 @@ def names_with_prefix(names, prefix):
     if not prefix.endswith('.'):
         prefix = prefix + '.'
 
-    matching_names = set()
+    matching_names = OrderedDict()
     for name in names:
         if name.startswith(prefix):
-            matching_names.add(name)
-    return matching_names
+            matching_names[name] = None
+
+    return matching_names.keys()
 
 
 def strip_prefix(name, prefix):
