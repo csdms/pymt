@@ -6,6 +6,20 @@ from imapper import IGridMapper
 from cmt.mappers import IncompatibleGridError
 
 
+def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
+    (dst_x, dst_y) = coords
+
+    map = np.empty(len(dst_x), dtype=np.int)
+    map.fill(bad_val)
+
+    for (j, point_id) in enumerate(src_point_ids):
+        for cell_id in src_grid.get_shared_cells(point_id):
+            if src_grid.is_in_cell(dst_x[j], dst_y[j], cell_id):
+                map[j] = cell_id
+
+    return map
+
+
 class CellToPoint(IGridMapper):
     def initialize(self, dest_grid, src_grid):
         if not self.test(dest_grid, src_grid):
@@ -15,19 +29,16 @@ class CellToPoint(IGridMapper):
         dst_y = dest_grid.get_y()
 
         tree = KDTree(zip(src_grid.get_x(), src_grid.get_y()))
-        (self._l, self._i) = tree.query(zip(dst_x, dst_y))
+        (_, self._nearest_src_id) = tree.query(zip(dst_x, dst_y))
 
-        self._map = np.zeros(len(dst_x), dtype=np.int) - 1
-        for (j, point_id) in zip(range(len(self._i)), self._i):
-            for cell_id in src_grid.get_shared_cells(point_id):
-                if src_grid.is_in_cell(dst_x[j], dst_y[j], cell_id):
-                    self._map[j] = cell_id
-
+        self._map = map_points_to_cells((dst_x, dst_y), src_grid,
+                                        self._nearest_src_id, bad_val=-1)
         self._bad = self._map == -1
 
     def run(self, src_values, dst_vals=None, bad_val=-999.):
         if dst_vals is None:
             dst_vals = np.zeros(len(self._map)) + bad_val
+
         rtn = np.choose(src_values.take(self._map) < bad_val,
                         (src_values.take(self._map), dst_vals))
         rtn[self._bad] = bad_val
