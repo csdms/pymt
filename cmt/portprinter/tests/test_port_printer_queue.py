@@ -11,7 +11,7 @@ def test_one_printer():
     queue = PortPrinter.from_string("""
 [print.air__density]
 format=vtk
-port=uniform_rectilinear
+port=air_port
 """)
     assert_is_instance(queue, PortPrinter)
 
@@ -25,11 +25,11 @@ def test_multiple_printers():
     queue = PortPrinter.from_string("""
 [print.air__density]
 format=vtk
-port=uniform_rectilinear
+port=air_port
 
 [print.glacier_top_surface__slope]
 format=nc
-port=uniform_rectilinear
+port=earth_port
 """)
 
     assert_is_instance(queue, list)

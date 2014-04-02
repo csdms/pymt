@@ -41,19 +41,6 @@ class EmptyPort(object):
         return self._values[var_name]
 
 
-class UniformRectilinearGridPort(EmptyPort):
-    def __init__(self):
-        EmptyPort.__init__(self)
-        self._values = {
-            'landscape_surface__elevation': np.empty(self._shape),
-            'sea_surface__temperature': np.empty(self._shape),
-            'sea_floor_surface_sediment__mean_of_grain_size':
-                np.empty(self._shape),
-            'air__density': np.empty(self._shape),
-            'glacier_top_surface__slope': np.empty(self._shape),
-        }
-
-
 class WaterPort(EmptyPort):
     def __init__(self):
         EmptyPort.__init__(self)
@@ -78,11 +65,11 @@ class EarthPort(EmptyPort):
         self._values = {
             'earth_surface__temperature': np.empty(self._shape),
             'earth_surface__density': np.empty(self._shape),
+            'glacier_top_surface__slope': np.empty(self._shape),
         }
 
 
 _SERVICES = {
-    'test_port_0': UniformRectilinearGridPort(),
     'air_port': AirPort(),
     'water_port': WaterPort(),
     'earth_port': EarthPort(),
