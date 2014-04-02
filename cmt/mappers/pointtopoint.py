@@ -35,7 +35,7 @@ class NearestVal(IGridMapper):
             raise TypeError('Destination array must be a numpy array')
 
         copy_good_values(src_values.flat[self._nearest_src_id],
-                         dest_values, ignore=-999)
+                         dest_values, bad_val=-999)
 
         return dest_values
 
