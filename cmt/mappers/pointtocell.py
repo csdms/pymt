@@ -1,9 +1,24 @@
 #! /bin/env python
 
+from collections import defaultdict
+
 import numpy as np
 from scipy.spatial import KDTree
+
 from imapper import IGridMapper
 from cmt.mappers import IncompatibleGridError
+
+
+def map_cells_to_points(coords, dst_grid, dst_point_ids, bad_val=-1):
+    src_x, src_y = coords
+
+    map = defaultdict(list)
+    for (j, point_id) in enumerate(dst_point_ids):
+        for cell_id in dst_grid.get_shared_cells(point_id):
+            if dst_grid.is_in_cell(src_x[j], src_y[j], cell_id):
+                map[cell_id].append(j)
+
+    return map
 
 
 class PointToCell(IGridMapper):
@@ -14,17 +29,10 @@ class PointToCell(IGridMapper):
         src_y = src_grid.get_y()
 
         tree = KDTree(zip(dst_grid.get_x(), dst_grid.get_y()))
-        (_, dst_point_ids) = tree.query(zip(src_x, src_y))
+        (_, nearest_dest_id) = tree.query(zip(src_x, src_y))
 
-        self._map = {}
-        for (j, point_id) in zip(range(src_grid.get_point_count()),
-                                 dst_point_ids):
-            for cell_id in dst_grid.get_shared_cells(point_id):
-                if dst_grid.is_in_cell(src_x[j], src_y[j], cell_id):
-                    try:
-                        self._map[cell_id].append(j)
-                    except KeyError:
-                        self._map[cell_id] = [j]
+        self._map = map_cells_to_points((src_x, src_y), dst_grid,
+                                        nearest_dest_id, bad_val=-1)
 
         self._dst_cell_count = dst_grid.get_cell_count()
         self._src_point_count = src_grid.get_point_count()
