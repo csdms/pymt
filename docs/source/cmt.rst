@@ -25,38 +25,6 @@ cmt Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`dialog` Module
---------------------
-
-.. automodule:: cmt.dialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`engine` Module
---------------------
-
-.. automodule:: cmt.engine
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`ini_file` Module
-----------------------
-
-.. automodule:: cmt.ini_file
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`namespace` Module
------------------------
-
-.. automodule:: cmt.namespace
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`nsdict` Module
 --------------------
 
@@ -69,14 +37,6 @@ cmt Package
 ---------------------------------
 
 .. automodule:: cmt.ordered_task_status
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`port_queue` Module
-------------------------
-
-.. automodule:: cmt.port_queue
     :members:
     :undoc-members:
     :show-inheritance:
@@ -136,7 +96,6 @@ Subpackages
     cmt.nc
     cmt.portprinter
     cmt.portqueue
-    cmt.printqueue
     cmt.testing
     cmt.tests
     cmt.utils
