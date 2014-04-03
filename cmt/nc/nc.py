@@ -68,14 +68,15 @@ Examples
 
 import os
 import string
+from warnings import warn
 
 import numpy as np
 
 from cmt.grids import RectilinearField, StructuredField, UnstructuredField
-#from cmt.grids import NonStructuredGridError, NonUniformGridError
 from cmt.grids import (is_uniform_rectilinear, is_rectilinear, is_structured,
                        is_unstructured)
 from cmt.verbose import CMTLogger
+
 
 logger = CMTLogger ('NetCDF', 20)
 
@@ -121,7 +122,6 @@ def remove_singleton (array, shape):
 try:
     import csdms_utils
 except ImportError:
-    from warnings import warn
     warn('Unable to import csdms_utils', RuntimeWarning)
 
 
