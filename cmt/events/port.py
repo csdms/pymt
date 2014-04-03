@@ -1,4 +1,6 @@
 from ..portprinter.port_printer import PortPrinter
+import warnings
+
 try:
     import services
 except ImportError:
