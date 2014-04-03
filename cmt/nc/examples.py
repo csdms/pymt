@@ -65,7 +65,3 @@ def main():
     rectilinear_1d_netcdf()
     rectilinear_2d_netcdf()
     rectilinear_3d_netcdf()
-
-
-if __name__ == '__file__':
-    main()
