@@ -1,5 +1,8 @@
 from ..portprinter.port_printer import PortPrinter
-import services
+try:
+    import services
+except ImportError:
+    warnings.warn('services has not been set')
 
 
 class PortEvent(object):

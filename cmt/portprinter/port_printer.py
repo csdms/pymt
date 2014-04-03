@@ -3,8 +3,12 @@
 from ConfigParser import ConfigParser
 from StringIO import StringIO
 import types
+import warnings
 
-import services
+try:
+    import services
+except ImportError:
+    warnings.warn('services has not been set')
 
 from ..bov.database import Database as BovDatabase
 from ..vtk.vtu import Database as VtkDatabase
