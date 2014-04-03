@@ -1,18 +1,19 @@
 #! /usr/bin/env python
-
-
-from tvtk.api import tvtk
-
-
-_EDGE_COUNT_TO_TYPE = {
-    1: tvtk.Vertex().cell_type,
-    2: tvtk.Line().cell_type,
-    3: tvtk.Triangle().cell_type,
-    4: tvtk.Quad().cell_type,
-}
+import warnings
+try:
+    from tvtk.api import tvtk
+except ImportError:
+    warnings.warn('vtk is not installed')
 
 
 class VtkGridMixIn(object):
+    _EDGE_COUNT_TO_TYPE = {
+        1: tvtk.Vertex().cell_type,
+        2: tvtk.Line().cell_type,
+        3: tvtk.Triangle().cell_type,
+        4: tvtk.Quad().cell_type,
+    }
+
     def to_vtk(self):
         points = self.vtk_points()
         cell_types = self.vtk_cell_types()
@@ -37,7 +38,7 @@ class VtkGridMixIn(object):
         cell_types = np.empty(self.get_cell_count(), dtype=int)
         for (id, n_nodes) in enumerate(self.nodes_per_cell()):
             try:
-                cell_types[id] = _EDGE_COUNT_TO_TYPE[n_nodes]
+                cell_types[id] = self._EDGE_COUNT_TO_TYPE[n_nodes]
             except KeyError:
                 cell_types[id] = tvtk.Polygon().cell_type
         return cell_types
