@@ -1,7 +1,6 @@
 import unittest
 
 import numpy as np
-import netCDF4 as nc4
 
 from cmt.grids import (RasterField, RectilinearField, StructuredField,
                        UnstructuredField)
@@ -24,6 +23,7 @@ class UniqueNameMixIn(object):
         return name
 
     def open_unique(self, **kwds):
+        import netCDF4 as nc4
         import tempfile, os
         (handle, name) = tempfile.mkstemp(**kwds)
         handle.close()
