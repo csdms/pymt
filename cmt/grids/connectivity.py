@@ -130,12 +130,6 @@ The nodes of an element can be ordered either clockwise or counter-clockwise.
 :rtype: numpy array, or tuple of two numpy arrays.
 
 
-Examples
-========
-
-1D Grid
--------
-
 A 1D grid with three points has 2 elements.
 
     >>> ids = get_connectivity ((3, ))
@@ -148,9 +142,8 @@ A 1D grid with three points has 2 elements.
     >>> print ids
     [1 0 2 1]
 
-2D Grid
--------
 
+A 2D grid with 3 rows and 4 columns of nodes.
 ::
 
     ( 0 ) --- ( 1 ) --- ( 2 ) --- ( 3 )

@@ -248,8 +248,6 @@ Create the grid,
     >>> print o
     [3 6]
 
-1D Grid of points
------------------
 
 Define a grid that consists of points in a line.
 
@@ -265,8 +263,6 @@ Create the grid,
     >>> g.get_cell_count ()
     4
 
-3D Grid
--------
 
 Eight point that form a unit cube.
 

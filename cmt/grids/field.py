@@ -220,8 +220,8 @@ size or shape doesn't match raise an exception.
         ...
     DimensionError: 1 != 2
 
-1D-Field
---------
+
+A 1D-Field,
 
     >>> g = RasterField ((6, ), (1.5, ), (0.5, ), indexing='ij')
     >>> g.get_point_count ()
@@ -241,8 +241,8 @@ size or shape doesn't match raise an exception.
     >>> g.get_field ('Point Data')
     array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
-3D-Field
---------
+
+A 3D-Field,
 
     >>> g = RasterField ((4, 3, 2), (1.5, 1., 3), (0.5, 0, -.5 ), indexing='ij')
     >>> g.get_point_count ()
