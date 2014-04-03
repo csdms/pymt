@@ -91,7 +91,6 @@ Subpackages
     cmt.events
     cmt.framework
     cmt.grids
-    cmt.handler
     cmt.mappers
     cmt.nc
     cmt.portprinter
