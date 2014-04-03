@@ -1,4 +1,4 @@
-from cmt.printqueue.port_printer import PortPrinter
+from ..portprinter.port_printer import PortPrinter
 import services
 
 
