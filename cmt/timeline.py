@@ -48,24 +48,35 @@ event 1
 >>> timeline.time
 1.06
 
-The event key can be any hashable object.
+The event key can be any object.
 
 >>> timeline = Timeline([(('event', 2), .5), (('event', 0), 1.)])
 >>> for event in timeline.iter_until(1.05): print event
 ('event', 2)
 ('event', 2)
 ('event', 0)
-"""
 
+Events do not have to be recurring.
+
+>>> timeline = Timeline([(('event', 2), .5), (('event', 0), 1.)])
+>>> timeline.add_one_time_event('one-timer', .1)
+>>> for event in timeline.iter_until(1.05): print event
+one-timer
+('event', 2)
+('event', 2)
+('event', 0)
+"""
+import sys
 import bisect
 
 
 class Timeline(object):
-    def __init__(self, events={}):
-        self._time = 0.
-        self._event_times = []
-        self._event_names = []
-        self._event_intervals = dict()
+    def __init__(self, events={}, start=0.):
+        self._time = start
+
+        self._events = []
+        self._times = []
+        self._intervals = []
 
         self.add_recurring_events(events)
 
@@ -76,20 +87,20 @@ class Timeline(object):
     @property
     def next_event(self):
         try:
-            return self._event_names[0]
+            return self._events[0]
         except IndexError:
             raise IndexError('empty timeline')
 
     @property
     def time_of_next_event(self):
         try:
-            return self._event_times[0]
+            return self._times[0]
         except IndexError:
             raise IndexError('empty timeline')
 
     @property
     def events(self):
-        return set(self._event_intervals.keys())
+        return set(self._events)
 
     def add_recurring_events(self, events):
         try:
@@ -97,35 +108,39 @@ class Timeline(object):
         except AttributeError:
             event_items = events
 
-        for (name, interval) in event_items:
-            self.add_recurring_event(name, interval)
+        for (event, interval) in event_items:
+            self.add_recurring_event(event, interval)
 
-    def add_recurring_event(self, name, interval):
-        self._event_intervals[name] = interval
-        self._insert_event(name, self.time + interval)
+    def add_recurring_event(self, event, interval):
+        self._insert_event(event, self.time + interval, interval)
 
-    def _insert_event(self, name, time):
-        index = bisect.bisect_left(self._event_times, time)
+    def add_one_time_event(self, event, time):
+        self._insert_event(event, time, sys.float_info.max)
 
-        self._event_times.insert(index, time)
-        self._event_names.insert(index, name)
+    def _insert_event(self, event, time, interval):
+        index = bisect.bisect_left(self._times, time)
+
+        self._times.insert(index, time)
+        self._events.insert(index, event)
+        self._intervals.insert(index, interval)
 
     def pop(self):
         try:
-            name = self._event_names.pop(0)
-            time = self._event_times.pop(0)
+            (event, time, interval) = (self._events.pop(0),
+                                       self._times.pop(0),
+                                       self._intervals.pop(0))
         except IndexError:
             raise IndexError('pop from empty timeline')
 
-        self._insert_event(name, time + self._event_intervals[name])
+        self._insert_event(event, time + interval, interval)
 
         self._time = time
 
-        return name
+        return event
 
     def iter_until(self, stop):
         try:
-            assert(stop >= stop)
+            assert(stop >= self.time)
         except AssertionError:
             raise ValueError('stop time is less than current time')
 
