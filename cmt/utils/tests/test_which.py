@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from cmt.which import which
+from cmt.utils.which import which
 
 
 class TestWhich(unittest.TestCase):
