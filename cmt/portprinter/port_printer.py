@@ -10,9 +10,9 @@ try:
 except ImportError:
     warnings.warn('services has not been set')
 
-from ..bov.database import Database as BovDatabase
-from ..vtk.vtu import Database as VtkDatabase
-from ..nc.database import Database as NcDatabase
+from ..printers.bov.database import Database as BovDatabase
+from ..printers.vtk.vtu import Database as VtkDatabase
+from ..printers.nc.database import Database as NcDatabase
 from ..utils.prefix import strip_prefix, names_with_prefix
 
 

@@ -4,7 +4,7 @@ class Error(Exception):
 
 
 class VarNameError(Error):
-    """Exception to indicate that a bad input/output variable name"""
+    """Exception to indicate a bad input/output variable name"""
     def __init__(self, name):
         self.name = name
 

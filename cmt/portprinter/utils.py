@@ -243,5 +243,3 @@ def next_unique_file_name(file_name):
         file_name = base + '.%d' % count + ext
         count += 1
     return file_name
-
-
