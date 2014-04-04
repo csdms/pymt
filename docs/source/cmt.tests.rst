@@ -41,11 +41,3 @@ tests Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_which` Module
-------------------------
-
-.. automodule:: cmt.tests.test_which
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

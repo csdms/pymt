@@ -17,14 +17,6 @@ cmt Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`configparser` Module
---------------------------
-
-.. automodule:: cmt.configparser
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`nsdict` Module
 --------------------
 
@@ -65,37 +57,20 @@ cmt Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`verbose` Module
----------------------
-
-.. automodule:: cmt.verbose
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`which` Module
--------------------
-
-.. automodule:: cmt.which
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
 .. toctree::
 
     cmt.bmi
-    cmt.bov
+    cmt.component
     cmt.events
     cmt.framework
     cmt.grids
     cmt.mappers
-    cmt.nc
     cmt.portprinter
+    cmt.printers
     cmt.testing
     cmt.tests
     cmt.utils
-    cmt.vtk
 
