@@ -1,14 +1,6 @@
 tests Package
 =============
 
-:mod:`test_cmt` Module
-----------------------
-
-.. automodule:: cmt.tests.test_cmt
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`test_component_info` Module
 ---------------------------------
 
