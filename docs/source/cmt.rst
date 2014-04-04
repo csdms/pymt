@@ -94,7 +94,6 @@ Subpackages
     cmt.mappers
     cmt.nc
     cmt.portprinter
-    cmt.portqueue
     cmt.testing
     cmt.tests
     cmt.utils

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # coupling documentation build configuration file, created by
-# sphinx-quickstart on Wed Apr  2 13:26:28 2014.
+# sphinx-quickstart on Fri Apr  4 12:48:11 2014.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -69,7 +69,7 @@ release = '0.1.0'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build', '**tests**']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -309,7 +309,3 @@ epub_copyright = u'2014, Eric Hutton'
 
 # If false, no index is generated.
 #epub_use_index = True
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
