@@ -26,7 +26,7 @@ def test_one_event():
         mngr.run(2.)
         assert_equal(mngr.time, 2.)
 
-        for time in np.arange(1., 5., .1):
+        for time in np.arange(2., 5., .1):
             mngr.run(time)
             assert_equal(mngr.time, time)
 

@@ -31,7 +31,7 @@ def test_one_event():
         mngr.run(2.)
         assert_port_value_equal(foo._port, 'air__density', 2.)
 
-        for time in np.arange(1., 5., .1):
+        for time in np.arange(2., 5., .1):
             mngr.run(time)
         assert_almost_equal(mngr.time, 4.9)
         assert_port_value_equal(foo._port, 'air__density', 4.)
@@ -63,7 +63,7 @@ def test_two_events():
         assert_port_value_equal(foo._port, 'air__density', 2.)
         assert_port_value_equal(bar._port, 'earth_surface__temperature', 1.2)
 
-        for time in np.arange(1., 5., .1):
+        for time in np.arange(2., 5., .1):
             mngr.run(time)
         assert_almost_equal(mngr.time, 4.9)
         assert_port_value_equal(foo._port, 'air__density', 4.)
