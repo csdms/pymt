@@ -82,10 +82,14 @@ class Timeline(object):
 
     @property
     def time(self):
+        """Returns current time along the timeline.
+        """
         return self._time
 
     @property
     def next_event(self):
+        """Returns the next event object.
+        """
         try:
             return self._events[0]
         except IndexError:
@@ -93,6 +97,8 @@ class Timeline(object):
 
     @property
     def time_of_next_event(self):
+        """Return the time when the next event will happen.
+        """
         try:
             return self._times[0]
         except IndexError:
@@ -100,9 +106,15 @@ class Timeline(object):
 
     @property
     def events(self):
+        """Returns a set that contains all of the event objects.
+        """
         return set(self._events)
 
     def add_recurring_events(self, events):
+        """Adds recurring events to the timeline. *events* is a list where
+        each element is tuple that gives the event object followed by the
+        event recurrence interval.
+        """
         try:
             event_items = events.items()
         except AttributeError:
@@ -112,9 +124,14 @@ class Timeline(object):
             self.add_recurring_event(event, interval)
 
     def add_recurring_event(self, event, interval):
+        """Adds a single recurring event to the timeline. *event* is the
+        event object, and *interval* is recurrence interval.
+        """
         self._insert_event(event, self.time + interval, interval)
 
     def add_one_time_event(self, event, time):
+        """Adds an event to the timeline that will only happen once.
+        """
         self._insert_event(event, time, sys.float_info.max)
 
     def _insert_event(self, event, time, interval):
@@ -125,6 +142,8 @@ class Timeline(object):
         self._intervals.insert(index, interval)
 
     def pop(self):
+        """Pop the next event from the timeline.
+        """
         try:
             (event, time, interval) = (self._events.pop(0),
                                        self._times.pop(0),
@@ -139,6 +158,10 @@ class Timeline(object):
         return event
 
     def iter_until(self, stop):
+        """Iterate until *stop*, popping events along the way.
+
+        Returns the next event object as the timeline advances to *stop*.
+        """
         try:
             assert(stop >= self.time)
         except AssertionError:
@@ -150,6 +173,11 @@ class Timeline(object):
         raise StopIteration
 
     def pop_until(self, stop):
+        """Advance the timeline to *stop*, popping events along the way.
+
+        Returns a list of the event objects that were popped to advance the
+        timeline to *stop*.
+        """
         events = []
         for event in self.iter_until(stop):
             events.append(event)
