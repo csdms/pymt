@@ -27,6 +27,9 @@ pip-log.txt
 .tox
 nosetests.xml
 
+# Build folders
+_build
+
 # Translations
 *.mo
 
