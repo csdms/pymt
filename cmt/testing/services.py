@@ -15,14 +15,16 @@ class EmptyPort(object):
         self._spacing = (1., 2.)
         self._origin = (0., 1.)
         self._values = {}
+        self._time = self.start_time
 
     def initialize(self):
         for array in self._values.values():
             array.fill(0.)
 
     def run(self, time):
+        self._time = time
         for array in self._values.values():
-            array.fill(time)
+            array.fill(self.current_time)
 
     def finalize(self):
         for array in self._values.values():
@@ -39,6 +41,22 @@ class EmptyPort(object):
 
     def get_grid_values(self, var_name):
         return self._values[var_name]
+
+    @property
+    def start_time(self):
+        return 0.
+
+    @property
+    def current_time(self):
+        return self._time
+
+    @property
+    def end_time(self):
+        return 100.
+
+    @property
+    def time_step(self):
+        return 1.
 
 
 class WaterPort(EmptyPort):
