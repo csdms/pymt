@@ -5,18 +5,27 @@ from ..utils.prefix import names_with_prefix, strip_prefix
 class EventManager(object):
     def __init__(self, events):
         self._timeline = Timeline(events)
+        self._initialized = False
 
     def initialize(self):
-        for event in self._timeline.events:
-            event.initialize()
+        if not self._initialized:
+            for event in self._timeline.events:
+                event.initialize()
+            self._initialized = True
 
     def run(self, stop_time):
+        self.initialize()
         for event in self._timeline.iter_until(stop_time):
             event.run(self._timeline.time)
 
     def finalize(self):
-        for event in self._timeline.events:
-            event.finalize()
+        if self._initialized:
+            for event in self._timeline.events:
+                event.finalize()
+            self._initialized = False
+
+    def add_recurring_event(self, event, interval):
+        self._timeline.add_recurring_event(event, interval)
 
     @property
     def time(self):
