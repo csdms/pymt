@@ -169,22 +169,24 @@ from celltopoint import CellToPoint
 from pointtocell import PointToCell
 
 #mappers = [NearestVal (), CellToPoint (), PointToCell ()]
-mappers = [NearestVal, CellToPoint, PointToCell]
+_MAPPERS = [NearestVal, CellToPoint, PointToCell]
 
-def find_mapper (dst_grid, src_grid):
+
+def find_mapper(dst_grid, src_grid):
     """Find appropriate mappers to map bewteen two grid-like objects"""
     choices = []
-    for cls in mappers:
-        mapper = cls ()
-        if mapper.test (dst_grid, src_grid):
-            choices.append (mapper)
+    for cls in _MAPPERS:
+        mapper = cls()
+        if mapper.test(dst_grid, src_grid):
+            choices.append(mapper)
 
-    if len (choices)==0:
-        raise IncompatibleGridError (dst_grid.name, src_grid.name)
+    if len(choices)==0:
+        raise IncompatibleGridError(dst_grid.name, src_grid.name)
     
     return choices
 
+
 if __name__ == "__main__":
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
