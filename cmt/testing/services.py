@@ -1,4 +1,5 @@
 import numpy as np
+from cmt.grids import UniformRectilinearPoints
 
 
 def get_port(name):
@@ -9,11 +10,13 @@ def get_port_names():
     return _SERVICES.keys()
 
 
-class EmptyPort(object):
+#class EmptyPort(object):
+class EmptyPort(UniformRectilinearPoints):
     def __init__(self):
-        self._shape = (4, 5)
-        self._spacing = (1., 2.)
-        self._origin = (0., 1.)
+        UniformRectilinearPoints.__init__(self, (4, 5), (1., 2.), (0., 1.))
+        #self._shape = (4, 5)
+        #self._spacing = (1., 2.)
+        #self._origin = (0., 1.)
         self._values = {}
         self._time = self.start_time
 
@@ -31,13 +34,13 @@ class EmptyPort(object):
             array.fill(0.)
 
     def get_grid_shape(self, var_name):
-        return self._shape
+        return self.get_shape()
 
     def get_grid_spacing(self, var_name):
-        return self._spacing
+        return self.get_spacing()
 
     def get_grid_origin(self, var_name):
-        return self._origin
+        return self.get_origin()
 
     def get_grid_values(self, var_name):
         return self._values[var_name]
