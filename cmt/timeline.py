@@ -1,5 +1,8 @@
 #! /usr/bin/env python
-"""
+"""Execute events along a timeline.
+
+Examples
+--------
 >>> timeline = Timeline()
 >>> timeline.add_recurring_event('event 1', 1.)
 >>> timeline.add_recurring_event('event 2', .3)
@@ -71,6 +74,14 @@ import bisect
 
 
 class Timeline(object):
+    """Create a timeline of events.
+    Parameters
+    ----------
+    events : dict-like
+        Events as event-object/repeat interval pairs.
+    start : float, optional
+        Start time for the timeline.
+    """
     def __init__(self, events={}, start=0.):
         self._time = start
 
@@ -82,13 +93,13 @@ class Timeline(object):
 
     @property
     def time(self):
-        """Returns current time along the timeline.
+        """Current time along the timeline.
         """
         return self._time
 
     @property
     def next_event(self):
-        """Returns the next event object.
+        """Next event object.
         """
         try:
             return self._events[0]
@@ -97,7 +108,7 @@ class Timeline(object):
 
     @property
     def time_of_next_event(self):
-        """Return the time when the next event will happen.
+        """Time when the next event will happen.
         """
         try:
             return self._times[0]
@@ -106,14 +117,21 @@ class Timeline(object):
 
     @property
     def events(self):
-        """Returns a set that contains all of the event objects.
+        """All of the event objects in the timeline.
         """
         return set(self._events)
 
     def add_recurring_events(self, events):
-        """Adds recurring events to the timeline. *events* is a list where
+        """Add a series of recurring events to the timeline.
+        
+        Adds recurring events to the timeline. *events* is a list where
         each element is tuple that gives the event object followed by the
         event recurrence interval.
+
+        Parameters
+        ----------
+        events : dict-like
+            Events object/interval pairs to add to the timeline.
         """
         try:
             event_items = events.items()
@@ -124,13 +142,29 @@ class Timeline(object):
             self.add_recurring_event(event, interval)
 
     def add_recurring_event(self, event, interval):
-        """Adds a single recurring event to the timeline. *event* is the
+        """Add a recurring event to the timeline.
+
+        Adds a single recurring event to the timeline. *event* is the
         event object, and *interval* is recurrence interval.
+
+        Parameters
+        ----------
+        event : event-like
+            Event to add to the timeline.
+        interval : float
+            Recurrence interval of the event.
         """
         self._insert_event(event, self.time + interval, interval)
 
     def add_one_time_event(self, event, time):
-        """Adds an event to the timeline that will only happen once.
+        """Add an event that will only happen once.
+
+        Parameters
+        ----------
+        event : event-like
+            Event to add to the timeline.
+        time : float
+            Time for the event to execute.
         """
         self._insert_event(event, time, sys.float_info.max)
 
@@ -158,9 +192,19 @@ class Timeline(object):
         return event
 
     def iter_until(self, stop):
-        """Iterate until *stop*, popping events along the way.
+        """Iterate the timeline until a given time.
 
-        Returns the next event object as the timeline advances to *stop*.
+        Iterate the timeline until *stop*, popping events along the way.
+
+        Paramters
+        ---------
+        stop : float
+            Time to iterate until.
+
+        Returns
+        -------
+        event
+            The next event object as the timeline advances to *stop*.
         """
         try:
             assert(stop >= self.time)
@@ -173,10 +217,21 @@ class Timeline(object):
         raise StopIteration
 
     def pop_until(self, stop):
-        """Advance the timeline to *stop*, popping events along the way.
+        """Advance the timeline, popping events along the way.
 
-        Returns a list of the event objects that were popped to advance the
-        timeline to *stop*.
+        Advance the timeline to *stop*, popping events along the way. Returns a
+        list of the event objects that were popped to advance the timeline to
+        *stop*.
+
+        Paramters
+        ---------
+        stop : float
+            Time to iterate until.
+
+        Returns
+        -------
+        list
+            The events popped to get to the stop time.
         """
         events = []
         for event in self.iter_until(stop):
