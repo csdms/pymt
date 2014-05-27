@@ -10,11 +10,19 @@ class EventManager(object):
         self._running = False
         self._finalizing = False
 
+        self._order = list(events)
+
     def initialize(self):
         if not self._initializing:
             self._initializing = True
-            for event in self._timeline.events:
-                event.initialize()
+            #for event in self._timeline.events:
+            for (event, _) in self._order:
+                try:
+                    event.initialize()
+                except Exception as error:
+                    print 'error initializing'
+                    print event
+                    raise
             self._initialized = True
 
     def run(self, stop_time):
@@ -22,19 +30,24 @@ class EventManager(object):
         if not self._running:
             self._running = True
             for event in self._timeline.iter_until(stop_time):
-                event.run(self._timeline.time)
+                try:
+                    event.run(self._timeline.time)
+                except AttributeError:
+                    event.update(self._timeline.time)
             self._running = False
 
     def finalize(self):
         if self._initialized:
             if not self._finalizing:
                 self._finalizing = True
-                for event in self._timeline.events:
+                #for event in self._timeline.events:
+                for (event, _) in self._order[::-1]:
                     event.finalize()
             self._initialized = False
 
     def add_recurring_event(self, event, interval):
         self._timeline.add_recurring_event(event, interval)
+        self._order.append((event, interval))
 
     @property
     def time(self):
