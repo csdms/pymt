@@ -21,12 +21,15 @@ from .utils import (_construct_port_as_field, _reconstruct_port_as_field,
 
 
 class PortPrinter(object):
-    def __init__(self, port, var_name):
+    def __init__(self, port, var_name, filename=None):
         if isinstance(port, types.StringTypes):
             self._port = services.get_port(port)
         else:
             self._port = port
         self._var_name = var_name
+        self._filename = filename
+        if filename is None:
+            self._filename = var_name
 
         self._field = _construct_port_as_field(self._port, var_name)
         self._printer = self._printer_class()
@@ -40,7 +43,8 @@ class PortPrinter(object):
         return self._format
 
     def open(self, clobber=False):
-        file_name = construct_file_name(self.var_name, format=self.format,
+        #file_name = construct_file_name(self.var_name, format=self.format,
+        file_name = construct_file_name(self._filename, format=self.format,
                                         prefix='')
         if not clobber:
             file_name = next_unique_file_name(file_name)
@@ -90,7 +94,8 @@ class PortPrinter(object):
             printer_class = _FORMAT_TO_PRINTER[d['format']]
         except KeyError:
             raise ValueError('%s: unknown printer format' % d['format'])
-        return printer_class(d['port'], d['name'])
+        return printer_class(d['port'], d['name'],
+                             filename=d.get('filename', d['name']))
 
 
 class VtkPortPrinter(PortPrinter):
@@ -111,5 +116,6 @@ class BovPortPrinter(PortPrinter):
 _FORMAT_TO_PRINTER = {
     'vtk': VtkPortPrinter,
     'nc': NcPortPrinter,
+    'netcdf': NcPortPrinter,
     'bov': BovPortPrinter,
 }
