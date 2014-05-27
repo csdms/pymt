@@ -150,6 +150,8 @@ def _construct_port_as_unstructured_field(port, var_name):
 
 def _construct_port_as_field(port, var_name):
     data_array = port.get_grid_values(var_name)
+    if data_array is None:
+        raise ValueError(var_name)
 
     if is_rectilinear_port(port, var_name):
         field = _construct_port_as_rectilinear_field(port, var_name,
