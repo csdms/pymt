@@ -75,10 +75,10 @@ import numpy as np
 from cmt.grids import RectilinearField, StructuredField, UnstructuredField
 from cmt.grids import (is_uniform_rectilinear, is_rectilinear, is_structured,
                        is_unstructured)
-from cmt.verbose import CMTLogger
+#from cmt.verbose import CMTLogger
 
 
-logger = CMTLogger ('NetCDF', 20)
+#logger = CMTLogger ('NetCDF', 20)
 
 
 class Error (Exception):
