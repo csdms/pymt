@@ -57,6 +57,9 @@ class NetcdfFieldReader(object):
             if self._root.variables[name].location == 'node':
                 data = self.variable_data(name)
                 if self.contains_time_dimension():
+                    for time in xrange(len(self.time)):
+                        self._field.add_field(name + '@t=%d' % time,
+                                              data[time, :], centering='point')
                     self._field.add_field(name, data[-1, :], centering='point')
                 else:
                     self._field.add_field(name, data[:], centering='point')
@@ -66,14 +69,26 @@ class NetcdfFieldReader(object):
             if self._root.variables[name].location == 'face':
                 data = self.variable_data(name)
                 if self.contains_time_dimension():
+                    for time in xrange(len(self.time)):
+                        self._field.add_field(name + '@t=%d' % time,
+                                              data[time, :], centering='cell')
                     self._field.add_field(name, data[-1, :], centering='cell')
                 else:
                     self._field.add_field(name, data[:], centering='cell')
 
     def _get_time_variable(self):
-        self._time = self.variable_data('time')
+        if self.contains_time_dimension():
+            self._time = self.variable_data('time')
+        else:
+            self._time = []
 
-
+    @property
+    def time(self):
+        if self.contains_time_dimension():
+            return self.variable_data('time')
+        else:
+            return []
+        
 class NetcdfRectilinearFieldReader(NetcdfFieldReader):
     def _get_mesh_coordinate_data(self):
         coordinate_names = self._topology.node_coordinates.split()

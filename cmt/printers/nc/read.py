@@ -51,4 +51,7 @@ def field_fromfile(path, format='NETCDF4'):
     else:
         nc_file = reader(path, format=format)
 
-    return nc_file._field
+    if len(nc_file._time) > 0:
+        return (nc_file._field, nc_file._time)
+    else:
+        return nc_file._field
