@@ -2,12 +2,23 @@ import numpy as np
 from cmt.grids import UniformRectilinearPoints
 
 
-def get_port(name):
-    return _SERVICES[name]
+def get_instance(name):
+    return _INSTANCES[name]
 
 
-def get_port_names():
-    return _SERVICES.keys()
+def instantiate(cls, name):
+    if name in _INSTANCES:
+        raise ValueError(name)
+    else:
+        _INSTANCES[name] = get_class(cls)()
+
+
+def get_class(name):
+    return _CLASSES[name]
+
+
+def get_class_names():
+    return _CLASSES.keys()
 
 
 #class EmptyPort(object):
@@ -43,7 +54,11 @@ class EmptyPort(UniformRectilinearPoints):
         return self.get_origin()
 
     def get_grid_values(self, var_name):
-        return self._values[var_name]
+        try:
+            return self._values[var_name]
+        except KeyError:
+            print self._values.keys()
+            raise
 
     @property
     def start_time(self):
@@ -95,3 +110,10 @@ _SERVICES = {
     'water_port': WaterPort(),
     'earth_port': EarthPort(),
 }
+
+_CLASSES = {
+    'air_port', AirPort,
+    'water_port', WaterPort,
+    'earth_port', EarthPort,
+}
+_INSTANCES = {}
