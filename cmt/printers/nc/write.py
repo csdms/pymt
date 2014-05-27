@@ -8,11 +8,14 @@ from .ugrid import (NetcdfRectilinearField, NetcdfStructuredField,
 
 def field_tofile(field, path, append=False, attrs={}, time=None,
                  time_units='days', time_reference='00:00:00 UTC',
-                 long_name={}, format='NETCDF4'):
+                 long_name={}, format='NETCDF4', keep_open=False):
+
+    args = (path, field)
+    kwds = dict(append=append, format=format, time=time, keep_open=True)
 
     if is_rectilinear(field, strict=False):
-        NetcdfRectilinearField(path, field, append=append, format=format)
+        NetcdfRectilinearField(*args, **kwds)
     elif is_structured(field, strict=False):
-        NetcdfStructuredField(path, field, append=append, format=format)
+        NetcdfStructuredField(*args, **kwds)
     else:
-        NetcdfUnstructuredField(path, field, append=append, format=format)
+        NetcdfUnstructuredField(*args, **kwds)

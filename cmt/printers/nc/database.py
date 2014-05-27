@@ -4,6 +4,7 @@ import os
 import string
 
 from .write import field_tofile
+from .ugrid import close as ugrid_close
 
 
 class IDatabase(object):
@@ -98,6 +99,10 @@ Elevation_time_series_0000.nc.
         try:
             del self._point_count
             del self._cell_count
+        except AttributeError:
+            pass
+        try:
+            ugrid_close(self._path)
         except AttributeError:
             pass
 

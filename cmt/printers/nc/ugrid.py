@@ -6,18 +6,47 @@ from .constants import (open_netcdf, _NP_TO_NC_TYPE)
 from ...grids import utils as gutils
 
 
+_OPENED_FILES = {}
+
+
+def close_all():
+    for path in _OPENED_FILES:
+        close(path)
+
+
+def close(path):
+    try:
+        _OPENED_FILES[path].close()
+    except KeyError:
+        pass
+    else:
+        del _OPENED_FILES[path]
+
+
 class NetcdfField(object):
-    def __init__(self, path, field, format='NETCDF4', append=False):
+    def __init__(self, path, field, format='NETCDF4', append=False, time=None,
+                 keep_open=False):
         self._path = path
         self._field = field
 
-        self._root = open_netcdf(path, mode='w', format=format, append=append)
+        if path in _OPENED_FILES:
+            self._root = _OPENED_FILES[path]
+        else:
+            self._root = open_netcdf(path, mode='w', format=format, append=append)
 
         self._set_mesh_topology()
         self._set_node_variable_data()
         self._set_face_variable_data()
-        self._set_time_variable()
+        self._set_time_variable(now=time)
 
+        if keep_open:
+            _OPENED_FILES[path] = self._root
+        else:
+            self.close()
+
+    def close(self):
+        if self._path in _OPENED_FILES:
+            del _OPENED_FILES[self._path]
         self._root.close()
 
     @property
