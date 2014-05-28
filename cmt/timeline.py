@@ -27,19 +27,17 @@ event 1
 >>> timeline.pop()
 'event 2'
 
-The order that events are added does not change the order they are popped
-in the case when events happen at the same time. The most recent event goes
-first.
+When events occur at the same time, events are popped in as first-in, first-out.
 
 >>> timeline = Timeline([('event 1', 1.), ('event 2', .5)])
 >>> for event in timeline.iter_until(1.0): print event
 event 2
-event 2
 event 1
+event 2
 
 >>> timeline = Timeline([('event 2', .5), ('event 1', 1.)])
 >>> timeline.pop_until(1.05)
-['event 2', 'event 2', 'event 1']
+['event 2', 'event 1', 'event 2']
 
 >>> timeline.time
 1.05
@@ -51,13 +49,13 @@ event 1
 >>> timeline.time
 1.06
 
-The event key can be any object.
+The event key can be any object, even a `tuple`.
 
 >>> timeline = Timeline([(('event', 2), .5), (('event', 0), 1.)])
 >>> for event in timeline.iter_until(1.05): print event
 ('event', 2)
-('event', 2)
 ('event', 0)
+('event', 2)
 
 Events do not have to be recurring.
 
@@ -66,8 +64,8 @@ Events do not have to be recurring.
 >>> for event in timeline.iter_until(1.05): print event
 one-timer
 ('event', 2)
-('event', 2)
 ('event', 0)
+('event', 2)
 """
 import sys
 import bisect
@@ -75,15 +73,57 @@ import bisect
 
 class Timeline(object):
     """Create a timeline of events.
+
     Parameters
     ----------
     events : dict-like
         Events as event-object/repeat interval pairs.
     start : float, optional
         Start time for the timeline.
+
+    Examples
+    --------
+    Create a timeline with two recurring events. Events can be any old
+    object. In this case they are two strings.
+
+    >>> timeline = Timeline([('hello', 1.), ('world', 1.5)], start=3.)
+    >>> sorted(timeline.events) # The events are returned as a set.
+    ['hello', 'world']
+
+    The first events will not occur at the starting time.
+
+    >>> timeline.time
+    3.0
+    >>> timeline.next_event
+    'hello'
+    >>> timeline.time_of_next_event
+    4.0
+
+    To advance the timeline forward to the next event, use the `pop` method.
+
+    >>> timeline.pop()
+    'hello'
+    >>> timeline.time
+    4.0
+    >>> timeline.pop()
+    'world'
+    >>> timeline.time
+    4.5
+
+    The timeline keeps track of objects, without making copies. The objects
+    don't even need to be hashable.
+
+    >>> hello = ['hello', 'world']
+    >>> timeline = Timeline([(hello, 1.)])
+    >>> event = timeline.pop()
+    >>> event is hello
+    True
+    >>> event.append('!')
+    >>> hello
+    ['hello', 'world', '!']
     """
     def __init__(self, events={}, start=0.):
-        self._time = start
+        self._time = float(start)
 
         self._events = []
         self._times = []
@@ -94,12 +134,32 @@ class Timeline(object):
     @property
     def time(self):
         """Current time along the timeline.
+
+        Examples
+        --------
+        >>> timeline = Timeline(start=0)
+        >>> timeline.time
+        0.0
+        >>> timeline = Timeline(start=2)
+        >>> timeline.time
+        2.0
         """
         return self._time
 
     @property
     def next_event(self):
         """Next event object.
+
+        Return the next event object but don't advance the timeline forward in
+        time.
+
+        Examples
+        --------
+        >>> timeline = Timeline([('an event', 1.)])
+        >>> timeline.next_event
+        'an event'
+        >>> timeline.time
+        0.0
         """
         try:
             return self._events[0]
@@ -109,6 +169,12 @@ class Timeline(object):
     @property
     def time_of_next_event(self):
         """Time when the next event will happen.
+
+        Examples
+        --------
+        >>> timeline = Timeline([('an event', 1.)])
+        >>> timeline.time_of_next_event
+        1.0
         """
         try:
             return self._times[0]
@@ -118,6 +184,15 @@ class Timeline(object):
     @property
     def events(self):
         """All of the event objects in the timeline.
+
+        Examples
+        --------
+        >>> timeline = Timeline([('an event', 1.), ('another event', 1.)])
+        >>> events = timeline.events
+        >>> isinstance(events, set)
+        True
+        >>> sorted(events)
+        ['an event', 'another event']
         """
         return set(self._events)
 
@@ -132,6 +207,32 @@ class Timeline(object):
         ----------
         events : dict-like
             Events object/interval pairs to add to the timeline.
+
+        Examples
+        --------
+        >>> timeline = Timeline()
+        >>> len(timeline.events)
+        0
+        >>> timeline.add_recurring_events([('hello', 1.), ('world', 1.)])
+        >>> sorted(timeline.events)
+        ['hello', 'world']
+
+        Events pop as first-in, first-out.
+
+        >>> timeline.pop()
+        'hello'
+        >>> timeline.pop()
+        'world'
+
+        The same event can be added multiple times.
+
+        >>> timeline = Timeline()
+        >>> timeline.add_recurring_events([('hello', 1.), ('world', 1.),
+        ...     ('hello', 1.)])
+        >>> sorted(timeline.events)
+        ['hello', 'world']
+        >>> timeline.pop_until(2.)
+        ['hello', 'world', 'hello', 'hello', 'world', 'hello']
         """
         try:
             event_items = events.items()
@@ -153,6 +254,13 @@ class Timeline(object):
             Event to add to the timeline.
         interval : float
             Recurrence interval of the event.
+
+        Examples
+        --------
+        >>> timeline = Timeline()
+        >>> timeline.add_recurring_event('say hello', 1.)
+        >>> timeline.events
+        set(['say hello'])
         """
         self._insert_event(event, self.time + interval, interval)
 
@@ -165,11 +273,23 @@ class Timeline(object):
             Event to add to the timeline.
         time : float
             Time for the event to execute.
+
+        Examples
+        --------
+        >>> timeline = Timeline()
+        >>> timeline.add_one_time_event('say hello', 1.)
+        >>> timeline.time_of_next_event
+        1.0
+        >>> timeline.pop()
+        'say hello'
+        >>> timeline.time_of_next_event  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        IndexError: empty timeline
         """
-        self._insert_event(event, time, sys.float_info.max)
+        self._insert_event(event, time, None)
 
     def _insert_event(self, event, time, interval):
-        index = bisect.bisect_left(self._times, time)
+        index = bisect.bisect_right(self._times, time)
 
         self._times.insert(index, time)
         self._events.insert(index, event)
@@ -177,6 +297,12 @@ class Timeline(object):
 
     def pop(self):
         """Pop the next event from the timeline.
+
+        Examples
+        --------
+        >>> timeline = Timeline(dict(hello=1.))
+        >>> timeline.pop()
+        'hello'
         """
         try:
             (event, time, interval) = (self._events.pop(0),
@@ -185,7 +311,10 @@ class Timeline(object):
         except IndexError:
             raise IndexError('pop from empty timeline')
 
-        self._insert_event(event, time + interval, interval)
+        try:
+            self._insert_event(event, time + interval, interval)
+        except TypeError:
+            pass
 
         self._time = time
 
@@ -232,6 +361,12 @@ class Timeline(object):
         -------
         list
             The events popped to get to the stop time.
+
+        Examples
+        --------
+        >>> timeline = Timeline([('a', 1.), ('b', 1.), ('c', 1.)])
+        >>> timeline.pop_until(2.)
+        ['a', 'b', 'c', 'a', 'b', 'c']
         """
         events = []
         for event in self.iter_until(stop):
