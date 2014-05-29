@@ -23,6 +23,26 @@ def clip_stop_time(stop, stop_min, stop_max):
 
 
 class Component(GridMixIn):
+    """Wrap a BMI object as a component.
+
+    Use the Component class to wrap an object that exposes a BMI so that it
+    can operate within the model-coupling framework.
+
+    Parameters
+    ----------
+    port : str or port-like
+        Name of the port to wrap or a Port instance.
+    uses : list, optional
+        List of uses port names.
+    provides : list, optional
+        List of provides port names.
+    argv : list, optional
+        List of command line argument used to initialize the component.
+    time_step : float, optional
+        Time interval over which component will run uses ports.
+    run_dir : str, optional
+        Directory where the component will run.
+    """
     def __init__(self, port, uses=set(), provides=set(), events=[], argv=[],
                 time_step=1., run_dir='.'):
         if isinstance(port, types.StringTypes):
@@ -45,10 +65,16 @@ class Component(GridMixIn):
 
     @property
     def time_step(self):
+        """Component time step.
+
+        Time step overwhich a component will update any connected uses ports.
+        """
         return self._time_step
 
     @property
     def end_time(self):
+        """End time for component updating.
+        """
         try:
             return self._port.end_time
         except AttributeError:
@@ -56,13 +82,19 @@ class Component(GridMixIn):
 
     @property
     def uses(self):
+        """Names of connected *uses* ports.
+        """
         return self._uses
 
     @property
     def provides(self):
+        """Names of connected *provides* ports.
+        """
         return self._provides
 
     def connect(self, uses, port, vars_to_map=[]):
+        """Connect a *uses* port to a *provides* port.
+        """
         if len(vars_to_map) > 0:
             event = ChainEvent([port,
                                 PortMapEvent(src_port=port, dst_port=self,
@@ -75,6 +107,18 @@ class Component(GridMixIn):
         #self._events.add_recurring_event(port, port._port.time_step)
 
     def go(self, stop=None):
+        """Run a component from start to end.
+
+        Run a component starting from its start time and ending at its stop
+        time. The component and any attached ports are first initialized,
+        then updated until the end time and, finally, their finalize methods
+        are called.
+
+        Parameters
+        ----------
+        stop : float, optional
+            Stop time, or None to run until `end_time`.
+        """
         print 'go!'
         self.initialize()
 
@@ -87,27 +131,94 @@ class Component(GridMixIn):
             self._events.finalize()
 
     def initialize(self):
+        """Initialize a component and any connected events.
+        """
         self._events.initialize()
 
     def run(self, stop_time):
+        """Run a component and any connect events.
+
+        Paramters
+        ---------
+        stop_time : float
+            Time to run the component until.
+        """
         self._events.run(stop_time)
 
     def finalize(self):
+        """Finalize a component and any connected events.
+        """
         self._events.finalize()
 
     def register(self, name):
+        """Register a component with the framework.
+
+        Associate *name* with the component instance withing the framework.
+
+        Parameters
+        ----------
+        name : str
+            Name to associate component with.
+        """
         services.register_component(self, name)
 
     @classmethod
     def from_string(cls, source):
+        """Deprecated.
+
+        .. note:: Deprecated.
+            Use :meth:`~Component.load` instead.
+
+        Create a component from a string.
+
+        Paramters
+        ---------
+        source : str
+            Contents of a yaml file.
+
+        Returns
+        -------
+        Component
+            A newly-created component.
+        """
         return cls._from_yaml(source)
 
     @classmethod
     def load(cls, source):
+        """Create a Component from a string.
+
+        This is an alternate constructor that create a component using values
+        from a yaml-formatted string.
+
+        Paramters
+        ---------
+        source : str
+            Yaml-formatted string.
+
+        Returns
+        -------
+        Component
+            A newly-created component.
+        """
         return cls.from_dict(yaml.load(source))
 
     @classmethod
     def load_all(cls, source):
+        """Create multiple components from a string.
+
+        This is an alternate constructor that creates a series of components
+        using values from a yaml-formatted string.
+
+        Paramters
+        ---------
+        source : str
+            Yaml-formatted string.
+
+        Returns
+        -------
+        List of Components
+            A list of newly-created component.
+        """
         components = []
         for section in yaml.load_all(source):
             components.append(cls.from_dict(section))
@@ -115,6 +226,26 @@ class Component(GridMixIn):
 
     @classmethod
     def from_dict(cls, d):
+        """Create a Component instance from a dictionary.
+
+        Use configuration paramters from a dict-like object to create a new
+        Component. The dictionary must contain the following keys:
+            - `name`
+            - `class`
+            - `initialize_args`
+            - `time_step`
+            - `run_dir`
+
+        Parameters
+        ----------
+        d : dict-like
+            Configuration parameters for the component.
+
+        Returns
+        -------
+        Component
+            A newly-created Component instance.
+        """
         #port = services.get_port(d['name'])
         port = services.instantiate_component(d['class'], d['name'])
         #argv = d.get('argv', [])
@@ -138,7 +269,19 @@ class Component(GridMixIn):
                    argv=argv, time_step=time_step, run_dir=run_dir)
 
     @classmethod
-    def from_path(cls, path, prefix='component'):
+    def from_path(cls, path):
+        """Create a component from a file.
+
+        Paramters
+        ---------
+        path : str
+            Path to yaml file.
+
+        Returns
+        -------
+        Component
+            A newly-created component.
+        """
         with open(path, 'r') as yaml_file:
             return cls._from_yaml(yaml_file.read())
 
