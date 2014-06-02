@@ -14,10 +14,41 @@ from .grid import GridMixIn
 from ..framework import services
 
 def clip_stop_time(stop, stop_min, stop_max):
+    """Clip time between two values.
+
+    Clip a stopping time between two values. This is the same as the numpy
+    clip function except that if *stop* is `None` then *stop_max* is
+    returned.
+
+    Parameters
+    ----------
+    stop : float
+        Stop time.
+    stop_min : float
+        Minimum stop time
+    stop_max : float
+        Maximum stop time
+
+    Returns
+    -------
+    float
+        The, possibly clipped, stop time.
+
+    Examples
+    --------
+    >>> clip_stop_time(1., 0, 2.)
+    1.0
+    >>> clip_stop_time(1., 2, 3)
+    2.0
+    >>> clip_stop_time(4., 2, 3)
+    3.0
+    >>> clip_stop_time(None, 0, 1)
+    1.0
+    """
     from numpy import clip
 
     if stop is None:
-        return stop_max
+        return float(stop_max)
     else:
         return clip(stop, stop_min, stop_max)
 
@@ -67,7 +98,7 @@ class Component(GridMixIn):
     def time_step(self):
         """Component time step.
 
-        Time step overwhich a component will update any connected uses ports.
+        Time step over which a component will update any connected uses ports.
         """
         return self._time_step
 
