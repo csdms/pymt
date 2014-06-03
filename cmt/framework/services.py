@@ -49,14 +49,12 @@ def _register_component_class(name, cls):
 
 def register_component_class(name):
     import sys
-    print 'register %s' % name
 
     parts = name.split('.')
     cls_name = parts[-1]
     path = sys.path
     for name in parts[:-1]:
         (file, pathname, description) = imp.find_module(name, path)
-        print 'load %s' % name
         mod = imp.load_module(name, file, pathname, description)
         try:
             path = mod.__path__
@@ -68,11 +66,9 @@ def register_component_class(name):
     if cls_name in _COMPONENT_CLASSES:
         raise ValueError(cls_name)
     else:
-        print 'register %s' % cls_name
         try:
             _COMPONENT_CLASSES[cls_name] = mod.__dict__[cls_name]
         except KeyError:
-            print mod
             raise
 
 
