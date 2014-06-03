@@ -1,5 +1,48 @@
-from ConfigParser import ConfigParser
-from StringIO import StringIO
+"""
+Examples
+--------
+Create an instance of the *AirPort* component and run it. The `go` method will initialize the component, run it for
+its duration, and finalize it.
+
+>>> from cmt.framework.services import register_component_classes
+>>> register_component_classes(['cmt.testing.services.AirPort'])
+>>> comp = Component('AirPort')
+>>> comp.start_time
+0.0
+>>> comp.current_time
+0.0
+>>> comp.end_time
+100.0
+>>> comp.go()
+>>> comp._port.current_time
+100.0
+
+If you try to create a new component with the same name, it will raise an exception. To create a new instance of the
+component, you have to give it a new name.
+
+>>> comp = Component('AirPort') # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: AirPort
+>>> comp = Component('AirPort', name='air_port')
+>>> comp.current_time
+0.0
+
+You can gain finer control over component execution with the `initialize`, `run`, and `finalize` methods.
+
+>>> comp.initialize()
+>>> comp.run(10.)
+>>> comp.current_time
+10.0
+>>> comp.run(101.) # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: AirPort
+>>> comp.current_time
+10.0
+>>> comp.run(100.)
+>>> comp.current_time
+100.0
+>>> comp.finalize()
+"""
 import types
 
 import yaml
@@ -10,8 +53,8 @@ from ..events.printer import PrintEvent
 from ..events.chain import ChainEvent
 from .grid import GridMixIn
 
-#import services
 from ..framework import services
+
 
 def clip_stop_time(stop, stop_min, stop_max):
     """Clip time between two values.
@@ -75,9 +118,11 @@ class Component(GridMixIn):
         Directory where the component will run.
     """
     def __init__(self, port, uses=set(), provides=set(), events=[], argv=[],
-                time_step=1., run_dir='.'):
+                 time_step=1., run_dir='.', name=None):
         if isinstance(port, types.StringTypes):
-            self._port = services.get_port(port)
+            if name is None:
+                name = port
+            self._port = services.instantiate_component(port, name)
         else:
             self._port = port
         self._uses = uses
@@ -101,6 +146,24 @@ class Component(GridMixIn):
         Time step over which a component will update any connected uses ports.
         """
         return self._time_step
+
+    @property
+    def current_time(self):
+        """Current time for component updating.
+        """
+        try:
+            return self._port.current_time
+        except AttributeError:
+            return self._port.get_current_time()
+
+    @property
+    def start_time(self):
+        """Start time for component updating.
+        """
+        try:
+            return self._port.start_time
+        except AttributeError:
+            return self._port.get_start_time()
 
     @property
     def end_time(self):
@@ -150,7 +213,6 @@ class Component(GridMixIn):
         stop : float, optional
             Stop time, or None to run until `end_time`.
         """
-        print 'go!'
         self.initialize()
 
         stop_time = clip_stop_time(stop, self.time_step, self.end_time)
@@ -169,11 +231,13 @@ class Component(GridMixIn):
     def run(self, stop_time):
         """Run a component and any connect events.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         stop_time : float
             Time to run the component until.
         """
+        if stop_time > self.end_time:
+            raise ValueError('stop time is greater than end time.')
         self._events.run(stop_time)
 
     def finalize(self):
@@ -303,8 +367,8 @@ class Component(GridMixIn):
     def from_path(cls, path):
         """Create a component from a file.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         path : str
             Path to yaml file.
 
