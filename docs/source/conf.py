@@ -109,7 +109,7 @@ html_theme = 'scipy'
 #html_theme_options = {}
 html_theme_options = {
     'edit_link': False,
-    'sidebar': right,
+    'sidebar': 'right',
     'scipy_org_logo': False,
     'rootlinks': [],
     'navigation_links': True,
