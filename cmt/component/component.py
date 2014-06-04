@@ -14,7 +14,7 @@ its duration, and finalize it.
 >>> comp.end_time
 100.0
 >>> comp.go()
->>> comp._port.current_time
+>>> comp.current_time
 100.0
 
 If you try to create a new component with the same name, it will raise an exception. To create a new instance of the
@@ -44,6 +44,7 @@ ValueError: AirPort
 >>> comp.finalize()
 """
 import types
+import warnings
 
 import yaml
 
@@ -110,14 +111,14 @@ class Component(GridMixIn):
         List of uses port names.
     provides : list, optional
         List of provides port names.
-    argv : list, optional
+    argv : tuple, optional
         List of command line argument used to initialize the component.
     time_step : float, optional
         Time interval over which component will run uses ports.
     run_dir : str, optional
         Directory where the component will run.
     """
-    def __init__(self, port, uses=set(), provides=set(), events=[], argv=[],
+    def __init__(self, port, uses=set(), provides=set(), events=(), argv=(),
                  time_step=1., run_dir='.', name=None):
         if isinstance(port, types.StringTypes):
             if name is None:
@@ -132,7 +133,7 @@ class Component(GridMixIn):
         self._events = EventManager([
             (PortEvent(port=self._port, init_args=argv, run_dir=run_dir),
              time_step)
-        ] + events)
+        ] + list(events))
         #self._events = EventManager([(self._port, 1.)] + events)
         #self._events = EventManager(
         #    [(self._port, self._port.time_step)] + events)
@@ -186,9 +187,21 @@ class Component(GridMixIn):
         """
         return self._provides
 
-    def connect(self, uses, port, vars_to_map=[]):
+    def connect(self, uses, port, vars_to_map=()):
         """Connect a *uses* port to a *provides* port.
+
+        Parameters
+        ----------
+        uses : str
+            Name of the *uses* port.
+        port : port-like
+            Port-like object to connect to.
+        var_to_map : iterable, optional
+            Names of variables to map.
         """
+        if uses not in self.uses:
+            warnings.warn('component does not use %s' % uses)
+
         if len(vars_to_map) > 0:
             event = ChainEvent([port,
                                 PortMapEvent(src_port=port, dst_port=self,
@@ -246,7 +259,7 @@ class Component(GridMixIn):
         self._events.finalize()
 
     def register(self, name):
-        """Register a component with the framework.
+        """Register component with the framework.
 
         Associate *name* with the component instance withing the framework.
 
@@ -255,7 +268,7 @@ class Component(GridMixIn):
         name : str
             Name to associate component with.
         """
-        services.register_component(self, name)
+        services.register_component_instance(name, self)
 
     @classmethod
     def from_string(cls, source):
