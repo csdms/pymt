@@ -1,14 +1,17 @@
-import os
-import numpy as np
 from numpy.testing import assert_array_equal
-from nose.tools import assert_equal, assert_false, assert_almost_equal
 
 from cmt.events.manager import EventManager
 from cmt.events.port import PortMapEvent, PortEvent
 from cmt.events.chain import ChainEvent
-from cmt.testing.assertions import assert_isfile_and_remove
 
-from cmt.testing import services
+from cmt.framework.services import register_component_classes, instantiate_component, get_component_instance
+
+
+def setup():
+    register_component_classes(["cmt.testing.services.AirPort",
+                                "cmt.testing.services.EarthPort"])
+    instantiate_component('AirPort', 'air_port')
+    instantiate_component('EarthPort', 'earth_port')
 
 
 def assert_port_value_equal(port, name, value):
@@ -29,8 +32,8 @@ def test_one_event():
 
 
 def test_chain():
-    air = services.get_port('air_port')
-    earth = services.get_port('earth_port')
+    air = get_component_instance('air_port')
+    earth = get_component_instance('earth_port')
 
     foo = ChainEvent(
         [
