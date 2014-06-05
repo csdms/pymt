@@ -5,18 +5,7 @@ import warnings
 from ..mappers import NearestVal
 from ..component.grid import GridMixIn
 from ..utils.run_dir import open_run_dir
-
-try:
-    import services
-except ImportError:
-    warnings.warn('services has not been set')
-
-
-def get_port(port):
-    if isinstance(port, types.StringTypes):
-        return services.get_port(port)
-    else:
-        return port
+from ..framework import services
 
 
 class PortEvent(GridMixIn):
@@ -32,7 +21,11 @@ class PortEvent(GridMixIn):
         Path to directory to execute port.
     """
     def __init__(self, *args, **kwds):
-        self._port = get_port(kwds['port'])
+        if isinstance(kwds['port'], types.StringTypes):
+            self._port = services.get_component_instance(kwds['port'])
+        else:
+            self._port = kwds['port']
+
         self._init_args = kwds.get('init_args', [])
         self._run_dir = kwds.get('run_dir', '.')
 
@@ -101,8 +94,14 @@ class PortMapEvent(object):
     method : {'direct', 'nearest'}, optional
     """
     def __init__(self, *args, **kwds):
-        self._src = get_port(kwds['src_port'])
-        self._dst = get_port(kwds['dst_port'])
+        if isinstance(kwds['src_port'], types.StringTypes):
+            self._src = services.get_component_instance(kwds['src_port'])
+        else:
+            self._src = kwds['src_port']
+        if isinstance(kwds['dst_port'], types.StringTypes):
+            self._dst = services.get_component_instance(kwds['dst_port'])
+        else:
+            self._dst = kwds['dst_port']
         self._vars_to_map = kwds.get('vars_to_map', [])
         self._method = kwds.get('method', 'direct')
 
@@ -112,7 +111,6 @@ class PortMapEvent(object):
             self._mapper = NearestVal()
         else:
             raise ValueError('method %s not understood' % self._method)
-        ##self._mapper = find_mapper(self._dst, self._src)
 
     def initialize(self):
         """Initialize the data mappers.
