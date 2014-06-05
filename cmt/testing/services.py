@@ -60,6 +60,13 @@ class EmptyPort(UniformRectilinearPoints):
             print self._values.keys()
             raise
 
+    def set_grid_values(self, var_name, values):
+        try:
+            self._values[var_name][:] = values
+        except KeyError:
+            print self._values.keys()
+            raise
+
     @property
     def start_time(self):
         return 0.
