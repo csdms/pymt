@@ -11,6 +11,10 @@ class ChainEvent(object):
         for event in self._events:
             event.run(stop_time)
 
+    def update(self, stop_time):
+        for event in self._events:
+            event.run(stop_time)
+
     def finalize(self):
         for event in self._events:
             event.finalize()
