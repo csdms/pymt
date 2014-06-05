@@ -95,26 +95,16 @@ def register_component_class(name):
     Traceback (most recent call last):
     ImportError: No module named not
     """
-    import sys
-
     parts = name.split('.')
-    cls_name = parts[-1]
-    path = sys.path
-    for name in parts[:-1]:
-        (file, pathname, description) = imp.find_module(name, path)
-        mod = imp.load_module(name, file, pathname, description)
-        try:
-            path = mod.__path__
-        except AttributeError:
-            pass
-            #raise
+    module_name, cls_name = ('.'.join(parts[:-1]), parts[-1])
 
     if cls_name in _COMPONENT_CLASSES:
         raise ValueError(cls_name)
     else:
+        mod = __import__(module_name, fromlist=[cls_name])
         try:
-            _COMPONENT_CLASSES[cls_name] = mod.__dict__[cls_name]
-        except KeyError:
+            _COMPONENT_CLASSES[cls_name] = getattr(mod, cls_name)
+        except (KeyError, AttributeError):
             raise ImportError('cannot import name %s from %s' % (cls_name, '.'.join(parts[:-1])))
 
 
