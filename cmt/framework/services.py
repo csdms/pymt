@@ -48,13 +48,6 @@ def register_component_classes(components):
         register_component_class(name)
 
 
-def _register_component_class(name, cls):
-    if name in _COMPONENT_CLASSES:
-        raise ValueError(name)
-    else:
-        _COMPONENT_CLASSES[name] = cls
-
-
 def register_component_class(name):
     """Register a component with the framework.
 
@@ -99,13 +92,14 @@ def register_component_class(name):
     module_name, cls_name = ('.'.join(parts[:-1]), parts[-1])
 
     if cls_name in _COMPONENT_CLASSES:
-        raise ValueError(cls_name)
+        raise ValueError('component class exists (%s)' % cls_name)
     else:
         mod = __import__(module_name, fromlist=[cls_name])
         try:
             _COMPONENT_CLASSES[cls_name] = getattr(mod, cls_name)
         except (KeyError, AttributeError):
-            raise ImportError('cannot import name %s from %s' % (cls_name, '.'.join(parts[:-1])))
+            raise ImportError('cannot import component %s from %s' %
+                              (cls_name, module_name))
 
 
 def register_component_instance(name, instance):
@@ -132,7 +126,7 @@ def register_component_instance(name, instance):
     True
     """
     if name in _COMPONENT_INSTANCES:
-        raise ValueError(name)
+        raise ValueError('component instance exists (%s)' % name)
     else:
         _COMPONENT_INSTANCES[name] = instance
 
