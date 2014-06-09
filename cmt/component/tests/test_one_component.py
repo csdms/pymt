@@ -2,17 +2,23 @@ from nose.tools import assert_equal
 
 from cmt.component.component import Component
 from cmt.testing.assertions import assert_isfile_and_remove
+from cmt.framework.services import del_component_instances
 
 
 def test_no_events():
-    comp = Component('air_port', uses=[], provides=[], events=[])
+    del_component_instances(['AirPort'])
+
+    comp = Component('AirPort', uses=[], provides=[], events=[])
     comp.go()
     assert_equal(comp._port.current_time, 100.)
 
 
 def test_from_string():
+    del_component_instances(['air_port'])
+
     contents = """
 name: air_port
+class: AirPort
     """
     comp = Component.from_string(contents)
     comp.go()
@@ -20,9 +26,11 @@ name: air_port
 
 
 def test_print_events():
+    del_component_instances(['earth_port'])
+
     contents = """
 name: earth_port
-
+class: EarthPort
 print:
 - name: earth_surface__temperature
   interval: 0.1
@@ -45,7 +53,9 @@ print:
 
 
 def test_rerun():
-    comp = Component('air_port', uses=[], provides=[], events=[])
+    del_component_instances(['AirPort'])
+
+    comp = Component('AirPort', uses=[], provides=[], events=[])
     comp.go()
     assert_equal(comp._port.current_time, 100.)
 
@@ -54,8 +64,11 @@ def test_rerun():
 
 
 def test_rerun_with_print():
+    del_component_instances(['earth_port'])
+
     contents = """
 name: earth_port
+class: EarthPort
 
 print:
 - name: earth_surface__temperature
@@ -68,6 +81,8 @@ print:
     assert_equal(comp._port.current_time, 100.)
     for i in xrange(5):
         assert_isfile_and_remove('earth_surface__temperature_%04d.vtu' % i)
+
+    del_component_instances(['earth_port'])
 
     comp = Component.from_string(contents)
     comp.go()

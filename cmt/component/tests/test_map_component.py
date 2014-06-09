@@ -5,15 +5,17 @@ from cmt.testing.assertions import assert_isfile_and_remove
 
 
 def test_print_events():
-    air = Component.from_string("""
+    air = Component.load("""
 name: air_port
+class: AirPort
 print:
 - name: air__temperature
   interval: 25.
   format: vtk
 """)
-    earth = Component.from_string("""
+    earth = Component.load("""
 name: earth_port
+class: EarthPort
 print:
 - name: glacier_top_surface__slope
   interval: 20.
