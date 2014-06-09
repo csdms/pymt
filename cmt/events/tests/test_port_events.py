@@ -1,11 +1,9 @@
-import os
 import numpy as np
 from numpy.testing import assert_array_equal
-from nose.tools import assert_equal, assert_false, assert_almost_equal
+from nose.tools import assert_almost_equal
 
 from cmt.events.manager import EventManager
 from cmt.events.port import PortEvent
-from cmt.testing.assertions import assert_isfile_and_remove
 
 
 def assert_port_value_equal(port, name, value):
