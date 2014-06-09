@@ -71,28 +71,31 @@ class EventManager(object):
     >>> len(mngr)
     0
 
-    >>> class PassEvent(object):
-    ...     def initialize(self):
-    ...         pass
-    ...     def run(self, time):
-    ...         pass
-    ...     def finalize(self):
-    ...         pass
+    Create a manager with one recurring event.
+
+    >>> from cmt.events.empty import PassEvent
     >>> mngr = EventManager([(PassEvent(), 1.)])
     >>> len(mngr)
     1
+
+    Create a manager with two recurring events.
+
     >>> mngr = EventManager([(PassEvent(), 1.), (PassEvent(), 2.)])
     >>> len(mngr)
     2
     """
-    def __init__(self, events):
-        self._timeline = Timeline(events)
+    def __init__(self, *args):
+        if len(args) > 1:
+            raise TypeError("__init__() takes 1 or 2 arguments (%d given)" %
+                            (len(args) + 1, ))
+
+        self._timeline = Timeline(*args)
         self._initializing = False
         self._initialized = False
         self._running = False
         self._finalizing = False
 
-        self._order = list(events)
+        self._order = list(*args)
 
     def initialize(self):
         """Initialize the managed events.
