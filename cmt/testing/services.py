@@ -62,7 +62,7 @@ class EmptyPort(UniformRectilinearPoints):
 
     def set_grid_values(self, var_name, values):
         try:
-            self._values[var_name][:] = values
+            self._values[var_name].flat = values.flat
         except KeyError:
             print self._values.keys()
             raise
