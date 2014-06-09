@@ -1,19 +1,22 @@
-framework Package
-=================
+cmt.framework package
+=====================
 
-:mod:`framework` Package
-------------------------
+Submodules
+----------
 
-.. automodule:: cmt.framework
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`services` Module
-----------------------
+cmt.framework.services module
+-----------------------------
 
 .. automodule:: cmt.framework.services
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: cmt.framework
+    :members:
+    :undoc-members:
+    :show-inheritance:

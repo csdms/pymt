@@ -1,5 +1,5 @@
-printers Package
-================
+cmt.printers package
+====================
 
 Subpackages
 -----------
@@ -10,3 +10,10 @@ Subpackages
     cmt.printers.nc
     cmt.printers.vtk
 
+Module contents
+---------------
+
+.. automodule:: cmt.printers
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,43 +1,54 @@
-tests Package
-=============
+cmt.tests package
+=================
 
-:mod:`test_component_info` Module
----------------------------------
+Submodules
+----------
+
+cmt.tests.test_component_info module
+------------------------------------
 
 .. automodule:: cmt.tests.test_component_info
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_nsdict` Module
--------------------------
+cmt.tests.test_nsdict module
+----------------------------
 
 .. automodule:: cmt.tests.test_nsdict
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_ordered_tasks` Module
---------------------------------
+cmt.tests.test_ordered_tasks module
+-----------------------------------
 
 .. automodule:: cmt.tests.test_ordered_tasks
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_task_status` Module
-------------------------------
+cmt.tests.test_task_status module
+---------------------------------
 
 .. automodule:: cmt.tests.test_task_status
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_timeline` Module
----------------------------
+cmt.tests.test_timeline module
+------------------------------
 
 .. automodule:: cmt.tests.test_timeline
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: cmt.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

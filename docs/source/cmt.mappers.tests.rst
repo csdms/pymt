@@ -1,11 +1,22 @@
-tests Package
-=============
+cmt.mappers.tests package
+=========================
 
-:mod:`test_mapper` Module
--------------------------
+Submodules
+----------
+
+cmt.mappers.tests.test_mapper module
+------------------------------------
 
 .. automodule:: cmt.mappers.tests.test_mapper
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: cmt.mappers.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

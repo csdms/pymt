@@ -1,21 +1,5 @@
-portprinter Package
-===================
-
-:mod:`port_printer` Module
---------------------------
-
-.. automodule:: cmt.portprinter.port_printer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`utils` Module
--------------------
-
-.. automodule:: cmt.portprinter.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
+cmt.portprinter package
+=======================
 
 Subpackages
 -----------
@@ -24,3 +8,30 @@ Subpackages
 
     cmt.portprinter.tests
 
+Submodules
+----------
+
+cmt.portprinter.port_printer module
+-----------------------------------
+
+.. automodule:: cmt.portprinter.port_printer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.portprinter.utils module
+----------------------------
+
+.. automodule:: cmt.portprinter.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cmt.portprinter
+    :members:
+    :undoc-members:
+    :show-inheritance:

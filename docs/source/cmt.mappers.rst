@@ -1,61 +1,5 @@
-mappers Package
-===============
-
-:mod:`mappers` Package
-----------------------
-
-.. automodule:: cmt.mappers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`celltopoint` Module
--------------------------
-
-.. automodule:: cmt.mappers.celltopoint
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`esmp` Module
-------------------
-
-.. automodule:: cmt.mappers.esmp
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`imapper` Module
----------------------
-
-.. automodule:: cmt.mappers.imapper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`mapper` Module
---------------------
-
-.. automodule:: cmt.mappers.mapper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`pointtocell` Module
--------------------------
-
-.. automodule:: cmt.mappers.pointtocell
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`pointtopoint` Module
---------------------------
-
-.. automodule:: cmt.mappers.pointtopoint
-    :members:
-    :undoc-members:
-    :show-inheritance:
+cmt.mappers package
+===================
 
 Subpackages
 -----------
@@ -64,3 +8,62 @@ Subpackages
 
     cmt.mappers.tests
 
+Submodules
+----------
+
+cmt.mappers.celltopoint module
+------------------------------
+
+.. automodule:: cmt.mappers.celltopoint
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.mappers.esmp module
+-----------------------
+
+.. automodule:: cmt.mappers.esmp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.mappers.imapper module
+--------------------------
+
+.. automodule:: cmt.mappers.imapper
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.mappers.mapper module
+-------------------------
+
+.. automodule:: cmt.mappers.mapper
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.mappers.pointtocell module
+------------------------------
+
+.. automodule:: cmt.mappers.pointtocell
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.mappers.pointtopoint module
+-------------------------------
+
+.. automodule:: cmt.mappers.pointtopoint
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cmt.mappers
+    :members:
+    :undoc-members:
+    :show-inheritance:

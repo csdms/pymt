@@ -1,125 +1,5 @@
-grids Package
-=============
-
-:mod:`grids` Package
---------------------
-
-.. automodule:: cmt.grids
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`assertions` Module
-------------------------
-
-.. automodule:: cmt.grids.assertions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`connectivity` Module
---------------------------
-
-.. automodule:: cmt.grids.connectivity
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`esmp` Module
-------------------
-
-.. automodule:: cmt.grids.esmp
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`field` Module
--------------------
-
-.. automodule:: cmt.grids.field
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`grid_type` Module
------------------------
-
-.. automodule:: cmt.grids.grid_type
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`igrid` Module
--------------------
-
-.. automodule:: cmt.grids.igrid
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`map` Module
------------------
-
-.. automodule:: cmt.grids.map
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`meshgrid` Module
-----------------------
-
-.. automodule:: cmt.grids.meshgrid
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`raster` Module
---------------------
-
-.. automodule:: cmt.grids.raster
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`rectilinear` Module
--------------------------
-
-.. automodule:: cmt.grids.rectilinear
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`structured` Module
-------------------------
-
-.. automodule:: cmt.grids.structured
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`unstructured` Module
---------------------------
-
-.. automodule:: cmt.grids.unstructured
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`utils` Module
--------------------
-
-.. automodule:: cmt.grids.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`vtk_mixin` Module
------------------------
-
-.. automodule:: cmt.grids.vtk_mixin
-    :members:
-    :undoc-members:
-    :show-inheritance:
+cmt.grids package
+=================
 
 Subpackages
 -----------
@@ -128,3 +8,126 @@ Subpackages
 
     cmt.grids.tests
 
+Submodules
+----------
+
+cmt.grids.assertions module
+---------------------------
+
+.. automodule:: cmt.grids.assertions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.connectivity module
+-----------------------------
+
+.. automodule:: cmt.grids.connectivity
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.esmp module
+---------------------
+
+.. automodule:: cmt.grids.esmp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.field module
+----------------------
+
+.. automodule:: cmt.grids.field
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.grid_type module
+--------------------------
+
+.. automodule:: cmt.grids.grid_type
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.igrid module
+----------------------
+
+.. automodule:: cmt.grids.igrid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.map module
+--------------------
+
+.. automodule:: cmt.grids.map
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.meshgrid module
+-------------------------
+
+.. automodule:: cmt.grids.meshgrid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.raster module
+-----------------------
+
+.. automodule:: cmt.grids.raster
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.rectilinear module
+----------------------------
+
+.. automodule:: cmt.grids.rectilinear
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.structured module
+---------------------------
+
+.. automodule:: cmt.grids.structured
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.unstructured module
+-----------------------------
+
+.. automodule:: cmt.grids.unstructured
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.utils module
+----------------------
+
+.. automodule:: cmt.grids.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.grids.vtk_mixin module
+--------------------------
+
+.. automodule:: cmt.grids.vtk_mixin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cmt.grids
+    :members:
+    :undoc-members:
+    :show-inheritance:

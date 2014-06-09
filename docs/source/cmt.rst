@@ -1,61 +1,5 @@
-cmt Package
+cmt package
 ===========
-
-:mod:`cmt` Package
-------------------
-
-.. automodule:: cmt.__init__
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`component_info` Module
-----------------------------
-
-.. automodule:: cmt.component_info
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`nsdict` Module
---------------------
-
-.. automodule:: cmt.nsdict
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`ordered_task_status` Module
----------------------------------
-
-.. automodule:: cmt.ordered_task_status
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`status` Module
---------------------
-
-.. automodule:: cmt.status
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`task_status` Module
--------------------------
-
-.. automodule:: cmt.task_status
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`timeline` Module
-----------------------
-
-.. automodule:: cmt.timeline
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 Subpackages
 -----------
@@ -70,7 +14,67 @@ Subpackages
     cmt.mappers
     cmt.portprinter
     cmt.printers
+    cmt.services
     cmt.testing
     cmt.tests
     cmt.utils
 
+Submodules
+----------
+
+cmt.component_info module
+-------------------------
+
+.. automodule:: cmt.component_info
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.nsdict module
+-----------------
+
+.. automodule:: cmt.nsdict
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.ordered_task_status module
+------------------------------
+
+.. automodule:: cmt.ordered_task_status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.status module
+-----------------
+
+.. automodule:: cmt.status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.task_status module
+----------------------
+
+.. automodule:: cmt.task_status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cmt.timeline module
+-------------------
+
+.. automodule:: cmt.timeline
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cmt
+    :members:
+    :undoc-members:
+    :show-inheritance:

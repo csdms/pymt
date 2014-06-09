@@ -1,35 +1,46 @@
-tests Package
-=============
+cmt.printers.nc.tests package
+=============================
 
-:mod:`test_database` Module
----------------------------
+Submodules
+----------
+
+cmt.printers.nc.tests.test_database module
+------------------------------------------
 
 .. automodule:: cmt.printers.nc.tests.test_database
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_nc` Module
----------------------
+cmt.printers.nc.tests.test_nc module
+------------------------------------
 
 .. automodule:: cmt.printers.nc.tests.test_nc
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_ugrid` Module
-------------------------
+cmt.printers.nc.tests.test_ugrid module
+---------------------------------------
 
 .. automodule:: cmt.printers.nc.tests.test_ugrid
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_ugrid_read` Module
------------------------------
+cmt.printers.nc.tests.test_ugrid_read module
+--------------------------------------------
 
 .. automodule:: cmt.printers.nc.tests.test_ugrid_read
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: cmt.printers.nc.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,27 +1,38 @@
-testing Package
-===============
+cmt.testing package
+===================
 
-:mod:`assertions` Module
-------------------------
+Submodules
+----------
+
+cmt.testing.assertions module
+-----------------------------
 
 .. automodule:: cmt.testing.assertions
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`ports` Module
--------------------
+cmt.testing.ports module
+------------------------
 
 .. automodule:: cmt.testing.ports
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`services` Module
-----------------------
+cmt.testing.services module
+---------------------------
 
 .. automodule:: cmt.testing.services
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: cmt.testing
+    :members:
+    :undoc-members:
+    :show-inheritance:
