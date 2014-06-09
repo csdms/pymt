@@ -206,3 +206,48 @@ def get_component_instance(name):
     :func:`instantiate_component`
     """
     return _COMPONENT_INSTANCES[name]
+
+
+def del_component_instance(name):
+    """Remove an instance by name.
+
+    Parameters
+    ----------
+    name : str
+        Component instance.
+
+    See Also
+    --------
+    :func:`del_component_instances`
+    """
+    try:
+        del _COMPONENT_INSTANCES[name]
+    except KeyError:
+        pass
+
+
+def del_component_instances(names):
+    """Remove a list of instances by name.
+
+    Parameters
+    ----------
+    names : list
+        Component instance names.
+
+    See Also
+    --------
+    :func:`del_component_instance`
+    """
+    for name in names:
+        del_component_instance(name)
+
+
+def get_component_instance_names():
+    """Names of all instances.
+
+    Returns
+    -------
+    list
+        Names of all the instanciated components.
+    """
+    return _COMPONENT_INSTANCES.keys()
