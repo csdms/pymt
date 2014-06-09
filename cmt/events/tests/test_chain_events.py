@@ -1,14 +1,10 @@
-import os
-import numpy as np
 from numpy.testing import assert_array_equal
-from nose.tools import assert_equal, assert_false, assert_almost_equal
+from nose.tools import assert_equal
 
 from cmt.events.manager import EventManager
-from cmt.events.port import PortMapEvent, PortEvent
+from cmt.events.port import PortEvent
 from cmt.events.chain import ChainEvent
-from cmt.testing.assertions import assert_isfile_and_remove
-
-from cmt.testing import services
+from cmt.framework.services import get_component_instance
 
 
 def assert_port_value_equal(port, name, value):
@@ -26,7 +22,7 @@ def test_length_zero():
 
 
 def test_length_one():
-    air = services.get_port('air_port')
+    air = get_component_instance('air_port')
     foo = ChainEvent([PortEvent(port=air), ])
 
     with EventManager(((foo, 1.), )) as mngr:
@@ -38,8 +34,8 @@ def test_length_one():
 
 
 def test_length_two():
-    air = services.get_port('air_port')
-    earth = services.get_port('earth_port')
+    air = get_component_instance('air_port')
+    earth = get_component_instance('earth_port')
 
     foo = ChainEvent([PortEvent(port=air), PortEvent(port=earth)])
 
@@ -57,8 +53,8 @@ def test_length_two():
 
 
 def test_repeated_events():
-    air = services.get_port('air_port')
-    earth = services.get_port('earth_port')
+    air = get_component_instance('air_port')
+    earth = get_component_instance('earth_port')
 
     foo = ChainEvent([PortEvent(port=air), PortEvent(port=earth),
                       PortEvent(port=air)])

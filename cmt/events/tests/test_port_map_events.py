@@ -4,14 +4,7 @@ from cmt.events.manager import EventManager
 from cmt.events.port import PortMapEvent, PortEvent
 from cmt.events.chain import ChainEvent
 
-from cmt.framework.services import register_component_classes, instantiate_component, get_component_instance
-
-
-def setup():
-    register_component_classes(["cmt.testing.services.AirPort",
-                                "cmt.testing.services.EarthPort"])
-    instantiate_component('AirPort', 'air_port')
-    instantiate_component('EarthPort', 'earth_port')
+from cmt.framework.services import get_component_instance
 
 
 def assert_port_value_equal(port, name, value):
