@@ -3,13 +3,8 @@
 from ConfigParser import ConfigParser
 from StringIO import StringIO
 import types
-import warnings
 
-try:
-    import services
-except ImportError:
-    warnings.warn('services has not been set')
-
+from ..framework import services
 from ..printers.bov.database import Database as BovDatabase
 from ..printers.vtk.vtu import Database as VtkDatabase
 from ..printers.nc.database import Database as NcDatabase
@@ -23,7 +18,7 @@ from .utils import (_construct_port_as_field, _reconstruct_port_as_field,
 class PortPrinter(object):
     def __init__(self, port, var_name, filename=None):
         if isinstance(port, types.StringTypes):
-            self._port = services.get_port(port)
+            self._port = services.get_component_instance(port)
         else:
             self._port = port
         self._var_name = var_name
