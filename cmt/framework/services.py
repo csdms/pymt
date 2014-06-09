@@ -75,18 +75,19 @@ def register_component_class(name):
 
     Examples
     --------
+    >>> del_services()
     >>> register_component_class('cmt.testing.services.AirPort')
     >>> get_component_class('AirPort')
-    <class 'services.AirPort'>
+    <class 'cmt.testing.services.AirPort'>
 
     Raise an ImportError if the component class could not be loaded.
 
     >>> register_component_class('cmt.testing.services.NotAClass') # doctest : +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ImportError: cannot import name NotAClass from cmt.testing.services
+    ImportError: cannot import component NotAClass from cmt.testing.services
     >>> register_component_class('cmt.not.a.module.AirPort') # doctest : +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ImportError: No module named not
+    ValueError: component class exists (AirPort)
     """
     parts = name.split('.')
     module_name, cls_name = ('.'.join(parts[:-1]), parts[-1])
@@ -119,6 +120,7 @@ def register_component_instance(name, instance):
 
     Examples
     --------
+    >>> del_services()
     >>> from cmt.testing.services import AirPort
     >>> air_port = AirPort()
     >>> register_component_instance('air_port', air_port)
@@ -175,9 +177,11 @@ def instantiate_component(cls_name, instance_name):
 
     Examples
     --------
+    >>> del_services()
     >>> register_component_class('cmt.testing.services.AirPort')
     >>> air_port = instantiate_component('AirPort', 'air_port')
     >>> air_port is get_component_instance('air_port')
+    True
     """
     register_component_instance(instance_name, get_component_class(cls_name)())
     return get_component_instance(instance_name)
@@ -240,6 +244,12 @@ def del_component_instances(names):
     """
     for name in names:
         del_component_instance(name)
+
+
+def del_services():
+    del_component_instances(get_component_instance_names())
+    for name in _COMPONENT_CLASSES.keys():
+        del _COMPONENT_CLASSES[name]
 
 
 def get_component_instance_names():
