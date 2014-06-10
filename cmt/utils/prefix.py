@@ -20,7 +20,7 @@ def names_with_prefix(names, prefix):
     >>> names_with_prefix(['foo.bar', 'foobar.baz'], 'foo')
     ['foo.bar']
     >>> names_with_prefix(['foo.bar', 'foo.bar', 'foo.foo'], 'foo')
-    ['foo.bar', 'foo.baz', 'foo.foo']
+    ['foo.bar', 'foo.foo']
     """
     if prefix_is_empty(prefix):
         return set(names)
