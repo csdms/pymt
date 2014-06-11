@@ -3,19 +3,6 @@ from .vtktypes import VtkUniformRectilinear
 from .vtkxml import *
 
 
-def extent_string(shape):
-    return '0 %d 0 %d 0 0' % (shape[1], shape[0])
-
-
-def origin_string(origin, spacing):
-    return '%f %f 0.' % (origin[1] - spacing[1] * .5,
-                         origin[0] - spacing[0] * .5)
-
-
-def spacing_string(spacing):
-    return '%f %f 0.' % (spacing[1], spacing[0])
-
-
 def get_elements(field, data_format='ascii', encoding='ascii'):
     if data_format == 'appended':
         data = VtkAppendedDataElement('', encoding=encoding)
