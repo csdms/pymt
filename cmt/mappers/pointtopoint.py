@@ -23,13 +23,29 @@ class NearestVal(IGridMapper):
         if not self.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
-        dst_name, src_name = vars[0]
+        assert(len(vars) <= 1)
 
-        tree = KDTree(zip(src_grid.get_x(src_name).flat,
-                          src_grid.get_y(src_name).flat))
+        if len(vars) == 0:
+            (x, y) = src_grid.get_x().flat, src_grid.get_y().flat
+        else:
+            dst_name, src_name = vars[0]
+            (x, y) = (src_grid.get_x(src_name).flat,
+                      src_grid.get_y(src_name).flat)
 
-        (_, self._nearest_src_id) = tree.query(
-            zip(dest_grid.get_x(dst_name).flat, dest_grid.get_y(dst_name).flat))
+        tree = KDTree(zip(x, y))
+
+        if len(vars) == 0:
+            (x, y) = dest_grid.get_x().flat, dest_grid.get_y().flat
+        else:
+            dst_name, src_name = vars[0]
+            (x, y) = (dest_grid.get_x(dst_name).flat,
+                      dest_grid.get_y(dst_name).flat)
+
+        (_, self._nearest_src_id) = tree.query(zip(x, y))
+
+        #(_, self._nearest_src_id) = tree.query(
+        #    zip(dest_grid.get_x(dst_name).flat,
+        #        dest_grid.get_y(dst_name).flat))
 
     def run(self, src_values, dest_values=None):
         if dest_values is None:
@@ -87,4 +103,4 @@ class _NearestVal(IGridMapper):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
