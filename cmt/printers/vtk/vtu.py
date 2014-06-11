@@ -68,21 +68,26 @@ def get_vtu_elements(field, data_format='ascii', encoding='ascii'):
 def tofile(field, path, **kwds):
     """Write a field-like object to a VTK file.
 
-    :param file: A field-like object
-    :param path: Path to the file to write
-    :keyword format: Specify the manner in which data is stored
-    :type format: string ('ascii', 'binary', or 'appended')
-    :keyword encoding: Specify the manner in which data is encoded
-    :type encoding: string ('base64', or 'raw')
+    Parameters
+    ----------
+    field : field-like
+        Field to write to vtk.
+    path : str
+        Path to the file to write.
+    format : {'ascii', 'binary', 'appended'}
+        Format in which data is stored in the vtk file.
+    encoding : {'base64', 'raw'}
+        Encoding method for data in vtk file.
 
-    Required methods of *field*,
+    Notes
+    -----
+    The *field* object must implement all of the following methods:
         * get_point_count
         * get_cell_count
         * get_connectivity
         * get_offset
         * get_cell_fields
         * get_point_fields
-        
     """
     data_format = kwds.get('format', 'ascii')
     encoding = kwds.get('encoding', 'ascii')
