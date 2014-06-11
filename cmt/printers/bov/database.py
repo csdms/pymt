@@ -36,17 +36,17 @@ Write the field to the database. Since BOV files only store one variable,
 append the variable name to the file name.
 
     >>> db.write (field)
-    >>> os.path.isfile ('Bov_database_0000_Elevation.bov')
+    >>> os.path.isfile ('Bov_database_0000.bov')
     True
 
     >>> data *= 2.
     >>> db.write (field)
-    >>> os.path.isfile ('Bov_database_0001_Elevation.bov')
+    >>> os.path.isfile ('Bov_database_0001.bov')
     True
 
     >>> data *= 2.
     >>> db.write (field)
-    >>> os.path.isfile ('Bov_database_0002_Elevation.bov')
+    >>> os.path.isfile ('Bov_database_0002.bov')
     True
 
     >>> db.close ()
