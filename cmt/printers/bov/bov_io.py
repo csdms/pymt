@@ -65,48 +65,6 @@ def array_to_str(array):
 
 
 def fromfile(filename, allow_singleton=True):
-    """
-    >>> (grid, attrs) = fromfile('test.bov')
-    >>> grid.get_shape() #doctest: +NORMALIZE_WHITESPACE
-    array([10, 10, 1])
-    >>> data = grid.cell_data('Elevation')
-    >>> print data.max()
-    5.0
-    >>> print data.min()
-    5.0
-    >>> grid.get_spacing() #doctest: +NORMALIZE_WHITESPACE
-    array([ 1., 1., 1.])
-    >>> grid.get_shape() #doctest: +NORMALIZE_WHITESPACE
-    array([10, 10, 1])
-    >>> grid.get_origin() #doctest: +NORMALIZE_WHITESPACE
-    array([ 0., 0., 0.])
-
-    >>> grid = fromfile('test.bov', allow_singleton=False)
-    >>> grid.get_shape() #doctest: +NORMALIZE_WHITESPACE
-    array([10, 10])
-    >>> data = grid.cell_data('Elevation')
-    >>> print data.max()
-    5.0
-    >>> print data.min()
-    5.0
-    >>> grid.get_spacing() #doctest: +NORMALIZE_WHITESPACE
-    array([ 1., 1.])
-    >>> grid.get_shape() #doctest: +NORMALIZE_WHITESPACE
-    array([10, 10])
-    >>> grid.get_origin() #doctest: +NORMALIZE_WHITESPACE
-    array([ 0., 0.])
-
-    >>> grid = fromfile('test_points.bov', allow_singleton=False)
-
-    >>> data = grid.point_data('Elevation')
-    >>> print data.max()
-    5.0
-    >>> print data.min()
-    5.0
-    >>> data.shape
-    (10, 10)
-
-    """
     header = {}
     with open(filename, 'r') as f:
         for line in f:
