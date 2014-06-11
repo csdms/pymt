@@ -2,7 +2,6 @@
 
 import os
 import sys
-import ConfigParser
 
 import numpy as np
 
@@ -31,31 +30,31 @@ class BadKeyValueError(BovError):
 
 
 class ReadError(BovError):
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, filename):
+        self.filename = filename
 
     def __str__(self):
-        return '%s: Unable to read' % (self.file)
+        return '%s: Unable to read' % self.filename
 
 
 class FileExists(BovError):
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, filename):
+        self.filename = filename
 
     def __str__(self):
-        return '%s: Unable to write to file' % self.file
+        return '%s: Unable to write to file' % self.filename
 
 
 class BadFileExtension(BovError):
     def __init__(self, ext):
         self.ext = ext
 
-    def __str__ (self):
+    def __str__(self):
         return "%s: Extension should be '.bov' or empty" % self.ext
 
 
 _BOV_TO_NP_TYPE = {'BYTE': 'uint8', 'SHORT': 'int32', 'INT': 'int64',
-                  'FLOAT': 'float32', 'DOUBLE': 'float64'}
+                   'FLOAT': 'float32', 'DOUBLE': 'float64'}
 _NP_TO_BOV_TYPE = dict(zip(_BOV_TO_NP_TYPE.values(), _BOV_TO_NP_TYPE.keys()))
 _SYS_TO_BOV_ENDIAN = {'little': 'LITTLE', 'big': 'BIG'}
 
@@ -65,7 +64,7 @@ def array_to_str(array):
     return ' '.join(s)
 
 
-def fromfile(file, allow_singleton=True):
+def fromfile(filename, allow_singleton=True):
     """
     >>> (grid, attrs) = fromfile('test.bov')
     >>> grid.get_shape() #doctest: +NORMALIZE_WHITESPACE
@@ -109,7 +108,7 @@ def fromfile(file, allow_singleton=True):
 
     """
     header = {}
-    with open(file, 'r') as f:
+    with open(filename, 'r') as f:
         for line in f:
             try:
                 (data, comment) = line.split('#')
@@ -122,8 +121,8 @@ def fromfile(file, allow_singleton=True):
                 pass
 
     keys_found = set(header.keys())
-    keys_required = set(['DATA_SIZE', 'DATA_FORMAT', 'DATA_FILE',
-                         'BRICK_ORIGIN', 'BRICK_SIZE', 'VARIABLE'])
+    keys_required = {'DATA_SIZE', 'DATA_FORMAT', 'DATA_FILE', 'BRICK_ORIGIN',
+                     'BRICK_SIZE', 'VARIABLE'}
     if not keys_required.issubset(keys_found):
         missing = ', '.join(keys_required-keys_found)
         raise MissingRequiredKeyError(missing)
@@ -132,35 +131,36 @@ def fromfile(file, allow_singleton=True):
     header['DATA_SIZE'] = np.array([int(i) for i in shape], dtype=np.int64)
 
     origin = header['BRICK_ORIGIN'].split()
-    header['BRICK_ORIGIN'] = np.array([float(i) for i in origin], dtype=np.float64)
+    header['BRICK_ORIGIN'] = np.array([float(i) for i in origin],
+                                      dtype=np.float64)
 
     size = header['BRICK_SIZE'].split()
     header['BRICK_SIZE'] = np.array([float(i) for i in size], dtype=np.float64)
 
     if not allow_singleton:
-        not_singleton = header['DATA_SIZE']>1
+        not_singleton = header['DATA_SIZE'] > 1
         header['DATA_SIZE'] = header['DATA_SIZE'][not_singleton]
         header['BRICK_SIZE'] = header['BRICK_SIZE'][not_singleton]
         header['BRICK_ORIGIN'] = header['BRICK_ORIGIN'][not_singleton]
 
     type_str = header['DATA_FORMAT']
     try:
-        type = _BOV_TO_NP_TYPE[type_str]
-    except KeyError as e:
+        data_type = _BOV_TO_NP_TYPE[type_str]
+    except KeyError:
         raise BadKeyValueError('DATA_FORMAT', type_str)
 
     dat_file = header['DATA_FILE']
     if not os.path.isabs(dat_file):
-        dat_file = os.path.join(os.path.dirname(file), dat_file)
+        dat_file = os.path.join(os.path.dirname(filename), dat_file)
 
     try:
-        data = np.fromfile(dat_file, dtype=type)
-    except Exception as e:
+        data = np.fromfile(dat_file, dtype=data_type)
+    except Exception:
         raise 
 
     try:
         data.shape = header['DATA_SIZE']
-    except ValueError as e:
+    except ValueError:
         raise BadKeyValueError('DATA_SIZE', '%d != %d' % (np.prod(header['DATA_SIZE']), data.size))
 
     try:
@@ -173,18 +173,18 @@ def fromfile(file, allow_singleton=True):
     spacing = header['BRICK_SIZE']/(shape-1)
 
     grid = RasterField(shape, spacing, origin, indexing='ij')
-    if header.has_key('CENTERING') and header['CENTERING'] == 'zonal':
+    if 'CENTERING' in header and header['CENTERING'] == 'zonal':
         grid.add_field(header['VARIABLE'], data, centering='zonal')
     else:
         grid.add_field(header['VARIABLE'], data, centering='point')
 
-    return (grid, header)
+    return grid, header
 
 
-def array_tofile(file, array, name='', spacing=(1., 1.), origin=(0., 0.),
+def array_tofile(filename, array, name='', spacing=(1., 1.), origin=(0., 0.),
                  no_clobber=False, options={}):
     files_written = []
-    (base, ext) = os.path.splitext(file)
+    (base, ext) = os.path.splitext(filename)
     if len(ext) > 0 and ext != '.bov':
         raise BadFileExtension(ext)
 
@@ -200,9 +200,7 @@ def array_tofile(file, array, name='', spacing=(1., 1.), origin=(0., 0.),
     if len(size) < 3:
         size = np.append(size, [1.] * (3 - len(size)))
 
-    vars = [(name, array)]
-
-    for (var, vals) in vars:
+    for (var, vals) in [(name, array)]:
         dat_file = '%s_%s.dat' % (base, var)
         bov_file = '%s_%s.bov' % (base, var)
 
@@ -232,26 +230,33 @@ def array_tofile(file, array, name='', spacing=(1., 1.), origin=(0., 0.),
     return files_written
 
 
-def tofile(file, grid, var_name=None, no_clobber=False, options={}):
+def tofile(filename, grid, var_name=None, no_clobber=False, options={}):
     """
     Write a grid-like object to a BOV file.
 
-    :param file: Name of the BOV file to write
-    :type file: string
-    :param grid: A uniform rectilinear grid-like object
-    :type grid: Grid-like
+    Parameters
+    ----------
+    file : str
+        Name of the BOV file to write.
+    grid :  Grid-like
+        A uniform rectilinear grid.
 
-    Required methods for grid:
+    Returns
+    -------
+    list
+        A list of BOV files written.
+
+    Notes
+    -----
+    The *grid* object requires the following methods be implemented:
         * get_shape
         * get_origin
         * get_spacing
         * items
         * get_field
-
-    :returns: A list of the files written.
     """
     files_written = []
-    (base, ext) = os.path.splitext(file)
+    (base, ext) = os.path.splitext(filename)
     if len(ext) > 0 and ext != '.bov':
         raise BadFileExtension(ext)
 
@@ -270,11 +275,11 @@ def tofile(file, grid, var_name=None, no_clobber=False, options={}):
         size = np.append(size, [1.] * (3 - len(size)))
 
     if var_name is None:
-        vars = grid.get_point_fields().items()
+        var_name_and_value = grid.get_point_fields().items()
     else:
-        vars = (var_name, grid.get_field(var_name))
+        var_name_and_value = (var_name, grid.get_field(var_name))
 
-    for (var, vals) in vars:
+    for (name, vals) in var_name_and_value:
         dat_file = '%s.dat' % (base, )
         bov_file = '%s.bov' % (base, )
 
@@ -292,7 +297,7 @@ def tofile(file, grid, var_name=None, no_clobber=False, options={}):
                       BRICK_SIZE=array_to_str(size),
                       DATA_ENDIAN=_SYS_TO_BOV_ENDIAN[sys.byteorder],
                       DATA_FORMAT=_NP_TO_BOV_TYPE[str(vals.dtype)],
-                      VARIABLE=var)
+                      VARIABLE=name)
 
         header.update(options)
         with open(bov_file, 'w') as opened_file:
