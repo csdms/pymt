@@ -161,7 +161,8 @@ def fromfile(filename, allow_singleton=True):
     try:
         data.shape = header['DATA_SIZE']
     except ValueError:
-        raise BadKeyValueError('DATA_SIZE', '%d != %d' % (np.prod(header['DATA_SIZE']), data.size))
+        raise BadKeyValueError('DATA_SIZE', '%d != %d' %
+                               (np.prod(header['DATA_SIZE']), data.size))
 
     try:
         header['TIME'] = float(header['TIME'])
@@ -182,7 +183,7 @@ def fromfile(filename, allow_singleton=True):
 
 
 def array_tofile(filename, array, name='', spacing=(1., 1.), origin=(0., 0.),
-                 no_clobber=False, options={}):
+                 no_clobber=False, options=None):
     files_written = []
     (base, ext) = os.path.splitext(filename)
     if len(ext) > 0 and ext != '.bov':
@@ -220,7 +221,9 @@ def array_tofile(filename, array, name='', spacing=(1., 1.), origin=(0., 0.),
                       DATA_FORMAT=_NP_TO_BOV_TYPE[str(vals.dtype)],
                       VARIABLE=var)
 
-        header.update(options)
+        if options is not None:
+            header.update(options)
+
         with open(bov_file, 'w') as f:
             for item in header.items():
                 f.write('%s: %s\n' % item)
@@ -230,7 +233,7 @@ def array_tofile(filename, array, name='', spacing=(1., 1.), origin=(0., 0.),
     return files_written
 
 
-def tofile(filename, grid, var_name=None, no_clobber=False, options={}):
+def tofile(filename, grid, var_name=None, no_clobber=False, options=None):
     """
     Write a grid-like object to a BOV file.
 
@@ -240,6 +243,12 @@ def tofile(filename, grid, var_name=None, no_clobber=False, options={}):
         Name of the BOV file to write.
     grid :  Grid-like
         A uniform rectilinear grid.
+    var_name : str, optional
+        Name of variable contained within *field* to write.
+    no_clobber : boolean
+        If `True`, and the output file exists, clobber it.
+    options : dict
+        Additional options to include in the header.
 
     Returns
     -------
@@ -299,7 +308,9 @@ def tofile(filename, grid, var_name=None, no_clobber=False, options={}):
                       DATA_FORMAT=_NP_TO_BOV_TYPE[str(vals.dtype)],
                       VARIABLE=name)
 
-        header.update(options)
+        if options is not None:
+            header.update(options)
+
         with open(bov_file, 'w') as opened_file:
             for item in header.items():
                 opened_file.write('%s: %s\n' % item)
