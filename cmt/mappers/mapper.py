@@ -9,33 +9,31 @@ Point-to-point Mapping
 >>> import numpy as np
 >>> from cmt.grids.map import RectilinearMap as Rectilinear
 
->>> src = Rectilinear ([0, 1, 2], [0, 2])
->>> dst = Rectilinear ([.5, 1.5, 2.5], [.25, 1.25])
+>>> src = Rectilinear([0, 1, 2], [0, 2])
+>>> dst = Rectilinear([.5, 1.5, 2.5], [.25, 1.25])
 
 >>> src.get_x ()
-array([ 0., 1., 2., 0., 1., 2.])
+array([ 0.,  2.,  0.,  2.,  0.,  2.])
 
 >>> src.get_y ()
-array([ 0., 0., 0., 2., 2., 2.])
+array([ 0.,  0.,  1.,  1.,  2.,  2.])
 
 >>> dst.get_x ()
-array([ 0.5, 1.5, 2.5, 0.5, 1.5, 2.5])
+array([ 0.25,  1.25,  0.25,  1.25,  0.25,  1.25])
 >>> dst.get_y ()
-array([ 0.25, 0.25, 0.25, 1.25, 1.25, 1.25])
+array([ 0.5,  0.5,  1.5,  1.5,  2.5,  2.5])
 
->>> src_vals = np.arange (src.get_point_count ())
+>>> src_vals = np.arange(src.get_point_count(), dtype=float)
 
 Map the source values on the source points to the destination grid
 using nearest neighbor.
 
 >>> from cmt.mappers import NearestVal
 
->>> mapper = NearestVal ()
->>> mapper.initialize (dst, src)
->>> dst_vals = mapper.run (src_vals)
-
->>> print dst_vals
-[ 0.  1.  2.  3.  4.  5.]
+>>> mapper = NearestVal()
+>>> mapper.initialize(dst, src)
+>>> mapper.run(src_vals)
+array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
 >>> mappers = find_mapper (dst, src)
 >>> len (mappers)
@@ -47,7 +45,7 @@ using nearest neighbor.
 >>> dst_vals = np.zeros (dst.get_point_count ())-1
 >>> dummy = mapper.run (src_vals, dst_vals)
 >>> dst_vals
-array([ 0.,  1.,  -1.,  3.,  4.,  5.])
+array([ 0.,  1., -1.,  3.,  4.,  5.])
 
 Cell-to-point Mapping
 ---------------------
@@ -80,16 +78,15 @@ The source grid looks like,
 
 >>> mapper = CellToPoint ()
 >>> mapper.initialize (dst, src)
->>> dst_vals = mapper.run (src_vals, bad_val=-999)
->>> print dst_vals
-[ 0. 2. -999.]
+>>> mapper.run (src_vals, bad_val=-999)
+array([   0.,    2., -999.])
 
 >>> src_vals = np.arange (src.get_cell_count (), dtype=np.float)
 >>> src_vals[0] = -9999
 >>> dst_vals = np.zeros (dst.get_point_count ())+100
->>> dummy = mapper.run (src_vals, dst_vals)
->>> print dst_vals
-[ 100. 2. -999.]
+>>> _ = mapper.run (src_vals, dst_vals)
+>>> dst_vals
+array([ 100.,    2., -999.])
 
 Point-to-cell Mapping
 ---------------------
@@ -105,25 +102,17 @@ Point-to-cell Mapping
 >>> mapper = PointToCell ()
 >>> mapper.initialize (dst, src)
 
->>> dst_vals = mapper.run (src_vals, bad_val=-999)
->>> print dst_vals
-[ 1.5 4. 1. ]
+>>> mapper.run (src_vals, bad_val=-999)
+array([ 1.5,  4. ,  1. ])
 
-[   1.5 4.  -999.  -999.  -999.     1.  -999.     -999. ]
-
->>> dst_vals = mapper.run (src_vals, bad_val=-999, method=np.sum)
->>> print dst_vals
-[ 3. 4. 1.]
-
-[   3. 4. -999. -999. -999.    1. -999.    -999.]
+>>> mapper.run (src_vals, bad_val=-999, method=np.sum)
+array([ 3.,  4.,  1.])
 
 >>> src_vals[0] = -9999
 >>> dst_vals = np.zeros (dst.get_cell_count ())-1
->>> dummy = mapper.run (src_vals, dst_vals)
->>> print dst_vals
-[-1. 4. 1.]
-
-[-1. 4. -1. -1. -1. 1. -1. -1.]
+>>> _ = mapper.run (src_vals, dst_vals)
+>>> dst_vals
+array([-1.,  4.,  1.])
 
 
 Point on cell edges
@@ -136,39 +125,43 @@ Point on cell edges
 >>> mapper = PointToCell ()
 >>> mapper.initialize (dst, src)
 
->>> src_vals = np.arange (src.get_point_count (), dtype=np.float)
->>> dst_vals = np.zeros (dst.get_cell_count ())-1
->>> dummy = mapper.run (src_vals, dst_vals)
->>> print dst_vals
-[ 1. 0.5 3. ]
-
-[ 0.5 1.5 -1. -1. 0.5 1. 3. 4. ]
+>>> src_vals = np.arange(src.get_point_count (), dtype=np.float)
+>>> dst_vals = np.zeros(dst.get_cell_count ()) - 1
+>>> _ = mapper.run(src_vals, dst_vals)
+>>> dst_vals
+array([ 1. ,  0.5,  3. ])
 
 A big mapper
 ============
 
 >>> (m, n) = (20, 40)
->>> (src_x, src_y) = np.meshgrid (range (m), range (n))
->>> src = UnstructuredPoints (src_x, src_y)
->>> dst = UniformRectilinear ((m+1,n+1), (1, 1), (-.5, -.5))
+>>> (src_x, src_y) = np.meshgrid(range(m), range(n))
+>>> src = UnstructuredPoints(src_y, src_x)
+>>> dst = UniformRectilinear((n + 1, m + 1), (1, 1), (-.5, -.5))
 
->>> mapper = PointToCell ()
->>> mapper.initialize (dst, src)
+>>> mapper = PointToCell()
+>>> mapper.initialize(dst, src)
 
->>> src_vals = np.arange (src.get_point_count (), dtype=np.float)
->>> dst_vals = np.zeros (dst.get_cell_count (), dtype=np.float)-1
->>> dummy = mapper.run (src_vals, dst_vals)
+>>> src_vals = np.arange(src.get_point_count(), dtype=np.float)
+>>> dst_vals = np.zeros(dst.get_cell_count(), dtype=np.float) - 1
+>>> _ = mapper.run(src_vals, dst_vals)
 
 >>> all (dst_vals==src_vals)
 True
-
 """
 
 from pointtopoint import NearestVal
 from celltopoint import CellToPoint
 from pointtocell import PointToCell
 
-#mappers = [NearestVal (), CellToPoint (), PointToCell ()]
+class Error(Exception):
+    pass
+
+
+class IncompatibleGridError(Error):
+    pass
+
+
 _MAPPERS = [NearestVal, CellToPoint, PointToCell]
 
 
@@ -180,13 +173,7 @@ def find_mapper(dst_grid, src_grid):
         if mapper.test(dst_grid, src_grid):
             choices.append(mapper)
 
-    if len(choices)==0:
-        raise IncompatibleGridError(dst_grid.name, src_grid.name)
+    if len(choices) == 0:
+        raise IncompatibleGridError()
     
     return choices
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-
