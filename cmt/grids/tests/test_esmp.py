@@ -4,11 +4,11 @@ import unittest
 import numpy as np
 
 try:    
-    import ESMP
+    import ESMF
 except ImportError:
-    _WITH_ESMP = False
+    _WITH_ESMF = False
 else:
-    _WITH_ESMP = True
+    _WITH_ESMF = True
     from cmt.grids.esmp import (EsmpRasterField, EsmpRectilinear,
                                 EsmpStructured, EsmpUnstructured,
                                 EsmpUniformRectilinear, EsmpRectilinearField,
@@ -16,20 +16,20 @@ else:
     from cmt.grids.esmp import run_regridding
 
 
-@unittest.skipUnless(_WITH_ESMP, 'ESMP is not available')
+@unittest.skipUnless(_WITH_ESMF, 'ESMF is not available')
 class TestEsmp (unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
         try:
-            ESMP.ESMP_Initialize()
+            ESMF.ESMP_Initialize()
         except NameError:
             pass
 
     @classmethod
     def tearDownClass (cls):
         try:
-            ESMP.ESMP_Finalize()
+            ESMF.ESMP_Finalize()
         except NameError:
             pass
 
@@ -50,20 +50,20 @@ class TestEsmp (unittest.TestCase):
 
         # The as_mesh method provides a view of the grid as an ESMP_Mesh.
 
-        cell_count = ESMP.ESMP_MeshGetLocalElementCount (g.as_mesh ())
+        cell_count = ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
         self.assertEqual (cell_count, 2)
 
-        point_count = ESMP.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
+        point_count = ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
         self.assertEqual (point_count, 6)
 
-        # ESMP elements are the same as the grids cells. Likewise with
+        # ESMF elements are the same as the grids cells. Likewise with
         # nodes and points.
 
         g = EsmpRectilinear ([0, 1, 2], [0, 1])
-        cell_count = ESMP.ESMP_MeshGetLocalElementCount (g.as_mesh ())
+        cell_count = ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
         self.assertEqual (cell_count, g.get_cell_count ())
 
-        point_count = ESMP.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
+        point_count = ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
         self.assertEqual (point_count, g.get_point_count ())
 
         g = EsmpUniformRectilinear ([3, 2], [1., 1.], [0., 0.])
@@ -147,23 +147,23 @@ class TestEsmp (unittest.TestCase):
         src_field = src.as_esmp ('srcfield')
         dst_field = dst.as_esmp ('dstfield')
 
-        cell_count = ESMP.ESMP_MeshGetLocalElementCount (src.as_mesh ())
-        point_count = ESMP.ESMP_MeshGetLocalNodeCount (src.as_mesh ())
+        cell_count = ESMF.ESMP_MeshGetLocalElementCount (src.as_mesh ())
+        point_count = ESMF.ESMP_MeshGetLocalNodeCount (src.as_mesh ())
         self.assertEqual (cell_count, 4)
         self.assertEqual (point_count, 9)
 
-        local_cell_count = ESMP.ESMP_MeshGetLocalElementCount (
+        local_cell_count = ESMF.ESMP_MeshGetLocalElementCount (
             dst.as_mesh ())
-        local_point_count = ESMP.ESMP_MeshGetLocalNodeCount (
+        local_point_count = ESMF.ESMP_MeshGetLocalNodeCount (
             dst.as_mesh ())
         self.assertEqual (local_cell_count, 9)
         self.assertEqual (local_point_count, 16)
 
-        #>>> ESMP.ESMP_FieldPrint (src_field)
-        #>>> ESMP.ESMP_FieldPrint (dst_field)
+        #>>> ESMF.ESMP_FieldPrint (src_field)
+        #>>> ESMF.ESMP_FieldPrint (dst_field)
 
         f = run_regridding (src_field, dst_field)
-        field_ptr = ESMP.ESMP_FieldGetPtr(f, 0)
+        field_ptr = ESMF.ESMP_FieldGetPtr(f, 0)
 
     #@unittest.skip ('skip')
     def test_values_on_cells (self):
@@ -184,7 +184,7 @@ class TestEsmp (unittest.TestCase):
         dst_field = dst.as_esmp ('dstfield')
 
         f = run_regridding (src_field, dst_field)
-        ans = ESMP.ESMP_FieldGetPtr(f, 0)
+        ans = ESMF.ESMP_FieldGetPtr(f, 0)
 
         (X, Y) = np.meshgrid (np.arange (0.5, 299.5, .5),
                               np.arange (0.5, 299.5, .5))
@@ -210,8 +210,8 @@ class TestEsmp (unittest.TestCase):
         dst_field = dst.as_esmp ('dstfield_at_points')
 
         f = run_regridding (src_field, dst_field,
-                            method=ESMP.ESMP_REGRIDMETHOD_BILINEAR)
-        ans = ESMP.ESMP_FieldGetPtr(f, 0)
+                            method=ESMF.ESMP_REGRIDMETHOD_BILINEAR)
+        ans = ESMF.ESMP_FieldGetPtr(f, 0)
 
         (X, Y) = np.meshgrid (np.arange (0.5, 300., .5),
                               np.arange (0.5, 300., .5))

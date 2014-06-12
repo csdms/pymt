@@ -14,7 +14,7 @@ Create a grid that looks like this,
     (3) --- (4) --- (5)
 
 
->>> ESMP.ESMP_Initialize()
+>>> ESMF.ESMP_Initialize()
 
 >>> g = EsmpUnstructured ([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1],
 ...                       [0, 1, 4, 3, 1, 2, 5, 4], [4, 8])
@@ -23,17 +23,17 @@ Create a grid that looks like this,
 
 The as_mesh method provides a view of the grid as an ESMP_Mesh.
 
->>> ESMP.ESMP_MeshGetLocalElementCount (g.as_mesh ())
+>>> ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
 2
->>> ESMP.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
+>>> ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
 6
 
-ESMP elements are the same as the grids cells. Likewise with nodes and points.
+ESMF elements are the same as the grids cells. Likewise with nodes and points.
 
 >>> g = EsmpRectilinear ([0, 1, 2], [0, 1])
->>> ESMP.ESMP_MeshGetLocalElementCount (g.as_mesh ()) == g.get_cell_count ()
+>>> ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ()) == g.get_cell_count ()
 True
->>> ESMP.ESMP_MeshGetLocalNodeCount (g.as_mesh ()) == g.get_point_count ()
+>>> ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ()) == g.get_point_count ()
 True
 
 >>> g = EsmpUniformRectilinear ([3, 2], [1., 1.], [0., 0.])
@@ -100,7 +100,7 @@ Map between two fields
     >>> from cmt.grids.raster import UniformRectilinear
     >>> from cmt.grids.rectilinear import Rectilinear
 
-    >>> #ESMP.ESMP_Initialize()
+    >>> #ESMF.ESMP_Initialize()
 
     >>> src = EsmpRasterField ((3,3), (1,1), (0, 0))
     >>> data = np.arange (src.get_cell_count (), dtype=np.float64)
@@ -135,20 +135,20 @@ Map between two fields
 
     >>> src_field = src.as_esmp ('srcfield')
     >>> dst_field = dst.as_esmp ('dstfield')
-    >>> ESMP.ESMP_MeshGetLocalElementCount (src.as_mesh ())
+    >>> ESMF.ESMP_MeshGetLocalElementCount (src.as_mesh ())
     4
-    >>> ESMP.ESMP_MeshGetLocalNodeCount (src.as_mesh ())
+    >>> ESMF.ESMP_MeshGetLocalNodeCount (src.as_mesh ())
     9
-    >>> ESMP.ESMP_MeshGetLocalElementCount (dst.as_mesh ())
+    >>> ESMF.ESMP_MeshGetLocalElementCount (dst.as_mesh ())
     9
-    >>> ESMP.ESMP_MeshGetLocalNodeCount (dst.as_mesh ())
+    >>> ESMF.ESMP_MeshGetLocalNodeCount (dst.as_mesh ())
     16
 
-    #>>> ESMP.ESMP_FieldPrint (src_field)
-    #>>> ESMP.ESMP_FieldPrint (dst_field)
+    #>>> ESMF.ESMP_FieldPrint (src_field)
+    #>>> ESMF.ESMP_FieldPrint (dst_field)
 
     >>> f = run_regridding (src_field, dst_field)
-    >>> field_ptr = ESMP.ESMP_FieldGetPtr(f, 0)
+    >>> field_ptr = ESMF.ESMP_FieldGetPtr(f, 0)
 
 A bigger grid
 -------------
@@ -172,7 +172,7 @@ Map values on cells
     >>> dst_field = dst.as_esmp ('dstfield')
 
     >>> f = run_regridding (src_field, dst_field)
-    >>> ans = ESMP.ESMP_FieldGetPtr(f, 0)
+    >>> ans = ESMF.ESMP_FieldGetPtr(f, 0)
 
     >>> (X, Y) = np.meshgrid (np.arange (0.5, 299.5, .5),
     ...                       np.arange (0.5, 299.5, .5))
@@ -195,15 +195,15 @@ Map values on points
     >>> dst_field = dst.as_esmp ('dstfield_at_points')
 
     >>> f = run_regridding (src_field, dst_field,
-    ...                     method=ESMP.ESMP_REGRIDMETHOD_BILINEAR)
-    >>> ans = ESMP.ESMP_FieldGetPtr(f, 0)
+    ...                     method=ESMF.ESMP_REGRIDMETHOD_BILINEAR)
+    >>> ans = ESMF.ESMP_FieldGetPtr(f, 0)
 
     >>> (X, Y) = np.meshgrid(np.arange(0.5, 300., .5), np.arange(0.5, 300., .5))
     >>> exact = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
     >>> np.sum (np.abs (exact.flat-ans))/(M*N*4.) < 1e-5
     True
 
-    >>> ESMP.ESMP_Finalize()
+    >>> ESMF.ESMP_Finalize()
 """
 
 import numpy as np
@@ -214,22 +214,22 @@ from cmt.grids.igrid import (IGrid, IField, DimensionError,
                              CenteringValueError, CENTERING_CHOICES)
 
 try:
-    import ESMP
+    import ESMF
 except ImportError:
     import warnings
-    warnings.warn('unable to import ESMP', ImportWarning)
-    _WITH_ESMP = False
+    warnings.warn('unable to import ESMF', ImportWarning)
+    _WITH_ESMF = False
 else:
-    _WITH_ESMP = True
+    _WITH_ESMF = True
 
 
-if not _WITH_ESMP:
-    __doc__ = "This module is not available as no ESMP installation was found"
+if not _WITH_ESMF:
+    __doc__ = "This module is not available as no ESMF installation was found"
 
 
 class EsmpGrid(IGrid):
     def __init__(self):
-        self._mesh = ESMP.ESMP_MeshCreate(2, 2)
+        self._mesh = ESMF.ESMP_MeshCreate(2, 2)
 
         self._mesh_add_nodes()
         self._mesh_add_elements()
@@ -248,17 +248,17 @@ class EsmpGrid(IGrid):
 
         node_owner = np.zeros(self.get_point_count(), dtype=np.int32)
 
-        ESMP.ESMP_MeshAddNodes(self._mesh, self.get_point_count(), node_ids,
+        ESMF.ESMP_MeshAddNodes(self._mesh, self.get_point_count(), node_ids,
                                node_coords, node_owner)
 
     def _mesh_add_elements(self):
         cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=np.int32)
         cell_types = (np.ones(self.get_cell_count(), dtype=np.int32) *
-                      ESMP.ESMP_MESHELEMTYPE_QUAD)
+                      ESMF.ESMP_MESHELEMTYPE_QUAD)
 
         cell_conn = np.array(self.get_connectivity(), dtype=np.int32) + 1
 
-        ESMP.ESMP_MeshAddElements(self._mesh, self.get_cell_count(), cell_ids,
+        ESMF.ESMP_MeshAddElements(self._mesh, self.get_cell_count(), cell_ids,
                                   cell_types, cell_conn)
 
     def reverse_element_ordering(self):
@@ -301,19 +301,19 @@ class EsmpField(IField):
             raise DimensionError(val.size, self.get_point_count())
 
         if centering == 'zonal':
-            meshloc = ESMP.ESMP_MESHLOC_ELEMENT
+            meshloc = ESMF.ESMP_MESHLOC_ELEMENT
         else:
-            meshloc = ESMP.ESMP_MESHLOC_NODE
+            meshloc = ESMF.ESMP_MESHLOC_NODE
 
-        field = ESMP.ESMP_FieldCreate(self._mesh, field_name, meshloc=meshloc)
-        field_ptr = ESMP.ESMP_FieldGetPtr(field, 0)
+        field = ESMF.ESMP_FieldCreate(self._mesh, field_name, meshloc=meshloc)
+        field_ptr = ESMF.ESMP_FieldGetPtr(field, 0)
         field_ptr.flat = val.flat
 
         self._fields[field_name] = field
 
     def get_field(self, field_name):
         field = self._fields[field_name]
-        return ESMP.ESMP_FieldGetPtr(field, 0)
+        return ESMF.ESMP_FieldGetPtr(field, 0)
 
     def as_esmp(self, field_name):
         return self._fields[field_name]
@@ -356,14 +356,14 @@ def run_regridding(srcfield, dstfield, **kwds):
                    is desired from 'srcfield' to 'dstfield'.
     POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
     """
-    method = kwds.get('method', ESMP.ESMP_REGRIDMETHOD_CONSERVE)
-    unmapped = kwds.get('unmapped', ESMP.ESMP_UNMAPPEDACTION_ERROR)
+    method = kwds.get('method', ESMF.ESMP_REGRIDMETHOD_CONSERVE)
+    unmapped = kwds.get('unmapped', ESMF.ESMP_UNMAPPEDACTION_ERROR)
 
     # call the regridding functions
-    routehandle = ESMP.ESMP_FieldRegridStore(srcfield, dstfield, method,
+    routehandle = ESMF.ESMP_FieldRegridStore(srcfield, dstfield, method,
                                              unmapped)
-    ESMP.ESMP_FieldRegrid(srcfield, dstfield, routehandle)
-    ESMP.ESMP_FieldRegridRelease(routehandle)
+    ESMF.ESMP_FieldRegrid(srcfield, dstfield, routehandle)
+    ESMF.ESMP_FieldRegridRelease(routehandle)
 
     return dstfield
 
