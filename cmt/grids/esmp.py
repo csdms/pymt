@@ -16,7 +16,8 @@ Create a grid that looks like this,
 
 >>> ESMP.ESMP_Initialize()
 
->>> g = EsmpUnstructured ([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1], [0, 1, 4, 3, 1, 2, 5, 4], [4, 8])
+>>> g = EsmpUnstructured ([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1],
+...                       [0, 1, 4, 3, 1, 2, 5, 4], [4, 8])
 
 >>> g = EsmpStructured ([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1], (3, 2))
 
@@ -158,7 +159,8 @@ A bigger grid
 Map values on cells
 -------------------
 
-    >>> (X, Y) = np.meshgrid (np.arange (0.5, 299.5, 1.), np.arange (0.5, 299.5, 1.))
+    >>> (X, Y) = np.meshgrid (np.arange (0.5, 299.5, 1.),
+    ...                       np.arange (0.5, 299.5, 1.))
     >>> data = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
     >>> src.add_field ('srcfield', data, centering='zonal')
 
@@ -172,7 +174,8 @@ Map values on cells
     >>> f = run_regridding (src_field, dst_field)
     >>> ans = ESMP.ESMP_FieldGetPtr(f, 0)
 
-    >>> (X, Y) = np.meshgrid (np.arange (0.5, 299.5, .5), np.arange (0.5, 299.5, .5))
+    >>> (X, Y) = np.meshgrid (np.arange (0.5, 299.5, .5),
+    ...                       np.arange (0.5, 299.5, .5))
     >>> exact = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
     >>> np.sum (np.abs (exact.flat-ans))/(M*N*4.) < 1e-2
     True
@@ -180,7 +183,8 @@ Map values on cells
 Map values on points
 --------------------
 
-    >>> (X, Y) = np.meshgrid (np.arange (0.5, 300.5, 1.), np.arange (0.5, 300.5, 1.))
+    >>> (X, Y) = np.meshgrid(np.arange(0.5, 300.5, 1.),
+    ...                      np.arange(0.5, 300.5, 1.))
     >>> data = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
     >>> src.add_field ('srcfield_at_points', data, centering='point')
 
@@ -190,10 +194,11 @@ Map values on points
     >>> src_field = src.as_esmp ('srcfield_at_points')
     >>> dst_field = dst.as_esmp ('dstfield_at_points')
 
-    >>> f = run_regridding (src_field, dst_field, method=ESMP.ESMP_REGRIDMETHOD_BILINEAR)
+    >>> f = run_regridding (src_field, dst_field,
+    ...                     method=ESMP.ESMP_REGRIDMETHOD_BILINEAR)
     >>> ans = ESMP.ESMP_FieldGetPtr(f, 0)
 
-    >>> (X, Y) = np.meshgrid (np.arange (0.5, 300., .5), np.arange (0.5, 300., .5))
+    >>> (X, Y) = np.meshgrid(np.arange(0.5, 300., .5), np.arange(0.5, 300., .5))
     >>> exact = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
     >>> np.sum (np.abs (exact.flat-ans))/(M*N*4.) < 1e-5
     True
@@ -222,119 +227,122 @@ if not _WITH_ESMP:
     __doc__ = "This module is not available as no ESMP installation was found"
 
 
-class EsmpGrid (IGrid):
-    def __init__ (self):
-        self._mesh = ESMP.ESMP_MeshCreate (2, 2)
+class EsmpGrid(IGrid):
+    def __init__(self):
+        self._mesh = ESMP.ESMP_MeshCreate(2, 2)
 
-        self._mesh_add_nodes ()
-        self._mesh_add_elements ()
+        self._mesh_add_nodes()
+        self._mesh_add_elements()
 
-        super (EsmpGrid, self).__init__ ()
+        super(EsmpGrid, self).__init__()
 
-    def as_mesh (self):
+    def as_mesh(self):
         return self._mesh
 
-    def _mesh_add_nodes (self):
-        node_ids = np.arange (1, self.get_point_count ()+1, dtype=np.int32)
-        (x, y) = (self.get_x (), self.get_y ())
+    def _mesh_add_nodes(self):
+        node_ids = np.arange(1, self.get_point_count() + 1, dtype=np.int32)
+        (x, y) = (self.get_x(), self.get_y())
 
-        node_coords = np.empty (x.size+y.size, dtype=np.float64)
+        node_coords = np.empty(x. size + y.size, dtype=np.float64)
         (node_coords[0::2], node_coords[1::2]) = (x, y)
 
-        node_owner = np.zeros (self.get_point_count (), dtype=np.int32)
+        node_owner = np.zeros(self.get_point_count(), dtype=np.int32)
 
-        ESMP.ESMP_MeshAddNodes (self._mesh, self.get_point_count (), node_ids, node_coords, node_owner)
+        ESMP.ESMP_MeshAddNodes(self._mesh, self.get_point_count(), node_ids,
+                               node_coords, node_owner)
 
-    def _mesh_add_elements (self):
-        cell_ids = np.arange (1, self.get_cell_count ()+1, dtype=np.int32)
-        cell_types = (np.ones (self.get_cell_count (), dtype=np.int32) *
+    def _mesh_add_elements(self):
+        cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=np.int32)
+        cell_types = (np.ones(self.get_cell_count(), dtype=np.int32) *
                       ESMP.ESMP_MESHELEMTYPE_QUAD)
 
-        cell_conn = np.array (self.get_connectivity (), dtype=np.int32)+1
+        cell_conn = np.array(self.get_connectivity(), dtype=np.int32) + 1
 
-        ESMP.ESMP_MeshAddElements (self._mesh, self.get_cell_count (), cell_ids, cell_types, cell_conn)
+        ESMP.ESMP_MeshAddElements(self._mesh, self.get_cell_count(), cell_ids,
+                                  cell_types, cell_conn)
 
-    def reverse_element_ordering (self):
+    def reverse_element_ordering(self):
         last_offset = 0
         for offset in self._offset:
-            c = self._connectivity[last_offset:offset].copy ()
+            c = self._connectivity[last_offset:offset].copy()
             self._connectivity[last_offset:offset] = c[::-1]
             last_offset = offset
 
 
-class EsmpUnstructured (Unstructured, EsmpGrid):
+class EsmpUnstructured(Unstructured, EsmpGrid):
     name = 'ESMPUnstructured'
 
 
-class EsmpStructured (Structured, EsmpGrid):
+class EsmpStructured(Structured, EsmpGrid):
     name = 'ESMPStructured'
 
 
-class EsmpRectilinear (Rectilinear, EsmpGrid):
+class EsmpRectilinear(Rectilinear, EsmpGrid):
     name = 'ESMPRectilinear'
 
 
-class EsmpUniformRectilinear (UniformRectilinear, EsmpStructured):
+class EsmpUniformRectilinear(UniformRectilinear, EsmpStructured):
     name = 'ESMPUniformRectilinear'
 
 
-class EsmpField (IField):
-    def __init__ (self, *args, **kwargs):
-        super (EsmpField, self).__init__ (*args, **kwargs) 
+class EsmpField(IField):
+    def __init__(self, *args, **kwargs):
+        super(EsmpField, self).__init__(*args, **kwargs)
         self._fields = {}
 
-    def add_field (self, field_name, val, centering='zonal'):
+    def add_field(self, field_name, val, centering='zonal'):
 
         if centering not in CENTERING_CHOICES:
-            raise CenteringValueError (centering)
+            raise CenteringValueError(centering)
 
-        if centering=='zonal' and val.size != self.get_cell_count ():
-            raise DimensionError (val.size, self.get_cell_count ())
-        elif centering!='zonal' and val.size != self.get_point_count ():
-            raise DimensionError (val.size, self.get_point_count ())
+        if centering == 'zonal' and val.size != self.get_cell_count():
+            raise DimensionError(val.size, self.get_cell_count())
+        elif centering != 'zonal' and val.size != self.get_point_count():
+            raise DimensionError(val.size, self.get_point_count())
 
-        if centering=='zonal':
-            meshloc=ESMP.ESMP_MESHLOC_ELEMENT
+        if centering == 'zonal':
+            meshloc = ESMP.ESMP_MESHLOC_ELEMENT
         else:
-            meshloc=ESMP.ESMP_MESHLOC_NODE
+            meshloc = ESMP.ESMP_MESHLOC_NODE
 
-        field = ESMP.ESMP_FieldCreate (self._mesh, field_name, meshloc=meshloc)
+        field = ESMP.ESMP_FieldCreate(self._mesh, field_name, meshloc=meshloc)
         field_ptr = ESMP.ESMP_FieldGetPtr(field, 0)
         field_ptr.flat = val.flat
 
         self._fields[field_name] = field
 
-    def get_field (self, field_name):
+    def get_field(self, field_name):
         field = self._fields[field_name]
         return ESMP.ESMP_FieldGetPtr(field, 0)
 
-    def as_esmp (self, field_name):
+    def as_esmp(self, field_name):
         return self._fields[field_name]
 
 
-class EsmpStructuredField (EsmpStructured, EsmpField):
-    def add_field (self, field_name, val, centering='zonal'):
-        if centering=='zonal':
-            if val.ndim > 1 and np.any (val.shape != self.get_shape ()-1):
-                raise DimensionError (val.shape, self.get_shape ()-1)
-        elif centering!='zonal':
-            if val.ndim > 1 and np.any (val.shape != self.get_shape ()):
-                raise DimensionError (val.shape, self.get_shape ())
+class EsmpStructuredField(EsmpStructured, EsmpField):
+    def add_field(self, field_name, val, centering='zonal'):
+        if centering == 'zonal':
+            if val.ndim > 1 and np.any(val.shape != self.get_shape() - 1):
+                raise DimensionError(val.shape, self.get_shape() - 1)
+        elif centering != 'zonal':
+            if val.ndim > 1 and np.any(val.shape != self.get_shape()):
+                raise DimensionError(val.shape, self.get_shape())
         try:
-            super (EsmpStructuredField, self).add_field (field_name, val, centering=centering)
+            super(EsmpStructuredField, self).add_field(field_name, val,
+                                                       centering=centering)
         except DimensionError, CenteringValueError:
             raise
 
 
-class EsmpUnstructuredField (EsmpUnstructured, EsmpField):
+class EsmpUnstructuredField(EsmpUnstructured, EsmpField):
     pass
 
 
-class EsmpRectilinearField (EsmpRectilinear, EsmpStructuredField):
+class EsmpRectilinearField(EsmpRectilinear, EsmpStructuredField):
     pass
 
 
-class EsmpRasterField (EsmpUniformRectilinear, EsmpRectilinearField):
+class EsmpRasterField(EsmpUniformRectilinear, EsmpRectilinearField):
     pass
 
 
@@ -352,14 +360,10 @@ def run_regridding(srcfield, dstfield, **kwds):
     unmapped = kwds.get('unmapped', ESMP.ESMP_UNMAPPEDACTION_ERROR)
 
     # call the regridding functions
-    routehandle = ESMP.ESMP_FieldRegridStore(srcfield, dstfield,
-                                             method, unmapped)
+    routehandle = ESMP.ESMP_FieldRegridStore(srcfield, dstfield, method,
+                                             unmapped)
     ESMP.ESMP_FieldRegrid(srcfield, dstfield, routehandle)
     ESMP.ESMP_FieldRegridRelease(routehandle)
 
     return dstfield
 
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
