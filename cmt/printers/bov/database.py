@@ -2,7 +2,7 @@
 
 import os
 
-from .bov import tofile
+from .bov_io import tofile
 
 
 class IDatabase(object):
