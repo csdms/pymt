@@ -2,6 +2,7 @@
 
 import unittest
 import numpy as np
+from numpy.testing import assert_array_almost_equal
 
 try:    
     import ESMF
@@ -21,17 +22,19 @@ class TestEsmp (unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
-        try:
-            ESMF.ESMP_Initialize()
-        except NameError:
-            pass
+        manager = ESMF.Manager()
+        #try:
+        #    ESMF.ESMP_Initialize()
+        #except NameError:
+        #    pass
 
     @classmethod
     def tearDownClass (cls):
-        try:
-            ESMF.ESMP_Finalize()
-        except NameError:
-            pass
+        pass
+        #try:
+        #    ESMF.ESMP_Finalize()
+        #except NameError:
+        #    pass
 
     #@unittest.skip ('skip')
     def test_2d (self):
@@ -50,23 +53,24 @@ class TestEsmp (unittest.TestCase):
 
         # The as_mesh method provides a view of the grid as an ESMP_Mesh.
 
-        cell_count = ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
-        self.assertEqual (cell_count, 2)
+        #g.as_mesh().get_local_element_count()
+        #cell_count = ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
+        self.assertEqual(g.as_mesh().element_count, 2)
 
-        point_count = ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
-        self.assertEqual (point_count, 6)
+        #point_count = ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
+        self.assertEqual(g.as_mesh().node_count, 6)
 
         # ESMF elements are the same as the grids cells. Likewise with
         # nodes and points.
 
-        g = EsmpRectilinear ([0, 1, 2], [0, 1])
-        cell_count = ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
-        self.assertEqual (cell_count, g.get_cell_count ())
+        g = EsmpRectilinear([0, 1, 2], [0, 1])
+        #cell_count = ESMF.ESMP_MeshGetLocalElementCount (g.as_mesh ())
+        self.assertEqual(g.as_mesh().element_count, g.get_cell_count())
 
-        point_count = ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
-        self.assertEqual (point_count, g.get_point_count ())
+        #point_count = ESMF.ESMP_MeshGetLocalNodeCount (g.as_mesh ())
+        self.assertEqual(g.as_mesh().node_count, g.get_point_count())
 
-        g = EsmpUniformRectilinear ([3, 2], [1., 1.], [0., 0.])
+        g = EsmpUniformRectilinear([3, 2], [1., 1.], [0., 0.])
 
     #@unittest.skip ('skip')
     def test_raster (self):
@@ -81,14 +85,14 @@ class TestEsmp (unittest.TestCase):
 
         # Create the field,
 
-        g = EsmpRasterField ((3,2), (2,1), (0, 0))
-        self.assert_cell_count (g, 2)
-        self.assert_point_count (g, 6)
+        g = EsmpRasterField((2, 3), (1, 2), (0, 0))
+        self.assert_cell_count(g, 2)
+        self.assert_point_count(g, 6)
 
         # Add some data at the points of our grid.
 
-        data = np.arange (6)
-        g.add_field ('var0', data, centering='point')
+        data = np.arange(6)
+        g.add_field('var0', data, centering='point')
         self.assert_field_values (g, 'var0', [0., 1., 2., 3., 4., 5.])
         self.assert_field_type (g, 'var0', np.dtype ('float64'))
 
@@ -147,50 +151,49 @@ class TestEsmp (unittest.TestCase):
         src_field = src.as_esmp ('srcfield')
         dst_field = dst.as_esmp ('dstfield')
 
-        cell_count = ESMF.ESMP_MeshGetLocalElementCount (src.as_mesh ())
-        point_count = ESMF.ESMP_MeshGetLocalNodeCount (src.as_mesh ())
-        self.assertEqual (cell_count, 4)
-        self.assertEqual (point_count, 9)
+        #cell_count = ESMF.ESMP_MeshGetLocalElementCount (src.as_mesh ())
+        #point_count = ESMF.ESMP_MeshGetLocalNodeCount (src.as_mesh ())
+        self.assertEqual(src.as_mesh().element_count, 4)
+        self.assertEqual(src.as_mesh().node_count, 9)
 
-        local_cell_count = ESMF.ESMP_MeshGetLocalElementCount (
-            dst.as_mesh ())
-        local_point_count = ESMF.ESMP_MeshGetLocalNodeCount (
-            dst.as_mesh ())
-        self.assertEqual (local_cell_count, 9)
-        self.assertEqual (local_point_count, 16)
+        #local_cell_count = ESMF.ESMP_MeshGetLocalElementCount (
+        #    dst.as_mesh ())
+        #local_point_count = ESMF.ESMP_MeshGetLocalNodeCount (
+        #    dst.as_mesh ())
+        self.assertEqual(dst.as_mesh().element_count, 9)
+        self.assertEqual(dst.as_mesh().node_count, 16)
 
         #>>> ESMF.ESMP_FieldPrint (src_field)
         #>>> ESMF.ESMP_FieldPrint (dst_field)
 
-        f = run_regridding (src_field, dst_field)
-        field_ptr = ESMF.ESMP_FieldGetPtr(f, 0)
+        f = run_regridding(src_field, dst_field)
+        #field_ptr = ESMF.ESMP_FieldGetPtr(f, 0)
 
     #@unittest.skip ('skip')
-    def test_values_on_cells (self):
+    def test_values_on_cells(self):
         (M, N) = (300, 300)
-        src = EsmpRasterField ((M, N), (1, 1), (0, 0))
+        src = EsmpRasterField((M, N), (1, 1), (0, 0))
 
         (X, Y) = np.meshgrid (np.arange (0.5, 299.5, 1.),
                               np.arange (0.5, 299.5, 1.))
 
         data = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
-        src.add_field ('srcfield', data, centering='zonal')
+        src.add_field('srcfield', data, centering='zonal')
 
         dst = EsmpRasterField ((M*2-1, N*2-1), (1./2, 1./2), (0, 0))
         data = np.empty (dst.get_cell_count (), dtype=np.float64)
         dst.add_field ('dstfield', data, centering='zonal')
 
-        src_field = src.as_esmp ('srcfield')
-        dst_field = dst.as_esmp ('dstfield')
+        src_field = src.as_esmp('srcfield')
+        dst_field = dst.as_esmp('dstfield')
 
-        f = run_regridding (src_field, dst_field)
-        ans = ESMF.ESMP_FieldGetPtr(f, 0)
+        f = run_regridding(src_field, dst_field)
 
-        (X, Y) = np.meshgrid (np.arange (0.5, 299.5, .5),
-                              np.arange (0.5, 299.5, .5))
-        exact = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
-        residual = np.abs (exact.flat-ans)/(M*N*4.)
-        self.assertAlmostEqual (np.sum (residual), 0., 2)
+        (X, Y) = np.meshgrid(np.arange (0.5, 299.5, .5),
+                             np.arange (0.5, 299.5, .5))
+        exact = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
+        residual = np.abs(exact.flat - f.data)/(M * N * 4.)
+        assert_array_almost_equal(residual, np.zeros_like(residual))
 
     #@unittest.skip ('skip')
     def test_values_on_points (self):
@@ -210,24 +213,25 @@ class TestEsmp (unittest.TestCase):
         dst_field = dst.as_esmp ('dstfield_at_points')
 
         f = run_regridding (src_field, dst_field,
-                            method=ESMF.ESMP_REGRIDMETHOD_BILINEAR)
-        ans = ESMF.ESMP_FieldGetPtr(f, 0)
+                            method=ESMF.RegridMethod.BILINEAR)
 
         (X, Y) = np.meshgrid (np.arange (0.5, 300., .5),
                               np.arange (0.5, 300., .5))
         exact = np.sin (np.sqrt (X**2+Y**2)*np.pi/M)
-        residual = np.abs (exact.flat-ans)/(M*N*4.)
-        self.assertAlmostEqual (np.sum (residual), 0., 3)
+        residual = np.abs(exact.flat - f.data)/(M * N * 4.)
+        assert_array_almost_equal(residual, np.zeros_like(residual))
 
     def assert_field_type (self, field, name, expected_type):
         value = field.get_field (name)
         self.assertEqual (value.dtype, expected_type)
+
     def assert_field_values (self, field, name, expected_values):
         values = field.get_field (name)
         self.assertListEqual (list (values), list (expected_values))
 
     def assert_point_count (self, grid, point_count):
         self.assertEqual (point_count, grid.get_point_count ())
+
     def assert_cell_count (self, grid, cell_count):
         self.assertEqual (cell_count, grid.get_cell_count ())
 

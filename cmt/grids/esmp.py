@@ -224,12 +224,12 @@ else:
 
 
 if not _WITH_ESMF:
-    __doc__ = "This module is not available as no ESMF installation was found"
+    __doc__ = "This module is not available (no ESMF installation was found)"
 
 
 class EsmpGrid(IGrid):
     def __init__(self):
-        self._mesh = ESMF.ESMP_MeshCreate(2, 2)
+        self._mesh = ESMF.Mesh(parametric_dim=2, spatial_dim=2)
 
         self._mesh_add_nodes()
         self._mesh_add_elements()
@@ -243,23 +243,23 @@ class EsmpGrid(IGrid):
         node_ids = np.arange(1, self.get_point_count() + 1, dtype=np.int32)
         (x, y) = (self.get_x(), self.get_y())
 
-        node_coords = np.empty(x. size + y.size, dtype=np.float64)
+        node_coords = np.empty(x.size + y.size, dtype=np.float64)
         (node_coords[0::2], node_coords[1::2]) = (x, y)
 
         node_owner = np.zeros(self.get_point_count(), dtype=np.int32)
 
-        ESMF.ESMP_MeshAddNodes(self._mesh, self.get_point_count(), node_ids,
-                               node_coords, node_owner)
+        self._mesh.add_nodes(self.get_point_count(), node_ids, node_coords,
+                             node_owner)
 
     def _mesh_add_elements(self):
         cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=np.int32)
-        cell_types = (np.ones(self.get_cell_count(), dtype=np.int32) *
-                      ESMF.ESMP_MESHELEMTYPE_QUAD)
+        cell_types = np.empty(self.get_cell_count(), dtype=np.int32)
+        cell_types.fill(ESMF.MeshElemType.QUAD)
 
-        cell_conn = np.array(self.get_connectivity(), dtype=np.int32) + 1
+        cell_conn = np.array(self.get_connectivity(), dtype=np.int32)# + 1
 
-        ESMF.ESMP_MeshAddElements(self._mesh, self.get_cell_count(), cell_ids,
-                                  cell_types, cell_conn)
+        self._mesh.add_elements(self.get_cell_count(), cell_ids, cell_types,
+                                cell_conn)
 
     def reverse_element_ordering(self):
         last_offset = 0
@@ -291,7 +291,6 @@ class EsmpField(IField):
         self._fields = {}
 
     def add_field(self, field_name, val, centering='zonal'):
-
         if centering not in CENTERING_CHOICES:
             raise CenteringValueError(centering)
 
@@ -301,19 +300,16 @@ class EsmpField(IField):
             raise DimensionError(val.size, self.get_point_count())
 
         if centering == 'zonal':
-            meshloc = ESMF.ESMP_MESHLOC_ELEMENT
+            meshloc = ESMF.MeshLoc.ELEMENT
         else:
-            meshloc = ESMF.ESMP_MESHLOC_NODE
+            meshloc = ESMF.MeshLoc.NODE
 
-        field = ESMF.ESMP_FieldCreate(self._mesh, field_name, meshloc=meshloc)
-        field_ptr = ESMF.ESMP_FieldGetPtr(field, 0)
-        field_ptr.flat = val.flat
-
+        field = ESMF.Field(self._mesh, field_name, meshloc=meshloc)
+        np.copyto(field, val.view().reshape(field.shape))
         self._fields[field_name] = field
 
     def get_field(self, field_name):
-        field = self._fields[field_name]
-        return ESMF.ESMP_FieldGetPtr(field, 0)
+        return self._fields[field_name]
 
     def as_esmp(self, field_name):
         return self._fields[field_name]
@@ -356,14 +352,13 @@ def run_regridding(srcfield, dstfield, **kwds):
                    is desired from 'srcfield' to 'dstfield'.
     POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
     """
-    method = kwds.get('method', ESMF.ESMP_REGRIDMETHOD_CONSERVE)
-    unmapped = kwds.get('unmapped', ESMF.ESMP_UNMAPPEDACTION_ERROR)
+    method = kwds.get('method', ESMF.RegridMethod.CONSERVE)
+    unmapped = kwds.get('unmapped', ESMF.UnmappedAction.ERROR)
 
     # call the regridding functions
-    routehandle = ESMF.ESMP_FieldRegridStore(srcfield, dstfield, method,
-                                             unmapped)
-    ESMF.ESMP_FieldRegrid(srcfield, dstfield, routehandle)
-    ESMF.ESMP_FieldRegridRelease(routehandle)
+    regridder = ESMF.Regrid(srcfield, dstfield, regrid_method=method,
+                            unmapped_action=unmapped)
+    dstfield = regridder(srcfield, dstfield)
 
     return dstfield
 
