@@ -1,8 +1,8 @@
 #! /usr/bin/env python import unittest
 
-import unittest
 import numpy as np
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
+from nose.tools import assert_equal, assert_raises, assert_is
 
 try:    
     import ESMF
@@ -17,207 +17,182 @@ else:
     from cmt.grids.esmp import run_regridding
 
 
-@unittest.skipUnless(_WITH_ESMF, 'ESMF is not available')
-class TestEsmp (unittest.TestCase):
+def setup():
+    ESMF.Manager()
 
-    @classmethod
-    def setUpClass(cls):
-        manager = ESMF.Manager()
 
-    def test_2d(self):
-        # Create a grids that looks like this,
-        #
-        #
-        #    (0) --- (1) --- (2)
-        #     |       |       |
-        #     |   0   |   1   |
-        #     |       |       |
-        #    (3) --- (4) --- (5)
+def test_2d():
+    # Create a grids that looks like this,
+    #
+    #
+    #    (0) --- (1) --- (2)
+    #     |       |       |
+    #     |   0   |   1   |
+    #     |       |       |
+    #    (3) --- (4) --- (5)
 
-        g = EsmpUnstructured([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1],
-                             [0, 1, 4, 3, 1, 2, 5, 4], [4, 8])
-        g = EsmpStructured([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1], (3, 2))
+    g = EsmpUnstructured([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1],
+                         [0, 1, 4, 3, 1, 2, 5, 4], [4, 8])
+    g = EsmpStructured([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1], (3, 2))
 
-        # The as_mesh method provides a view of the grid as an ESMP_Mesh.
+    # The as_mesh method provides a view of the grid as an ESMP_Mesh.
 
-        self.assertEqual(g.as_mesh().element_count, 2)
-        self.assertEqual(g.as_mesh().node_count, 6)
+    assert_equal(g.as_mesh().element_count, 2)
+    assert_equal(g.as_mesh().node_count, 6)
 
-        # ESMF elements are the same as the grids cells. Likewise with
-        # nodes and points.
+    # ESMF elements are the same as the grids cells. Likewise with
+    # nodes and points.
+    g = EsmpRectilinear([0, 1, 2], [0, 1])
+    assert_equal(g.as_mesh().element_count, g.get_cell_count())
+    assert_equal(g.as_mesh().node_count, g.get_point_count())
 
-        g = EsmpRectilinear([0, 1, 2], [0, 1])
-        self.assertEqual(g.as_mesh().element_count, g.get_cell_count())
-        self.assertEqual(g.as_mesh().node_count, g.get_point_count())
+    g = EsmpUniformRectilinear([3, 2], [1., 1.], [0., 0.])
 
-        g = EsmpUniformRectilinear([3, 2], [1., 1.], [0., 0.])
 
-    def test_raster(self):
-        # Create a grids that looks like this,
-        #
-        #
-        #    (0) --- (1) --- (2)
-        #     |       |       |
-        #     |   0   |   1   |
-        #     |       |       |
-        #    (3) --- (4) --- (5)
+def test_raster():
+    # Create a grids that looks like this,
+    #
+    #
+    #    (0) --- (1) --- (2)
+    #     |       |       |
+    #     |   0   |   1   |
+    #     |       |       |
+    #    (3) --- (4) --- (5)
 
-        # Create the field,
+    # Create the field,
 
-        g = EsmpRasterField((2, 3), (1, 2), (0, 0))
-        self.assert_cell_count(g, 2)
-        self.assert_point_count(g, 6)
+    g = EsmpRasterField((2, 3), (1, 2), (0, 0))
+    assert_equal(g.get_cell_count(), 2)
+    assert_equal(g.get_point_count(), 6)
 
-        # Add some data at the points of our grid.
+    # Add some data at the points of our grid.
 
-        data = np.arange(6)
-        g.add_field('var0', data, centering='point')
-        self.assert_field_values(g, 'var0', [0., 1., 2., 3., 4., 5.])
-        self.assert_field_type(g, 'var0', np.dtype('float64'))
+    data = np.arange(6)
+    g.add_field('var0', data, centering='point')
+    assert_array_equal(g.get_field('var0').data,
+                       np.array([0., 1., 2., 3., 4., 5.], dtype=np.float64))
 
-        data = np.arange(6)
-        data.shape = (2, 3)
-        g.add_field('var0', data, centering='point')
-        self.assert_field_values(g, 'var0', [0., 1., 2., 3., 4., 5.])
+    data = np.arange(6)
+    data.shape = (2, 3)
+    g.add_field('var0', data, centering='point')
+    assert_array_equal(g.get_field('var0').data,
+                       np.array([0., 1., 2., 3., 4., 5.], dtype=np.float64))
 
-        # If the size or shape doesn't match, it's an error.
+    # If the size or shape doesn't match, it's an error.
 
-        # DimensionError: 2 != 6
-        with self.assertRaises(DimensionError):
-            data = np.arange(2)
-            g.add_field('bad var', data, centering='point')
+    # DimensionError: 2 != 6
+    data = np.arange(2)
+    with assert_raises(DimensionError):
+        g.add_field('bad var', data, centering='point')
 
-        # DimensionError: (3, 2) != (2, 3)
-        with self.assertRaises(DimensionError):
-            data = np.ones((3, 2))
-            g.add_field('bad var', data, centering='point')
+    # DimensionError: (3, 2) != (2, 3)
+    data = np.ones((3, 2))
+    with assert_raises(DimensionError):
+        g.add_field('bad var', data, centering='point')
 
-    def test_mapper(self):
-        src = EsmpRasterField((3, 3), (1, 1), (0, 0))
-        data = np.arange(src.get_cell_count(), dtype=np.float64)
-        src.add_field('srcfield', data, centering='zonal')
 
-        self.assert_point_count(src, 9)
-        self.assert_cell_count(src, 4)
+def test_mapper():
+    src = EsmpRasterField((3, 3), (1, 1), (0, 0))
+    data = np.arange(src.get_cell_count(), dtype=np.float64)
+    src.add_field('srcfield', data, centering='zonal')
 
-        self.assert_x(src, [0., 1., 2., 0., 1., 2., 0., 1., 2.])
-        self.assert_y(src, [0., 0., 0., 1., 1., 1., 2., 2., 2.])
+    assert_equal(src.get_point_count(), 9)
+    assert_equal(src.get_cell_count(), 4)
 
-        self.assert_connectivity(src, [0, 1, 4, 3, 1, 2, 5, 4,
-                                       3, 4, 7, 6, 4, 5, 8, 7])
+    assert_array_equal(src.get_x(),
+                       np.array([0., 1., 2., 0., 1., 2., 0., 1., 2.]))
+    assert_array_equal(src.get_y(),
+                       np.array([0., 0., 0., 1., 1., 1., 2., 2., 2.]))
 
-        dst = EsmpRectilinearField([0., .5, 1.5, 2.], [0., .5, 1.5, 2.])
-        data = np.empty(dst.get_cell_count(), dtype=np.float64)
-        dst.add_field('dstfield', data, centering='zonal')
+    assert_array_equal(src.get_connectivity(),
+                       np.array(
+                           [0, 1, 4, 3, 1, 2, 5, 4, 3, 4, 7, 6, 4, 5, 8, 7]))
 
-        self.assert_point_count(dst, 16)
-        self.assert_cell_count(dst, 9)
+    dst = EsmpRectilinearField([0., .5, 1.5, 2.], [0., .5, 1.5, 2.])
+    data = np.empty(dst.get_cell_count(), dtype=np.float64)
+    dst.add_field('dstfield', data, centering='zonal')
 
-        self.assert_x(dst, [0., 0.5, 1.5, 2., 0., 0.5, 1.5, 2.,
-                            0., 0.5, 1.5, 2., 0., 0.5, 1.5, 2.])
-        self.assert_y(dst, [0., 0., 0., 0., 0.5, 0.5, 0.5, 0.5,
-                            1.5, 1.5, 1.5, 1.5, 2., 2., 2., 2.])
-        self.assert_connectivity(dst, [0,  1,  5,  4,  1,  2,  6,  5,
-                                       2,  3,  7,  6,  4,  5,  9,  8,
-                                       5,  6, 10,  9,  6,  7, 11, 10,
-                                       8,  9, 13, 12,  9, 10, 14, 13,
-                                       10, 11, 15, 14])
+    assert_equal(dst.get_point_count(), 16)
+    assert_equal(dst.get_cell_count(), 9)
 
-        src_field = src.as_esmp('srcfield')
-        dst_field = dst.as_esmp('dstfield')
+    assert_array_equal(dst.get_x(),
+                       np.array([0., 0.5, 1.5, 2.,
+                                 0., 0.5, 1.5, 2.,
+                                 0., 0.5, 1.5, 2.,
+                                 0., 0.5, 1.5, 2.]))
+    assert_array_equal(dst.get_y(),
+                       np.array([0., 0., 0., 0.,
+                                 0.5, 0.5, 0.5, 0.5,
+                                 1.5, 1.5, 1.5, 1.5,
+                                 2., 2., 2., 2.]))
+    assert_array_equal(dst.get_connectivity(),
+                       np.array([0,  1,  5,  4, 1,  2,  6,  5,  2,  3,  7,  6,
+                                 4,  5,  9,  8, 5,  6, 10,  9,  6,  7, 11, 10,
+                                 8,  9, 13, 12, 9, 10, 14, 13, 10, 11, 15, 14]))
 
-        self.assertEqual(src.as_mesh().element_count, 4)
-        self.assertEqual(src.as_mesh().node_count, 9)
+    src_field = src.as_esmp('srcfield')
+    dst_field = dst.as_esmp('dstfield')
 
-        self.assertEqual(dst.as_mesh().element_count, 9)
-        self.assertEqual(dst.as_mesh().node_count, 16)
+    assert_equal(src.as_mesh().element_count, 4)
+    assert_equal(src.as_mesh().node_count, 9)
 
-        f = run_regridding(src_field, dst_field)
+    assert_equal(dst.as_mesh().element_count, 9)
+    assert_equal(dst.as_mesh().node_count, 16)
 
-    def test_values_on_cells(self):
-        (M, N) = (300, 300)
-        src = EsmpRasterField((M, N), (1, 1), (0, 0))
+    f = run_regridding(src_field, dst_field)
+    assert_is(f, dst_field)
 
-        (X, Y) = np.meshgrid(np.arange(0.5, 299.5, 1.),
-                             np.arange(0.5, 299.5, 1.))
 
-        data = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-        src.add_field('srcfield', data, centering='zonal')
+def test_values_on_cells():
+    (n_rows, n_cols) = (300, 300)
+    src = EsmpRasterField((n_rows, n_cols), (1, 1), (0, 0))
 
-        dst = EsmpRasterField((M * 2 - 1, N * 2 - 1), (1. / 2, 1. / 2), (0, 0))
-        data = np.empty(dst.get_cell_count(), dtype=np.float64)
-        dst.add_field('dstfield', data, centering='zonal')
+    (x, y) = np.meshgrid(np.arange(0.5, 299.5, 1.),
+                         np.arange(0.5, 299.5, 1.))
 
-        src_field = src.as_esmp('srcfield')
-        dst_field = dst.as_esmp('dstfield')
+    data = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    src.add_field('srcfield', data, centering='zonal')
 
-        f = run_regridding(src_field, dst_field)
+    dst = EsmpRasterField((n_rows * 2 - 1, n_cols * 2 - 1), (1. / 2, 1. / 2),
+                          (0, 0))
+    data = np.empty(dst.get_cell_count(), dtype=np.float64)
+    dst.add_field('dstfield', data, centering='zonal')
 
-        (X, Y) = np.meshgrid(np.arange(0.5, 299.5, .5),
-                             np.arange(0.5, 299.5, .5))
-        exact = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-        residual = np.abs(exact.flat - f.data)/(M * N * 4.)
-        assert_array_almost_equal(residual, np.zeros_like(residual))
+    src_field = src.as_esmp('srcfield')
+    dst_field = dst.as_esmp('dstfield')
 
-    def test_values_on_points(self):
-        (M, N) = (300, 300)
-        src = EsmpRasterField((M, N), (1, 1), (0, 0))
+    f = run_regridding(src_field, dst_field)
+    assert_is(f, dst_field)
 
-        (X, Y) = np.meshgrid(np.arange(0.5, 300.5, 1.),
-                             np.arange(0.5, 300.5, 1.))
-        data = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-        src.add_field('srcfield_at_points', data, centering='point')
+    (x, y) = np.meshgrid(np.arange(0.5, 299.5, .5),
+                         np.arange(0.5, 299.5, .5))
+    exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    residual = np.abs(exact.flat - f.data)/(n_rows * n_cols * 4.)
+    assert_array_almost_equal(residual, np.zeros_like(residual))
 
-        dst = EsmpRasterField((M * 2 - 1, N * 2 - 1), (1. / 2, 1. / 2), (0, 0))
-        data = np.empty(dst.get_point_count(), dtype=np.float64)
-        dst.add_field('dstfield_at_points', data, centering='point')
 
-        src_field = src.as_esmp('srcfield_at_points')
-        dst_field = dst.as_esmp('dstfield_at_points')
+def test_values_on_points():
+    (n_rows, n_cols) = (300, 300)
+    src = EsmpRasterField((n_rows, n_cols), (1, 1), (0, 0))
 
-        f = run_regridding(src_field, dst_field,
-                           method=ESMF.RegridMethod.BILINEAR)
+    (x, y) = np.meshgrid(np.arange(0.5, 300.5, 1.),
+                         np.arange(0.5, 300.5, 1.))
+    data = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    src.add_field('srcfield_at_points', data, centering='point')
 
-        (X, Y) = np.meshgrid(np.arange(0.5, 300., .5),
-                             np.arange(0.5, 300., .5))
-        exact = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-        residual = np.abs(exact.flat - f.data)/(M * N * 4.)
-        assert_array_almost_equal(residual, np.zeros_like(residual))
+    dst = EsmpRasterField((n_rows * 2 - 1, n_cols * 2 - 1), (1. / 2, 1. / 2),
+                          (0, 0))
+    data = np.empty(dst.get_point_count(), dtype=np.float64)
+    dst.add_field('dstfield_at_points', data, centering='point')
 
-    def assert_field_type(self, field, name, expected_type):
-        value = field.get_field(name)
-        self.assertEqual(value.dtype, expected_type)
+    src_field = src.as_esmp('srcfield_at_points')
+    dst_field = dst.as_esmp('dstfield_at_points')
 
-    def assert_field_values(self, field, name, expected_values):
-        values = field.get_field(name)
-        self.assertListEqual(list(values), list(expected_values))
+    f = run_regridding(src_field, dst_field,
+                       method=ESMF.RegridMethod.BILINEAR)
 
-    def assert_point_count(self, grid, point_count):
-        self.assertEqual(point_count, grid.get_point_count())
-
-    def assert_cell_count(self, grid, cell_count):
-        self.assertEqual(cell_count, grid.get_cell_count())
-
-    def assert_shape(self, grid, shape):
-        self.assertListEqual(list(grid.get_shape()), list(shape))
-
-    def assert_spacing(self, grid, spacing):
-        self.assertListEqual(list(grid.get_spacing()), list(spacing))
-
-    def assert_origin(self, grid, origin):
-        self.assertListEqual(list(grid.get_origin()), list(origin))
-
-    def assert_x(self, grid, x):
-        self.assertListEqual(list(x), list(grid.get_x()))
-
-    def assert_y(self, grid, y):
-        self.assertListEqual(list(y), list(grid.get_y()))
-
-    def assert_z(self, grid, z):
-        self.assertListEqual(list(z), list(grid.get_z()))
-
-    def assert_offset(self, grid, offset):
-        self.assertListEqual(list(offset), list(grid.get_offset()))
-
-    def assert_connectivity(self, grid, connectivity):
-        self.assertListEqual(list(connectivity), list(grid.get_connectivity()))
+    (x, y) = np.meshgrid(np.arange(0.5, 300., .5),
+                         np.arange(0.5, 300., .5))
+    exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    residual = np.abs(exact.flat - f.data)/(n_rows * n_cols * 4.)
+    assert_array_almost_equal(residual, np.zeros_like(residual))
