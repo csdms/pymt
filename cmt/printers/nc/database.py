@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import os
-import string
 
 from .write import field_tofile
 from .ugrid import close as ugrid_close
