@@ -8,5 +8,8 @@ git archive --remote=git://git.code.sf.net/p/esmfcontrib/ESMPy --format=tar --pr
 export ESMF_DIR=$BASE_DIR/esmf
 export ESMFMKFILE=$BASE_DIR/_inst/lib/libO/$OS.gfortran.64.mpiuni.default/esmf.mk
 
+export PATH="$HOME/miniconda/bin:$PATH"
+source activate test-env
+
 cd ESMPy
 sudo python setup.py build install
