@@ -21,35 +21,38 @@ def setup():
     ESMF.Manager()
 
 
-def test_2d():
-    # Create a grids that looks like this,
-    #
-    #
-    #    (0) --- (1) --- (2)
-    #     |       |       |
-    #     |   0   |   1   |
-    #     |       |       |
-    #    (3) --- (4) --- (5)
-
+def test_2d_unstructured():
     g = EsmpUnstructured([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1],
                          [0, 1, 4, 3, 1, 2, 5, 4], [4, 8])
-    g = EsmpStructured([0, 1, 2, 0, 1, 2], [0, 0, 0, 1, 1, 1], (3, 2))
+    assert_equal(g.get_point_count(), 6)
+    assert_equal(g.get_cell_count(), 2)
 
-    # The as_mesh method provides a view of the grid as an ESMP_Mesh.
+    mesh = g.as_mesh()
+    assert_equal(mesh.element_count, 2)
+    assert_equal(mesh.node_count, 6)
 
-    assert_equal(g.as_mesh().element_count, 2)
-    assert_equal(g.as_mesh().node_count, 6)
 
-    # ESMF elements are the same as the grids cells. Likewise with
-    # nodes and points.
+def test_2d_rectilinear():
     g = EsmpRectilinear([0, 1, 2], [0, 1])
-    assert_equal(g.as_mesh().element_count, g.get_cell_count())
-    assert_equal(g.as_mesh().node_count, g.get_point_count())
+    assert_equal(g.get_point_count(), 6)
+    assert_equal(g.get_cell_count(), 2)
 
+    mesh = g.as_mesh()
+    assert_equal(mesh.element_count, 2)
+    assert_equal(mesh.node_count, 6)
+
+
+def test_2d_raster():
     g = EsmpUniformRectilinear([3, 2], [1., 1.], [0., 0.])
+    assert_equal(g.get_point_count(), 6)
+    assert_equal(g.get_cell_count(), 2)
+
+    mesh = g.as_mesh()
+    assert_equal(mesh.element_count, 2)
+    assert_equal(mesh.node_count, 6)
 
 
-def test_raster():
+def test_raster_field():
     # Create a grids that looks like this,
     #
     #
