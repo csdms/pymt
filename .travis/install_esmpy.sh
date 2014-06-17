@@ -11,5 +11,10 @@ export ESMFMKFILE=$BASE_DIR/_inst/lib/libO/$OS.gfortran.64.mpiuni.default/esmf.m
 export PATH="$HOME/miniconda/bin:$PATH"
 source activate test-env
 
+echo "PYTHON=$(which python)"
+echo "ESMF_DIR=$ESMF_DIR"
+echo "ESMFMKFILE=$ESMFMKFILE"
+echo $(ls -l $ESMFMKFILE)
+
 cd ESMPy
-sudo python setup.py build install
+python setup.py build install
