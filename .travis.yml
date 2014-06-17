@@ -1,0 +1,17 @@
+language: python
+python:
+    - "2.7"
+
+os:
+    - linux
+
+install:
+    - sudo apt-get install gfortran
+    - bash .travis/install_python.sh
+    - bash .travis/install_esmf.sh
+    - bash .travis/install_esmpy.sh
+
+script: true
+
+virtualenv:
+    system_site_packages: false
