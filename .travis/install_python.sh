@@ -13,5 +13,5 @@ hash -r
 conda config --set always_yes yes --set changeps1 no
 conda update conda
 conda info -a
-conda create -n test-env python=$TRAVIS_PYTHON_VERSION "python=$TRAVIS_PYTHON_VERSION" "scipy>=0.12" numpy "nose>=1.3" matplotlib netCDF4
+cat requirements.txt | xargs conda create -n test-env python=$TRAVIS_PYTHON_VERSION
 source activate test-env
