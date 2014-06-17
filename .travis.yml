@@ -11,8 +11,7 @@ install:
     - bash .travis/install_esmf.sh
     - bash .travis/install_esmpy.sh
 
-script: nosetests
+script: true
 
 virtualenv:
     system_site_packages: false
-
