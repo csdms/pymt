@@ -3,7 +3,6 @@
 from nose.tools import assert_is_instance
 
 from cmt.portprinter.port_printer import PortPrinter
-from cmt.testing.ports import UniformRectilinearGridPort
 from cmt.testing.assertions import assert_isfile_and_remove
 
 
