@@ -3,24 +3,15 @@
 import numpy as np
 from imapper import IGridMapper
 from cmt.mappers import IncompatibleGridError
-
-#try:
-#    from esmp import *
-#except ImportError:
-#    import warnings
-#    warnings.warn ('Unable to import ESMP for cmt.mappers.esmp',
-#                   RuntimeWarning)
-#from esmp import *
-import ESMP
+from cmt.grids.esmp import EsmpUnstructuredField
+import ESMF
 
 
 class EsmpMapper(IGridMapper):
-    def initialize(self, dest_grid, src_grid,
-                   method=ESMP.ESMP_REGRIDMETHOD_CONSERVE,
-                   unmapped=ESMP.ESMP_UNMAPPEDACTION_ERROR):
+    def initialize(self, dest_grid, src_grid, method=ESMF.RegridMethod.CONSERVE,
+                   unmapped=ESMF.UnmappedAction.ERROR):
         if not self.test(dest_grid, src_grid):
-            raise IncompatibleGridError(dest_grid.name,
-                                        src_grid.name)
+            raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
         self._src = EsmpUnstructuredField(src_grid.get_x(), src_grid.get_y(),
                                           src_grid.get_connectivity(),
@@ -30,30 +21,34 @@ class EsmpMapper(IGridMapper):
                                           dest_grid.get_offset())
 
         self.init_fields()
-
-        self._routehandle = ESMP.ESMP_FieldRegridStore(self.get_source_field(),
-                                                       self.get_dest_field(),
-                                                       method, unmapped)
+        self._regridder = ESMF.Regrid(self.get_source_field(),
+                                      self.get_dest_field(),
+                                      regrid_method=method,
+                                      unmapped_action=unmapped)
 
     def run(self, src_values, dest_values=None):
         src_ptr = self.get_source_data()
-        src_ptr.data = src_values
+        src_ptr[:] = src_values
+        #src_ptr.data = src_values
 
-        dst_ptr = ESMP.ESMP_FieldGetPtr(dst_field)
+        #dst_ptr = ESMP.ESMP_FieldGetPtr(dst_field)
         dst_ptr = self.get_dest_data()
 
         if dest_values is not None:
-            dst_ptr.data = dest_values
+            dst_ptr[:] = dest_values
+            #dst_ptr.data = dest_values
         else:
             dst_ptr.fill(0.)
 
-        ESMP.ESMP_FieldRegrid(self.get_source_field(), self.get_dest_field(),
-                              self._routehandle)
+        #ESMP.ESMP_FieldRegrid(self.get_source_field(), self.get_dest_field(),
+        #                      self._routehandle)
+        self._regridder(self.get_source_field(), self.get_dest_field())
 
         return dest_values
 
     def finalize(self):
-        ESMP.ESMP_FieldRegridRelease(self._routehandle)
+        pass
+        #ESMP.ESMP_FieldRegridRelease(self._routehandle)
 
     def get_source_field(self):
         return self._src.as_esmp('src')
@@ -62,10 +57,12 @@ class EsmpMapper(IGridMapper):
         return self._dst.as_esmp('dst')
 
     def get_source_data(self):
-        return ESMP.ESMP_FieldGetPtr(self.get_source_field())
+        return self._src.as_esmp('src').data
+        #return ESMP.ESMP_FieldGetPtr(self.get_source_field())
 
     def get_dest_data(self):
-        return ESMP.ESMP_FieldGetPtr(self.get_dest_field())
+        return self._dst.as_esmp('dst').data
+        #return ESMP.ESMP_FieldGetPtr(self.get_dest_field())
 
 
 class EsmpCellToCell(EsmpMapper):
