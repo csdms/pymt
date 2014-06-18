@@ -1,7 +1,5 @@
 """Access to framework services.
 """
-import sys
-import imp
 import warnings
 
 
@@ -9,55 +7,36 @@ _COMPONENT_CLASSES = {}
 _COMPONENT_INSTANCES = {}
 
 
-def set_services(name, path=None, ifset='pass'):
-    if 'services' in sys.modules:
-        if ifset == 'pass':
-            return
-        elif ifset == 'warn':
-            warnings.warn('services has already been set')
-        elif ifset == 'raise':
-            raise RuntimeError('services has already been set')
-        elif ifset == 'clobber':
-            pass
-        else:
-            raise ValueError('unrecognized option for ifset keyword')
-
-    try:
-        (file, pathname, description) = imp.find_module(name, path)
-    except ImportError:
-        print name
-        print path
-
-    mod = imp.load_module(name, file, pathname, description)
-    sys.modules['services'] = mod
-
-
-def register_component_classes(components):
+def register_component_classes(components, **kwds):
     """Register a list of components with the framework.
 
     Parameters
     ----------
     components : list
         Component names to register.
+    if_exists : {'raise', 'warn', 'pass', 'clobber'}, optional
+        What to do if the class is already registered.
 
     See Also
     --------
     :func:`register_component_class` : Register just a single component.
     """
     for name in components:
-        register_component_class(name)
+        register_component_class(name, **kwds)
 
 
-def register_component_class(name):
+def register_component_class(name, if_exists='raise'):
     """Register a component with the framework.
 
-    Add the component class, *name*, to the list of framework services. The component name should be the
-    fully-qualified name of a Python class.
+    Add the component class, *name*, to the list of framework services. The
+    component name should be the fully-qualified name of a Python class.
 
     Parameters
     ----------
     name : str
         Name of component to register.
+    if_exists : {'raise', 'warn', 'pass', 'clobber'}, optional
+        What to do if the class is already registered.
 
     Raises
     ------
@@ -68,8 +47,9 @@ def register_component_class(name):
 
     Notes
     -----
-    This function will try to import *name* as though it were a fully-qualified name of a Python class. That is,
-    if *name* were `foo.bar.Baz`, try the following::
+    This function will try to import *name* as though it were a fully-qualified
+    name of a Python class. That is, if *name* were `foo.bar.Baz`, try the
+    following::
 
         from foo.bar import Baz
 
@@ -93,14 +73,20 @@ def register_component_class(name):
     module_name, cls_name = ('.'.join(parts[:-1]), parts[-1])
 
     if cls_name in _COMPONENT_CLASSES:
-        raise ValueError('component class exists (%s)' % cls_name)
-    else:
-        mod = __import__(module_name, fromlist=[cls_name])
-        try:
-            _COMPONENT_CLASSES[cls_name] = getattr(mod, cls_name)
-        except (KeyError, AttributeError):
-            raise ImportError('cannot import component %s from %s' %
-                              (cls_name, module_name))
+        if if_exists == 'raise':
+            raise ValueError('component class exists (%s)' % cls_name)
+        elif if_exists == 'warn':
+            warnings.warn('component class exists (%s)' % cls_name)
+            return
+        elif if_exists == 'pass':
+            return
+
+    mod = __import__(module_name, fromlist=[cls_name])
+    try:
+        _COMPONENT_CLASSES[cls_name] = getattr(mod, cls_name)
+    except (KeyError, AttributeError):
+        raise ImportError('cannot import component %s from %s' %
+                          (cls_name, module_name))
 
 
 def register_component_instance(name, instance):
@@ -161,7 +147,8 @@ def get_component_class(name):
 def instantiate_component(cls_name, instance_name):
     """Instantiate a registered component class.
 
-    Instantiate a registered class and register that instance with the framework as *instance_name*.
+    Instantiate a registered class and register that instance with the framework
+    as *instance_name*.
 
     Parameters
     ----------
