@@ -377,4 +377,3 @@ def run_regridding(srcfield, dstfield, **kwds):
     dstfield = regridder(srcfield, dstfield)
 
     return dstfield
-
