@@ -1,19 +1,33 @@
 #! /bin/env python
+import warnings
 
-from ..printers.nc.read import field_fromfile
+import yaml
+
+from ...printers.nc.read import field_fromfile
 from .time_series_names import get_time_series_names
-from .interpolation import create_interpolators
+from .interpolate import create_interpolators
 
 
 class TimeInterpolator(object):
-    def initialize(self, file):
-        config = read_configuration(file)
+    def __init__(self):
+        self._shape = ()
+        self._spacing = ()
+        self._origin = ()
+        self._input_exchange_items = set()
+        self._output_exchange_items = set()
+        self._start_time = 0.
+        self._end_time = 0.
+        self._time = 0.
+        self._interpolators = {}
+
+    def initialize(self, source):
+        config = read_configuration(source)
 
         (fields, times) = field_fromfile(config['input_file'], format='NETCDF4')
 
-        self._shape = field.get_shape()
-        self._spacing = field.get_spacing()
-        self._origin = field.get_origin()
+        self._shape = fields[0].get_shape()
+        self._spacing = fields[0].get_spacing()
+        self._origin = fields[0].get_origin()
 
         self._input_exchange_items = set()
         self._output_exchange_items = get_time_series_names(fields.keys())
@@ -23,13 +37,13 @@ class TimeInterpolator(object):
         self._time = times[0]
 
         self._interpolators = create_interpolators(
-            times, fields, kind=config['interpolation']):
+            times, fields, kind=config['interpolation'])
 
     def update_until(self, time):
         assert(time >= self._start_time)
         assert(time <= self._end_time)
 
-        self._last_time = self._time
+        #self._last_time = self._time
         self._time = time
 
     def finalize(self):
@@ -51,12 +65,18 @@ class TimeInterpolator(object):
         return self._output_exchange_items
 
     def get_grid_shape(self, var):
+        if var in (None, ''):
+            warnings.warn('var name is ignored')
         return self._shape
 
     def get_grid_spacing(self, var):
+        if var in (None, ''):
+            warnings.warn('var name is ignored')
         return self._spacing
 
     def get_grid_origin(self, var):
+        if var in (None, ''):
+            warnings.warn('var name is ignored')
         return self._origin
 
     def get_double(self, name):
