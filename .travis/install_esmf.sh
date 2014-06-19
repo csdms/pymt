@@ -14,5 +14,5 @@ echo "ESMF_COMPILER=$ESMF_COMPILER"
 echo "ESMF_INSTALL_PREFIX=$ESMF_INSTALL_PREFIX"
 
 cd $ESMF_DIR
-make || echo "unable to make ESMF"
-make install || echo "unable to install ESMF"
+make -j4 || echo "unable to make ESMF"
+make -j4 install || echo "unable to install ESMF"
