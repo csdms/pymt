@@ -1,11 +1,5 @@
 
-from imapper import *
-from mapper import *
-from pointtopoint import *
-from pointtocell import *
-from celltopoint import *
-try:
-    from esmp import *
-except ImportError:
-    import warnings
-    warnings.warn ('Unable to import ESMP', RuntimeWarning)
+from .mapper import find_mapper, IncompatibleGridError
+from .celltopoint import CellToPoint
+from .pointtopoint import NearestVal
+from .pointtocell import PointToCell

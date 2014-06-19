@@ -1,4 +1,6 @@
-numpy>=1.7
-scipy>=0.11
-nose
+numpy>=1.8
+scipy>=0.12
+nose>=1.3
 Shapely>=1.3
+netcdf4
+pyyaml

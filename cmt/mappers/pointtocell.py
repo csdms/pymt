@@ -5,8 +5,8 @@ from collections import defaultdict
 import numpy as np
 from scipy.spatial import KDTree
 
-from imapper import IGridMapper
-from cmt.mappers import IncompatibleGridError
+from .imapper import IGridMapper, IncompatibleGridError
+#from .mapper import IncompatibleGridError
 
 
 def map_cells_to_points(coords, dst_grid, dst_point_ids, bad_val=-1):

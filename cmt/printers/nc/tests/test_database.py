@@ -33,11 +33,12 @@ class TestNcDatabase(unittest.TestCase):
         #Create field and add some data to it that we will write to a
         # NetCDF file database.
 
-        nc_file = 'Elevation_time_series.nc'
+        #nc_file = 'Elevation_time_series_0000.nc'
+        nc_file = '2d_elevation_time_series.nc'
 
         data = np.arange(6.)
 
-        field = RasterField((3,2), (1.,1.), (0.,0.))
+        field = RasterField((2, 3), (1.,1.), (0.,0.), indexing='ij')
         field.add_field('Elevation', data, centering='point')
 
         #Create database of 'Elevation' values. Data are written to the
@@ -64,18 +65,18 @@ class TestNcDatabase(unittest.TestCase):
             self.assert_var_names(root, ['Elevation', 'x', 'y', 'time',
                                          'mesh'])
 
-            self.assert_dimension_size(root, 'x', 2)
-            self.assert_dimension_size(root, 'y', 3)
+            self.assert_dimension_size(root, 'x', 3)
+            self.assert_dimension_size(root, 'y', 2)
             self.assert_dimension_size(root, 'time', 2)
 
-            self.assert_var_shape(root, 'Elevation', (2, 3, 2))
+            self.assert_var_shape(root, 'Elevation', (2, 2, 3))
 
             self.assert_var_values_at_time(root, 'Elevation', 0, np.arange(6.))
             self.assert_var_values_at_time(root, 'Elevation', 1,
                                            np.arange(6.) * 2.)
 
-            self.assert_var_values(root, 'y', [0., 1., 2.])
-            self.assert_var_values(root, 'x', [0., 1.])
+            self.assert_var_values(root, 'y', [0., 1.])
+            self.assert_var_values(root, 'x', [0., 1., 2.])
             self.assert_var_name(root, 'Elevation', 'Elevation')
             self.assert_var_units(root, 'Elevation', '-')
         finally:

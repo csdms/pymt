@@ -2,8 +2,9 @@
 
 import numpy as np
 from scipy.spatial import KDTree
-from imapper import IGridMapper
-from cmt.mappers import IncompatibleGridError
+
+from .imapper import IGridMapper, IncompatibleGridError
+#from .mapper import IncompatibleGridError
 
 
 def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):

@@ -1,6 +1,8 @@
+"""Wrap a port as a :class:`Timeline` event.
+"""
+
 import os
 import types
-import warnings
 
 from ..mappers import NearestVal
 from ..component.grid import GridMixIn
@@ -92,6 +94,7 @@ class PortMapEvent(object):
     vars_to_map : list, optional
         Names of variable to map.
     method : {'direct', 'nearest'}, optional
+        Method used to map values.
     """
     def __init__(self, *args, **kwds):
         if isinstance(kwds['src_port'], types.StringTypes):

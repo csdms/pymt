@@ -90,7 +90,7 @@ array([ 100.,    2., -999.])
 Point-to-cell Mapping
 ---------------------
 
->>> from cmt.mappers import PointToCell
+>>> from cmt.mappers.pointtocell import PointToCell
 >>> (src_x, src_y) = (np.array ([.45, 1.25, 3.5, .0, 1.]),
 ...                   np.array ([.75, 2.25, 3.25, .9, 1.1]))
 
@@ -151,17 +151,10 @@ A big mapper
 >>> assert_array_equal(dst_vals, src_vals)
 """
 
-from pointtopoint import NearestVal
-from celltopoint import CellToPoint
-from pointtocell import PointToCell
-
-
-class Error(Exception):
-    pass
-
-
-class IncompatibleGridError(Error):
-    pass
+from .pointtopoint import NearestVal
+from .celltopoint import CellToPoint
+from .pointtocell import PointToCell
+from .imapper import IncompatibleGridError
 
 
 _MAPPERS = [NearestVal, CellToPoint, PointToCell]
