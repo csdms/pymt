@@ -12,7 +12,6 @@ install:
     - export PATH="$HOME/miniconda/bin:$PATH"
     - source activate test-env
     - bash .travis/install_esmpy.sh
-    - python setup.py install
 
 script: nosetests
 
