@@ -12,8 +12,9 @@ install:
     - export PATH="$HOME/miniconda/bin:$PATH"
     - source activate test-env
     - bash .travis/install_esmpy.sh
+    - pip install coveralls
 
-script: nosetests
+script: nosetests --with-coverage --cover-package=cmt
 
 virtualenv:
     system_site_packages: false
