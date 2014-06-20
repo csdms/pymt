@@ -1,30 +1,53 @@
-import unittest
 import os
 
 from cmt.printers.nc.read import field_fromfile
 
 
-class DataTestFileMixIn(object):
-    def data_file(self, name):
-        return os.path.join(self.data_dir(), name)
-
-    def data_dir(self):
-        return os.path.join(os.path.dirname(__file__), 'data')
+_BASE_URL_FOR_TEST_FILES = ('http://csdms.colorado.edu/thredds/fileServer'
+                            '/benchmark/ugrid/')
+_TMP_DIR = 'tmp'
 
 
-class TestNetcdfRead(unittest.TestCase, DataTestFileMixIn):
-    def test_unstructured_2d(self):
-        field = field_fromfile(self.data_file('unstructured.2d.nc'),
-                               format='NETCDF4')
+def setup():
+    import tempfile
 
-    def test_rectilinear_1d(self):
-        field = field_fromfile(self.data_file('rectilinear.1d.nc'),
-                               format='NETCDF4')
+    globals().update({
+        '_TMP_DIR': tempfile.mkdtemp(dir='.')
+    })
 
-    def test_rectilinear_2d(self):
-        field = field_fromfile(self.data_file('rectilinear.2d.nc'),
-                               format='NETCDF4')
 
-    def test_rectilinear_3d(self):
-        field = field_fromfile(self.data_file('rectilinear.3d.nc'),
-                               format='NETCDF4')
+def teardown():
+    from shutil import rmtree
+
+    rmtree(_TMP_DIR)
+
+
+def fetch_data_file(filename):
+    import urllib2
+
+    remote_file = urllib2.urlopen(_BASE_URL_FOR_TEST_FILES + filename)
+    local_file = os.path.join(_TMP_DIR, filename)
+    with open(local_file, 'w') as netcdf_file:
+        netcdf_file.write(remote_file.read())
+
+    return local_file
+
+
+def test_unstructured_2d():
+    field = field_fromfile(fetch_data_file('unstructured.2d.nc'),
+                           format='NETCDF4')
+
+
+def test_rectilinear_1d():
+    field = field_fromfile(fetch_data_file('rectilinear.1d.nc'),
+                           format='NETCDF4')
+
+
+def test_rectilinear_2d():
+    field = field_fromfile(fetch_data_file('rectilinear.2d.nc'),
+                           format='NETCDF4')
+
+
+def test_rectilinear_3d():
+    field = field_fromfile(fetch_data_file('rectilinear.3d.nc'),
+                           format='NETCDF4')

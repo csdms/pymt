@@ -1,185 +1,148 @@
 #! /usr/bin/env python
 
 import os
-import unittest
 import numpy as np
+from numpy.testing import assert_array_equal
+from nose.tools import (assert_true, assert_equal, assert_items_equal,
+                        assert_tuple_equal)
 
 from cmt.grids import RasterField
 from cmt.printers.nc.database import Database
 
 
-class TestNcDatabase(unittest.TestCase):
-    nc_files = [
-        'Elevation_time_series.nc',
-        'Temperature_time_series.nc',
-        'Temperature_time_series_0000.nc',
-    ]
-
-    def setUp(self):
-        for file in self.nc_files:
-            try:
-                os.remove(file)
-            except OSError:
-                pass
-
-    def tearDown(self):
-        for file in self.nc_files:
-            try:
-                os.remove(file)
-            except OSError:
-                pass
-
-    def test_2d_constant_shape(self):
-        #Create field and add some data to it that we will write to a
-        # NetCDF file database.
-
-        #nc_file = 'Elevation_time_series_0000.nc'
-        nc_file = '2d_elevation_time_series.nc'
-
-        data = np.arange(6.)
-
-        field = RasterField((2, 3), (1.,1.), (0.,0.), indexing='ij')
-        field.add_field('Elevation', data, centering='point')
-
-        #Create database of 'Elevation' values. Data are written to the
-        # NetCDF file Elevation_time_series.nc.
-
-        db = Database()
-        db.open(nc_file, 'Elevation')
-        db.write(field)
-
-        self.assertTrue(os.path.isfile(nc_file))
-
-        # Append data to the NetCDF file.
-        data *= 2.
-        db.write(field)
-
-        db.close()
-
-        try:
-            root = self.open_nc_file(nc_file)
-        except Exception:
-            raise AssertionError('%s: Could not open' % nc_file)
-        else:
-            self.assert_dimension_keys(root, ['x', 'y', 'time'])
-            self.assert_var_names(root, ['Elevation', 'x', 'y', 'time',
-                                         'mesh'])
-
-            self.assert_dimension_size(root, 'x', 3)
-            self.assert_dimension_size(root, 'y', 2)
-            self.assert_dimension_size(root, 'time', 2)
-
-            self.assert_var_shape(root, 'Elevation', (2, 2, 3))
-
-            self.assert_var_values_at_time(root, 'Elevation', 0, np.arange(6.))
-            self.assert_var_values_at_time(root, 'Elevation', 1,
-                                           np.arange(6.) * 2.)
-
-            self.assert_var_values(root, 'y', [0., 1.])
-            self.assert_var_values(root, 'x', [0., 1., 2.])
-            self.assert_var_name(root, 'Elevation', 'Elevation')
-            self.assert_var_units(root, 'Elevation', '-')
-        finally:
-            root.close()
-
-    def test_2d_changing_shape(self):
-        #Create field and add some data to it that we will write to a
-        # NetCDF file database.
-
-        nc_file = 'Temperature_time_series.nc'
-
-        data = np.arange(6.)
-
-        field = RasterField((3,2), (1.,1.), (0.,0.))
-        field.add_field('Temperature', data, centering='point')
-
-        db = Database()
-        db.open(nc_file, 'Temperature')
-        db.write(field)
-
-        self.assertTrue(os.path.isfile(nc_file))
-
-        # Create a new field and write the data to the database. Since
-        # the size of the field has changed, the data will be written
-        # to a new file, Elevation_time_series_0000.nc.
-
-        field = RasterField((3,3), (1.,1.), (0.,0.))
-        data = np.arange(9.)
-        field.add_field('Temperature', data, centering='point')
-
-        db.write(field)
-        self.assertTrue(os.path.isfile('./Temperature_time_series_0000.nc'))
-
-        db.close()
-
-        try:
-            root = self.open_nc_file('Temperature_time_series_0000.nc')
-        except Exception:
-            raise AssertionError('%s: Could not open' % nc_file)
-        else:
-            self.assert_dimension_keys(root, ['x', 'y', 'time'])
-            self.assert_var_names(root, ['Temperature', 'x', 'y', 'time',
-                                         'mesh'])
-
-            self.assert_dimension_size(root, 'x', 3)
-            self.assert_dimension_size(root, 'y', 3)
-            self.assert_dimension_size(root, 'time', 1)
-
-            self.assert_var_shape(root, 'Temperature', (1, 3, 3))
-
-            self.assert_var_values_at_time(root, 'Temperature', 0,
-                                           np.arange(9.))
-
-            self.assert_var_values(root, 'x', [0., 1., 2.])
-            self.assert_var_values(root, 'y', [0., 1., 2.])
-            self.assert_var_name(root, 'Temperature', 'Temperature')
-            self.assert_var_units(root, 'Temperature', '-')
-        finally:
-            root.close()
-
-    def assert_dimension_size(self, root, dimension, expected_size):
-        size = len(root.dimensions[dimension])
-        self.assertEqual(size, expected_size)
-
-    def assert_dimension_keys(self, root, expected_keys):
-        keys = root.dimensions.keys()
-        self.assertItemsEqual(expected_keys, keys)
-
-    def assert_var_names(self, root, expected_names):
-        vars = root.variables
-        self.assertItemsEqual(vars.keys(), expected_names)
-
-    def assert_var_values(self, root, var, expected_values):
-        vars = root.variables
-        values = vars[var][:]
-        self.assertListEqual(list(values), list(expected_values))
-
-    def assert_var_shape(self, root, var, expected_shape):
-        vars = root.variables
-        values = vars[var][:]
-        self.assertTupleEqual(values.shape, tuple(expected_shape))
-
-    def assert_var_values_at_time(self, root, var, i, expected_values):
-        vars = root.variables
-        values = vars[var][:]
-        self.assertListEqual(list(values[i,:,:].flatten()),
-                             list(expected_values))
-
-    def assert_var_name(self, root, var, expected_name):
-        vars = root.variables
-        name = vars[var].long_name
-        self.assertEqual(name, expected_name)
-
-    def assert_var_units(self, root, var, expected_units):
-        vars = root.variables
-        units = vars[var].units
-        self.assertEqual(units, expected_units)
-
-    @staticmethod
-    def open_nc_file(file):
-        import netCDF4 as nc
-        return nc.Dataset(file, 'r', format='NETCDF4')
+_TMP_DIR = 'tmp'
 
 
-if __name__ == '__main__':
-    unittest.main()
+def setup():
+    import tempfile
+
+    globals().update({
+        '_TMP_DIR': tempfile.mkdtemp(dir='.')
+    })
+
+
+def teardown():
+    from shutil import rmtree
+
+    rmtree(_TMP_DIR)
+
+
+def open_nc_file(filename):
+    import netCDF4 as nc
+    return nc.Dataset(filename, 'r', format='NETCDF4')
+
+
+def test_2d_constant_shape():
+    #Create field and add some data to it that we will write to a
+    # NetCDF file database.
+
+    #nc_file = 'Elevation_time_series_0000.nc'
+    nc_file = os.path.join(_TMP_DIR, '2d_elevation_time_series.nc')
+
+    data = np.arange(6.)
+
+    field = RasterField((2, 3), (1.,1.), (0.,0.), indexing='ij')
+    field.add_field('Elevation', data, centering='point')
+
+    #Create database of 'Elevation' values. Data are written to the
+    # NetCDF file Elevation_time_series.nc.
+
+    db = Database()
+    db.open(nc_file, 'Elevation')
+    db.write(field)
+
+    assert_true(os.path.isfile(nc_file))
+
+    # Append data to the NetCDF file.
+    data *= 2.
+    db.write(field)
+
+    db.close()
+
+    try:
+        root = open_nc_file(nc_file)
+    except Exception:
+        raise AssertionError('%s: Could not open' % nc_file)
+    else:
+        assert_items_equal(['x', 'y', 'time'], root.dimensions.keys())
+        assert_items_equal(['Elevation', 'x', 'y', 'time',
+                            'mesh'], root.variables)
+
+        assert_equal(3, len(root.dimensions['x']))
+        assert_equal(2, len(root.dimensions['y']))
+        assert_equal(2, len(root.dimensions['time']))
+
+        assert_tuple_equal((2, 2, 3), root.variables['Elevation'].shape)
+
+        assert_array_equal(np.arange(6.).reshape(2, 3),
+                           root.variables['Elevation'][0])
+        assert_array_equal(np.arange(6.).reshape((2, 3)) * 2.,
+                           root.variables['Elevation'][1])
+
+        assert_array_equal([0., 1.], root.variables['y'])
+        assert_array_equal([0., 1., 2.], root.variables['x'])
+
+        assert_equal('Elevation', root.variables['Elevation'].long_name)
+        assert_equal('-', root.variables['Elevation'].units)
+
+        root.close()
+
+
+def test_2d_changing_shape():
+    #Create field and add some data to it that we will write to a
+    # NetCDF file database.
+
+    nc_file = os.path.join(_TMP_DIR, 'Temperature_time_series.nc')
+
+    data = np.arange(6.)
+
+    field = RasterField((3,2), (1.,1.), (0.,0.))
+    field.add_field('Temperature', data, centering='point')
+
+    db = Database()
+    db.open(nc_file, 'Temperature')
+    db.write(field)
+
+    assert_true(os.path.isfile(nc_file))
+
+    # Create a new field and write the data to the database. Since
+    # the size of the field has changed, the data will be written
+    # to a new file, Elevation_time_series_0000.nc.
+
+    field = RasterField((3,3), (1.,1.), (0.,0.))
+    data = np.arange(9.)
+    field.add_field('Temperature', data, centering='point')
+
+    db.write(field)
+    assert_true(os.path.isfile(os.path.join(_TMP_DIR,
+                                            'Temperature_time_series_0000.nc')))
+
+    db.close()
+
+    try:
+        nc_file = os.path.join(_TMP_DIR,
+                               'Temperature_time_series_0000.nc')
+        root = open_nc_file(nc_file)
+    except Exception:
+        raise AssertionError('%s: Could not open' % nc_file)
+    else:
+        assert_items_equal(['x', 'y', 'time'], root.dimensions.keys())
+        assert_items_equal(['Temperature', 'x', 'y', 'time',
+                            'mesh'], root.variables)
+
+        assert_equal(3, len(root.dimensions['x']))
+        assert_equal(3, len(root.dimensions['y']))
+        assert_equal(1, len(root.dimensions['time']))
+
+        assert_tuple_equal((1, 3, 3), root.variables['Temperature'].shape)
+
+        assert_array_equal(np.arange(9.).reshape((3, 3)),
+                           root.variables['Temperature'][0])
+
+        assert_array_equal([0., 1., 2.], root.variables['x'])
+        assert_array_equal([0., 1., 2.], root.variables['y'])
+
+        assert_equal('Temperature', root.variables['Temperature'].long_name)
+        assert_equal('-', root.variables['Temperature'].units)
+
+        root.close()
