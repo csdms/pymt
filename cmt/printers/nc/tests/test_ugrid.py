@@ -1,170 +1,173 @@
-import unittest
-
 import numpy as np
 
-from cmt.grids import (RasterField, RectilinearField, StructuredField,
-                       UnstructuredField)
+from cmt.grids import (RasterField, RectilinearField, StructuredField)
 from cmt.printers.nc.ugrid import (NetcdfRectilinearField,
                                    NetcdfStructuredField,
                                    NetcdfUnstructuredField)
 
-
-class UniqueNameMixIn(object):
-    def unique_name(self, **kwds):
-        import tempfile, os
-        if 'dir' not in kwds:
-            kwds['dir'] = os.getcwd()
-
-        (handle, name) = tempfile.mkstemp(**kwds)
-        os.close(handle)
-        try:
-            self._temp_files.append(name)
-        except AttributeError:
-            self._temp_files = [name]
-        return name
-
-    def open_unique(self, **kwds):
-        import netCDF4 as nc4
-        import tempfile, os
-        (handle, name) = tempfile.mkstemp(**kwds)
-        handle.close()
-
-        root = nc4.Dataset(name, 'w', format='NETCDF4')
-        try:
-            self._temp_files.append(name)
-        except AttributeError:
-            self._temp_files = [name]
-        return root
-
-    def tearDown(self):
-        import os
-        for file in self._temp_files:
-            try:
-                os.remove(file)
-            except OSError as error:
-                print error
-                pass
+_TMP_DIR = 'tmp'
+_TMP_FILES = []
 
 
-class FieldMixIn(object):
-    def new_raster(self, **kwds):
-        import random
-        ndims = kwds.pop('ndims', 1)
-        shape = np.random.random_integers(2, 101, ndims)
-        spacing = (1. - np.random.random(ndims)) * 100.
-        origin = (np.random.random(ndims) - .5) * 100.
+def setup():
+    import tempfile
 
-        return RasterField(shape, spacing, origin, **kwds)
-
-    def new_rectilinear(self, **kwds):
-        ndims = kwds.pop('ndims', 1)
-        shape = np.random.random_integers(2, 101, ndims)
-        args = []
-        for size in shape:
-            args.append(np.cumsum((1. - np.random.random(size))))
-
-        return RectilinearField(*args, **kwds)
-
-    def new_structured(self, **kwds):
-        ndims = kwds.pop('ndims', 1)
-        shape = np.random.random_integers(2, 101, ndims)
-        node_count = np.prod(shape)
-
-        coords = []
-        for size in shape:
-            coords.append(np.cumsum((1. - np.random.random(size))))
-
-        if len(coords) > 1:
-            args = np.meshgrid(*coords, indexing='ij')
-        else:
-            args = coords
-        args.append(shape)
-
-        return StructuredField(*args, **kwds)
+    globals().update({
+        '_TMP_DIR': tempfile.mkdtemp(dir='.'),
+        '_TMP_FILES': [],
+    })
 
 
-class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
-    def test_1d_points(self):
-        field = self.new_rectilinear()
-        data = np.arange(field.get_point_count())
-        field.add_field('air_temperature', data, centering='point', units='F')
+def teardown():
+    from shutil import rmtree
 
-        nc = NetcdfRectilinearField(
-            self.unique_name(prefix='rectilinear.1d.', suffix='.nc'), field)
-
-    def test_2d_points(self):
-        field = self.new_rectilinear(ndims=2)
-        data = np.arange(field.get_point_count(), dtype=float)
-        field.add_field('air__temperature', data, centering='point', units='F')
-
-        nc = NetcdfRectilinearField(
-            self.unique_name(prefix='rectilinear.2d.', suffix='.nc'), field)
-
-    def test_3d_points(self):
-        field = self.new_rectilinear(
-            ndims=3,
-            coordinate_names=('elevation', 'latitude', 'longitude'),
-            units=('m', 'degrees_north', 'degrees_east'))
-        data = np.arange(field.get_point_count(), dtype=float)
-        field.add_field('air__temperature', data, centering='point', units='F')
-
-        nc = NetcdfRectilinearField(
-            self.unique_name(prefix='rectilinear.3d.', suffix='.nc'), field)
+    rmtree(_TMP_DIR)
 
 
-class TestStructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
-    def test_1d_points(self):
-        field = self.new_rectilinear()
-        data = np.arange(field.get_point_count())
-        field.add_field('air_temperature', data, centering='point', units='F')
+def unique_name(**kwds):
+    import tempfile
+    import os
 
-        nc = NetcdfStructuredField(
-            self.unique_name(prefix='structured.1d.', suffix='.nc'), field)
+    kwds.setdefault('dir', os.getcwd())
 
-    def test_2d_points(self):
-        field = self.new_rectilinear(ndims=2)
-        data = np.arange(field.get_point_count(), dtype=float)
-        field.add_field('air__temperature', data, centering='point', units='F')
-
-        nc = NetcdfStructuredField(
-            self.unique_name(prefix='structured.2d.', suffix='.nc'), field)
-
-    def test_3d_points(self):
-        field = self.new_rectilinear(
-            ndims=3,
-            coordinate_names=('elevation', 'latitude', 'longitude'),
-            units=('m', 'degrees_north', 'degrees_east'))
-        data = np.arange(field.get_point_count(), dtype=float)
-        field.add_field('air__temperature', data, centering='point', units='F')
-
-        nc = NetcdfStructuredField(
-            self.unique_name(prefix='structured.3d.', suffix='.nc'), field)
+    (handle, name) = tempfile.mkstemp(**kwds)
+    os.close(handle)
+    _TMP_FILES.append(name)
+    return name
 
 
-class TestUnstructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
-    def test_1d_points(self):
-        field = self.new_rectilinear()
-        data = np.arange(field.get_point_count())
-        field.add_field('air_temperature', data, centering='point', units='F')
+def open_unique(**kwds):
+    import netCDF4 as nc4
+    import tempfile
+    (handle, name) = tempfile.mkstemp(**kwds)
+    handle.close()
 
-        nc = NetcdfUnstructuredField(
-            self.unique_name(prefix='unstructured.1d.', suffix='.nc'), field)
+    root = nc4.Dataset(name, 'w', format='NETCDF4')
+    _TMP_FILES.append(name)
+    return root
 
-    def test_2d_points(self):
-        field = self.new_rectilinear(ndims=2)
-        data = np.arange(field.get_point_count(), dtype=float)
-        field.add_field('air__temperature', data, centering='point', units='F')
 
-        nc = NetcdfUnstructuredField(
-            self.unique_name(prefix='unstructured.2d.', suffix='.nc'), field)
+def new_raster(**kwds):
+    ndims = kwds.pop('ndims', 1)
+    shape = np.random.random_integers(2, 101, ndims)
+    spacing = (1. - np.random.random(ndims)) * 100.
+    origin = (np.random.random(ndims) - .5) * 100.
 
-    def test_3d_points(self):
-        field = self.new_rectilinear(
-            ndims=3,
-            coordinate_names=('elevation', 'latitude', 'longitude'),
-            units=('m', 'degrees_north', 'degrees_east'))
-        data = np.arange(field.get_point_count(), dtype=float)
-        field.add_field('air__temperature', data, centering='point', units='F')
+    return RasterField(shape, spacing, origin, **kwds)
 
-        nc = NetcdfUnstructuredField(
-            self.unique_name(prefix='unstructured.3d.', suffix='.nc'), field)
+
+def new_rectilinear(**kwds):
+    ndims = kwds.pop('ndims', 1)
+    shape = np.random.random_integers(2, 101, ndims)
+    args = []
+    for size in shape:
+        args.append(np.cumsum((1. - np.random.random(size))))
+
+    return RectilinearField(*args, **kwds)
+
+
+def new_structured(**kwds):
+    ndims = kwds.pop('ndims', 1)
+    shape = np.random.random_integers(2, 101, ndims)
+
+    coords = []
+    for size in shape:
+        coords.append(np.cumsum((1. - np.random.random(size))))
+
+    if len(coords) > 1:
+        args = np.meshgrid(*coords, indexing='ij')
+    else:
+        args = coords
+    args.append(shape)
+
+    return StructuredField(*args, **kwds)
+
+
+def test_rectilinear_1d_points():
+    field = new_rectilinear()
+    data = np.arange(field.get_point_count())
+    field.add_field('air_temperature', data, centering='point', units='F')
+
+    _ = NetcdfRectilinearField(
+        unique_name(prefix='rectilinear.1d.', suffix='.nc'), field)
+
+
+def test_rectilinear_2d_points():
+    field = new_rectilinear(ndims=2)
+    data = np.arange(field.get_point_count(), dtype=np.float64)
+    field.add_field('air__temperature', data, centering='point', units='F')
+
+    _ = NetcdfRectilinearField(
+        unique_name(prefix='rectilinear.2d.', suffix='.nc'), field)
+
+
+def test_rectilinear_3d_points():
+    field = new_rectilinear(
+        ndims=3,
+        coordinate_names=('elevation', 'latitude', 'longitude'),
+        units=('m', 'degrees_north', 'degrees_east'))
+    data = np.arange(field.get_point_count(), dtype=np.float64)
+    field.add_field('air__temperature', data, centering='point', units='F')
+
+    _ = NetcdfRectilinearField(
+        unique_name(prefix='rectilinear.3d.', suffix='.nc'), field)
+
+
+def test_structured_1d_points():
+    field = new_rectilinear()
+    data = np.arange(field.get_point_count())
+    field.add_field('air_temperature', data, centering='point', units='F')
+
+    _ = NetcdfStructuredField(
+        unique_name(prefix='structured.1d.', suffix='.nc'), field)
+
+
+def test_structured_2d_points():
+    field = new_rectilinear(ndims=2)
+    data = np.arange(field.get_point_count(), dtype=np.float64)
+    field.add_field('air__temperature', data, centering='point', units='F')
+
+    _ = NetcdfStructuredField(
+        unique_name(prefix='structured.2d.', suffix='.nc'), field)
+
+
+def test_structured_3d_points():
+    field = new_rectilinear(
+        ndims=3,
+        coordinate_names=('elevation', 'latitude', 'longitude'),
+        units=('m', 'degrees_north', 'degrees_east'))
+    data = np.arange(field.get_point_count(), dtype=np.float64)
+    field.add_field('air__temperature', data, centering='point', units='F')
+
+    _ = NetcdfStructuredField(
+        unique_name(prefix='structured.3d.', suffix='.nc'), field)
+
+
+def test_unstructured_1d_points():
+    field = new_rectilinear()
+    data = np.arange(field.get_point_count())
+    field.add_field('air_temperature', data, centering='point', units='F')
+
+    _ = NetcdfUnstructuredField(
+        unique_name(prefix='unstructured.1d.', suffix='.nc'), field)
+
+
+def test_unstructured_2d_points():
+    field = new_rectilinear(ndims=2)
+    data = np.arange(field.get_point_count(), dtype=np.float64)
+    field.add_field('air__temperature', data, centering='point', units='F')
+
+    _ = NetcdfUnstructuredField(
+        unique_name(prefix='unstructured.2d.', suffix='.nc'), field)
+
+
+def test_unstructured_3d_points():
+    field = new_rectilinear(
+        ndims=3,
+        coordinate_names=('elevation', 'latitude', 'longitude'),
+        units=('m', 'degrees_north', 'degrees_east'))
+    data = np.arange(field.get_point_count(), dtype=np.float64)
+    field.add_field('air__temperature', data, centering='point', units='F')
+
+    _ = NetcdfUnstructuredField(
+        unique_name(prefix='unstructured.3d.', suffix='.nc'), field)
