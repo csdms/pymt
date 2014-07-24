@@ -94,7 +94,7 @@ class NetcdfRectilinearFieldReader(NetcdfFieldReader):
         coordinate_names = self._topology.node_coordinates.split()
         coordinates = []
         for name in coordinate_names:
-            coordinates.append(self._root.variables[name])
+            coordinates.append(self._root.variables[name][:])
         self._field = RectilinearField(*coordinates)
 
 
