@@ -69,7 +69,7 @@ class Verbose(object):
 
 class CmtVerbose(Verbose):
     """
-    >>> os.environ.pop('CMT_VERBOSE', None)
+    >>> if 'CMT_VERBOSE' in os.environ: del os.environ['CMT_VERBOSE']
     >>> verbose = CmtVerbose (1, log=sys.stdout)
     >>> verbose (1, "Level one")
     #CMT Level one
