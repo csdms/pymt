@@ -5,8 +5,8 @@ def is_callable_method(obj, method):
     return hasattr(obj, method) and callable(getattr(obj, method))
 
 
-def assert_is_uniform_rectilinear(grid, strict=True):
-    if not is_uniform_rectilinear(grid, strict=strict):
+def assert_is_uniform_rectilinear(grid):
+    if not is_uniform_rectilinear(grid):
         raise AssertionError('Grid is not uniform rectilinear')
         
 
@@ -34,7 +34,7 @@ def assert_is_unstructured(grid, strict=True):
             raise AssertionError('Grid is not unstructured')
 
 
-def is_uniform_rectilinear(grid, strict=True):
+def is_uniform_rectilinear(grid):
     return (is_callable_method(grid, 'get_spacing') and
             is_callable_method(grid, 'get_origin') and
             is_callable_method(grid, 'get_shape'))
