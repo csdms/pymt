@@ -1,7 +1,4 @@
 #! /usr/bin/env python
-
-import os
-
 from .constants import open_netcdf
 from ...grids import utils as gutils
 from ...grids import RectilinearField, StructuredField, UnstructuredField
@@ -13,6 +10,7 @@ class NetcdfFieldReader(object):
 
         self._root = open_netcdf(path, mode='r', format=format)
         self._topology = self._get_mesh_topology()
+        self._field = None
 
         self._get_mesh_coordinate_data()
         self._get_node_variable_data()
@@ -21,6 +19,9 @@ class NetcdfFieldReader(object):
             self._get_time_variable()
 
         self._root.close()
+
+    def _get_mesh_coordinate_data():
+        raise NotImplementedError('_get_mesh_coordinate_data')
 
     def contains_time_dimension(self):
         return 'time' in self._root.dimensions
