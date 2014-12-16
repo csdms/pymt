@@ -1,7 +1,4 @@
 #! /usr/bin/env python
-
-import os
-
 from .constants import (open_netcdf, _NP_TO_NC_TYPE)
 from ...grids import utils as gutils
 
@@ -43,6 +40,20 @@ class NetcdfField(object):
             _OPENED_FILES[path] = self._root
         else:
             self.close()
+
+    def _set_mesh_dimensions(self):
+        raise NotImplementedError('_set_mesh_dimensions')
+
+    def _set_mesh_coordinate_data(self):
+        raise NotImplementedError('_set_mesh_coordinate_data')
+
+    @property
+    def node_data_dimensions(self):
+        raise NotImplementedError('node_data_dimensions')
+
+    @property
+    def face_data_dimensions(self):
+        raise NotImplementedError('face_data_dimensions')
 
     def close(self):
         if self._path in _OPENED_FILES:
