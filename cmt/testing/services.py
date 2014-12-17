@@ -128,8 +128,8 @@ _SERVICES = {
 }
 
 _CLASSES = {
-    'air_port', AirPort,
-    'water_port', WaterPort,
-    'earth_port', EarthPort,
+    'air_port': AirPort,
+    'water_port': WaterPort,
+    'earth_port': EarthPort,
 }
 _INSTANCES = {}
