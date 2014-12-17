@@ -252,6 +252,20 @@ class EsmpGrid(IGrid):
 
         super(EsmpGrid, self).__init__()
 
+    def get_point_count(self):
+        raise NotImplementedError('get_point_count')
+
+    def get_cell_count(self):
+        raise NotImplementedError('get_cell_count')
+
+    @property
+    def _connectivity(self):
+        raise NotImplementedError('_connectivity')
+
+    @property
+    def _offset(self):
+        raise NotImplementedError('_offset')
+
     def as_mesh(self):
         return self._mesh
 
@@ -306,6 +320,10 @@ class EsmpField(IField):
         super(EsmpField, self).__init__(*args, **kwargs)
         self._fields = {}
 
+    @property
+    def _mesh(self):
+        raise NotImplementedError('_mesh')
+
     def add_field(self, field_name, val, centering='zonal'):
         if centering not in CENTERING_CHOICES:
             raise CenteringValueError(centering)
@@ -342,7 +360,7 @@ class EsmpStructuredField(EsmpStructured, EsmpField):
         try:
             super(EsmpStructuredField, self).add_field(field_name, val,
                                                        centering=centering)
-        except DimensionError, CenteringValueError:
+        except (DimensionError, CenteringValueError):
             raise
 
 
