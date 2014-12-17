@@ -52,7 +52,7 @@ class PointToCell(IGridMapper):
         return dst_vals
 
     def test (self, dst_grid, src_grid):
-        return all (np.diff (dst_grid.get_offset ())>2)
+        return all(np.diff (dst_grid.get_offset ())>2) and src_grid is not None
 
     def name (self):
         return 'PointToCell'

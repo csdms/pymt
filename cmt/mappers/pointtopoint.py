@@ -76,7 +76,7 @@ class NearestVal(IGridMapper):
         return dest_values
 
     def test(self, dst_grid, src_grid):
-        return True
+        return dst_grid is not None and src_grid is not None
 
     def name(self):
         return 'PointToPoint'
@@ -111,7 +111,7 @@ class _NearestVal(IGridMapper):
         return dest_values
 
     def test(self, dst_grid, src_grid):
-        return True
+        return dst_grid is not None and src_grid is not None
 
     def name(self):
         return 'PointToPoint'
