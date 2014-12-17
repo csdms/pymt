@@ -8,6 +8,12 @@ import ESMF
 
 
 class EsmpMapper(IGridMapper):
+    def test(self, dest_grid, src_grid):
+        raise NotImplementedError('test')
+
+    def init_fields(self):
+        raise NotImplementedError('init_fields')
+
     def initialize(self, dest_grid, src_grid, method=ESMF.RegridMethod.CONSERVE,
                    unmapped=ESMF.UnmappedAction.ERROR):
         if not self.test(dest_grid, src_grid):
@@ -90,7 +96,7 @@ class EsmpPointToPoint(EsmpMapper):
         self._dst.add_field('dst', data, centering='point')
 
     def test(self, dst_grid, src_grid):
-        return True
+        return dst_grid is not None and src_grid is not None
 
     def name(self):
         return 'PointToPoint'
