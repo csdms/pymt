@@ -45,13 +45,22 @@ class EmptyPort(UniformRectilinearPoints):
             array.fill(0.)
 
     def get_grid_shape(self, var_name):
-        return self.get_shape()
+        if var_name in self._values:
+            return self.get_shape()
+        else:
+            raise KeyError(var_name)
 
     def get_grid_spacing(self, var_name):
-        return self.get_spacing()
+        if var_name in self._values:
+            return self.get_spacing()
+        else:
+            raise KeyError(var_name)
 
     def get_grid_origin(self, var_name):
-        return self.get_origin()
+        if var_name in self._values:
+            return self.get_origin()
+        else:
+            raise KeyError(var_name)
 
     def get_grid_values(self, var_name):
         try:

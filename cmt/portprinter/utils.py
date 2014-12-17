@@ -20,8 +20,8 @@ class DimensionError(Error):
 
 
 class BadFileFormatError(Error):
-    def __init__(self, format):
-        self._format = format
+    def __init__(self, fmt):
+        self._format = fmt
 
     def __str__(self):
         return self._format
@@ -209,17 +209,17 @@ _FORMAT_EXTENSION = {
 }
 
 
-def normalize_format_name(format):
-    if format.startswith('.'):
-        format = format[1:]
-    return format.lower()
+def normalize_format_name(fmt):
+    if fmt.startswith('.'):
+        fmt = fmt[1:]
+    return fmt.lower()
 
 
-def format_to_file_extension(format):
+def format_to_file_extension(fmt):
     try:
-        return _FORMAT_EXTENSION[normalize_format_name(format)]
+        return _FORMAT_EXTENSION[normalize_format_name(fmt)]
     except KeyError:
-        raise BadFileFormatError(normalize_format_name(format))
+        raise BadFileFormatError(normalize_format_name(fmt))
 
 
 def _file_name_lacks_extension(file_name):

@@ -226,7 +226,7 @@ def parse_points(points):
 
     n_points = len(data.data[0])
     components = data.data
-    for i in range(3 - len(data.data)):
+    for _ in xrange(3 - len(data.data)):
         components.append(np.zeros(n_points))
 
     return Point(components[0], components[1], components[2])

@@ -16,13 +16,22 @@ class UniformRectilinearGridPort(object):
         }
 
     def get_grid_shape(self, var_name):
-        return self._shape
+        if var_name in self._values:
+            return self._shape
+        else:
+            raise KeyError(var_name)
 
     def get_grid_spacing(self, var_name):
-        return self._spacing
+        if var_name in self._values:
+            return self._spacing
+        else:
+            raise KeyError(var_name)
 
     def get_grid_origin(self, var_name):
-        return self._origin
+        if var_name in self._values:
+            return self._origin
+        else:
+            raise KeyError(var_name)
 
     def get_grid_values(self, var_name):
         return self._values[var_name]

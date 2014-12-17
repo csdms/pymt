@@ -101,7 +101,7 @@ def meshgrid(*xi, **kwargs):
     copy_ = kwargs.get('copy', True)
     sparse = kwargs.get('sparse', False)
     indexing = kwargs.get('indexing', 'xy')
-    if not indexing in ['xy', 'ij']:
+    if indexing not in ['xy', 'ij']:
         raise ValueError("Valid values for `indexing` are 'xy' and 'ij'.")
 
     s0 = (1,) * ndim

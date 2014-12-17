@@ -10,15 +10,15 @@ def get_exchange_item_mapping(items):
     mapping = []
     for item in items:
         if isinstance(item, types.StringTypes):
-            map = (item, item)
+            item_map = (item, item)
         else:
             try:
-                map = (item['destination'], item['source'])
+                item_map = (item['destination'], item['source'])
             except TypeError:
-                map = item
-        if len(map) != 2:
+                item_map = item
+        if len(item_map) != 2:
             raise ValueError(item)
-        mapping.append(map)
+        mapping.append(item_map)
     return mapping
 
 
@@ -36,9 +36,9 @@ class Model(object):
     def duration(self):
         return self._duration
 
-    def go(self, file=None):
-        if file:
-            with open(file, 'r') as f:
+    def go(self, filename=None):
+        if filename:
+            with open(filename, 'r') as f:
                 model = yaml.load(f.read())
             self._driver, self._duration = (model['driver'], model['duration'])
 

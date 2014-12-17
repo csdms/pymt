@@ -99,7 +99,7 @@ class CmtVerbose(Verbose):
     #CMT No message
     """
     def __init__(self, verbosity=1, log=sys.stderr):
-        if os.environ.has_key('CMT_VERBOSE'):
+        if 'CMT_VERBOSE' in os.environ:
             level = os.environ['CMT_VERBOSE']
             if level.upper() in ['TRUE', 'YES', 'ON', 'ENABLED']:
                 verbosity = sys.maxint

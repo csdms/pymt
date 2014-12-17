@@ -35,8 +35,6 @@ True
 >>> set(d.values()) == set(['baz', 'bar'])
 True
 """
-
-import os
 from collections import defaultdict
 
 

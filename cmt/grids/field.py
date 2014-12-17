@@ -121,11 +121,13 @@ class UnstructuredField (GridField):
 
 class StructuredField (Structured, GridField):
     def add_field (self, field_name, val, centering='zonal', units='-'):
-        try:
-            ndim = val.ndim
-        except AttributeError:
-            val = np.array (val)
-            ndim = val.ndim
+        if not hasattr(val, 'ndim'):
+            val = np.array(val)
+        #try:
+        #    ndim = val.ndim
+        #except AttributeError:
+        #    val = np.array (val)
+        #    ndim = val.ndim
 
         if centering=='zonal':
             if val.ndim > 1 and np.any (val.shape != self.get_shape ()-1):
@@ -135,7 +137,7 @@ class StructuredField (Structured, GridField):
                 raise DimensionError (val.shape, self.get_shape ())
         try:
             super (StructuredField, self).add_field (field_name, val, centering=centering, units=units)
-        except DimensionError, CenteringValueError:
+        except (DimensionError, CenteringValueError):
             raise
 
 

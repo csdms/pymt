@@ -12,13 +12,13 @@ from .imapper import IGridMapper, IncompatibleGridError
 def map_cells_to_points(coords, dst_grid, dst_point_ids, bad_val=-1):
     src_x, src_y = coords
 
-    map = defaultdict(list)
+    cell_to_point_id = defaultdict(list)
     for (j, point_id) in enumerate(dst_point_ids):
         for cell_id in dst_grid.get_shared_cells(point_id):
             if dst_grid.is_in_cell(src_x[j], src_y[j], cell_id):
-                map[cell_id].append(j)
+                cell_to_point_id[cell_id].append(j)
 
-    return map
+    return cell_to_point_id
 
 
 class PointToCell(IGridMapper):

@@ -67,7 +67,6 @@ one-timer
 ('event', 0)
 ('event', 2)
 """
-import sys
 import bisect
 
 
@@ -122,7 +121,9 @@ class Timeline(object):
     >>> hello
     ['hello', 'world', '!']
     """
-    def __init__(self, events={}, start=0.):
+    def __init__(self, events=None, start=0.):
+        events = events or {}
+
         self._time = float(start)
 
         self._events = []

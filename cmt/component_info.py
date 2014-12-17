@@ -19,8 +19,8 @@ _KEY_TYPES = {
 }
 _VALID_KEYS = set(_KEY_TYPES.keys())
 _KEYS_BY_TYPE = collections.defaultdict(set)
-for (key, type) in _KEY_TYPES.items():
-    _KEYS_BY_TYPE[type].add(key)
+for (key, key_type) in _KEY_TYPES.items():
+    _KEYS_BY_TYPE[key_type].add(key)
 
 
 class Error(Exception):
@@ -118,8 +118,8 @@ def config_value_to_mapping(config_value):
     return mapping
 
 
-def list_to_config_value(list):
-    return ','.join(list)
+def list_to_config_value(names):
+    return ','.join(names)
 
 
 def string_to_config_value(string):

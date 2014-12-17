@@ -13,7 +13,7 @@ class VarNameError(Error):
 
 
 class BMI(object):
-    def initialize(self, file):
+    def initialize(self, filename):
         pass
 
     def run(self, time):

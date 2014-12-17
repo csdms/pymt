@@ -115,8 +115,7 @@ import warnings
 import numpy as np
 
 from .unstructured import Unstructured, UnstructuredPoints
-from cmt.grids.meshgrid import meshgrid
-from cmt.grids.igrid import IGrid, IField
+from cmt.grids.igrid import IField
 from cmt.grids.connectivity import get_connectivity
 from cmt.grids.utils import (get_default_coordinate_names,
                              get_default_coordinate_units)
@@ -197,7 +196,7 @@ Create a structured rectilinear grid.
         kwds.setdefault('indexing', 'xy')
         kwds.setdefault('set_connectivity', True)
         ordering = kwds.pop('ordering', 'cw')
-        if not ordering in ['cw', 'ccw']:
+        if ordering not in ['cw', 'ccw']:
             raise TypeError("ordering not understood (valid choices are 'cw' or 'ccw')")
 
         shape = args[-1]

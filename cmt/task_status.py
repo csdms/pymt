@@ -39,7 +39,7 @@ def task_string_as_integer(task):
     try:
         return _TASK_NAME_TO_ID[task]
     except KeyError:
-        raise ValueError(status)
+        raise ValueError(task)
 
 
 def task_as_valid_integer(task):

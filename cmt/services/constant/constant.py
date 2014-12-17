@@ -5,13 +5,13 @@ import numpy as np
 
 
 class ConstantScalars(object):
-    def initialize(self, file):
-        with open(file, 'r') as opened:
-            vars = yaml.load(opened.read())
+    def initialize(self, filename):
+        with open(filename, 'r') as opened:
+            scalar_vars = yaml.load(opened.read())
 
         self._vars = {}
-        for (var, value) in vars.items():
-            self._vars[var] = np.array(value, dtype=np.float)
+        for (name, value) in scalar_vars.items():
+            self._vars[name] = np.array(value, dtype=np.float)
 
         self._shape = (1, )
         self._spacing = (1., )
@@ -49,13 +49,22 @@ class ConstantScalars(object):
         return self._output_exchange_items
 
     def get_grid_shape(self, var):
-        return self._shape
+        if var in self._vars:
+            return self._shape
+        else:
+            raise KeyError(var)
 
     def get_grid_spacing(self, var):
-        return self._spacing
+        if var in self._vars:
+            return self._spacing
+        else:
+            raise KeyError(var)
 
     def get_grid_origin(self, var):
-        return self._origin
+        if var in self._vars:
+            return self._origin
+        else:
+            raise KeyError(var)
 
     def get_grid_values(self, name):
         return self._vars[name]

@@ -45,9 +45,10 @@ hello!
 hello!
 hello from finalize
 """
+from ConfigParser import ConfigParser
 
 from ..timeline import Timeline
-from ..utils.prefix import names_with_prefix, strip_prefix
+from ..utils.prefix import names_with_prefix
 
 
 class EventManager(object):
@@ -234,7 +235,7 @@ class EventManager(object):
         self.initialize()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exception_type, value, traceback):
         self.finalize()
 
     def __len__(self):

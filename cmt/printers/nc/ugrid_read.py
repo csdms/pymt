@@ -20,7 +20,7 @@ class NetcdfFieldReader(object):
 
         self._root.close()
 
-    def _get_mesh_coordinate_data():
+    def _get_mesh_coordinate_data(self):
         raise NotImplementedError('_get_mesh_coordinate_data')
 
     def contains_time_dimension(self):

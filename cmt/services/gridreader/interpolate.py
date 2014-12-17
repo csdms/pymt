@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from scipy import interpolate
 
 from .time_series_names import sort_time_series_names

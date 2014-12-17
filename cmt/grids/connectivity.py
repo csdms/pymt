@@ -82,7 +82,7 @@ def _get_offsets (shape, ordering='cw', dtype='int64'):
     [ 1  0  4  5 17 16 20 21]
     """
 
-    if not ordering in ['cw', 'ccw', 'none']:
+    if ordering not in ['cw', 'ccw', 'none']:
         raise TypeError ("Ordering value not understood (known values are 'cw', 'ccw' and 'none')")
     if ordering == 'none':
         ordered = False
@@ -268,7 +268,7 @@ def get_connectivity_1d (shape, ordering='cw', dtype='int64'):
     c_left = point_ids[:-1]
     c_right = point_ids[1:]
 
-    c = np.empty ((4*c_ul.size, ), dtype=c_ul.dtype)
+    c = np.empty ((4*c_left.size, ), dtype=c_left.dtype)
     if ordering=='cw':
         c[::2] = c_left
         c[1::2] = c_right

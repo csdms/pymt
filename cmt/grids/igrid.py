@@ -31,7 +31,7 @@ class CenteringValueError(Error):
         self.val = val
 
     def __str__(self):
-        return "%s: Bad value for 'centering'" % val
+        return "%s: Bad value for 'centering'" % self.val
 
 
 class GridTypeError(Error):

@@ -69,7 +69,7 @@ def fromfile(filename, allow_singleton=True):
     with open(filename, 'r') as f:
         for line in f:
             try:
-                (data, comment) = line.split('#')
+                (data, _) = line.split('#')
             except ValueError:
                 data = line
             try:

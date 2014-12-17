@@ -10,15 +10,15 @@ from .imapper import IGridMapper, IncompatibleGridError
 def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
     (dst_x, dst_y) = coords
 
-    map = np.empty(len(dst_x), dtype=np.int)
-    map.fill(bad_val)
+    point_to_cell_id = np.empty(len(dst_x), dtype=np.int)
+    point_to_cell_id.fill(bad_val)
 
     for (j, point_id) in enumerate(src_point_ids):
         for cell_id in src_grid.get_shared_cells(point_id):
             if src_grid.is_in_cell(dst_x[j], dst_y[j], cell_id):
-                map[j] = cell_id
+                point_to_cell_id[j] = cell_id
 
-    return map
+    return point_to_cell_id
 
 
 class CellToPoint(IGridMapper):

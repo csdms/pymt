@@ -30,10 +30,10 @@ else:
     _VALID_NETCDF_FORMATS |= set(['NETCDF4_CLASSIC', 'NETCDF4'])
 
 
-def assert_valid_netcdf_format(format):
-    if format not in _VALID_NETCDF_FORMATS:
+def assert_valid_netcdf_format(fmt):
+    if fmt not in _VALID_NETCDF_FORMATS:
         raise ValueError('%s: format is one of %s' %
-                         (format, ', '.join(_VALID_NETCDF_FORMATS)))
+                         (fmt, ', '.join(_VALID_NETCDF_FORMATS)))
 
 
 def open_netcdf(path, mode='r', format='NETCDF3_CLASSIC', append=False):

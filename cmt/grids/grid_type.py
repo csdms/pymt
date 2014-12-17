@@ -1,5 +1,7 @@
 
 class GridType(object):
+    _type = None
+
     def __eq__(self, that):
         return isinstance(that, self.__class__) or str(self) == str(that)
 

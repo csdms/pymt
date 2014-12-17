@@ -118,8 +118,13 @@ class Component(GridMixIn):
     run_dir : str, optional
         Directory where the component will run.
     """
-    def __init__(self, port, uses=set(), provides=set(), events=(), argv=(),
+    def __init__(self, port, uses=None, provides=None, events=(), argv=(),
                  time_step=1., run_dir='.', name=None):
+        if uses is None:
+            uses = set()
+        if provides is None:
+            provides = set()
+
         if isinstance(port, types.StringTypes):
             if name is None:
                 name = port
@@ -206,7 +211,7 @@ class Component(GridMixIn):
             event = ChainEvent([port,
                                 PortMapEvent(src_port=port, dst_port=self,
                                              vars_to_map=vars_to_map)])
-                                #PortMapEvent(src_port=port, dst_port=self._port,
+            #PortMapEvent(src_port=port, dst_port=self._port,
         else:
             event = port
         self._events.add_recurring_event(event, port.time_step)

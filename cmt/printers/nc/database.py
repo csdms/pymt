@@ -20,6 +20,11 @@ class IDatabase(object):
         pass
 
 
+def field_changed_size(field, n_points, n_cells):
+    return (n_points != field.get_point_count() or
+            n_cells != field.get_cell_count())
+
+
 class Database(IDatabase):
     """
     >>> from cmt.grids import RasterField
@@ -75,13 +80,10 @@ Elevation_time_series_0000.nc.
         kwds.setdefault('append', True)
 
         if kwds['append']:
-            try:
-                if (self._point_count != field.get_point_count() or
-                    self._cell_count != field.get_cell_count()):
-
+            if hasattr(self, '_point_count') and hasattr(self, '_cell_count'):
+                if field_changed_size(field, self._point_count,
+                                      self._cell_count):
                     self._path = self._next_file_name()
-            except AttributeError:
-                pass
 
             self._point_count = field.get_point_count()
             self._cell_count = field.get_cell_count()

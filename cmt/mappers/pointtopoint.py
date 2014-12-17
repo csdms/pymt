@@ -20,25 +20,40 @@ def copy_good_values(src, dst, bad_val=-999):
 
 
 class NearestVal(IGridMapper):
-    def initialize(self, dest_grid, src_grid, vars=[]):
+    def initialize(self, dest_grid, src_grid, var_names=None):
+        """Map points on one grid to the nearest points on another.
+
+        Parameters
+        ----------
+        dest_grid : grid_like
+            Grid onto which points are mapped
+        src_grid : grid_like
+            Grid from which points are taken.
+        var_names : iterable of tuples (optional)
+            Iterable of (*dest*, *src*) variable names.
+
+        """
+        if var_names is None:
+            var_names = []
+
         if not self.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
-        assert(len(vars) <= 1)
+        assert(len(var_names) <= 1)
 
-        if len(vars) == 0:
+        if len(var_names) == 0:
             (x, y) = src_grid.get_x().flat, src_grid.get_y().flat
         else:
-            dst_name, src_name = vars[0]
+            dst_name, src_name = var_names[0]
             (x, y) = (src_grid.get_x(src_name).flat,
                       src_grid.get_y(src_name).flat)
 
         tree = KDTree(zip(x, y))
 
-        if len(vars) == 0:
+        if len(var_names) == 0:
             (x, y) = dest_grid.get_x().flat, dest_grid.get_y().flat
         else:
-            dst_name, src_name = vars[0]
+            dst_name, src_name = var_names[0]
             (x, y) = (dest_grid.get_x(dst_name).flat,
                       dest_grid.get_y(dst_name).flat)
 
