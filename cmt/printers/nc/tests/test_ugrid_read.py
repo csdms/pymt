@@ -34,20 +34,16 @@ def fetch_data_file(filename):
 
 
 def test_unstructured_2d():
-    field = field_fromfile(fetch_data_file('unstructured.2d.nc'),
-                           format='NETCDF4')
+    field = field_fromfile(fetch_data_file('unstructured.2d.nc'), fmt='NETCDF4')
 
 
 def test_rectilinear_1d():
-    field = field_fromfile(fetch_data_file('rectilinear.1d.nc'),
-                           format='NETCDF4')
+    field = field_fromfile(fetch_data_file('rectilinear.1d.nc'), fmt='NETCDF4')
 
 
 def test_rectilinear_2d():
-    field = field_fromfile(fetch_data_file('rectilinear.2d.nc'),
-                           format='NETCDF4')
+    field = field_fromfile(fetch_data_file('rectilinear.2d.nc'), fmt='NETCDF4')
 
 
 def test_rectilinear_3d():
-    field = field_fromfile(fetch_data_file('rectilinear.3d.nc'),
-                           format='NETCDF4')
+    field = field_fromfile(fetch_data_file('rectilinear.3d.nc'), fmt='NETCDF4')

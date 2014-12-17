@@ -5,12 +5,13 @@ from ...grids import RectilinearField, StructuredField, UnstructuredField
 
 
 class NetcdfFieldReader(object):
-    def __init__(self, path, format='NETCDF4'):
+    def __init__(self, path, fmt='NETCDF4'):
         self._path = path
 
-        self._root = open_netcdf(path, mode='r', format=format)
+        self._root = open_netcdf(path, mode='r', fmt=fmt)
         self._topology = self._get_mesh_topology()
         self._field = None
+        self._time = []
 
         self._get_mesh_coordinate_data()
         self._get_node_variable_data()
@@ -19,6 +20,14 @@ class NetcdfFieldReader(object):
             self._get_time_variable()
 
         self._root.close()
+
+    @property
+    def fields(self):
+        return self._field
+
+    @property
+    def times(self):
+        return self._time
 
     def _get_mesh_coordinate_data(self):
         raise NotImplementedError('_get_mesh_coordinate_data')

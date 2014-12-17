@@ -21,7 +21,7 @@ def close(path):
 
 
 class NetcdfField(object):
-    def __init__(self, path, field, format='NETCDF4', append=False, time=None,
+    def __init__(self, path, field, fmt='NETCDF4', append=False, time=None,
                  keep_open=False):
         self._path = path
         self._field = field
@@ -29,7 +29,7 @@ class NetcdfField(object):
         if path in _OPENED_FILES:
             self._root = _OPENED_FILES[path]
         else:
-            self._root = open_netcdf(path, mode='w', format=format, append=append)
+            self._root = open_netcdf(path, mode='w', fmt=fmt, append=append)
 
         self._set_mesh_topology()
         self._set_node_variable_data()

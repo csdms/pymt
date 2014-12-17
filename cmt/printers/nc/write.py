@@ -8,7 +8,7 @@ from .ugrid import (NetcdfRectilinearField, NetcdfStructuredField,
 
 def field_tofile(field, path, append=False, attrs=None, time=None,
                  time_units=None, time_reference=None,
-                 long_name=None, format='NETCDF4', keep_open=False):
+                 long_name=None, fmt='NETCDF4', keep_open=False):
     if time_units is not None:
         warn('ignoring keyword "time_units"', UserWarning)
     if time_reference is not None:
@@ -19,7 +19,7 @@ def field_tofile(field, path, append=False, attrs=None, time=None,
     attrs = attrs or {}
     long_name = long_name or {}
     args = (path, field)
-    kwds = dict(append=append, format=format, time=time, keep_open=True)
+    kwds = dict(append=append, fmt=fmt, time=time, keep_open=True)
 
     if is_rectilinear(field, strict=False):
         NetcdfRectilinearField(*args, **kwds)

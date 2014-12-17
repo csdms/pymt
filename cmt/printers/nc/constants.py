@@ -36,8 +36,8 @@ def assert_valid_netcdf_format(fmt):
                          (fmt, ', '.join(_VALID_NETCDF_FORMATS)))
 
 
-def open_netcdf(path, mode='r', format='NETCDF3_CLASSIC', append=False):
-    assert_valid_netcdf_format(format)
+def open_netcdf(path, mode='r', fmt='NETCDF3_CLASSIC', append=False):
+    assert_valid_netcdf_format(fmt)
 
     if mode != 'r':
         if os.path.isfile(path) and append:
@@ -45,11 +45,11 @@ def open_netcdf(path, mode='r', format='NETCDF3_CLASSIC', append=False):
         else:
             mode = 'w'
 
-    if format == 'NETCDF3_CLASSIC':
+    if fmt == 'NETCDF3_CLASSIC':
         root = nc3.netcdf_file(path, mode, version=1)
-    elif format == 'NETCDF3_64BIT':
+    elif fmt == 'NETCDF3_64BIT':
         root = nc3.netcdf_file(path, mode, version=2)
     else:
-        root = nc4.Dataset(path, mode, format=format)
+        root = nc4.Dataset(path, mode, format=fmt)
 
     return root

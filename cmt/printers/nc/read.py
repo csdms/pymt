@@ -21,8 +21,8 @@ _NETCDF_READERS = {
 }
 
 
-def query_netcdf_mesh_type(path, format='NETCDF4'):
-    root = open_netcdf(path, mode='r', format=format)
+def query_netcdf_mesh_type(path, fmt='NETCDF4'):
+    root = open_netcdf(path, mode='r', fmt=fmt)
 
     try:
         type_string = root.variables['mesh'].type
@@ -41,7 +41,7 @@ def query_netcdf_mesh_type(path, format='NETCDF4'):
     return mesh_type
 
 
-def field_fromfile(path, format='NETCDF4'):
+def field_fromfile(path, fmt='NETCDF4'):
     mesh_type = query_netcdf_mesh_type(path)
 
     try:
@@ -49,9 +49,9 @@ def field_fromfile(path, format='NETCDF4'):
     except KeyError:
         raise TypeError('%s: no reader available for file' % mesh_type)
     else:
-        nc_file = reader(path, format=format)
+        nc_file = reader(path, fmt=fmt)
 
-    if len(nc_file._time) > 0:
-        return (nc_file._field, nc_file._time)
+    if len(nc_file.times) > 0:
+        return (nc_file.fields, nc_file.times)
     else:
-        return nc_file._field
+        return nc_file.fields

@@ -23,7 +23,7 @@ class TimeInterpolator(object):
     def initialize(self, source):
         config = read_configuration(source)
 
-        (fields, times) = field_fromfile(config['input_file'], format='NETCDF4')
+        (fields, times) = field_fromfile(config['input_file'], fmt='NETCDF4')
 
         self._shape = fields[0].get_shape()
         self._spacing = fields[0].get_spacing()
