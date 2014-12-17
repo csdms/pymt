@@ -53,16 +53,6 @@ def unsplit(name, time_stamp):
     return name + '@t=' + time_stamp_as_string(time_stamp)
 
 
-def setup_interpolators(self):
-    names = _get_ordered_field_names(self._fields)
-
-    self._interpolators = {}
-    for (base, name_list) in names.items():
-        self._interpolators[base] = interpolate.interp1d(
-            self._times, _get_time_series_as_list(self._fields, name_list),
-            axis=0, kind='linear')
-
-
 def construct_field_interpolators(field):
     pass
 
