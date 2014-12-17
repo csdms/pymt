@@ -76,11 +76,14 @@ Elevation_time_series_0000.nc.
         self._path = path
         self._template = '%s_%%04d%s' % (root, ext)
 
+        self._point_count = None
+        self._cell_count = None
+
     def write(self, field, **kwds):
         kwds.setdefault('append', True)
 
         if kwds['append']:
-            if hasattr(self, '_point_count') and hasattr(self, '_cell_count'):
+            if self._point_count is not None and self._cell_count is not None:
                 if field_changed_size(field, self._point_count,
                                       self._cell_count):
                     self._path = self._next_file_name()
