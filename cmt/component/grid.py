@@ -16,7 +16,7 @@ def get_raster_node_coordinates(grid, name):
     return np.meshgrid(*coordinate_vectors, indexing='ij')
 
 
-def get_rectlinear_node_coordinates(grid, name):
+def get_rectilinear_node_coordinates(grid, name):
     coordinate_vectors = []
     for coordinate_name in ['z', 'y', 'z']:
         func = getattr(grid, 'get_grid_' + coordinate_name)
@@ -121,23 +121,23 @@ class GridMixIn(object):
 
     def _set_connectivity(self, var_name):
         grid_type = self.get_grid_type(var_name)
-
         if grid_type != 'UNSTRUCTURED':
-            coords = get_raster_node_coordinate(self._port, var_name)
+            (connectivity, offset) = get_structured_node_connectivity(
+                self._port, var_name)
         else:
             (connectivity, offset) = (self.get_grid_connectivity(var_name),
                                       self.get_grid_offset(var_name))
 
         self._connectivity[var_name] = (connectivity, offset)
 
-    def _get_connectivity(self, name):
+    def _get_connectivity(self, var_name):
         try:
             return self._connectivity[var_name][0]
         except (AttributeError, KeyError):
             self._set_connectivity(var_name)
             return self._connectivity[var_name][0]
 
-    def _get_offset(self, name):
+    def _get_offset(self, var_name):
         try:
             return self._connectivity[var_name][1]
         except (AttributeError, KeyError):
