@@ -1,13 +1,14 @@
 #! /bin/env python
-
 import types
 
 import numpy as np
 
-from cmt.grids.igrid import (IField, DimensionError, CenteringValueError,
-                             CENTERING_CHOICES)
-from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
-                       Unstructured)
+from .igrid import (IField, DimensionError, CenteringValueError,
+                    CENTERING_CHOICES)
+from .raster import UniformRectilinear
+from .rectilinear import Rectilinear
+from .structured import Structured
+from .unstructured import Unstructured
 
 
 def combine_args_to_list (*args, **kwds):
