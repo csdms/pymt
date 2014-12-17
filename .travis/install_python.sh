@@ -3,9 +3,9 @@
 OS="Linux-x86_64"
 
 if [[ "$TRAVIS_PYTHON_VERSION" == 2.* ]]; then
-  wget http://repo.continuum.io/miniconda/Miniconda-3.4.2-$OS.sh -O miniconda.sh;
+  wget http://repo.continuum.io/miniconda/Miniconda-latest-$OS.sh -O miniconda.sh;
 else
-  wget http://repo.continuum.io/miniconda/Miniconda3-3.4.2-$OS.sh -O miniconda.sh;
+  wget http://repo.continuum.io/miniconda/Miniconda3-latest-$OS.sh -O miniconda.sh;
 fi
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
