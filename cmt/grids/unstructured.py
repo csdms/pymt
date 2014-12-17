@@ -275,21 +275,15 @@ Eight point that form a unit cube.
     """
     def __init__(self, *args, **kwds):
         set_connectivity = kwds.pop('set_connectivity', True)
-        connectivity = kwds.get('connectivity', [])
-        offset = kwds.get('offset', [])
+        connectivity = kwds.pop('connectivity', None)
+        offset = kwds.pop('offset', None)
 
         if set_connectivity:
-            try:
-                o = kwds['offset']
-            except KeyError:
-                o = args[-1]
-                args = args[:-1]
-            try:
-                c = kwds['connectivity']
-            except KeyError:
-                c = args[-1]
-                args = args[:-1]
-            self._set_connectivity(c, o)
+            if offset is None:
+                offset, args = args[-1], args[:-1]
+            if connectivity is None:
+                connectivity, args = args[-1], args[:-1]
+            self._set_connectivity(connectivity, offset)
 
         kwds['set_connectivity'] = False
         super(Unstructured, self).__init__(*args, **kwds)
