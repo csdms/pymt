@@ -250,6 +250,9 @@ class EsmpGrid(IGrid):
         self._mesh_add_nodes()
         self._mesh_add_elements()
 
+        self._connectivity = None
+        self._offset = None
+
         super(EsmpGrid, self).__init__()
 
     def get_point_count(self):
@@ -257,14 +260,6 @@ class EsmpGrid(IGrid):
 
     def get_cell_count(self):
         raise NotImplementedError('get_cell_count')
-
-    @property
-    def _connectivity(self):
-        raise NotImplementedError('_connectivity')
-
-    @property
-    def _offset(self):
-        raise NotImplementedError('_offset')
 
     def as_mesh(self):
         return self._mesh
