@@ -92,9 +92,8 @@ class VtkWriter(xml.dom.minidom.Document):
         self.to_xml(path)
   
     def to_xml(self, path):
-        file = open(path, 'w')
-        file.write(self.toprettyxml())
-        file.close()
+        with open(path, 'w') as fp:
+            fp.write(self.toprettyxml())
 
 
 def assemble_vtk_elements(element):
@@ -118,15 +117,15 @@ def assemble_vtk_elements(element):
 
 
 class VtkDatabase(VtkWriter):
-    def write(self, path, **kwargs):
-        (base, file) = os.path.split(path)
-        (root, ext) = os.path.splitext(file)
+    def __init__(self):
+        super(VtkDatabase, self).__init__()
+        self._count = 0
 
-        try:
-            next_file = '%s_%04d%s' % (root, self._count, ext)
-        except NameError:
-            self._count = 0
-            next_file = '%s_%04d%s' % (root, self._count, ext)
+    def write(self, path, **kwargs):
+        (base, filename) = os.path.split(path)
+        (root, ext) = os.path.splitext(filename)
+
+        next_file = '%s_%04d%s' % (root, self._count, ext)
 
         VtkWriter.write(self, os.path.join (base, next_file), **kwargs)
 
