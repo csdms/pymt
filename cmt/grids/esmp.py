@@ -315,6 +315,12 @@ class EsmpField(IField):
         super(EsmpField, self).__init__(*args, **kwargs)
         self._fields = {}
 
+    def get_point_count(self):
+        raise NotImplementedError('get_point_count')
+
+    def get_cell_count(self):
+        raise NotImplementedError('get_cell_count')
+
     @property
     def _mesh(self):
         raise NotImplementedError('_mesh')
