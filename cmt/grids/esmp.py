@@ -315,15 +315,13 @@ class EsmpField(IField):
         super(EsmpField, self).__init__(*args, **kwargs)
         self._fields = {}
 
+        self._mesh = None
+
     def get_point_count(self):
         raise NotImplementedError('get_point_count')
 
     def get_cell_count(self):
         raise NotImplementedError('get_cell_count')
-
-    @property
-    def _mesh(self):
-        raise NotImplementedError('_mesh')
 
     def add_field(self, field_name, val, centering='zonal'):
         if centering not in CENTERING_CHOICES:
