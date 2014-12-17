@@ -53,10 +53,6 @@ def unsplit(name, time_stamp):
     return name + '@t=' + time_stamp_as_string(time_stamp)
 
 
-def construct_field_interpolators(field):
-    pass
-
-
 def construct_field_interpolator(times, fields, kind='linear'):
     assert(len(times) == len(fields))
     return interpolate.interp1d(times, fields, axis=0, kind=kind)
