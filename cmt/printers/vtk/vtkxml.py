@@ -37,7 +37,7 @@ class VtkOrigin (object):
         for (dx, x0) in zip (spacing, origin):
             self._cell_origin.append (x0 - dx*.5)
 
-        for n in xrange (3-len (origin)):
+        for _ in xrange (3-len (origin)):
             self._cell_origin.append (0.)
 
         self._origin_str = ' '.join (['%f' % x for x in self._cell_origin])
@@ -54,7 +54,7 @@ class VtkSpacing (object):
         self._padded_spacing = []
         for dx in spacing:
             self._padded_spacing.append (dx)
-        for n in xrange (3-len (spacing)):
+        for _ in xrange (3-len (spacing)):
             self._padded_spacing.append (0.)
 
         self._spacing_str = ' '.join (['%f' % x for x in self._padded_spacing])
@@ -66,9 +66,11 @@ class VtkElement (object, xml.dom.minidom.Element):
     def __init__ (self, name, **kwargs):
         xml.dom.minidom.Element.__init__ (self, str (name), namespaceURI='VTK')
         self.setAttributes (**kwargs)
+
     def setAttributes (self, **kwargs):
         for (attr, value) in kwargs.items ():
             self.setAttribute (attr, str (value))
+
     def getAttributes (self, names=None):
         attrs = {}
 
@@ -84,38 +86,42 @@ class VtkElement (object, xml.dom.minidom.Element):
 
         return attrs
 
+
 class VtkTextElement (xml.dom.minidom.Text):
     def __init__ (self, text):
         self.replaceWholeText (text)
 
+
 class VtkDataArrayElement (VtkElement):
-    def __init__ (self, array, **kwargs):
-        VtkElement.__init__ (self, 'DataArray', **kwargs)
-    def addData (self, data_string):
-        self.appendChild (VtkTextElement (data_string))
+    def __init__(self, **kwargs):
+        VtkElement.__init__(self, 'DataArray', **kwargs)
+
+    def addData(self, data_string):
+        self.appendChild(VtkTextElement(data_string))
 
 class VtkDataElement (VtkElement):
     format = 'ascii'
-    def __init__ (self, name, **kwargs):
+    def __init__(self, name, **kwargs):
         VtkElement.__init__ (self, name)
+
     def addData (self, data, name, append=None, encoding='ascii', **kwargs):
-        data_string = encode (data, encoding=encoding)
-        #data_string = self.encode (data)
-        data_array = VtkDataArrayElement (data_string, Name=name, 
-                                          type=np_to_vtk_type[str (data.dtype)],
-                                          **kwargs)
-        self.appendChild (data_array)
+        data_string = encode(data, encoding=encoding)
+        data_array = VtkDataArrayElement(Name=name,
+                                         type=np_to_vtk_type[str(data.dtype)],
+                                         **kwargs)
+        self.appendChild(data_array)
 
         if append is not None:
-            data_array.setAttributes (offset=append.offset (), format='appended')
-            append.addData (data_string)
+            data_array.setAttributes(offset=append.offset (), format='appended')
+            append.addData(data_string)
         else:
-            data_array.setAttributes (format=self.format)
-            data_array.addData (data_string)
+            data_array.setAttributes(format=self.format)
+            data_array.addData(data_string)
+
 
 class VtkRootElement (VtkElement):
-    def __init__ (self, type):
-        VtkElement.__init__ (self, 'VTKFile', type=type,
+    def __init__ (self, root_type):
+        VtkElement.__init__ (self, 'VTKFile', type=root_type,
                              version='0.1',
                              byte_order=str (sys_to_vtk_endian[sys.byteorder]))
 
