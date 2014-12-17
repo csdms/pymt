@@ -4,26 +4,9 @@ import numpy as np
 
 from sys import maxint as MAXINT
 
-from cmt.grids.meshgrid import meshgrid
-from cmt.grids.igrid import IGrid, DimensionError
-from cmt.grids.utils import (get_default_coordinate_units,
-                             get_default_coordinate_names,
-                             assert_arrays_are_equal_size,
-                             coordinates_to_numpy_matrix,
-                             args_as_numpy_arrays)
-
-
-class Error(Exception):
-    pass
-
-
-class AttributeError(Error):
-    def __init__(self, msg):
-        self.msg = msg
-        self.attr = attr
-
-    def __str__(self):
-        return '%s: %s' % (self.attr, self.msg)
+from .igrid import IGrid
+from .utils import (get_default_coordinate_units, get_default_coordinate_names,
+                    coordinates_to_numpy_matrix, args_as_numpy_arrays)
 
 
 class UnstructuredPoints(IGrid):
@@ -135,19 +118,19 @@ class UnstructuredPoints(IGrid):
         except IndexError:
             raise IndexError('Dimension out of bounds')
 
-    def get_coordinate_units(self, i, **kwds):
+    def get_coordinate_units(self, i):
         try:
             return self._units[i]
         except IndexError:
             raise IndexError('Dimension out of bounds')
 
-    def get_coordinate_name(self, i, **kwds):
+    def get_coordinate_name(self, i):
         try:
             return self._coordinate_name[i]
         except IndexError:
             raise IndexError('Dimension out of bounds')
 
-    def get_coordinate(self, i, **kwds):
+    def get_coordinate(self, i):
         try:
             return self._coords[i]
         except IndexError:
