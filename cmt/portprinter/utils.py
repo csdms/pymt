@@ -227,12 +227,12 @@ def _file_name_lacks_extension(file_name):
     return len(ext) <= 1
 
 
-def construct_file_name(var_name, template='${var}', format=None, prefix=''):
+def construct_file_name(var_name, template='${var}', fmt=None, prefix=''):
     file_template = string.Template(template)
     file_name = file_template.safe_substitute(var=var_name)
 
     if _file_name_lacks_extension(file_name):
-        file_ext = format_to_file_extension(format)
+        file_ext = format_to_file_extension(fmt)
         file_name = file_name + file_ext
 
     return os.path.join(prefix, file_name)

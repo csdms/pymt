@@ -38,8 +38,7 @@ class PortPrinter(object):
         return self._format
 
     def open(self, clobber=False):
-        #file_name = construct_file_name(self.var_name, format=self.format,
-        file_name = construct_file_name(self._filename, format=self.format,
+        file_name = construct_file_name(self._filename, fmt=self.format,
                                         prefix='')
         if not clobber:
             file_name = next_unique_file_name(file_name)
