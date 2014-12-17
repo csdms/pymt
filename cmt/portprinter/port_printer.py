@@ -16,6 +16,9 @@ from .utils import (_construct_port_as_field, _reconstruct_port_as_field,
 
 
 class PortPrinter(object):
+    _format = ''
+    _printer_class = None
+
     def __init__(self, port, var_name, filename=None):
         if isinstance(port, types.StringTypes):
             self._port = services.get_component_instance(port)
