@@ -1,2 +1,5 @@
 ignore-patterns:
   - ez_setup.py
+ignore-paths:
+  - docs
+  - scripts
