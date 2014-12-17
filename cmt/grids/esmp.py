@@ -250,9 +250,6 @@ class EsmpGrid(IGrid):
         self._mesh_add_nodes()
         self._mesh_add_elements()
 
-        self._connectivity = None
-        self._offset = None
-
         super(EsmpGrid, self).__init__()
 
     def get_point_count(self):
@@ -285,13 +282,6 @@ class EsmpGrid(IGrid):
 
         self._mesh.add_elements(self.get_cell_count(), cell_ids, cell_types,
                                 cell_conn)
-
-    def reverse_element_ordering(self):
-        last_offset = 0
-        for offset in self._offset:
-            c = self._connectivity[last_offset:offset].copy()
-            self._connectivity[last_offset:offset] = c[::-1]
-            last_offset = offset
 
 
 class EsmpUnstructured(Unstructured, EsmpGrid):

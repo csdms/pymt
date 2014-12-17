@@ -177,6 +177,13 @@ class UnstructuredPoints(IGrid):
 
         return np.diff(offsets)
 
+    def reverse_element_ordering(self):
+        last_offset = 0
+        for offset in self._offset:
+            c = self._connectivity[last_offset:offset].copy()
+            self._connectivity[last_offset:offset] = c[::-1]
+            last_offset = offset
+
 
 class Unstructured(UnstructuredPoints):
     """
