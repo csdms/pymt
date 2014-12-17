@@ -15,3 +15,4 @@ conda update conda
 conda info -a
 cat requirements.txt | xargs conda create -n test-env python=$TRAVIS_PYTHON_VERSION
 source activate test-env
+conda install coverage
