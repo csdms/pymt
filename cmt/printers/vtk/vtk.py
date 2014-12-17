@@ -54,7 +54,7 @@ class VtkWriter(xml.dom.minidom.Document):
     def __init__(self):
         xml.dom.minidom.Document.__init__(self)
 
-    def get_elements(self):
+    def get_elements(self, **kwds):
         raise NotImplementedError('get_elements')
 
     def assemble(self, element):
