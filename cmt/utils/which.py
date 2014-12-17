@@ -13,7 +13,8 @@ def find_executable_in_paths(prog, paths):
     return None
 
 
-def which(prog, mode=os.F_OK | os.X_OK, path=None):
+#def which(prog, mode=os.F_OK | os.X_OK, path=None):
+def which(prog, path=None):
     if os.path.isabs(prog) and file_is_executable(prog):
         return prog
     else:
