@@ -46,6 +46,7 @@ hello!
 hello from finalize
 """
 from ConfigParser import ConfigParser
+from StringIO import StringIO
 
 from ..timeline import Timeline
 from ..utils.prefix import names_with_prefix
