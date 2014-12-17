@@ -79,7 +79,7 @@ def sort_time_series_names(names, ordering='ascending', prefix=''):
     ordered_names = dict()
 
     time_stamps = extract_time_stamps_from_names(names, ordering=ordering,
-                                                 prefix='')
+                                                 prefix=prefix)
     for (name, stamps) in time_stamps.items():
         ordered_names[name] = [unsplit(name, stamp) for stamp in stamps]
 
