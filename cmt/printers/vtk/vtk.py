@@ -51,8 +51,11 @@ class InvalidEncodingError(VtkError):
 
 
 class VtkWriter(xml.dom.minidom.Document):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         xml.dom.minidom.Document.__init__(self)
+
+    def get_elements(self):
+        raise NotImplementedError('get_elements')
 
     def assemble(self, element):
         root = element['VTKFile']
@@ -64,8 +67,6 @@ class VtkWriter(xml.dom.minidom.Document):
                 piece.appendChild(element[section])
             except KeyError:
                 pass
-            except EmptyElementError:
-                pass
         grid.appendChild(piece)
         root.appendChild(grid)
   
@@ -76,17 +77,17 @@ class VtkWriter(xml.dom.minidom.Document):
   
         return root
   
-    def write(self, path, format='ascii', encoding='ascii'):
-        if format not in valid_formats:
-            raise InvalidFormatError(format)
+    def write(self, path, fmt='ascii', encoding='ascii'):
+        if fmt not in valid_formats:
+            raise InvalidFormatError(fmt)
         if encoding not in valid_encodings:
             raise InvalidEncodingError(encoding)
   
-        if format == 'ascii':
+        if fmt == 'ascii':
             encoding = 'ascii'
   
         self.unlink()
-        self.appendChild(self.assemble(self.get_elements(format=format,
+        self.appendChild(self.assemble(self.get_elements(format=fmt,
                                                          encoding=encoding)))
         self.to_xml(path)
   
@@ -105,8 +106,6 @@ def assemble_vtk_elements(element):
             piece.appendChild(element[section])
         except KeyError:
             pass
-        except EmptyElementError:
-            pass
     grid.appendChild(piece)
     root.appendChild(grid)
 
@@ -118,7 +117,7 @@ def assemble_vtk_elements(element):
     return root
 
 
-class VTKDatabase(VtkWriter):
+class VtkDatabase(VtkWriter):
     def write(self, path, **kwargs):
         (base, file) = os.path.split(path)
         (root, ext) = os.path.splitext(file)
