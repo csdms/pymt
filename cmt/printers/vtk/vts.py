@@ -1,7 +1,7 @@
 #! /bin/env python
 from vtktypes import VtkStructured
 from vtkxml import (VtkAppendedDataElement, VtkExtent, VtkRootElement,
-                    VtkPieceElement, VtkCoordinatesElement,
+                    VtkGridElement, VtkPieceElement, VtkPointsElement,
                     VtkPointDataElement, VtkCellDataElement)
 
 

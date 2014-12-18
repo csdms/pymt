@@ -1,7 +1,7 @@
 #! /bin/env python
 from .vtktypes import VtkUniformRectilinear
-from vtkxml import (VtkAppendedDataElement, VtkExtent, VtkRootElement,
-                    VtkPieceElement, VtkCoordinatesElement,
+from vtkxml import (VtkAppendedDataElement, VtkExtent, VtkOrigin, VtkSpacing,
+                    VtkRootElement, VtkGridElement, VtkPieceElement,
                     VtkPointDataElement, VtkCellDataElement)
 
 

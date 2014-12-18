@@ -118,7 +118,7 @@ def assemble_vtk_elements(element):
 
 class VtkDatabase(VtkWriter):
     def __init__(self):
-        super(VtkDatabase, self).__init__()
+        VtkWriter.__init__(self)
         self._count = 0
 
     def write(self, path, **kwargs):
