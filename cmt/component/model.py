@@ -49,6 +49,9 @@ class Model(object):
         self._driver = driver
         self._duration = duration
 
+    def __getitem__(self, name):
+        return self._components[name]
+
     @property
     def components(self):
         """Names of the components.
@@ -127,7 +130,11 @@ class Model(object):
 
         >>> model.driver = 'air_port'
         >>> model.duration = 1.
+        >>> model['air_port'].current_time
+        0.0
         >>> model.go()
+        >>> model['air_port'].current_time
+        1.0
         """
         components, connectivities = Model.load_components(
             source, with_connectivities=True)
