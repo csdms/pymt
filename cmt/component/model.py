@@ -61,11 +61,26 @@ class Model(object):
         """
         return self._driver
 
+    @driver.setter
+    def driver(self, driver):
+        """Set the driver component.
+        """
+        if driver in self.components:
+            self._driver = driver
+        else:
+            raise ValueError('%s not a component of the model' % driver)
+
     @property
     def duration(self):
         """Length of time the model will run.
         """
         return self._duration
+
+    @duration.setter
+    def duration(self, duration):
+        """Set length of time the model will run.
+        """
+        self._duration = duration
 
     def go(self, filename=None):
         """Start the model.
@@ -105,6 +120,14 @@ class Model(object):
         >>> model = Model.load(source)
         >>> model.components
         ['air_port']
+        >>> model.driver is None
+        True
+        >>> model.duration
+        0.0
+
+        >>> model.driver = 'air_port'
+        >>> model.duration = 1.
+        >>> model.go()
         """
         components, connectivities = Model.load_components(
             source, with_connectivities=True)
