@@ -7,6 +7,27 @@ from .component import Component
 
 
 def get_exchange_item_mapping(items):
+    """Construct a mapping for exchange items.
+
+    Parameters
+    ----------
+    items : iterable
+        List of exchange item names or (*dest*, *src*) tuples.
+
+    Returns
+    -------
+    items : list
+        List of (*dest*, *src*) tuples of name mappings.
+
+    Examples
+    --------
+    >>> from cmt.component.model import get_exchange_item_mapping
+    >>> get_exchange_item_mapping([('foo', 'bar'), 'baz'])
+    [('foo', 'bar'), ('baz', 'baz')]
+    >>> get_exchange_item_mapping([dict(source='bar',
+    ...                                 destination='foo'), 'baz'])
+    [('foo', 'bar'), ('baz', 'baz')]
+    """
     mapping = []
     for item in items:
         if isinstance(item, types.StringTypes):
