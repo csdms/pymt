@@ -147,6 +147,55 @@ class Model(object):
 
         return cls(components)
 
+    @classmethod
+    def from_file(cls, filename):
+        """Construct a Model from the contents of a file.
+
+        Parameters
+        ----------
+        filename : str
+            Name of the model configuration file.
+
+        Returns
+        -------
+        model : Model
+            A newly-created model.
+        """
+        with open(filename, 'r') as fp:
+            return cls.load(fp)
+
+    @classmethod
+    def from_file_like(cls, file_like):
+        """Construct a Model from the contents of a file-like object.
+
+        Parameters
+        ----------
+        file_like : file_like
+            A file-like object that contains the model configuration.
+
+        Returns
+        -------
+        model : Model
+            A newly-created model.
+        """
+        return cls.load(file_like)
+
+    @classmethod
+    def from_string(cls, contents):
+        """Construct a Model from a string.
+
+        Parameters
+        ----------
+        contents : str
+            A string that contains the model configuration.
+
+        Returns
+        -------
+        model : Model
+            A newly-created model.
+        """
+        return cls.load(contents)
+
     @staticmethod
     def load_components(source, with_connectivities=False):
         """Construct a list of model components from a string.
