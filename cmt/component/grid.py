@@ -3,7 +3,67 @@ import numpy as np
 from cmt.grids.connectivity import get_connectivity
 
 
+def raster_node_coordinates(shape, spacing=None, origin=None):
+    """Node coordinates of a uniform rectilinear grid.
+
+    Parameters
+    ----------
+    shape : array_like
+        Size of grid in each dimension.
+    spacing : array_like (optional)
+        Node spacing in each dimension (default is unit spacing).
+    origin : array_like (optional)
+        Coordinates of the origin node (default is 0.0).
+
+    Returns
+    -------
+    coords : ndarray
+        Node coordinates.
+
+    Examples
+    --------
+    >>> from cmt.component.grid import raster_node_coordinates
+    >>> (y, x) = raster_node_coordinates((2, 3))
+    >>> y
+    array([[ 0.,  0.,  0.],
+           [ 1.,  1.,  1.]])
+    >>> x
+    array([[ 0.,  1.,  2.],
+           [ 0.,  1.,  2.]])
+
+    >>> (x, ) = raster_node_coordinates((3, ), (2., ), (1., ))
+    >>> x
+    array([ 1.,  3.,  5.])
+    """
+    spacing = spacing or np.ones_like(shape, dtype=float)
+    origin = origin or np.zeros_like(shape, dtype=float)
+
+    coordinate_vectors = []
+    for dim in xrange(len(shape)):
+        start, stop = origin[dim], origin[dim] + shape[dim] * spacing[dim]
+        coordinate_vectors.append(np.arange(start, stop, spacing[dim]))
+    
+    return np.meshgrid(*coordinate_vectors, indexing='ij')
+
+
 def get_raster_node_coordinates(grid, name):
+    """Get coordinates of nodes on a raster grid.
+
+    Parameters
+    ----------
+    grid : grid_like
+        A raster grid.
+    name : str
+        Name of the field variable.
+
+    Returns
+    -------
+    coords : ndarray
+        Coordinates of the grid nodes.
+
+    Examples
+    --------
+    """
     (shape, spacing, origin) = (grid.get_grid_shape(name),
                                 grid.get_grid_spacing(name),
                                 grid.get_grid_origin(name))
