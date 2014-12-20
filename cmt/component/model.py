@@ -50,14 +50,26 @@ class Model(object):
         self._duration = duration
 
     @property
+    def components(self):
+        """Names of the components.
+        """
+        return self._components.keys()
+
+    @property
     def driver(self):
+        """Name of the driver component.
+        """
         return self._driver
 
     @property
     def duration(self):
+        """Length of time the model will run.
+        """
         return self._duration
 
     def go(self, filename=None):
+        """Start the model.
+        """
         if filename:
             with open(filename, 'r') as f:
                 model = yaml.load(f.read())
@@ -67,6 +79,33 @@ class Model(object):
 
     @classmethod
     def load(cls, source):
+        """Construct a model from a YAML-formatted string.
+
+        Parameters
+        ----------
+        source : str or file_like
+            YAML-formatted model configuration.
+
+        Returns
+        -------
+        model : Model
+            A newly-created Model.
+
+        Examples
+        --------
+        >>> from cmt.framework.services import del_component_instances
+        >>> del_component_instances(['air_port'])
+
+        >>> from cmt.component.model import Model
+        >>> source = '''
+        ... name: air_port
+        ... class: AirPort
+        ... connectivity: []
+        ... '''
+        >>> model = Model.load(source)
+        >>> model.components
+        ['air_port']
+        """
         components, connectivities = Model.load_components(
             source, with_connectivities=True)
 
@@ -80,6 +119,35 @@ class Model(object):
 
     @staticmethod
     def load_components(source, with_connectivities=False):
+        """Construct a list of model components from a string.
+
+        Parameters
+        ----------
+        source : str or file_like
+            YAML-formatted components configuration.
+        with_connectivities : boolean (optional)
+            Return connectivity dictionary along with components.
+
+        Returns
+        -------
+        components : dict
+            Dictionary of newly-created components.
+
+        Examples
+        --------
+        >>> from cmt.framework.services import del_component_instances
+        >>> del_component_instances(['air_port'])
+
+        >>> from cmt.component.model import Model
+        >>> source = '''
+        ... name: air_port
+        ... class: AirPort
+        ... connectivity: []
+        ... '''
+        >>> components = Model.load_components(source)
+        >>> components.keys()
+        ['air_port']
+        """
         components = {}
         connectivities = {}
 
@@ -94,8 +162,6 @@ class Model(object):
             components[section['name']] = Component.from_dict(section)
             if with_connectivities:
                 connectivities[section['name']] = section['connectivity']
-                #if section['intent'] == 'driver':
-                #    connectivities['__driver__'] = section['name']
 
         if with_connectivities:
             return components, connectivities
