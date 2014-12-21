@@ -8,20 +8,47 @@ from cmt.component.grid import GridMixIn
 
 
 class Port(object):
+    def __init__(self, name, uses=None, provides=None):
+        self._name = name
+        self._uses = uses or []
+        self._provides = provides or []
+
     def get_component_name(self):
-        return 'test-component'
+        return self._name
 
     def get_input_item_count(self):
-        return 1
+        return len(self._uses)
 
     def get_input_item_list(self):
-        return ['invar']
+        return self._uses
 
     def get_output_item_count(self):
-        return 1
+        return len(self._provides)
 
     def get_output_item_list(self):
-        return ['outvar']
+        return self._provides
+
+
+def test_exchange_items():
+    class Component(GridMixIn):
+        def __init__(self):
+            self._port = Port('test', uses=['invar'], provides=['outvar'])
+            super(Component, self).__init__()
+
+    c = Component()
+    assert_list_equal(c.input_items, ['invar'])
+    assert_list_equal(c.output_items, ['outvar'])
+
+
+def test_no_exchange_items():
+    class Component(GridMixIn):
+        def __init__(self):
+            self._port = Port('test')
+            super(Component, self).__init__()
+
+    c = Component()
+    assert_list_equal(c.input_items, [])
+    assert_list_equal(c.output_items, [])
 
 
 def test_raster_1d():
@@ -37,7 +64,7 @@ def test_raster_1d():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = RasterPort()
+            self._port = RasterPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
@@ -58,13 +85,12 @@ def test_raster_2d():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = RasterPort()
+            self._port = RasterPort('test-2d', uses=['invar'],
+                                    provides=['outvar'])
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.name, 'test-component')
-    assert_list_equal(c.input_items, ['invar'])
-    assert_list_equal(c.output_items, ['outvar'])
+    assert_equal(c.name, 'test-2d')
     assert_equal(c.get_grid_type('invar'), 'RASTER')
     assert_array_almost_equal(c.get_x('invar'),
                               np.array([[ 0.,  1.,  2.], [ 0.,  1.,  2.]]))
@@ -89,7 +115,7 @@ def test_raster_3d():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = RasterPort()
+            self._port = RasterPort('test-3d', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
@@ -117,13 +143,10 @@ def test_rectilinear():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = RectilinearPort()
+            self._port = RectilinearPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.name, 'test-component')
-    assert_list_equal(c.input_items, ['invar'])
-    assert_list_equal(c.output_items, ['outvar'])
     assert_equal(c.get_grid_type('invar'), 'RECTILINEAR')
     assert_array_almost_equal(c.get_x('invar'),
                               np.array([[ 0.,  3.,  4.], [ 0.,  3.,  4.]]))
@@ -144,13 +167,10 @@ def test_structured():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = StructuredPort()
+            self._port = StructuredPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.name, 'test-component')
-    assert_list_equal(c.input_items, ['invar'])
-    assert_list_equal(c.output_items, ['outvar'])
     assert_equal(c.get_grid_type('invar'), 'STRUCTURED')
     assert_array_almost_equal(c.get_x('invar'),
                               np.array([0., 1., 2., 0., 1., 2.]))
@@ -174,13 +194,10 @@ def test_unstructured():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = UnstructuredPort()
+            self._port = UnstructuredPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.name, 'test-component')
-    assert_list_equal(c.input_items, ['invar'])
-    assert_list_equal(c.output_items, ['outvar'])
     assert_equal(c.get_grid_type('invar'), 'UNSTRUCTURED')
     assert_array_almost_equal(c.get_x('invar'),
                               np.array([0., 1., 0., 1., 2.]))
@@ -198,7 +215,7 @@ def test_get_grid_shape_is_none():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = UnstructuredPort()
+            self._port = UnstructuredPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
@@ -215,7 +232,7 @@ def test_get_grid_shape_raises():
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = UnstructuredPort()
+            self._port = UnstructuredPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
@@ -231,18 +248,18 @@ def test_structured_1d():
             return np.array([0., 1., 2.])
 
         def get_grid_y(self, name):
-            return np.array([0., 1.])
+            #return np.array([0., 1.])
+            raise NotImplementedError('get_grid_y')
 
         def get_grid_z(self, name):
             raise NotImplementedError('get_grid_z')
 
     class Component(GridMixIn):
         def __init__(self):
-            self._port = RectilinearPort()
+            self._port = RectilinearPort('test', uses=['invar'])
             super(Component, self).__init__()
 
     c = Component()
     assert_equal(c.get_grid_type('invar'), 'RECTILINEAR')
-    assert_equal(c.get_grid_type('outvar'), 'RECTILINEAR')
     with assert_raises(IndexError):
         c.get_z('invar')
