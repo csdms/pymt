@@ -26,7 +26,7 @@ class ConstantScalars(object):
         self._spacing = (1., )
         self._origin = (0., )
 
-        self._input_exchange_items = set()
+        self._input_exchange_items = []
         self._output_exchange_items = self._vars.keys()
 
         self._start_time = 0.
