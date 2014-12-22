@@ -1,5 +1,4 @@
 #! /bin/env python
-
 import os
 import sys
 
@@ -142,7 +141,8 @@ def fromfile(filename, allow_singleton=True):
 
 def array_tofile(filename, array, name='', spacing=(1., 1.), origin=(0., 0.),
                  no_clobber=False, options=None):
-    files_written = []
+    options = options or {}
+
     (base, ext) = os.path.splitext(filename)
     if len(ext) > 0 and ext != '.bov':
         raise BadFileExtension(ext)
@@ -159,36 +159,32 @@ def array_tofile(filename, array, name='', spacing=(1., 1.), origin=(0., 0.),
     if len(size) < 3:
         size = np.append(size, [1.] * (3 - len(size)))
 
-    for (var, vals) in [(name, array)]:
-        dat_file = '%s_%s.dat' % (base, var)
-        bov_file = '%s_%s.bov' % (base, var)
+    dat_file = '%s.dat' % base
+    bov_file = '%s.bov' % base
 
-        if no_clobber:
-            if os.path.isfile(bov_file):
-                raise FileExists(bov_file)
-            if os.path.isfile(dat_file):
-                raise FileExists(dat_file)
+    if no_clobber:
+        if os.path.isfile(bov_file):
+            raise FileExists(bov_file)
+        if os.path.isfile(dat_file):
+            raise FileExists(dat_file)
 
-        vals.tofile(dat_file)
+    array.tofile(dat_file)
 
-        header = dict(DATA_FILE=dat_file,
-                      DATA_SIZE=array_to_str(shape),
-                      BRICK_ORIGIN=array_to_str(origin),
-                      BRICK_SIZE=array_to_str(size),
-                      DATA_ENDIAN=_SYS_TO_BOV_ENDIAN[sys.byteorder],
-                      DATA_FORMAT=_NP_TO_BOV_TYPE[str(vals.dtype)],
-                      VARIABLE=var)
+    header = dict(DATA_FILE=dat_file,
+                  DATA_SIZE=array_to_str(shape),
+                  BRICK_ORIGIN=array_to_str(origin),
+                  BRICK_SIZE=array_to_str(size),
+                  DATA_ENDIAN=_SYS_TO_BOV_ENDIAN[sys.byteorder],
+                  DATA_FORMAT=_NP_TO_BOV_TYPE[str(array.dtype)],
+                  VARIABLE=name)
 
-        if options is not None:
-            header.update(options)
+    header.update(options)
 
-        with open(bov_file, 'w') as f:
-            for item in header.items():
-                f.write('%s: %s\n' % item)
+    with open(bov_file, 'w') as f:
+        for item in header.items():
+            f.write('%s: %s\n' % item)
 
-        files_written.append(bov_file)
-
-    return files_written
+    return bov_file
 
 
 def tofile(filename, grid, var_name=None, no_clobber=False, options=None):
@@ -197,7 +193,7 @@ def tofile(filename, grid, var_name=None, no_clobber=False, options=None):
 
     Parameters
     ----------
-    file : str
+    filename : str
         Name of the BOV file to write.
     grid :  Grid-like
         A uniform rectilinear grid.
@@ -222,62 +218,31 @@ def tofile(filename, grid, var_name=None, no_clobber=False, options=None):
         * items
         * get_field
     """
-    files_written = []
-    (base, ext) = os.path.splitext(filename)
-    if len(ext) > 0 and ext != '.bov':
-        raise BadFileExtension(ext)
-
     try:
-        shape = grid.get_shape()
-        origin = grid.get_origin()
-        size = grid.get_shape() * grid.get_spacing()
+        shape, spacing, origin = (grid.get_shape(),
+                                  grid.get_spacing(),
+                                  grid.get_origin())
     except (AttributeError, TypeError):
-        raise TypeError('\'%s\' object is not grid-like' % type(grid))
-
-    if len(shape) < 3:
-        shape = np.append(shape, [1] * (3 - len(shape)))
-    if len(origin) < 3:
-        origin = np.append(origin, [1.] * (3 - len(origin)))
-    if len(size) < 3:
-        size = np.append(size, [1.] * (3 - len(size)))
+        raise TypeError("'%s' object is not grid-like" % type(grid))
 
     if var_name is None:
-        var_name_and_value = grid.get_point_fields().items()
+        names = grid.get_point_fields().keys()
     else:
-        var_name_and_value = (var_name, grid.get_field(var_name))
+        names = [var_name]
 
-    for (name, vals) in var_name_and_value:
-        dat_file = '%s.dat' % (base, )
-        bov_file = '%s.bov' % (base, )
+    if len(names) > 1:
+        (base, ext) = os.path.splitext(filename)
+        filenames = ['%s_%s' % (base, name) + ext for name in names]
+    else:
+        filenames = [filename]
 
-        if no_clobber:
-            if os.path.isfile(bov_file):
-                raise FileExists(bov_file)
-            if os.path.isfile(dat_file):
-                raise FileExists(dat_file)
-
-        vals.tofile(dat_file)
-
-        header = dict(DATA_FILE=dat_file,
-                      DATA_SIZE=array_to_str(shape),
-                      BRICK_ORIGIN=array_to_str(origin),
-                      BRICK_SIZE=array_to_str(size),
-                      DATA_ENDIAN=_SYS_TO_BOV_ENDIAN[sys.byteorder],
-                      DATA_FORMAT=_NP_TO_BOV_TYPE[str(vals.dtype)],
-                      VARIABLE=name)
-
-        if options is not None:
-            header.update(options)
-
-        with open(bov_file, 'w') as opened_file:
-            for item in header.items():
-                opened_file.write('%s: %s\n' % item)
+    files_written = []
+    for (name, filename) in zip(names, filenames):
+        vals = grid.get_field(name).reshape(shape)
+        bov_file = array_tofile(filename, vals, name=name,
+                                spacing=spacing, origin=origin,
+                                no_clobber=no_clobber, options=options)
 
         files_written.append(bov_file)
 
     return files_written
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod() 
