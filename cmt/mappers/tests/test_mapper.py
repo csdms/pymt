@@ -2,36 +2,11 @@
 
 import numpy as np
 from numpy.testing import assert_array_equal
-from nose.tools import assert_equal
 
-from cmt.grids.map import RectilinearMap as Rectilinear
-from cmt.mappers import find_mapper, NearestVal, CellToPoint, PointToCell
+from cmt.mappers import CellToPoint, PointToCell
 
 from cmt.grids.map import (UniformRectilinearMap as UniformRectilinear)
 from cmt.grids.map import (UnstructuredPointsMap as UnstructuredPoints)
-
-
-def test_point_to_point():
-    src = Rectilinear([0, 1, 2], [0, 2])
-    dst = Rectilinear([.5, 1.5, 2.5], [.25, 1.25])
-
-    src_vals = np.arange(src.get_point_count ())
-
-    mapper = NearestVal()
-    mapper.initialize(dst, src)
-    dst_vals = mapper.run(src_vals)
-
-    assert_array_equal(dst_vals, np.array([0., 1., 2., 3., 4., 5.]))
-
-    mappers = find_mapper(dst, src)
-    assert_equal(len(mappers), 3)
-    assert_equal(mappers[0].name(), 'PointToPoint')
-
-    src_vals[2] = -999
-    dst_vals = np.zeros(dst.get_point_count()) - 1
-    _ = mapper.run(src_vals, dst_vals)
-
-    assert_array_equal(dst_vals, np.array([0., 1., -1., 3., 4., 5.]))
 
 
 def test_cell_to_point():
