@@ -141,7 +141,7 @@ class NetcdfField(object):
 
         variable = self.data_variable(name)
         for (attr, value) in attrs.items():
-            setattr(variable, attr, value)
+            variable.setncattr(attr, value)
 
         if len(args) > 0:
             array = args[0]
