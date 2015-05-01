@@ -115,9 +115,9 @@ def fix_unknown_shape(shape, size):
     return tuple(new_shape)
 
 
-def is_structured_port(port, var_name):
+def is_structured_port(port, grid_id):
     if hasattr(port, 'get_grid_shape'):
-        shape = port.get_grid_shape(var_name)
+        shape = port.get_grid_shape(grid_id)
         if shape is None:
             return False
     else:
@@ -125,9 +125,9 @@ def is_structured_port(port, var_name):
     return True
 
 
-def is_rectilinear_port(port, var_name):
-    if is_structured_port(port, var_name) and hasattr(port, 'get_grid_spacing'):
-        spacing = port.get_grid_spacing(var_name)
+def is_rectilinear_port(port, grid_id):
+    if is_structured_port(port, grid_id) and hasattr(port, 'get_grid_spacing'):
+        spacing = port.get_grid_spacing(grid_name)
         if spacing is None:
             return False
     else:
@@ -135,79 +135,80 @@ def is_rectilinear_port(port, var_name):
     return True
 
 
-def port_is_one_point(port, var_name):
-    shape = port.get_grid_shape(var_name)
+def port_is_one_point(port, grid_id):
+    shape = port.get_grid_shape(grid_id)
     if len(shape) == 1 and shape[0] == 1:
         return True
     else:
         return False
 
 
-def _port_shape_as_array(port, var_name):
-    return port.get_grid_shape(var_name)
+def _port_shape_as_array(port, grid_id):
+    return port.get_grid_shape(grid_id)
 
 
-def _port_spacing_as_array(port, var_name):
-    if port_is_one_point(port, var_name):
+def _port_spacing_as_array(port, grid_id):
+    if port_is_one_point(port, grid_id):
         spacing = np.array([1.])
     else:
-        spacing = port.get_grid_spacing(var_name)
+        spacing = port.get_grid_spacing(grid_id)
     return spacing
 
 
-def _port_origin_as_array(port, var_name):
-    if port_is_one_point(port, var_name):
+def _port_origin_as_array(port, grid_id):
+    if port_is_one_point(port, grid_id):
         origin = np.array([0.])
     else:
         try:
-            origin = port.get_grid_origin(var_name)
+            origin = port.get_grid_origin(grid_id)
         except AttributeError:
-            origin = port.get_grid_lower_left(var_name)
+            origin = port.get_grid_lower_left(grid_id)
             warnings.warn('get_grid_lower_left', DeprecationWarning)
     return origin
 
 
-def _construct_port_as_rectilinear_field(port, var_name, data_array):
-    shape = _port_shape_as_array(port, var_name)
-    spacing = _port_spacing_as_array(port, var_name)
-    origin = _port_origin_as_array(port, var_name)
+def _construct_port_as_rectilinear_field(port, grid_id, data_array):
+    shape = _port_shape_as_array(port, grid_id)
+    spacing = _port_spacing_as_array(port, grid_id)
+    origin = _port_origin_as_array(port, grid_id)
 
     shape = fix_unknown_shape(shape, data_array.size)
 
     return RasterField(shape, spacing, origin, indexing='ij')
 
 
-def _construct_port_as_structured_field(port, var_name, data_array):
-    shape = _port_shape_as_array(port, var_name)
+def _construct_port_as_structured_field(port, grid_id, data_array):
+    shape = _port_shape_as_array(port, grid_id)
     shape = fix_unknown_shape(shape, data_array.size)
 
-    x = port.get_grid_x(var_name)
-    y = port.get_grid_y(var_name)
+    x = port.get_grid_x(grid_id)
+    y = port.get_grid_y(grid_id)
 
     return StructuredField(x, y, shape)
 
 
-def _construct_port_as_unstructured_field(port, var_name):
-    x = port.get_grid_x(var_name)
-    y = port.get_grid_y(var_name)
-    c = port.get_grid_connectivity(var_name)
-    o = port.get_grid_offset(var_name)
+def _construct_port_as_unstructured_field(port, grid_id):
+    x = port.get_grid_x(grid_id)
+    y = port.get_grid_y(grid_id)
+    c = port.get_grid_connectivity(grid_id)
+    o = port.get_grid_offset(grid_id)
 
     return UnstructuredField(x, y, c, o)
 
 
 def _construct_port_as_field(port, var_name):
-    data_array = port.get_grid_values(var_name)
+    data_array = port.get_value(var_name)
     if data_array is None:
         raise ValueError(var_name)
 
-    if is_rectilinear_port(port, var_name):
-        field = _construct_port_as_rectilinear_field(port, var_name,
+    grid_id = port.get_var_grid(grid_id)
+    if is_rectilinear_port(port, grid_id):
+        field = _construct_port_as_rectilinear_field(port, grid_id,
                                                      data_array)
-    elif is_structured_port(port, var_name):
-        field = _construct_port_as_structured_field(port, var_name, data_array)
+    elif is_structured_port(port, grid_id):
+        field = _construct_port_as_structured_field(port, grid_id, data_array)
     else:
-        field = _construct_port_as_unstructured_field(port, var_name)
+        field = _construct_port_as_unstructured_field(port, grid_id)
 
     field.add_field(var_name, data_array,
                     centering=get_data_centering(field, data_array))
@@ -239,7 +240,7 @@ def data_is_centered_on_cells(field, data):
 
 def _reconstruct_port_as_field (port, field):
     for var_name in field.keys():
-        data_array = port.get_grid_values(var_name)
+        data_array = port.get_value(var_name)
 
         if mesh_size_has_changed(field, data_array):
             field = _construct_port_as_field(port, var_name)
