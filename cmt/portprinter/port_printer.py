@@ -11,7 +11,7 @@ from ..printers.nc.database import Database as NcDatabase
 from ..utils.prefix import strip_prefix, names_with_prefix
 
 
-from .utils import (_construct_port_as_field, _reconstruct_port_as_field,
+from .utils import (construct_port_as_field, reconstruct_port_as_field,
                     construct_file_name, next_unique_file_name, )
 
 
@@ -29,7 +29,7 @@ class PortPrinter(object):
         if filename is None:
             self._filename = var_name
 
-        self._field = _construct_port_as_field(self._port, var_name)
+        self._field = construct_port_as_field(self._port, var_name)
         self._printer = self._printer_class()
 
     @property
@@ -57,7 +57,7 @@ class PortPrinter(object):
         self._printer.write(self._field)
 
     def resync_field_to_port(self):
-        self._field = _reconstruct_port_as_field(self._port, self._field)
+        self._field = reconstruct_port_as_field(self._port, self._field)
 
     @classmethod
     def from_string(cls, source, prefix='print'):

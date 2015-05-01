@@ -196,7 +196,21 @@ def _construct_port_as_unstructured_field(port, grid_id):
     return UnstructuredField(x, y, c, o)
 
 
-def _construct_port_as_field(port, var_name):
+def construct_port_as_field(port, var_name):
+    """Create a field object from a port.
+
+    Parameters
+    ----------
+    port : port_like
+        A port.
+    var_name : str
+        Name of the variable field.
+
+    Returns
+    -------
+    field_like
+        A newly created field that contains the data for *var_name*.
+    """
     data_array = port.get_value(var_name)
     if data_array is None:
         raise ValueError(var_name)
@@ -238,12 +252,31 @@ def data_is_centered_on_cells(field, data):
     return data.size == field.get_cell_count()
 
 
-def _reconstruct_port_as_field (port, field):
+def reconstruct_port_as_field (port, field):
+    """Recreate a field object from a port.
+
+    Add data from *port* to *field*. If the mesh of the port is no longer the
+    same as that of *field*, create a new field object and add the data to
+    it. Where possible, the new data is added to the existing field. Only the
+    data that does not fit on the existing field is added to the new one.
+
+    Parameters
+    ----------
+    port : port_like
+        A port.
+    field : field_like
+        An existing field with new data.
+
+    Returns
+    -------
+    field_like
+        A (possibley) newly created field that contains the data for *var_name*.
+    """
     for var_name in field.keys():
         data_array = port.get_value(var_name)
 
         if mesh_size_has_changed(field, data_array):
-            field = _construct_port_as_field(port, var_name)
+            field = construct_port_as_field(port, var_name)
         else:
             field.add_field(var_name, data_array,
                             centering=get_data_centering(field, data_array))
