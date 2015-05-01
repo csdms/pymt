@@ -29,10 +29,42 @@ class BadFileFormatError(Error):
 
 
 def positive_dimensions(shape):
+    """Check if all dimensions are positive.
+
+    Parameters
+    ----------
+    shape : ndarray of int
+        Array shape.
+
+    Returns
+    -------
+    boolean
+        True if dimensions are positive non-zero. Otherwise, False.
+    """
     return shape[shape > 0]
 
 
 def find_unknown_dimension(shape):
+    """Find unlimited dimensions.
+
+    If a dimension is negative, it's thought to be *unknown* or *unlimited*
+    Find that dimension. Raise an error if there are multiple unknown dimensions.
+
+    Parameters
+    ----------
+    shape : ndarray of int
+        Array shape.
+
+    Returns
+    -------
+    int
+        Dimension that is unknown or `None` if all dimensions are known.
+
+    Raises
+    ------
+    DimensionError
+        There are multiple unknown dimensions.
+    """
     (unknown_dim, ) = np.where(np.array(shape) < 0)
     if len(unknown_dim) > 1:
         raise DimensionError('more than one unknown dimension')
@@ -43,7 +75,23 @@ def find_unknown_dimension(shape):
 
 
 def fix_unknown_shape(shape, size):
-    """
+    """Determine shape with an unknown dimension.
+
+    Parameters
+    ----------
+    shape : ndarray of int
+        Array shape (with a possible unknown dimension).
+    size : int
+        Sive of the array.
+
+    Returns
+    -------
+    tuple of int
+        Shape of the array with any unknown dimension fixed.
+
+    Examples
+    --------
+    >>> from cmt.portprinters.utils import fix_unknown_shape
     >>> print fix_unknown_shape((4, 3), 12)
     (4, 3)
     >>> print fix_unknown_shape((4, -1), 12)
