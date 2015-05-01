@@ -28,13 +28,13 @@ class BMI(object):
     def get_output_var_names(self):
         pass
 
+    def get_var_grid(self, var_name):
+        pass
+
     def get_var_type(self, var_name):
         pass
 
     def get_var_units(self, var_name):
-        pass
-
-    def get_var_rank(self, var_name):
         pass
 
     def get_time_step(self):
@@ -49,26 +49,26 @@ class BMI(object):
     def get_end_time(self):
         pass
 
-    def get_grid_spacing(self, var_name):
+    def get_grid_rank(self, grid_id):
         pass
 
-    def get_grid_lower_left_corner(self, var_name):
+    def get_grid_spacing(self, grid_id):
         pass
 
-    def get_grid_shape(self, var_name):
+    def get_grid_shape(self, grid_id):
         pass
 
-    def get_grid_x(self, var_name):
+    def get_grid_x(self, grid_id):
         pass
 
-    def get_grid_y(self, var_name):
+    def get_grid_y(self, grid_id):
         pass
 
-    def get_grid_z(self, var_name):
+    def get_grid_z(self, grid_id):
         pass
 
-    def get_grid_connectivity(self, var_name):
+    def get_grid_connectivity(self, grid_id):
         pass
 
-    def get_grid_offset(self, var_name):
+    def get_grid_offset(self, grid_id):
         pass

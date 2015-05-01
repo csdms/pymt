@@ -91,7 +91,7 @@ def fix_unknown_shape(shape, size):
 
     Examples
     --------
-    >>> from cmt.portprinters.utils import fix_unknown_shape
+    >>> from cmt.portprinter.utils import fix_unknown_shape
     >>> print fix_unknown_shape((4, 3), 12)
     (4, 3)
     >>> print fix_unknown_shape((4, -1), 12)
@@ -127,7 +127,7 @@ def is_structured_port(port, grid_id):
 
 def is_rectilinear_port(port, grid_id):
     if is_structured_port(port, grid_id) and hasattr(port, 'get_grid_spacing'):
-        spacing = port.get_grid_spacing(grid_name)
+        spacing = port.get_grid_spacing(grid_id)
         if spacing is None:
             return False
     else:
@@ -215,7 +215,7 @@ def construct_port_as_field(port, var_name):
     if data_array is None:
         raise ValueError(var_name)
 
-    grid_id = port.get_var_grid(grid_id)
+    grid_id = port.get_var_grid(var_name)
     if is_rectilinear_port(port, grid_id):
         field = _construct_port_as_rectilinear_field(port, grid_id,
                                                      data_array)

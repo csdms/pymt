@@ -64,22 +64,22 @@ class TimeInterpolator(object):
     def get_output_var_names(self):
         return self._output_exchange_items
 
-    def get_grid_shape(self, var):
-        if var in (None, ''):
-            warnings.warn('var name is ignored')
+    def get_grid_shape(self, grid_id):
+        if grid_id in (None, ''):
+            warnings.warn('grid identifier is ignored')
         return self._shape
 
-    def get_grid_spacing(self, var):
-        if var in (None, ''):
-            warnings.warn('var name is ignored')
+    def get_grid_spacing(self, grid_id):
+        if grid_id in (None, ''):
+            warnings.warn('grid identifier is ignored')
         return self._spacing
 
-    def get_grid_origin(self, var):
-        if var in (None, ''):
-            warnings.warn('var name is ignored')
+    def get_grid_origin(self, grid_id):
+        if grid_id in (None, ''):
+            warnings.warn('grid identifier is ignored')
         return self._origin
 
-    def get_double(self, name):
+    def get_value(self, name):
         return self._interpolators[name](self._time)
         #if name.endswith('_increment'):
         #    name = name[:- len('_increment')]

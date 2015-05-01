@@ -4,7 +4,7 @@ import yaml
 import numpy as np
 from numpy.testing import assert_array_almost_equal, assert_almost_equal
 
-from nose.tools import assert_list_equal, assert_raises
+from nose.tools import assert_equal, assert_list_equal, assert_raises
 
 from cmt.services.constant.constant import ConstantScalars
 from cmt.utils.run_dir import cd_temp
@@ -20,10 +20,10 @@ def test_initialize():
     assert_list_equal(c.get_output_var_names(), ['foo', 'bar'])
     assert_list_equal(c.get_input_var_names(), [])
 
-    assert_array_almost_equal(c.get_grid_values('foo'), np.array(2.))
-    assert_array_almost_equal(c.get_grid_values('bar'), np.array(3.))
+    assert_array_almost_equal(c.get_value('foo'), np.array(2.))
+    assert_array_almost_equal(c.get_value('bar'), np.array(3.))
     with assert_raises(KeyError):
-        c.get_grid_values('baz')
+        c.get_value('baz')
 
 
 def test_time_funcs():
@@ -47,13 +47,11 @@ def test_grid_funcs():
         c = ConstantScalars()
         c.initialize('params.yml')
 
-    assert_array_almost_equal(c.get_grid_shape('foo'), (1, ))
-    assert_array_almost_equal(c.get_grid_spacing('foo'), (1, ))
-    assert_array_almost_equal(c.get_grid_origin('foo'), (0, ))
+    assert_equal(c.get_var_grid('foo'), 0)
+
+    assert_array_almost_equal(c.get_grid_shape(0), (1, ))
+    assert_array_almost_equal(c.get_grid_spacing(0), (1, ))
+    assert_array_almost_equal(c.get_grid_origin(0), (0, ))
 
     with assert_raises(KeyError):
-        c.get_grid_shape('baz')
-    with assert_raises(KeyError):
-        c.get_grid_spacing('baz')
-    with assert_raises(KeyError):
-        c.get_grid_origin('baz')
+        c.get_var_grid('baz')

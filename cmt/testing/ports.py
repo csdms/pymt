@@ -15,25 +15,29 @@ class UniformRectilinearGridPort(object):
             'glacier_top_surface__slope': np.zeros(self._shape),
         }
 
-    def get_grid_shape(self, var_name):
+    def get_var_grid(self, var_name):
         if var_name in self._values:
+            return 0
+        else:
+            raise KeyError(var_name)
+
+    def get_grid_shape(self, grid_id):
+        if grid_id == 0:
             return self._shape
         else:
-            raise KeyError(var_name)
+            raise KeyError(grid_id)
 
-    def get_grid_spacing(self, var_name):
-        if var_name in self._values:
+    def get_grid_spacing(self, grid_id):
+        if grid_id == 0:
             return self._spacing
         else:
-            raise KeyError(var_name)
+            raise KeyError(grid_id)
 
-    def get_grid_origin(self, var_name):
-        if var_name in self._values:
+    def get_grid_origin(self, grid_id):
+        if grid_id == 0:
             return self._origin
         else:
-            raise KeyError(var_name)
+            raise KeyError(grid_id)
 
-    def get_grid_values(self, var_name):
+    def get_value(self, var_name):
         return self._values[var_name]
-
-

@@ -7,7 +7,7 @@ from cmt.events.port import PortEvent
 
 
 def assert_port_value_equal(port, name, value):
-    assert_array_equal(port.get_grid_values(name), value)
+    assert_array_equal(port.get_value(name), value)
 
 
 def test_one_event():
