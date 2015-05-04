@@ -67,7 +67,7 @@ class PortEvent(GridMixIn):
 
     def update(self, time):
         with open_run_dir(self._run_dir):
-            self._port.update(time)
+            self._port.update_until(time)
 
     def finalize(self):
         """Finalize the event.
