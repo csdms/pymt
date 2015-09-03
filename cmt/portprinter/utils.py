@@ -168,9 +168,14 @@ def _port_origin_as_array(port, grid_id):
 
 
 def _construct_port_as_rectilinear_field(port, grid_id, data_array):
-    shape = _port_shape_as_array(port, grid_id)
-    spacing = _port_spacing_as_array(port, grid_id)
-    origin = _port_origin_as_array(port, grid_id)
+    if len(data_array) == 1:
+        shape = np.array((1, ))
+        spacing = np.array((1., ))
+        origin = np.array((0., ))
+    else:
+        shape = _port_shape_as_array(port, grid_id)
+        spacing = _port_spacing_as_array(port, grid_id)
+        origin = _port_origin_as_array(port, grid_id)
 
     shape = fix_unknown_shape(shape, data_array.size)
 
@@ -216,7 +221,7 @@ def construct_port_as_field(port, var_name):
         raise ValueError(var_name)
 
     grid_id = port.get_var_grid(var_name)
-    if is_rectilinear_port(port, grid_id):
+    if len(data_array) == 1 or is_rectilinear_port(port, grid_id):
         field = _construct_port_as_rectilinear_field(port, grid_id,
                                                      data_array)
     elif is_structured_port(port, grid_id):
