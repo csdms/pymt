@@ -1,4 +1,5 @@
 import numpy as np
+from .bmi_setup import SetupMixIn
 
 
 def val_or_raise(func, args):
@@ -53,6 +54,9 @@ def wrap_get_value(func):
         if out is None:
             grid = self.get_var_grid(name)
             dtype = self.get_var_type(name)
+            if dtype == '':
+                print self.get_output_var_names()
+                raise ValueError('{name} not understood'.format(name=name))
             out = np.empty(self.get_grid_size(grid), dtype=dtype)
         val_or_raise(func, (self._base, name, out))
         return out
@@ -85,6 +89,15 @@ def wrap_var_names(func):
     return wrap
 
 
+def wrap_initialize(func):
+    def wrap(self, *args, **kwds):
+        if len(args) == 0:
+            args = (self.setup(case=kwds.pop('case', 'default')), )
+        val_or_raise(func, (self._base, ) + args)
+    wrap.__name__ = func.__name__
+    return wrap
+
+
 def wrap_default(func):
     def wrap(self, *args):
         return val_or_raise(func, (self._base, ) + args)
@@ -95,13 +108,15 @@ def wrap_default(func):
 def bmi_factory(cls):
     import inspect
 
-    class BmiWrapper(object):
+    class BmiWrapper(SetupMixIn):
         _cls = cls
         def __init__(self):
             self._base = self._cls()
 
     for name, func in inspect.getmembers(cls):
-        if name == 'set_value':
+        if name == 'initialize':
+            setattr(BmiWrapper, name, wrap_initialize(func))
+        elif name == 'set_value':
             setattr(BmiWrapper, name, wrap_set_value(func))
         elif name == 'get_value':
             setattr(BmiWrapper, name, wrap_get_value(func))
@@ -111,7 +126,7 @@ def bmi_factory(cls):
             setattr(BmiWrapper, name, wrap_get_grid_with_out_arg(func, 'int32'))
         elif name in ('get_input_var_names', 'get_output_var_names'):
             setattr(BmiWrapper, name, wrap_var_names(func))
-        elif name.startswith('get_') or name in ('initialize', 'update', 'update_until', 'finalize'):
+        elif name.startswith('get_') or name in ('update', 'update_until', 'finalize'):
             setattr(BmiWrapper, name, wrap_default(func))
         else:
             pass
