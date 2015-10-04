@@ -8,7 +8,7 @@ from glob import glob
 from .framework.bmi_bridge import bmi_factory
 
 
-class ConfigError(object):
+class BabelConfigError(Exception):
     def __init__(self, prog):
         self._prog = prog
 
@@ -41,7 +41,7 @@ def query_config_var(var, config='csdms-config'):
         warnings.warn('Unable to run {prog} program.'.format(prog=config))
 
     if value is None:
-        raise ConfigError(config)
+        raise BabelConfigError(config)
 
     return value
 
@@ -54,7 +54,7 @@ def setup_babel_environ():
         prefix = query_config_var('PREFIX', config='csdms-config')
         ccaspec_babel_libs = query_config_var('CCASPEC_BABEL_LIBS',
                                               config='cca-spec-babel-config')
-    except ConfigError:
+    except BabelConfigError:
         warnings.warn('Unable to configure for babel. Not loading components.')
     else:
         prepend_env_path('SIDL_DLL_PATH', os.path.join(prefix, 'share', 'cca'),
