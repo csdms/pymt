@@ -2,6 +2,7 @@ __all__ = []
 
 import os
 import sys
+import warnings
 import importlib
 from glob import glob
 
@@ -29,7 +30,6 @@ def prepend_env_path(var, path, sep=os.pathsep):
 def query_config_var(var, config='csdms-config'):
     """Get a configuration variable from a babel project."""
     import subprocess
-    import warnings
 
     value = None
 
