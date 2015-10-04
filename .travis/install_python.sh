@@ -15,4 +15,5 @@ conda update conda
 conda info -a
 cat requirements.txt | xargs conda create -n test-env python=$TRAVIS_PYTHON_VERSION
 source activate test-env
+conda install -c https://conda.anaconda.org/csdms esmpy
 conda install coverage

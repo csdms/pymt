@@ -5,14 +5,13 @@ python:
 os:
     - linux
 
+sudo: false
+
 install:
-    - sudo apt-get install gfortran
-    - bash .travis/install_esmf.sh
     - bash .travis/install_python.sh
     - export PATH="$HOME/miniconda/bin:$PATH"
     - source activate test-env
     - pip install coveralls
-    - bash .travis/install_esmpy.sh
 
 script:
     - nosetests --with-doctest --with-coverage --cover-package=cmt
