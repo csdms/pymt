@@ -112,6 +112,7 @@ def bmi_factory(cls):
         _cls = cls
         def __init__(self):
             self._base = self._cls()
+            super(BmiWrapper, self).__init__()
 
     for name, func in inspect.getmembers(cls):
         if name == 'initialize':
