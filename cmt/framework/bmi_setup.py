@@ -61,7 +61,7 @@ class SetupMixIn(object):
             if file_ not in ('api.yaml', 'parameters.yaml', 'info.yaml'):
                 files.append(os.path.join(self.datadir, file_))
 
-        with cd(dir):
+        with cd(dir, create=True):
             for file_ in files:
                 (base, ext) = os.path.splitext(file_)
                 if ext == '.tmpl':
