@@ -20,7 +20,13 @@ def load_default_parameters(path):
     for group in param_groups:
         for name, param in group.items():
             if not name.startswith('_'):
-                p[name] = param['value']['default']
+                value = param['value']['default']
+                try:
+                    units = param['value']['units']
+                except KeyError:
+                    units = '-'
+                    warnings.warn('missing units for {name}'.format(name=name))
+                p[name] = (value, units)
     return p
 
 
@@ -47,14 +53,17 @@ class SetupMixIn(object):
         self._defaults = load_default_parameters(
             os.path.join(self.datadir, 'parameters.yaml')) 
         self._info = load_info(os.path.join(self.datadir, 'info.yaml'))
+        self._parameters = {}
+        for name, val_and_units in self._defaults.items():
+            self._parameters[name] = val_and_units[0]
 
-    def setup(self, dir=None, values=None):
-        if values is None:
-            values = dict(self.defaults)
+    def setup(self, *args, **kwds):
+        if len(args) == 0:
+            dir = tempfile.mkdtemp()
         else:
-            values = update_values(values, self._defaults)
+            dir = args[0]
 
-        dir = dir or tempfile.mkdtemp()
+        self._parameters.update(kwds)
 
         files = []
         for file_ in os.listdir(self.datadir):
@@ -69,11 +78,15 @@ class SetupMixIn(object):
                         template = fp.read()
                     (_, name) = os.path.split(base)
                     with open(name, 'w') as fp:
-                        fp.write(template.format(**values))
+                        fp.write(template.format(**self._parameters))
                 else:
                     shutil.copy(file_, '.')
 
         return dir
+
+    @property
+    def parameters(self):
+        return self._parameters.items()
 
     @property
     def defaults(self):
