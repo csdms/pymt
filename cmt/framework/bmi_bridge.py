@@ -28,8 +28,7 @@ def wrap_set_value(func):
         val : array_like
             Values to set.
         """
-        if not isinstance(val, np.ndarray):
-            val = np.array(val)
+        val = np.asarray(val).reshape((-1, ))
         return val_or_raise(func, (self._base, name, val))
     wrap.__name__ = func.__name__
     return wrap
