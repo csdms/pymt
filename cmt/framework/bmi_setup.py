@@ -3,37 +3,12 @@ import os
 import urllib
 import zipfile
 import tempfile
-import warnings
 import shutil
 
 import yaml
 
-from ..babel import query_config_var
 from ..utils.run_dir import cd
-
-
-def load_default_parameters(path):
-    with open(path, 'r') as fp:
-        param_groups = yaml.load_all(fp.read())
-
-    p = {}
-    for group in param_groups:
-        for name, param in group.items():
-            if not name.startswith('_'):
-                value = param['value']['default']
-                try:
-                    units = param['value']['units']
-                except KeyError:
-                    units = '-'
-                    warnings.warn('missing units for {name}'.format(name=name))
-                p[name] = (value, units)
-    return p
-
-
-def load_info(path):
-    with open(path, 'r') as fp:
-        info = yaml.load(fp.read())
-    return info
+from .bmi_metadata import bmi_data_dir, load_bmi_metadata
 
 
 def update_values(values, defaults):
@@ -47,15 +22,16 @@ def update_values(values, defaults):
 
 class SetupMixIn(object):
     def __init__(self):
-        datarootdir = query_config_var('datarootdir')
         name = self.__class__.__name__.split('.')[-1]
-        self._datadir = os.path.join(datarootdir, 'csdms', name)
-        self._defaults = load_default_parameters(
-            os.path.join(self.datadir, 'parameters.yaml')) 
-        self._info = load_info(os.path.join(self.datadir, 'info.yaml'))
+
+        self._datadir = bmi_data_dir(name)
+        meta = load_bmi_metadata(name)
+
+        self._defaults = {}
         self._parameters = {}
-        for name, val_and_units in self._defaults.items():
-            self._parameters[name] = val_and_units[0]
+        for name, param in meta['defaults'].items():
+            self._parameters[name] = param.value
+            self._defaults[name] = param.value, param.units
 
     def setup(self, *args, **kwds):
         if len(args) == 0:
@@ -96,32 +72,32 @@ class SetupMixIn(object):
     def datadir(self):
         return self._datadir
 
-    @property
-    def author(self):
-        try:
-            return '{author} <{email}>'.format(**self._info)
-        except KeyError:
-            return self._info.get('author', 'unknown')
+    # @property
+    # def author(self):
+    #     try:
+    #         return '{author} <{email}>'.format(**self._info)
+    #     except KeyError:
+    #         return self._info.get('author', 'unknown')
 
-    @property
-    def url(self):
-        return self._info.get('url', 'unknown')
+    # @property
+    # def url(self):
+    #     return self._info.get('url', 'unknown')
 
-    @property
-    def license(self):
-        return self._info.get('license', 'unknown')
+    # @property
+    # def license(self):
+    #     return self._info.get('license', 'unknown')
 
-    @property
-    def doi(self):
-        return self._info.get('doi', 'unknown')
+    # @property
+    # def doi(self):
+    #     return self._info.get('doi', 'unknown')
 
-    @property
-    def version(self):
-        return self._info.get('version', 'unknown')
+    # @property
+    # def version(self):
+    #     return self._info.get('version', 'unknown')
 
-    @property
-    def summary(self):
-        return self._info.get('summary', '')
+    # @property
+    # def summary(self):
+    #     return self._info.get('summary', '')
 
 
 class GitHubSetupMixIn(object):

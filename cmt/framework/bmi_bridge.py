@@ -1,5 +1,6 @@
 import numpy as np
 from .bmi_setup import SetupMixIn
+from .bmi_docstring import bmi_docstring
 
 
 def val_or_raise(func, args):
@@ -108,6 +109,7 @@ def bmi_factory(cls):
     import inspect
 
     class BmiWrapper(SetupMixIn):
+        __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
         _cls = cls
         def __init__(self):
             self._base = self._cls()
