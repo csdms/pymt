@@ -5,20 +5,20 @@ import textwrap
 from .bmi_metadata import load_bmi_metadata
 
 
-_DOCSTRING = """
+_DOCSTRING = u"""
 Basic Modeling Interface for {name}.
 
 {desc}
-
-Parameters
-----------
-{parameters}
 
 author: {author}
 version: {version}
 license: {license}
 DOI: {doi}
 URL: {url}
+
+Parameters
+----------
+{parameters}
 
 Examples
 --------
@@ -49,17 +49,20 @@ def build_parameters_section(parameters):
     str
         The paramters section.
     """
+    params = parameters.values()
+    params.sort(key=lambda p: p.name)
+
     docstrings = []
-    for param in parameters.values():
+    for param in params:
+        decl = _PARAM_DECL.format(name=param.name, type=param.type)
+        desc = _PARAM_DESC.format(desc=param.desc, default=param.value,
+                                  units=param.units)
+
         docstrings.extend(
-            textwrap.wrap(_PARAM_DECL.format(name=param.name,
-                                             type='number')))
+            textwrap.wrap(decl, subsequent_indent=' ' * (decl.find(':') + 3)))
         docstrings.extend(
-            textwrap.wrap(_PARAM_DESC.format(desc=param.desc,
-                                             default=param.value,
-                                             units=param.units),
-                         initial_indent=' ' * 4,
-                         subsequent_indent=' ' * 4))
+            textwrap.wrap(desc, initial_indent=' ' * 4,
+                          subsequent_indent=' ' * 4))
 
     return os.linesep.join(docstrings)
 
@@ -79,7 +82,7 @@ def bmi_docstring(name):
     """
     meta = load_bmi_metadata(name)
     desc = '\n'.join(textwrap.wrap(meta['info'].summary))
-
+    
     return _DOCSTRING.format(
         desc=desc, name=name,
         parameters=build_parameters_section(meta['defaults']),
