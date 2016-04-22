@@ -31,6 +31,11 @@ setup(name='Cmt',
       install_requires=read_requirements(),
       setup_requires=read_requirements(),
       packages=find_packages(),
+      entry_points={
+          'console_scripts': [
+              'cmt-config=cmt.cmd.cmt_config:main',
+          ],
+      },
       scripts=[
           'scripts/scrape_html_block',
           'scripts/vtu2ncu.py',
