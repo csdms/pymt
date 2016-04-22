@@ -4,6 +4,7 @@ import urllib
 import zipfile
 import tempfile
 import shutil
+import string
 
 import yaml
 
@@ -18,6 +19,28 @@ def update_values(values, defaults):
     updated = defaults.copy()
     updated.update(values)
     return updated
+
+
+class SafeFormatter(string.Formatter):
+    def get_field(self, field_name, args, kwargs):
+        try:
+            val = super(SafeFormatter, self).get_field(field_name, args,
+                                                       kwargs)
+        except (KeyError, AttributeError):
+            val = '{' + field_name + '}', field_name 
+
+        return val 
+
+    def format_field(self, value, spec):
+        try:
+            return super(SafeFormatter, self).format_field(value, spec)
+        except ValueError:
+            return value
+
+
+def sub_parameters(string, **kwds):
+    formatter = SafeFormatter()
+    return formatter.format(string, **kwds)
 
 
 class SetupMixIn(object):
@@ -54,7 +77,8 @@ class SetupMixIn(object):
                         template = fp.read()
                     (_, name) = os.path.split(base)
                     with open(name, 'w') as fp:
-                        fp.write(template.format(**self._parameters))
+                        fp.write(sub_parameters(template, **self._parameters))
+                        # fp.write(template.format(**self._parameters))
                 else:
                     shutil.copy(file_, '.')
 
