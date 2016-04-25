@@ -128,9 +128,13 @@ def bmi_factory(cls):
             setattr(BmiWrapper, name, wrap_get_grid_with_out_arg(func, 'int32'))
         elif name in ('get_input_var_names', 'get_output_var_names'):
             setattr(BmiWrapper, name, wrap_var_names(func))
+        elif name == 'update':
+            pass
         elif name.startswith('get_') or name in ('update', 'update_until', 'finalize'):
             setattr(BmiWrapper, name, wrap_default(func))
         else:
             pass
+    setattr(BmiWrapper, 'update', wrap_default(cls.update_until))
+
     BmiWrapper.__name__ = cls.__name__
     return BmiWrapper
