@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import os
+import errno
 import urllib
 import zipfile
 import tempfile
@@ -10,6 +11,17 @@ import yaml
 
 from ..utils.run_dir import cd
 from .bmi_metadata import bmi_data_dir, load_bmi_metadata
+
+
+def mkdir_p(path):
+    """Make a directory along with any parents."""
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 
 def update_values(values, defaults):
@@ -43,6 +55,85 @@ def sub_parameters(string, **kwds):
     return formatter.format(string, **kwds)
 
 
+def find_bmi_data_files(datadir):
+    """Look for BMI data files.
+    
+    Parameters
+    ----------
+    datadir : str
+        Path the the BMI component's data directory.
+
+    Returns
+    -------
+    list of str
+        List of the data files relative to their data directory.
+    """
+    fnames = []
+    for dir, _, files in os.walk(datadir):
+        fnames += [os.path.join(dir, fname) for fname in files]
+    end_prefix = len(os.path.commonprefix(fnames))
+
+    fnames = [fname[end_prefix:] for fname in fnames]
+    for fname in ('api.yaml', 'parameters.yaml', 'info.yaml'):
+        try:
+            fnames.remove(fname)
+        except ValueError:
+            pass
+
+    return fnames
+
+
+def fill_template_file(src, dest, **kwds):
+    """Substitute values into a template file.
+
+    Parameters
+    ----------
+    src : str
+        Path to a template file.
+    dest : str
+        Path to output file that will contain the substitutions.
+    """
+    (srcdir, fname) = os.path.split(src)
+    dest = os.path.abspath(dest)
+
+    with cd(srcdir):
+        with open(fname, 'r') as fp:
+            template = fp.read()
+
+        (base, ext) = os.path.splitext(dest)
+        if ext == '.tmpl':
+            dest = base
+        else:
+            dest = fname
+
+        with open(dest, 'w') as fp:
+            fp.write(sub_parameters(template, **self._parameters))
+
+
+def copy_data_files(datadir, destdir, **kwds):
+    """Copy BMI data files into a folder, filling template files on the way.
+
+    Parameters
+    ----------
+    datadir : str
+        Path to the BMI component's data folder.
+    destdir : str
+        Path to the folder to copy the data into.
+    """
+    files = find_bmi_data_files(datadir)
+
+    with cd(destdir, create=True):
+        for dest in files:
+            src = os.path.join(datadir, dest)
+
+            mkdir_p(os.path.dirname(dest))
+
+            if src.endswith('.tmpl'):
+                fill_template_file(src, dest, **kwds)
+            else:
+                shutil.copy2(src, dest)
+
+
 class SetupMixIn(object):
     def __init__(self):
         name = self.__class__.__name__.split('.')[-1]
@@ -64,24 +155,8 @@ class SetupMixIn(object):
 
         self._parameters.update(kwds)
 
-        files = []
-        for file_ in os.listdir(self.datadir):
-            if file_ not in ('api.yaml', 'parameters.yaml', 'info.yaml'):
-                files.append(os.path.join(self.datadir, file_))
-
-        with cd(dir, create=True):
-            for file_ in files:
-                (base, ext) = os.path.splitext(file_)
-                if ext == '.tmpl':
-                    with open(file_, 'r') as fp:
-                        template = fp.read()
-                    (_, name) = os.path.split(base)
-                    with open(name, 'w') as fp:
-                        fp.write(sub_parameters(template, **self._parameters))
-                        # fp.write(template.format(**self._parameters))
-                else:
-                    shutil.copy(file_, '.')
-
+        copy_data_files(self.datadir, dir, **self._parameters)
+        
         return dir
 
     @property
