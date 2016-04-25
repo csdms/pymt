@@ -1,8 +1,12 @@
 """Wrap a port as a :class:`Timeline` event.
 """
+from __future__ import print_function
 
 import os
+import sys
 import types
+
+import yaml
 
 from ..mappers import NearestVal
 from ..component.grid import GridMixIn
@@ -33,8 +37,9 @@ class PortEvent(GridMixIn):
 
         if isinstance(self._init_args, types.StringTypes):
             self._init_args = [self._init_args]
-        self._status_fp = open(os.path.abspath(
-            os.path.join(self._run_dir, '_time.txt')), 'w')
+
+        self._status_fp = open(os.path.abspath(os.path.join(self._run_dir, '_time.txt')), 'w')
+
         GridMixIn.__init__(self)
 
     def initialize(self):
@@ -44,7 +49,12 @@ class PortEvent(GridMixIn):
         the initialize method as arguments.
         """
         with open_run_dir(self._run_dir):
-            self._status_fp.write('%f' % 0.0)
+            status = {
+                'name': self.name,
+                'time': 0.,
+                'status': 'initializing',
+            }
+            self._status_fp.write(yaml.dump(status))
             try:
                 self._port.initialize(*self._init_args)
             except Exception:
@@ -61,9 +71,21 @@ class PortEvent(GridMixIn):
             Time to run the event to.
         """
         with open_run_dir(self._run_dir):
-            self._status_fp.write('\n%f' % time)
+            status = {
+                'name': self.name,
+                'time': time,
+                'status': 'running',
+            }
+            print(yaml.dump(status), file=self._status_fp)
             self._status_fp.flush()
+            sys.stdout.flush()
+            sys.stderr.flush()
+            print(yaml.dump(status))
+
             self._port.run(time)
+
+            sys.stdout.flush()
+            sys.stderr.flush()
 
     def update(self, time):
         with open_run_dir(self._run_dir):
@@ -75,8 +97,19 @@ class PortEvent(GridMixIn):
         Run the `finalize` method of the underlying port.
         """
         with open_run_dir(self._run_dir):
-            self._status_fp.write('\ndone.')
+            status = {
+                'name': self.name,
+                'time': None,
+                'status': 'finishing',
+            }
+            self._status_fp.write(yaml.dump(status))
             self._port.finalize()
+        status = {
+            'name': self.name,
+            'time': None,
+            'status': 'finished',
+        }
+        self._status_fp.write(yaml.dump(status))
         self._status_fp.close()
 
 
@@ -114,14 +147,12 @@ class PortMapEvent(object):
             raise ValueError('method %s not understood' % self._method)
 
     def initialize(self):
-        """Initialize the data mappers.
-        """
+        """Initialize the data mappers."""
         if self._mapper is not None:
             self._mapper.initialize(self._dst, self._src, vars=self._vars_to_map)
 
     def run(self, stop_time):
-        """Map values from one port to another.
-        """
+        """Map values from one port to another."""
         for (dst_name, src_name) in self._vars_to_map:
             src_values = self._src.get_value(src_name)
 
