@@ -107,7 +107,7 @@ def fill_template_file(src, dest, **kwds):
             dest = fname
 
         with open(dest, 'w') as fp:
-            fp.write(sub_parameters(template, **self._parameters))
+            fp.write(sub_parameters(template, **kwds))
 
 
 def copy_data_files(datadir, destdir, **kwds):
