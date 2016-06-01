@@ -15,6 +15,9 @@ from .bmi_metadata import bmi_data_dir, load_bmi_metadata
 
 def mkdir_p(path):
     """Make a directory along with any parents."""
+    if not path:
+        return
+
     try:
         os.makedirs(path)
     except OSError as exc:
