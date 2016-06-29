@@ -1,0 +1,36 @@
+package:
+  name: pymt
+  version: "0.1"
+
+source:
+  path: ..
+
+requirements:
+  build:
+    - python
+    - numpy
+    - scipy
+    - nose
+    - shapely
+    - netcdf4
+    - pyyaml
+    - esmpy
+    - cfunits-python
+
+  run:
+    - python
+    - numpy
+    - scipy
+    - nose
+    - shapely
+    - netcdf4
+    - pyyaml
+    - esmpy
+    - cfunits-python
+
+about:
+  summary: The CSDMS Python Modeling Tools
+
+build:
+  number: 2
+  string: {{ environ.get('BUILD_STR', '') }}
