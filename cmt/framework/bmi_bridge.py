@@ -1,4 +1,7 @@
 import numpy as np
+
+from cfunits import Units
+
 from .bmi_setup import SetupMixIn
 from .bmi_docstring import bmi_docstring
 
@@ -36,7 +39,7 @@ def wrap_set_value(func):
 
 
 def wrap_get_value(func):
-    def wrap(self, name, out=None):
+    def wrap(self, name, out=None, units=None):
         """Get a value by name.
 
         Parameters
@@ -45,6 +48,8 @@ def wrap_get_value(func):
             CSDMS standard name.
         out : ndarray, optional
             Buffer to place values.
+        units : str, optional
+            Convert units of the returned values.
 
         Returns
         -------
@@ -59,6 +64,16 @@ def wrap_get_value(func):
                 raise ValueError('{name} not understood'.format(name=name))
             out = np.empty(self.get_grid_size(grid), dtype=dtype)
         val_or_raise(func, (self._base, name, out))
+
+        if units is not None:
+            try:
+                from_units = self.get_var_units(name)
+            except AttributeError, NotImplementedError:
+                pass
+            else:
+                Units.conform(out, Units(from_units), Units(units),
+                              inplace=True)
+
         return out
     wrap.__name__ = func.__name__
     return wrap
