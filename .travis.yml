@@ -14,7 +14,7 @@ install:
     - pip install coveralls
 
 script:
-    - nosetests --with-doctest --with-coverage --cover-package=cmt
+    - nosetests --with-doctest --with-coverage --cover-package=pymt
 
 virtualenv:
     system_site_packages: false
