@@ -154,7 +154,7 @@ class PortMapEvent(object):
     def run(self, stop_time):
         """Map values from one port to another."""
         for (dst_name, src_name) in self._vars_to_map:
-            src_values = self._src.get_value(src_name)
+            src_values = self._src.get_value(src_name, units=self._dst.get_var_units(dst_name))
 
             if self._mapper is None:
                 dst_values = src_values
