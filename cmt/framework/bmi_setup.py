@@ -151,6 +151,19 @@ class SetupMixIn(object):
             self._defaults[name] = param.value, param.units
 
     def setup(self, *args, **kwds):
+        """Set up a simulation.
+
+        Parameters
+        ----------
+        path : str, optional
+            Path to a folder to set up the simulation. If not given,
+            use a temporary folder.
+
+        Returns
+        -------
+        str
+            Path to the folder that contains the set up simulation.
+        """
         if len(args) == 0:
             dir = tempfile.mkdtemp()
         else:
