@@ -9,7 +9,7 @@ requirements:
   build:
     - python
     - numpy
-    - scipy
+    - scipy >=0.17.0
     - nose
     - shapely
     - netcdf4
@@ -20,7 +20,7 @@ requirements:
   run:
     - python
     - numpy
-    - scipy
+    - scipy >=0.17.0
     - nose
     - shapely
     - netcdf4
