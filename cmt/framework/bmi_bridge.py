@@ -1,9 +1,20 @@
 import numpy as np
+from scipy.interpolate import interp1d
 
 from cfunits import Units
 
 from .bmi_setup import SetupMixIn
 from .bmi_docstring import bmi_docstring
+
+
+class BmiError(Exception):
+    def __init__(self, fname, status):
+        self._fname = fname
+        self._status = status
+
+    def __str__(self):
+        return 'Error calling BMI function: {fname} ({code})'.format(
+            fname=self._fname, code=status)
 
 
 def val_or_raise(func, args):
@@ -17,6 +28,33 @@ def val_or_raise(func, args):
     if status != 0:
         raise RuntimeError('%s(%s) [Error code %d]' % (
             func.__name__, ', '.join([repr(arg)for arg in args[1:]]), status))
+    else:
+        return val
+
+
+def bmi_success_or_raise(bmi_status):
+    try:
+        status, val = bmi_status
+    except TypeError:
+        status, val = bmi_status, None
+
+    if status != 0:
+        raise RuntimeError('%s(%s) [Error code %d]' % (
+            func.__name__, ', '.join([repr(arg)for arg in args[1:]]), status))
+    else:
+        return val
+
+
+def bmi_call(func, *args):
+    rtn = func(*args)
+
+    try:
+        status, val = rtn
+    except TypeError:
+        status, val = rtn, None
+
+    if status != 0:
+        raise BmiError(func.__name__, status)
     else:
         return val
 
@@ -63,6 +101,7 @@ def wrap_get_value(func):
                 print self.get_output_var_names()
                 raise ValueError('{name} not understood'.format(name=name))
             out = np.empty(self.get_grid_size(grid), dtype=dtype)
+
         val_or_raise(func, (self._base, name, out))
 
         if units is not None:
@@ -75,6 +114,23 @@ def wrap_get_value(func):
                               inplace=True)
 
         return out
+    wrap.__name__ = func.__name__
+    return wrap
+
+
+def wrap_get_time(func):
+    def wrap(self, units=None):
+        time = val_or_raise(func, (self._base, ))
+        if units is not None:
+            try:
+                from_units = Units(self.get_time_units())
+                to_units = Units(units)
+            except AttributeError, NotImplementedError:
+                pass
+            else:
+                if not from_units.equals(to_units):
+                    time = Units.conform(time, from_units, to_units)
+        return time
     wrap.__name__ = func.__name__
     return wrap
 
@@ -120,7 +176,306 @@ def wrap_default(func):
     return wrap
 
 
+def wrap_update_until(func):
+    def wrap(self, then):
+        if hasattr(self._base, 'update_until'):
+            try:
+                self._base.update_until(then)
+            except NotImplementedError:
+                pass
+
+        while self.get_current_time() < then:
+            self.update()
+
+        if self.get_current_time() > then:
+            pass
+
+
+class TimeInterpolator(object):
+    def __init__(self, method='linear'):
+        self._method = method or 'linear'
+        self._data = []
+        self._time = []
+        self._ti = None
+
+        # self.add_data(data, time)
+
+    def add_data(self, data, time):
+        self._data.append(data)
+        self._time.append(time)
+
+        self._func = None
+
+    def interpolate(self, time):
+        if self._func is None:
+            self._func = interp1d(self._time, self._data, axis=0,
+                                  kind=self._method, fill_value='extrapolate')
+
+        return self._func(time)
+
+
+class BmiTimeInterpolator(object):
+    # def __init__(self, method='linear'):
+    def __init__(self, *args, **kwds):
+        method = kwds.pop('method', 'linear')
+        self._interpolators = dict(
+            [(name, None) for name in self.output_var_names if '__' in name])
+        self.reset(method=method)
+
+        super(BmiTimeInterpolator, self).__init__(*args, **kwds)
+
+    def reset(self, method='linear'):
+        for name in self._interpolators:
+            self._interpolators[name] = TimeInterpolator(method=method)
+
+    def add_data(self):
+        time = self.get_current_time()
+
+        for name in self._interpolators:
+            self._interpolators[name].add_data(self.get_value(name), time)
+
+    def interpolate(self, name, at):
+        return self._interpolators[name].interpolate(at)
+
+    def update_until(self, then, method=None):
+        # if hasattr(self.bmi, 'update_until'):
+        #     try:
+        #         bmi_call(self.bmi.update_until, then)
+        #     except NotImplementedError:
+        #         pass
+
+        self.reset()
+        while self.get_current_time() < then:
+            if self.get_current_time() + self.get_time_step() > then:
+                self.add_data()
+            self.update()
+
+        if self.get_current_time() > then:
+            self.add_data()
+
+
+def transform_math_to_azimuth(angle, units):
+    angle *= -1.
+    if units == Units('rad'):
+        angle += np.pi * .5
+    else:
+        angle += 90.
+
+
+def transform_azimuth_to_math(angle, units):
+    angle *= -1.
+    if units == Units('rad'):
+        angle -= np.pi * .5
+    else:
+        angle -= 90.
+
+
+class BmiCap(BmiTimeInterpolator, SetupMixIn):
+    def __init__(self):
+        self._bmi = self._cls()
+        super(BmiCap, self).__init__()
+
+    @property
+    def bmi(self):
+        return self._bmi
+
+    @property
+    def name(self):
+        return self.get_component_name()
+
+    def get_component_name(self):
+        return bmi_call(self.bmi.get_component_name)
+
+    def initialize(self, *args):
+        if len(args) == 0:
+            args = (self.setup(case=kwds.pop('case', 'default')), )
+        return bmi_call(self.bmi.initialize, *args)
+
+    def update(self):
+        return bmi_call(self.bmi.update)
+
+    def finalize(self):
+        return bmi_call(self.bmi.finalize)
+
+    def set_value(self, name, val):
+        val = np.asarray(val).reshape((-1, ))
+        return bmi_call(self.bmi.set_value, name, val)
+
+    def get_value(self, name, out=None, units=None, angle=None, at=None,
+                  method=None):
+        if out is None:
+            grid = self.get_var_grid(name)
+            dtype = self.get_var_type(name)
+            if dtype == '':
+                raise ValueError('{name} not understood'.format(name=name))
+            out = np.empty(self.get_grid_size(grid), dtype=dtype)
+
+        bmi_call(self.bmi.get_value, name, out)
+
+        if name in self._interpolators and at is not None:
+            out[:] = self._interpolators[name].interpolate(at)
+
+        from_units = Units(self.get_var_units(name))
+        if units is not None:
+            to_units = Units(units)
+        else:
+            to_units = from_units
+
+        if units is not None and from_units != to_units:
+            Units.conform(out, from_units, to_units, inplace=True)
+
+        # if units is not None:
+        #     try:
+        #         from_units = self.get_var_units(name)
+        #     except AttributeError, NotImplementedError:
+        #         pass
+        #     else:
+        #         Units.conform(out, Units(from_units), Units(units),
+        #                       inplace=True)
+
+        if angle not in ('azimuth', 'math', None):
+            raise ValueError('angle not understood')
+
+        if angle == 'azimuth' and 'azimuth' not in name:
+            transform_math_to_azimuth(out, to_units)
+        elif angle == 'math' and 'azimuth' in name:
+            transform_azimuth_to_math(out, to_units)
+
+        return out
+
+    def get_value_ptr(self, name):
+        return bmi_call(self.bmi.get_value_ptr, name)
+
+    def get_grid_rank(self, grid):
+        return bmi_call(self.bmi.get_grid_rank, grid)
+
+    def get_grid_size(self, grid):
+        return bmi_call(self.bmi.get_grid_size, grid)
+
+    def get_grid_type(self, grid):
+        return bmi_call(self.bmi.get_grid_type, grid)
+
+    def get_grid_shape(self, grid, out=None):
+        if out is None:
+            out = np.empty(self.get_grid_rank(grid), dtype='int32')
+        bmi_call(self.bmi.get_grid_shape, grid, out)
+        return out
+
+    def get_grid_spacing(self, grid, out=None):
+        if out is None:
+            out = np.empty(self.get_grid_rank(grid), dtype=float)
+        bmi_call(self.bmi.get_grid_spacing, grid, out)
+
+    def get_grid_origin(self, grid, out=None):
+        if out is None:
+            out = np.empty(self.get_grid_rank(grid), dtype=float)
+        bmi_call(self.bmi.get_grid_origin, grid, out)
+
+    def get_grid_connectivity(self, grid):
+        return bmi_call(self.bmi.get_grid_connectivity, grid)
+
+    def get_grid_offset(self, grid):
+        return bmi_call(self.bmi.get_grid_offset, grid)
+
+    def get_grid_x(self, grid, out=None):
+        if out is None:
+            out = np.empty(self.get_grid_size(grid), dtype=float)
+        return bmi_call(self.bmi.get_grid_x, grid, out)
+
+    def get_grid_y(self, grid):
+        if out is None:
+            out = np.empty(self.get_grid_size(grid), dtype=float)
+        return bmi_call(self.bmi.get_grid_y, grid, out)
+
+    def get_grid_z(self, grid):
+        if out is None:
+            out = np.empty(self.get_grid_size(grid), dtype=float)
+        return bmi_call(self.bmi.get_grid_z, grid, out)
+
+    @property
+    def input_var_names(self):
+        return tuple(bmi_call(self.bmi.get_input_var_names))
+
+    def get_input_var_names(self):
+        return self.input_var_names
+
+    @property
+    def output_var_names(self):
+        return tuple(bmi_call(self.bmi.get_output_var_names))
+
+    def get_output_var_names(self):
+        return self.output_var_names
+
+    @property
+    def time_units(self):
+        return self.get_time_units()
+
+    def get_time_units(self):
+        return bmi_call(self.bmi.get_time_units)
+
+    def get_current_time(self, units=None):
+        time = bmi_call(self.bmi.get_current_time)
+
+        return self.time_in(time, units)
+
+    def get_start_time(self, units=None):
+        time = bmi_call(self.bmi.get_start_time)
+
+        return self.time_in(time, units)
+
+    def get_end_time(self, units=None):
+        time = bmi_call(self.bmi.get_end_time)
+
+        return self.time_in(time, units)
+
+    def get_time_step(self, units=None):
+        time = bmi_call(self.bmi.get_time_step)
+
+        return self.time_in(time, units)
+
+    def time_in(self, time, units):
+        if units is None:
+            return time
+
+        try:
+            units_str = self.get_time_units()
+        except (AttributeError, NotImplementedError):
+            pass
+        else:
+            from_units = Units(units_str)
+            to_units = Units(units)
+
+            if not from_units.equals(to_units):
+                time = Units.conform(time, from_units, to_units)
+
+        return time
+
+    def get_var_grid(self, name):
+        return bmi_call(self.bmi.get_var_grid, name)
+
+    def get_var_itemsize(self, name):
+        return bmi_call(self.bmi.get_var_itemsize, name)
+
+    def get_var_nbytes(self, name):
+        return bmi_call(self.bmi.get_var_nbytes, name)
+
+    def get_var_type(self, name):
+        return bmi_call(self.bmi.get_var_type, name)
+
+    def get_var_units(self, name):
+        return bmi_call(self.bmi.get_var_units, name)
+
+
 def bmi_factory(cls):
+    class BmiWrapper(BmiCap):
+        __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
+        _cls = cls
+
+    BmiWrapper.__name__ = cls.__name__
+    return BmiWrapper
+
+
+def _bmi_factory(cls):
     import inspect
 
     class BmiWrapper(SetupMixIn):
@@ -145,7 +500,11 @@ def bmi_factory(cls):
             setattr(BmiWrapper, name, wrap_var_names(func))
         elif name == 'update':
             pass
-        elif name.startswith('get_') or name in ('update', 'update_until', 'finalize'):
+        elif name in ('get_current_time', 'get_start_time', 'get_end_time'):
+            setattr(BmiWrapper, name, wrap_get_time(func))
+        elif name == 'update_until':
+            setattr(BmiWrapper, name, wrap_update_until(func))
+        elif name.startswith('get_') or name in ('update', 'finalize'):
             setattr(BmiWrapper, name, wrap_default(func))
         else:
             pass
