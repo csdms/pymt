@@ -15,7 +15,7 @@ install:
 - export PATH="$HOME/miniconda/bin:$PATH"
 - conda info -a
 - conda build -q -c csdms conda-recipe
-- conda install -q pymt --use-local
+- conda install -q pymt -c csdms --use-local
 - pip install coveralls
 
 script:
