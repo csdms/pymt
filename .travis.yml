@@ -1,23 +1,29 @@
-language: python
-python:
-    - "2.7"
+env:
+  matrix:
+  - TRAVIS_PYTHON_VERSION="2.7"
 
 os:
-    - linux
+- linux
 
 sudo: false
 
 install:
-    - bash .travis/install_python.sh
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - source activate test-env
-    - pip install coveralls
+- echo "Build on $TRAVIS_OS_NAME"
+- if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev";
+  fi
+- bash .travis/install_python.sh
+- export PATH="$HOME/miniconda/bin:$PATH"
+- conda info -a
+- conda build -q -c csdms conda-recipe
+- conda install -q pymt --use-local
+- pip install coveralls
 
 script:
-    - nosetests --with-doctest --with-coverage --cover-package=pymt
+- nosetests --with-doctest --with-coverage --cover-package=pymt
 
 virtualenv:
     system_site_packages: false
 
 after_success:
-    coveralls
+- coveralls --verbose
+- bash .travis/deploy_to_anaconda.sh
