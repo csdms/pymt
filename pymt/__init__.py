@@ -1,4 +1,1 @@
-import sys
-
-import cmt
-sys.modules['pymt'] = cmt
+__version__ = '0.1.0'

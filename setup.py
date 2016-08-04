@@ -22,9 +22,9 @@ def read_requirements():
         return [require.split() for require in requires]
 
 
-setup(name='Cmt',
+setup(name='PyMT',
       version=__version__,
-      description='The Component Modeling Tools',
+      description='The CSDMS Python Modeling Toolkit',
       author='Eric Hutton',
       author_email='huttone@colorado.edu',
       url='http://csdms.colorado.edu',
