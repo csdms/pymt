@@ -3,6 +3,8 @@
 import os
 import subprocess
 import warnings
+from string import Template
+import shlex
 
 
 class BabelConfigError(Exception):
@@ -23,7 +25,46 @@ def prepend_env_path(var, path, sep=os.pathsep):
     return path
 
 
-def query_config_var(var, config='csdms-config'):
+def contains_identifiers(template):
+    try:
+        Template(template).substitute()
+    except KeyError:
+        return True
+    else:
+        return False
+
+
+def recursive_substitute(template, **kwds):
+    while contains_identifiers(template):
+        try:
+            template = Template(template).substitute(**kwds)
+        except KeyError:
+            break
+
+    return template
+
+
+def query_config_all(config='csdms-config'):
+    try:
+        contents = subprocess.check_output([config, '--dump'])
+    except subprocess.CalledProcessError:
+        warnings.warn('Error running the {prog} program.'.format(prog=config))
+    except OSError:
+        warnings.warn('Unable to run {prog} program.'.format(prog=config))
+
+    vars = {}
+    for line in shlex.split(contents):
+        try:
+            (key, var) = line.split('=', 1)
+        except ValueError:
+            pass
+        else:
+            vars[key] = var
+
+    return vars
+
+
+def query_config_var(var, config='csdms-config', interpolate=True):
     """Get a configuration variable from a babel project."""
     value = None
 
@@ -36,6 +77,10 @@ def query_config_var(var, config='csdms-config'):
 
     if value is None:
         raise BabelConfigError(config)
+
+    if interpolate:
+        vars = query_config_all(config=config)
+        value = recursive_substitute(value, **vars)
 
     return value
 
