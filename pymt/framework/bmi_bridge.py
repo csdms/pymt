@@ -382,12 +382,12 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
             out = np.empty(self.get_grid_size(grid), dtype=float)
         return bmi_call(self.bmi.get_grid_x, grid, out)
 
-    def get_grid_y(self, grid):
+    def get_grid_y(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
         return bmi_call(self.bmi.get_grid_y, grid, out)
 
-    def get_grid_z(self, grid):
+    def get_grid_z(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
         return bmi_call(self.bmi.get_grid_z, grid, out)
