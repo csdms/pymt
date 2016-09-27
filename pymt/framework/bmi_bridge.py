@@ -365,11 +365,13 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         if out is None:
             out = np.empty(self.get_grid_rank(grid), dtype=float)
         bmi_call(self.bmi.get_grid_spacing, grid, out)
+        return out
 
     def get_grid_origin(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_rank(grid), dtype=float)
         bmi_call(self.bmi.get_grid_origin, grid, out)
+        return out
 
     def get_grid_connectivity(self, grid):
         return bmi_call(self.bmi.get_grid_connectivity, grid)
