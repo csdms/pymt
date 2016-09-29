@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from cmt.grids import Structured, StructuredPoints
+from pymt.grids import Structured, StructuredPoints
 from .test_utils import NumpyArrayMixIn
 
 

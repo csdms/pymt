@@ -2,8 +2,8 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from nose.tools import assert_almost_equal
 
-from cmt.events.manager import EventManager
-from cmt.events.port import PortEvent
+from pymt.events.manager import EventManager
+from pymt.events.port import PortEvent
 
 
 def assert_port_value_equal(port, name, value):

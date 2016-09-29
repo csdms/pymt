@@ -1,5 +1,5 @@
 import numpy as np
-from cmt.grids import UniformRectilinearPoints
+from pymt.grids import UniformRectilinearPoints
 
 
 def get_instance(name):

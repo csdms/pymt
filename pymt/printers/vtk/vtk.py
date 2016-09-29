@@ -13,9 +13,9 @@ Define a grid that consists of two trianges that share two points.
 
 Create the grid,
 
->>> from cmt.printers.vtk import tofile
+>>> from pymt.printers.vtk import tofile
 
->>> from cmt.grids.field import GridField
+>>> from pymt.grids.field import GridField
 >>> g = GridField ([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6])
 >>> g.add_field ('Elevation',  [1., 2., 3, 4], centering='point')
 >>> g.add_field ('Temperature',  [10., 20., 30., 40.], centering='point')

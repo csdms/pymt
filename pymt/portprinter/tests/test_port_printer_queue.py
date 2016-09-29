@@ -2,8 +2,8 @@
 
 from nose.tools import assert_is_instance
 
-from cmt.portprinter.port_printer import PortPrinter
-from cmt.testing.assertions import assert_isfile_and_remove
+from pymt.portprinter.port_printer import PortPrinter
+from pymt.testing.assertions import assert_isfile_and_remove
 
 
 def test_one_printer():

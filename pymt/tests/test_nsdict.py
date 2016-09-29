@@ -2,7 +2,8 @@
 
 
 import unittest
-from cmt.nsdict import NamespaceDict
+from pymt.nsdict import NamespaceDict
+
 
 #@unittest.skip('skipping')
 class TestNamespaceDict(unittest.TestCase):

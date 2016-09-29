@@ -6,8 +6,8 @@ from numpy.testing import assert_array_almost_equal, assert_almost_equal
 
 from nose.tools import assert_equal, assert_list_equal, assert_raises
 
-from cmt.services.constant.constant import ConstantScalars
-from cmt.utils.run_dir import cd_temp
+from pymt.services.constant.constant import ConstantScalars
+from pymt.utils.run_dir import cd_temp
 
 
 def test_initialize():

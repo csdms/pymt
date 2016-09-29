@@ -1,10 +1,10 @@
 from numpy.testing import assert_array_equal
 from nose.tools import assert_equal
 
-from cmt.events.manager import EventManager
-from cmt.events.port import PortEvent
-from cmt.events.chain import ChainEvent
-from cmt.framework.services import get_component_instance
+from pymt.events.manager import EventManager
+from pymt.events.port import PortEvent
+from pymt.events.chain import ChainEvent
+from pymt.framework.services import get_component_instance
 
 
 def assert_port_value_equal(port, name, value):

@@ -34,7 +34,7 @@ def get_log_level_from_environ(level):
     return level
 
 
-def setup_cmt_logging_channel():
+def setup_pymt_logging_channel():
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter(_CMT_LOG_FORMAT)
@@ -47,7 +47,7 @@ class CmtLogger(logging.Logger):
         level = get_log_level_from_environ(level)
 
         logging.Logger.__init__(self, name, level=level)
-        ch = setup_cmt_logging_channel()
+        ch = setup_pymt_logging_channel()
         self.addHandler(ch)
 
 

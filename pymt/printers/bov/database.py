@@ -22,7 +22,7 @@ class IDatabase(object):
 class Database(IDatabase):
     """
     >>> import numpy as np
-    >>> from cmt.grids import RasterField
+    >>> from pymt.grids import RasterField
 
     >>> data = np.arange (6.)
 

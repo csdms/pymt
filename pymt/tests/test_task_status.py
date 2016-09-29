@@ -2,7 +2,7 @@
 
 import unittest
 
-from cmt.task_status import TaskStatus
+from pymt.task_status import TaskStatus
 
 
 class TestTaskStatus(unittest.TestCase):

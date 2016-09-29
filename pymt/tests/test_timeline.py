@@ -4,7 +4,7 @@ import numpy as np
 from nose.tools import (assert_equal, assert_set_equal, assert_raises,
                         assert_list_equal, assert_tuple_equal, assert_is)
 
-from cmt.timeline import Timeline
+from pymt.timeline import Timeline
 
 
 def test_init_without_args():

@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 from nose.tools import assert_equal, assert_list_equal, assert_raises
 
-from cmt.component.grid import GridMixIn
+from pymt.component.grid import GridMixIn
 
 
 class Port(object):

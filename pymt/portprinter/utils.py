@@ -91,7 +91,7 @@ def fix_unknown_shape(shape, size):
 
     Examples
     --------
-    >>> from cmt.portprinter.utils import fix_unknown_shape
+    >>> from pymt.portprinter.utils import fix_unknown_shape
     >>> print fix_unknown_shape((4, 3), 12)
     (4, 3)
     >>> print fix_unknown_shape((4, -1), 12)

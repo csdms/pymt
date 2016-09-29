@@ -2,9 +2,9 @@ import os
 import numpy as np
 from nose.tools import assert_equal, assert_false
 
-from cmt.events.manager import EventManager
-from cmt.events.printer import PrintEvent
-from cmt.testing.assertions import assert_isfile_and_remove
+from pymt.events.manager import EventManager
+from pymt.events.printer import PrintEvent
+from pymt.testing.assertions import assert_isfile_and_remove
 
 
 def test_one_event():

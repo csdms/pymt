@@ -1,6 +1,6 @@
 """Manage the execution of events on a timeline.
 
-The :class:`EventManager` puts events on a :class:`~cmt.timeline.Timeline` and
+The :class:`EventManager` puts events on a :class:`~pymt.timeline.Timeline` and
 then
 orchestrates the setup, execution, and teardown of the events as the time line
 advances. Events are classes that implement an event interface. That is, they
@@ -61,7 +61,7 @@ class EventManager(object):
 
     See Also
     --------
-    :class:`cmt.timeline.Timeline`
+    :class:`pymt.timeline.Timeline`
 
     Examples
     --------
@@ -75,7 +75,7 @@ class EventManager(object):
 
     Create a manager with one recurring event.
 
-    >>> from cmt.events.empty import PassEvent
+    >>> from pymt.events.empty import PassEvent
     >>> mngr = EventManager([(PassEvent(), 1.)])
     >>> len(mngr)
     1

@@ -1,6 +1,6 @@
 import os
 
-from cmt.printers.nc.read import field_fromfile
+from pymt.printers.nc.read import field_fromfile
 
 
 _BASE_URL_FOR_TEST_FILES = ('http://csdms.colorado.edu/thredds/fileServer'

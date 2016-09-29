@@ -10,11 +10,11 @@ except ImportError:
     _WITH_ESMF = False
 else:
     _WITH_ESMF = True
-    from cmt.grids.esmp import (EsmpRasterField, EsmpRectilinear,
-                                EsmpStructured, EsmpUnstructured,
-                                EsmpUniformRectilinear, EsmpRectilinearField,
-                                DimensionError)
-    from cmt.grids.esmp import run_regridding
+    from pymt.grids.esmp import (EsmpRasterField, EsmpRectilinear,
+                                 EsmpStructured, EsmpUnstructured,
+                                 EsmpUniformRectilinear, EsmpRectilinearField,
+                                 DimensionError)
+    from pymt.grids.esmp import run_regridding
 
 
 def setup():

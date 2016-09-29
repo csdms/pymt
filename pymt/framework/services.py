@@ -56,16 +56,16 @@ def register_component_class(name, if_exists='raise'):
     Examples
     --------
     >>> del_services()
-    >>> register_component_class('cmt.testing.services.AirPort')
+    >>> register_component_class('pymt.testing.services.AirPort')
     >>> get_component_class('AirPort')
-    <class 'cmt.testing.services.AirPort'>
+    <class 'pymt.testing.services.AirPort'>
 
     Raise an ImportError if the component class could not be loaded.
 
-    >>> register_component_class('cmt.testing.services.NotAClass') # doctest : +IGNORE_EXCEPTION_DETAIL
+    >>> register_component_class('pymt.testing.services.NotAClass') # doctest : +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ImportError: cannot import component NotAClass from cmt.testing.services
-    >>> register_component_class('cmt.not.a.module.AirPort') # doctest : +IGNORE_EXCEPTION_DETAIL
+    ImportError: cannot import component NotAClass from pymt.testing.services
+    >>> register_component_class('pymt.not.a.module.AirPort') # doctest : +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
     ValueError: component class exists (AirPort)
     """
@@ -107,7 +107,7 @@ def register_component_instance(name, instance):
     Examples
     --------
     >>> del_services()
-    >>> from cmt.testing.services import AirPort
+    >>> from pymt.testing.services import AirPort
     >>> air_port = AirPort()
     >>> register_component_instance('air_port', air_port)
     >>> air_port is get_component_instance('air_port')
@@ -165,7 +165,7 @@ def instantiate_component(cls_name, instance_name):
     Examples
     --------
     >>> del_services()
-    >>> register_component_class('cmt.testing.services.AirPort')
+    >>> register_component_class('pymt.testing.services.AirPort')
     >>> air_port = instantiate_component('AirPort', 'air_port')
     >>> air_port is get_component_instance('air_port')
     True

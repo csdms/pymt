@@ -3,10 +3,10 @@
 import unittest
 import numpy as np
 
-from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
-                       Unstructured)
-from cmt.grids import (is_uniform_rectilinear, is_rectilinear, is_structured,
-                       is_unstructured)
+from pymt.grids import (UniformRectilinear, Rectilinear, Structured,
+                        Unstructured)
+from pymt.grids import (is_uniform_rectilinear, is_rectilinear, is_structured,
+                        is_unstructured)
 
 
 class TestUniformRectilinearAssertions (unittest.TestCase):

@@ -2,7 +2,7 @@ import os
 import shutil
 from nose.tools import assert_equal, assert_raises, assert_true, assert_false
 
-from cmt.utils.run_dir import open_run_dir
+from pymt.utils.run_dir import open_run_dir
 
 
 def test_run_dir():

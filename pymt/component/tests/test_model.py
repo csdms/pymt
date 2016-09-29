@@ -2,10 +2,10 @@ import os
 
 from nose.tools import assert_equal
 
-from cmt.component.model import Model
-from cmt.testing.assertions import assert_isfile_and_remove
-from cmt.framework.services import del_component_instances
-from cmt.utils.run_dir import cd_temp
+from pymt.component.model import Model
+from pymt.testing.assertions import assert_isfile_and_remove
+from pymt.framework.services import del_component_instances
+from pymt.utils.run_dir import cd_temp
 
 
 AIR_PORT_CONTENTS = """

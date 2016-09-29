@@ -1,7 +1,7 @@
 import unittest
 
-from cmt.grids.grid_type import (GridType, GridTypeRectilinear,
-                                 GridTypeStructured, GridTypeUnstructured)
+from pymt.grids.grid_type import (GridType, GridTypeRectilinear,
+                                  GridTypeStructured, GridTypeUnstructured)
 
 
 class TestGridType(unittest.TestCase):

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import unittest
-from cmt.grids import UniformRectilinear, UniformRectilinearPoints
+from pymt.grids import UniformRectilinear, UniformRectilinearPoints
 import numpy as np
 
 class TestRasterGrid (unittest.TestCase):

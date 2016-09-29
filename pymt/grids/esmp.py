@@ -120,8 +120,8 @@ If the size or shape doesn't match, it's an error.
 
 Map between two fields
 ----------------------
-    >>> from cmt.grids.raster import UniformRectilinear
-    >>> from cmt.grids.rectilinear import Rectilinear
+    >>> from pymt.grids.raster import UniformRectilinear
+    >>> from pymt.grids.rectilinear import Rectilinear
 
     >>> src = EsmpRasterField((3,3), (1,1), (0, 0), indexing='ij')
     >>> data = np.arange(src.get_cell_count(), dtype=np.float64)
@@ -224,10 +224,10 @@ Map values on points
 
 import numpy as np
 
-from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
-                       Unstructured)
-from cmt.grids.igrid import (IGrid, IField, DimensionError,
-                             CenteringValueError, CENTERING_CHOICES)
+from pymt.grids import (UniformRectilinear, Rectilinear, Structured,
+                        Unstructured)
+from pymt.grids.igrid import (IGrid, IField, DimensionError,
+                              CenteringValueError, CENTERING_CHOICES)
 
 try:
     import ESMF

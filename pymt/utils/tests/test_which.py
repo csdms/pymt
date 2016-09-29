@@ -3,7 +3,7 @@ import os
 from nose.tools import (assert_is_none, assert_is_instance, assert_true,
                         assert_equal)
 
-from cmt.utils.which import which
+from pymt.utils.which import which
 
 
 def test_not_in_path():

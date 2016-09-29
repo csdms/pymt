@@ -3,10 +3,10 @@
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from cmt.mappers import CellToPoint, PointToCell
+from pymt.mappers import CellToPoint, PointToCell
 
-from cmt.grids.map import (UniformRectilinearMap as UniformRectilinear)
-from cmt.grids.map import (UnstructuredPointsMap as UnstructuredPoints)
+from pymt.grids.map import (UniformRectilinearMap as UniformRectilinear)
+from pymt.grids.map import (UnstructuredPointsMap as UnstructuredPoints)
 
 
 def test_cell_to_point():

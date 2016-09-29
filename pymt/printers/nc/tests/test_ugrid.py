@@ -2,11 +2,11 @@ import unittest
 
 import numpy as np
 
-from cmt.grids import (RasterField, RectilinearField, StructuredField,
-                       UnstructuredField)
-from cmt.printers.nc.ugrid import (NetcdfRectilinearField,
-                                   NetcdfStructuredField,
-                                   NetcdfUnstructuredField)
+from pymt.grids import (RasterField, RectilinearField, StructuredField,
+                        UnstructuredField)
+from pymt.printers.nc.ugrid import (NetcdfRectilinearField,
+                                    NetcdfStructuredField,
+                                    NetcdfUnstructuredField)
 
 
 class UniqueNameMixIn(object):

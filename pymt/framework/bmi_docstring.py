@@ -22,7 +22,7 @@ Parameters
 
 Examples
 --------
->>> from cmt.components import {name}
+>>> from pymt.components import {name}
 >>> model = {name}()
 >>> model.setup()
 >>> model.initialize()
