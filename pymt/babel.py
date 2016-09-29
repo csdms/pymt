@@ -88,7 +88,7 @@ def query_config_var(var, config='csdms-config', interpolate=True):
 def setup_babel_environ():
     """Set up environment variables to load babelized components."""
     try:
-        prefix = query_config_var('PREFIX', config='csdms-config')
+        prefix = query_config_var('prefix', config='csdms-config')
         ccaspec_babel_libs = query_config_var('CCASPEC_BABEL_LIBS',
                                               config='cca-spec-babel-config')
     except BabelConfigError:
