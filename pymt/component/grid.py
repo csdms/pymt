@@ -387,3 +387,6 @@ class GridMixIn(object):
 
     def set_value(self, name, values):
         return self._port.set_value(name, values)
+
+    def get_var_units(self, name):
+        return self._port.get_var_units(name)
