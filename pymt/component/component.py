@@ -4,8 +4,8 @@ Examples
 Create an instance of the *AirPort* component and run it. The `go` method will initialize the component, run it for
 its duration, and finalize it.
 
->>> from cmt.framework.services import register_component_classes
->>> register_component_classes(['cmt.testing.services.AirPort'])
+>>> from pymt.framework.services import register_component_classes
+>>> register_component_classes(['pymt.testing.services.AirPort'])
 >>> comp = Component('AirPort')
 >>> comp.start_time
 0.0
