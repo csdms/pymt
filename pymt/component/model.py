@@ -21,7 +21,7 @@ def get_exchange_item_mapping(items):
 
     Examples
     --------
-    >>> from cmt.component.model import get_exchange_item_mapping
+    >>> from pymt.component.model import get_exchange_item_mapping
     >>> get_exchange_item_mapping([('foo', 'bar'), 'baz'])
     [('foo', 'bar'), ('baz', 'baz')]
     >>> get_exchange_item_mapping([dict(source='bar',
@@ -111,10 +111,10 @@ class Model(object):
 
         Examples
         --------
-        >>> from cmt.framework.services import del_component_instances
+        >>> from pymt.framework.services import del_component_instances
         >>> del_component_instances(['air_port'])
 
-        >>> from cmt.component.model import Model
+        >>> from pymt.component.model import Model
         >>> source = '''
         ... name: air_port
         ... class: AirPort
@@ -132,7 +132,8 @@ class Model(object):
         >>> model.duration = 1.
         >>> model['air_port'].current_time
         0.0
-        >>> model.go()
+        >>> model.go() # doctest: +NORMALIZE_WHITESPACE
+        {name: air_port, status: running, time: 1.0}
         >>> model['air_port'].current_time
         1.0
         """
@@ -214,10 +215,10 @@ class Model(object):
 
         Examples
         --------
-        >>> from cmt.framework.services import del_component_instances
+        >>> from pymt.framework.services import del_component_instances
         >>> del_component_instances(['air_port'])
 
-        >>> from cmt.component.model import Model
+        >>> from pymt.component.model import Model
         >>> source = '''
         ... name: air_port
         ... class: AirPort
