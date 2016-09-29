@@ -55,6 +55,12 @@ class EmptyPort(UniformRectilinearPoints):
         else:
             raise KeyError(var_name)
 
+    def get_var_units(self, var_name):
+        if var_name in self._values:
+            return '-'
+        else:
+            raise KeyError(var_name)
+
     def get_grid_shape(self, grid_id):
         if grid_id == 0:
             return self.get_shape()
@@ -73,7 +79,7 @@ class EmptyPort(UniformRectilinearPoints):
         else:
             raise KeyError(grid_id)
 
-    def get_value(self, var_name):
+    def get_value(self, var_name, units=None):
         try:
             return self._values[var_name]
         except KeyError:
