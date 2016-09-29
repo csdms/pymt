@@ -23,6 +23,8 @@ def get_class_names():
 
 #class EmptyPort(object):
 class EmptyPort(UniformRectilinearPoints):
+    _name = None
+
     def __init__(self):
         UniformRectilinearPoints.__init__(self, (4, 5), (1., 2.), (0., 1.))
         #self._shape = (4, 5)
@@ -30,6 +32,9 @@ class EmptyPort(UniformRectilinearPoints):
         #self._origin = (0., 1.)
         self._values = {}
         self._time = self.start_time
+
+    def get_component_name(self):
+        return self._name
 
     def initialize(self):
         for array in self._values.values():
@@ -100,6 +105,7 @@ class EmptyPort(UniformRectilinearPoints):
 
 
 class WaterPort(EmptyPort):
+    _name = 'water_port'
     def __init__(self):
         EmptyPort.__init__(self)
         self._values = {
@@ -109,6 +115,7 @@ class WaterPort(EmptyPort):
 
 
 class AirPort(EmptyPort):
+    _name = 'air_port'
     def __init__(self):
         EmptyPort.__init__(self)
         self._values = {
@@ -118,6 +125,7 @@ class AirPort(EmptyPort):
 
 
 class EarthPort(EmptyPort):
+    _name = 'earth_port'
     def __init__(self):
         EmptyPort.__init__(self)
         self._values = {
