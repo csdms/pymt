@@ -34,7 +34,7 @@ class cd_temp(object):
 
     Examples
     --------
-    >>> from cmt.utils.run_dir import cd_temp
+    >>> from pymt.utils.run_dir import cd_temp
     >>> import os
     >>> starting_dir = os.getcwd()
     >>> with cd_temp() as path:

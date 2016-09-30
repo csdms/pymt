@@ -2,7 +2,7 @@
 
 import unittest
 
-from cmt.ordered_task_status import OrderedTaskStatus
+from pymt.ordered_task_status import OrderedTaskStatus
 
 
 class TestOrderedTaskStatus(unittest.TestCase):

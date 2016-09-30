@@ -1,11 +1,10 @@
 #! /usr/bin/env python
 
 import unittest
-from cmt.grids import Rectilinear, RectilinearPoints
+from pymt.grids import Rectilinear, RectilinearPoints
 import numpy as np
 
-
-from cmt.grids.tests.test_utils import NumpyArrayMixIn
+from pymt.grids.tests.test_utils import NumpyArrayMixIn
 
 
 class TestRectilinearGrid (unittest.TestCase):

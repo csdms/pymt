@@ -2,8 +2,8 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-import cmt.grids.utils as utils
-from cmt.grids import UniformRectilinear, Structured, UnstructuredPoints
+import pymt.grids.utils as utils
+from pymt.grids import UniformRectilinear, Structured, UnstructuredPoints
 
 
 class NumpyArrayMixIn(object):

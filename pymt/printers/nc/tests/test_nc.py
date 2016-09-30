@@ -5,9 +5,9 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from cmt.grids import (RasterField, RectilinearField, StructuredField,
-                       UnstructuredField)
-from cmt.printers.nc.write import field_tofile
+from pymt.grids import (RasterField, RectilinearField, StructuredField,
+                        UnstructuredField)
+from pymt.printers.nc.write import field_tofile
 
 
 class NumpyArrayMixIn(object):

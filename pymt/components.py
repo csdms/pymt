@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __all__ = []
 
 import os
@@ -29,9 +31,13 @@ def import_csdms_components():
                 pass
             else:
                 if name in module.__dict__:
-                    setattr(sys.modules[__name__], name,
-                            bmi_factory(module.__dict__[name]))
-                    __all__.append(name)
+                    try:
+                        setattr(sys.modules[__name__], name,
+                                bmi_factory(module.__dict__[name]))
+                        __all__.append(name)
+                    except Exception as err:
+                        print('warning: found csdms.{name} but was unable '
+                              'to wrap it'.format(name=name))
 
 
 import_csdms_components()

@@ -6,8 +6,8 @@ from numpy.testing import assert_array_equal
 from nose.tools import (assert_true, assert_equal, assert_items_equal,
                         assert_tuple_equal)
 
-from cmt.grids import RasterField
-from cmt.printers.nc.database import Database
+from pymt.grids import RasterField
+from pymt.printers.nc.database import Database
 
 
 _TMP_DIR = 'tmp'

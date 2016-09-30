@@ -4,8 +4,8 @@ from numpy.testing import assert_array_almost_equal
 from nose.tools import (assert_equal, assert_is, assert_true, assert_false,
                         assert_is_instance, assert_raises)
 
-from cmt.grids.map import RectilinearMap as Rectilinear
-from cmt.mappers import find_mapper, NearestVal
+from pymt.grids.map import RectilinearMap as Rectilinear
+from pymt.mappers import find_mapper, NearestVal
 
 
 def test_all_good():

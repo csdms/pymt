@@ -27,7 +27,7 @@ def field_changed_size(field, n_points, n_cells):
 
 class Database(IDatabase):
     """
-    >>> from cmt.grids import RasterField
+    >>> from pymt.grids import RasterField
     >>> import numpy as np
 
 Create field and add some data to it that we will write to a NetCDF file

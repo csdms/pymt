@@ -3,7 +3,7 @@ import sys
 
 import numpy as np
 
-from cmt.grids import Unstructured
+from pymt.grids import Unstructured
 from .test_utils import NumpyArrayMixIn
 
 

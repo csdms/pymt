@@ -4,9 +4,9 @@ import os
 import unittest
 import numpy as np
 
-from cmt.grids import (RasterField, RectilinearField, StructuredField,
-                       UnstructuredField)
-from cmt.printers.vtk.vtu import tofile as field_tofile
+from pymt.grids import (RasterField, RectilinearField, StructuredField,
+                        UnstructuredField)
+from pymt.printers.vtk.vtu import tofile as field_tofile
 
 
 class TestVtk(unittest.TestCase):

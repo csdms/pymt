@@ -4,8 +4,8 @@ Examples
 Create an instance of the *AirPort* component and run it. The `go` method will initialize the component, run it for
 its duration, and finalize it.
 
->>> from cmt.framework.services import register_component_classes
->>> register_component_classes(['cmt.testing.services.AirPort'])
+>>> from pymt.framework.services import register_component_classes
+>>> register_component_classes(['pymt.testing.services.AirPort'])
 >>> comp = Component('AirPort')
 >>> comp.start_time
 0.0
@@ -13,7 +13,10 @@ its duration, and finalize it.
 0.0
 >>> comp.end_time
 100.0
->>> comp.go()
+>>> comp.go() # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+{name: air_port, status: running, time: 1.0}
+...
+{name: air_port, status: running, time: 100.0}
 >>> comp.current_time
 100.0
 
@@ -30,7 +33,10 @@ ValueError: AirPort
 You can gain finer control over component execution with the `initialize`, `run`, and `finalize` methods.
 
 >>> comp.initialize()
->>> comp.run(10.)
+>>> comp.run(10.) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+{name: air_port, status: running, time: 1.0}
+...
+{name: air_port, status: running, time: 10.0}
 >>> comp.current_time
 10.0
 >>> comp.run(101.) # doctest: +IGNORE_EXCEPTION_DETAIL
@@ -38,7 +44,10 @@ Traceback (most recent call last):
 ValueError: AirPort
 >>> comp.current_time
 10.0
->>> comp.run(100.)
+>>> comp.run(100.) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+{name: air_port, status: running, time: 11.0}
+...
+{name: air_port, status: running, time: 100.0}
 >>> comp.current_time
 100.0
 >>> comp.finalize()

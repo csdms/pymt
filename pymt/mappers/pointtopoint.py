@@ -30,7 +30,7 @@ def copy_good_values(src, dst, bad_val=-999):
     Examples
     --------
     >>> import numpy as np
-    >>> from cmt.mappers.pointtopoint import copy_good_values
+    >>> from pymt.mappers.pointtopoint import copy_good_values
     >>> x = np.arange(6)
     >>> y = np.zeros((2, 3))
     >>> rv = copy_good_values(x, y)
@@ -57,8 +57,8 @@ class NearestVal(IGridMapper):
     Examples
     --------
     >>> import numpy as np
-    >>> from cmt.grids.map import RectilinearMap
-    >>> from cmt.mappers.pointtopoint import NearestVal
+    >>> from pymt.grids.map import RectilinearMap
+    >>> from pymt.mappers.pointtopoint import NearestVal
     >>> src = RectilinearMap([0, 1, 2], [0, 2])
     >>> dst = RectilinearMap([.25, 1.25, 2.25], [.25, 1.25])
     >>> mapper = NearestVal()

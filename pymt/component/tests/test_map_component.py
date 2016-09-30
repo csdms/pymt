@@ -1,7 +1,7 @@
 from nose.tools import assert_equal
 
-from cmt.component.component import Component
-from cmt.testing.assertions import assert_isfile_and_remove
+from pymt.component.component import Component
+from pymt.testing.assertions import assert_isfile_and_remove
 
 
 def test_print_events():

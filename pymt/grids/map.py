@@ -53,8 +53,8 @@ True
 from shapely.geometry import Point
 from shapely.geometry import asPoint, asLineString, asPolygon
 
-from cmt.grids import (UniformRectilinear, Rectilinear, Structured,
-                       Unstructured, UnstructuredPoints)
+from pymt.grids import (UniformRectilinear, Rectilinear, Structured,
+                        Unstructured, UnstructuredPoints)
 
 
 class UnstructuredMap(Unstructured):

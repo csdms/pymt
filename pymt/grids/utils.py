@@ -1,8 +1,8 @@
 import numpy as np
 
 
-from cmt.grids.assertions import (is_rectilinear, is_structured,
-                                  is_unstructured)
+from pymt.grids.assertions import (is_rectilinear, is_structured,
+                                   is_unstructured)
 
 
 def get_default_coordinate_units(n_dims):

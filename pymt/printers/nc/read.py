@@ -4,8 +4,8 @@ from .constants import open_netcdf
 from .ugrid_read import (NetcdfRectilinearFieldReader,
                          NetcdfStructuredFieldReader,
                          NetcdfUnstructuredFieldReader, )
-from cmt.grids.grid_type import (GridTypeRectilinear, GridTypeStructured,
-                                 GridTypeUnstructured, )
+from pymt.grids.grid_type import (GridTypeRectilinear, GridTypeStructured,
+                                  GridTypeUnstructured, )
 
 
 _NETCDF_MESH_TYPE = {

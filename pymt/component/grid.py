@@ -1,6 +1,6 @@
 import numpy as np
 
-from cmt.grids.connectivity import get_connectivity
+from pymt.grids.connectivity import get_connectivity
 
 
 def raster_node_coordinates(shape, spacing=None, origin=None):
@@ -22,7 +22,7 @@ def raster_node_coordinates(shape, spacing=None, origin=None):
 
     Examples
     --------
-    >>> from cmt.component.grid import raster_node_coordinates
+    >>> from pymt.component.grid import raster_node_coordinates
     >>> (y, x) = raster_node_coordinates((2, 3))
     >>> y
     array([[ 0.,  0.,  0.],
@@ -63,7 +63,7 @@ def get_raster_node_coordinates(grid, grid_id):
 
     Examples
     --------
-    >>> from cmt.component.grid import get_raster_node_coordinates
+    >>> from pymt.component.grid import get_raster_node_coordinates
     >>> class RasterGrid(object):
     ...     def get_grid_shape(self, grid_id):
     ...         return (2, 3)
@@ -104,7 +104,7 @@ def get_rectilinear_node_coordinates(grid, grid_id):
 
     Examples
     --------
-    >>> from cmt.component.grid import get_rectilinear_node_coordinates
+    >>> from pymt.component.grid import get_rectilinear_node_coordinates
     >>> class RectilinearGrid(object):
     ...     def get_grid_x(self, grid_id):
     ...         return (0., 3., 4)
@@ -147,7 +147,7 @@ def get_structured_node_coordinates(grid, grid_id):
 
     Examples
     --------
-    >>> from cmt.component.grid import get_structured_node_coordinates
+    >>> from pymt.component.grid import get_structured_node_coordinates
     >>> class StructuredGrid(object):
     ...     def get_grid_x(self, grid_id):
     ...         return np.array((0., 3., 4, 0., 3., 4.)).reshape((2, 3))
@@ -191,7 +191,7 @@ def get_structured_node_connectivity(grid, grid_id):
 
     Examples
     --------
-    >>> from cmt.component.grid import get_structured_node_connectivity
+    >>> from pymt.component.grid import get_structured_node_connectivity
     >>> class StructuredGrid(object):
     ...     def get_grid_shape(self, grid_id):
     ...         return (2, 3)
@@ -229,7 +229,7 @@ class GridMixIn(object):
     ...     def get_grid_origin(self, grid_id):
     ...         return (0., 0.)
 
-    >>> from cmt.component.grid import GridMixIn
+    >>> from pymt.component.grid import GridMixIn
     >>> class Component(GridMixIn):
     ...     def __init__(self):
     ...         self._port = Port()
@@ -387,3 +387,6 @@ class GridMixIn(object):
 
     def set_value(self, name, values):
         return self._port.set_value(name, values)
+
+    def get_var_units(self, name):
+        return self._port.get_var_units(name)

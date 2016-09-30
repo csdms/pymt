@@ -7,7 +7,7 @@ Point-to-point Mapping
 ----------------------
 
 >>> import numpy as np
->>> from cmt.grids.map import RectilinearMap as Rectilinear
+>>> from pymt.grids.map import RectilinearMap as Rectilinear
 
 >>> src = Rectilinear([0, 1, 2], [0, 2])
 >>> dst = Rectilinear([.5, 1.5, 2.5], [.25, 1.25])
@@ -28,7 +28,7 @@ array([ 0.5,  0.5,  1.5,  1.5,  2.5,  2.5])
 Map the source values on the source points to the destination grid
 using nearest neighbor.
 
->>> from cmt.mappers import NearestVal
+>>> from pymt.mappers import NearestVal
 
 >>> mapper = NearestVal()
 >>> mapper.initialize(dst, src)
@@ -64,9 +64,9 @@ The source grid looks like,
      |          |
     (7) ------ (7)
 
->>> from cmt.mappers import CellToPoint
->>> from cmt.grids.map import UniformRectilinearMap as UniformRectilinear
->>> from cmt.grids.map import UnstructuredPointsMap as UnstructuredPoints
+>>> from pymt.mappers import CellToPoint
+>>> from pymt.grids.map import UniformRectilinearMap as UniformRectilinear
+>>> from pymt.grids.map import UnstructuredPointsMap as UnstructuredPoints
 
 >>> (dst_x, dst_y) = (np.array([.45, 1.25, 3.5]), np.array([.75, 2.25, 3.25]))
 
@@ -90,7 +90,7 @@ array([ 100.,    2., -999.])
 Point-to-cell Mapping
 ---------------------
 
->>> from cmt.mappers.pointtocell import PointToCell
+>>> from pymt.mappers.pointtocell import PointToCell
 >>> (src_x, src_y) = (np.array ([.45, 1.25, 3.5, .0, 1.]),
 ...                   np.array ([.75, 2.25, 3.25, .9, 1.1]))
 

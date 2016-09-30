@@ -42,7 +42,7 @@ class redirect(object):
 
 
 def read_component_configuration(names, vars=None):
-    module = importlib.import_module('.'.join(['cmt', 'components']))
+    module = importlib.import_module('.'.join(['pymt', 'components']))
 
     names = names or module.__all__
     vars = vars or ('uses', 'provides', 'info', 'parameters', 'files', 'api')

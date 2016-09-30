@@ -2,7 +2,7 @@ from nose.tools import (assert_equal, assert_set_equal, assert_raises,
                         assert_list_equal, assert_tuple_equal, assert_set_equal,
                         assert_dict_equal, assert_is)
 
-from cmt.services.gridreader import time_series_names as tsn
+from pymt.services.gridreader import time_series_names as tsn
 
 
 def test_split_valid():

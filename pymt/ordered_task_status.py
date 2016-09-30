@@ -23,7 +23,7 @@ initialized
 
 import types
 
-from cmt.task_status import TaskStatus
+from pymt.task_status import TaskStatus
 
 
 class OrderedTaskStatus(object):

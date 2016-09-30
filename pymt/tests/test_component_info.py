@@ -7,12 +7,12 @@ import os
 import tempfile
 from ConfigParser import ConfigParser
 
-from cmt.component_info import (ComponentInfo, UnknownKeyError,
-                                MissingKeyError, from_config_file,
-                                component_from_config_file,
-                                to_config_file, names_with_prefix,
-                                _VALID_KEYS,
-                               )
+from pymt.component_info import (ComponentInfo, UnknownKeyError,
+                                 MissingKeyError, from_config_file,
+                                 component_from_config_file,
+                                 to_config_file, names_with_prefix,
+                                 _VALID_KEYS,)
+
 
 _VALID_PARAMS = {
     'output_file_namespace': '/Component/Info',

@@ -1,8 +1,8 @@
 from nose.tools import assert_equal
 
-from cmt.component.component import Component
-from cmt.testing.assertions import assert_isfile_and_remove
-from cmt.framework.services import del_component_instances
+from pymt.component.component import Component
+from pymt.testing.assertions import assert_isfile_and_remove
+from pymt.framework.services import del_component_instances
 
 
 def test_no_events():

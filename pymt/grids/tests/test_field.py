@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
 import unittest
-from cmt.grids import RasterField, DimensionError
+from pymt.grids import RasterField, DimensionError
 import numpy as np
+
 
 class TestRasterField (unittest.TestCase):
     def assert_field_values (self, field, name, expected_values):

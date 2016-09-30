@@ -1,30 +1,27 @@
 env:
   matrix:
   - TRAVIS_PYTHON_VERSION="2.7"
-
+  global:
+    - secure: FZDgFl7gLtnwrLIbcfqs42aMOjd858DbChC4FDQV5yp5jcHYErMXqkRf9/S8jihQQfm/Ulq/8FQbugATlUUhzfdBdXrl5lwf3pVvVh5O4BZrRfR+GQeEBJ9cSKRDTmrg6vQC+wFyrg+8ibHhxldFAMswlrhS13NmML+IJPS2IHc=
+    - THIS_PACKAGE=pymt
 os:
 - linux
-
+- osx
 sudo: false
-
 install:
-- echo "Build on $TRAVIS_OS_NAME"
+- echo "Running Travis-CI for $THIS_PACKAGE"
+- echo "Build on $TRAVIS_OS_NAME for Python $TRAVIS_PYTHON_VERSION"
 - if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev";
   fi
-- bash .travis/install_python.sh
+- bash .ci/travis/install_python.sh $HOME/miniconda
 - export PATH="$HOME/miniconda/bin:$PATH"
 - conda config --add channels conda-forge
 - conda info -a
-- conda build -q -c csdms conda-recipe
-- conda install -q pymt -c conda-forge -c csdms --use-local
+- conda build -q conda-recipe -c conda-forge -c csdms
+- conda install -q $THIS_PACKAGE --use-local -c csdms
 - pip install coveralls
-
 script:
-- nosetests --with-doctest --with-coverage --cover-package=pymt
-
-virtualenv:
-    system_site_packages: false
-
+- nosetests --with-doctest --with-coverage --cover-package=$THIS_PACKAGE $THIS_PACKAGE
 after_success:
 - coveralls --verbose
-- bash .travis/deploy_to_anaconda.sh
+- bash .ci/travis/deploy_to_anaconda.sh $THIS_PACKAGE

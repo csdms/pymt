@@ -103,7 +103,7 @@ The connectivity runs from 0 to one less than the number of points.
 
 import numpy as np
 
-from cmt.grids.meshgrid import meshgrid
+from pymt.grids.meshgrid import meshgrid
 from .structured import Structured, StructuredPoints
 
 class RectilinearPoints(StructuredPoints):

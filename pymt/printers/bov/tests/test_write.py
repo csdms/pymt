@@ -8,9 +8,9 @@ from numpy.testing import assert_array_equal
 
 from nose.tools import assert_true, assert_dict_equal, assert_raises
 
-from cmt.grids import RasterField, RectilinearField
-from cmt.printers.bov.bov_io import tofile, FileExists
-from cmt.utils.run_dir import cd_temp
+from pymt.grids import RasterField, RectilinearField
+from pymt.printers.bov.bov_io import tofile, FileExists
+from pymt.utils.run_dir import cd_temp
 
 
 def test_1d():
