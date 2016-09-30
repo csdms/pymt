@@ -326,7 +326,7 @@ class EsmpField(IField):
             meshloc = ESMF.MeshLoc.NODE
 
         field = ESMF.Field(self._mesh, field_name, meshloc=meshloc)
-        np.copyto(field, val.view().reshape(field.shape))
+        np.copyto(field.data, val.view().reshape(field.data.shape))
         self._fields[field_name] = field
 
     def get_field(self, field_name):
