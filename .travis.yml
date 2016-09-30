@@ -2,7 +2,7 @@ env:
   matrix:
   - TRAVIS_PYTHON_VERSION="2.7"
   global:
-    - secure: H0lCgCzOd++G63BDD8MMQqe5EJZwArJY4awBaEEsN/wJQD6Q3Jcbnllck3BUTi8DsMYrPxjhVdIyMFJUhokG8L/68iLUiexTIPfw2t+0uTAZ8Kxi8EuThbUyKRcfrILaLMBR5vexBb6zv7UcQrzAMDb8vTvQPJaHj5fqzJQg7wI=
+    - secure: KEm0QwqwPnYuwk1sZ9tjUXWD+ZqDXgJ2DL25Iv77s4KqXfDkrQ+Q2JkWRQgN9IWRpsQf1/SorIeZzCkCXy+GkErAqJDGk/EVnpzdLitZ1caZgKj2H7W3cMZ51qZh3UQrxwo+H9FW6PaltCezkOIk5Q/VdewlSYny7dqpoYjsc/o=
     - THIS_PACKAGE=pymt
 os:
 - linux
