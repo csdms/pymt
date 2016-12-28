@@ -1,18 +1,18 @@
-cmt.services package
-====================
+pymt.services package
+=====================
 
 Subpackages
 -----------
 
 .. toctree::
 
-    cmt.services.constant
-    cmt.services.gridreader
+    pymt.services.constant
+    pymt.services.gridreader
 
 Module contents
 ---------------
 
-.. automodule:: cmt.services
+.. automodule:: pymt.services
     :members:
     :undoc-members:
     :show-inheritance:

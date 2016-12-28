@@ -1,13 +1,13 @@
-cmt.bmi package
-===============
+pymt.cmd package
+================
 
 Submodules
 ----------
 
-cmt.bmi.bmi module
-------------------
+pymt.cmd.cmt_config module
+--------------------------
 
-.. automodule:: cmt.bmi.bmi
+.. automodule:: pymt.cmd.cmt_config
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ cmt.bmi.bmi module
 Module contents
 ---------------
 
-.. automodule:: cmt.bmi
+.. automodule:: pymt.cmd
     :members:
     :undoc-members:
     :show-inheritance:

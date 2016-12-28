@@ -1,13 +1,13 @@
-cmt.framework package
-=====================
+pymt.bmi package
+================
 
 Submodules
 ----------
 
-cmt.framework.services module
------------------------------
+pymt.bmi.bmi module
+-------------------
 
-.. automodule:: cmt.framework.services
+.. automodule:: pymt.bmi.bmi
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ cmt.framework.services module
 Module contents
 ---------------
 
-.. automodule:: cmt.framework
+.. automodule:: pymt.bmi
     :members:
     :undoc-members:
     :show-inheritance:

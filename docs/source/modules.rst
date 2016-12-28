@@ -1,7 +1,7 @@
-cmt
-===
+pymt
+====
 
 .. toctree::
    :maxdepth: 4
 
-   cmt
+   pymt
