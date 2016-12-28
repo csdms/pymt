@@ -1,27 +1,42 @@
-env:
-  matrix:
-  - TRAVIS_PYTHON_VERSION="2.7"
-  global:
-    - secure: KEm0QwqwPnYuwk1sZ9tjUXWD+ZqDXgJ2DL25Iv77s4KqXfDkrQ+Q2JkWRQgN9IWRpsQf1/SorIeZzCkCXy+GkErAqJDGk/EVnpzdLitZ1caZgKj2H7W3cMZ51qZh3UQrxwo+H9FW6PaltCezkOIk5Q/VdewlSYny7dqpoYjsc/o=
-    - THIS_PACKAGE=pymt
+language: generic
 os:
 - linux
 - osx
+env:
+  global:
+  - CONDA_PREFIX=$HOME/miniconda
+  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
+  - TRAVIS_PYTHON_VERSION="2.7"
+  - secure: KEm0QwqwPnYuwk1sZ9tjUXWD+ZqDXgJ2DL25Iv77s4KqXfDkrQ+Q2JkWRQgN9IWRpsQf1/SorIeZzCkCXy+GkErAqJDGk/EVnpzdLitZ1caZgKj2H7W3cMZ51qZh3UQrxwo+H9FW6PaltCezkOIk5Q/VdewlSYny7dqpoYjsc/o=
 sudo: false
-install:
-- echo "Running Travis-CI for $THIS_PACKAGE"
-- echo "Build on $TRAVIS_OS_NAME for Python $TRAVIS_PYTHON_VERSION"
-- if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev";
+before_install:
+- |
+  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+    brew remove --force $(brew list)
+    brew cleanup -s
+    rm -rf $(brew --cache)
   fi
-- bash .ci/travis/install_python.sh $HOME/miniconda
-- export PATH="$HOME/miniconda/bin:$PATH"
-- conda config --add channels conda-forge
-- conda info -a
-- conda build -q conda-recipe -c conda-forge -c csdms
-- conda install -q $THIS_PACKAGE --use-local -c conda-forge -c csdms
+install:
+- |
+  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    OS="MacOSX-x86_64"
+  else
+    OS="Linux-x86_64"
+  fi
+- curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
+- bash $HOME/minconda.sh -b -p $CONDA_PREFIX
+- export PATH="$CONDA_PREFIX/bin:$PATH"
+- hash -r
+- conda config --set always_yes yes --set changeps1 no
+- conda install python=$TRAVIS_PYTHON_VERSION
+- conda install -q conda-build anaconda-client coverage sphinx
 - pip install coveralls
 script:
 - nosetests --with-doctest --with-coverage --cover-package=$THIS_PACKAGE $THIS_PACKAGE
+- conda build ./recipe -c csdms-stack -c conda-forge
 after_success:
 - coveralls --verbose
-- bash .ci/travis/deploy_to_anaconda.sh $THIS_PACKAGE
+- curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
+  > $HOME/anaconda_upload.py
+- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./recipe --channel=main --org=csdms-stack
+  --token=-
