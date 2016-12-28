@@ -1,7 +1,7 @@
 #! /bin/env python
-"""
-Examples
-========
+"""PyMT interface to ESMPy grids.
+
+**Examples**
 
 Create a grid that looks like this,
 
@@ -64,8 +64,7 @@ True
 True
 
 
-Uniform Rectilinear Field
--------------------------
+**Uniform Rectilinear Field**
 
 Create a field on a grid that looks like this,
 
@@ -79,147 +78,144 @@ Create a field on a grid that looks like this,
 
 Create the field,
 
-    >>> g = EsmpRasterField((2, 3), (1, 2), (0, 0), indexing='ij')
-    >>> g.get_cell_count()
-    2
-    >>> g.get_point_count()
-    6
+>>> g = EsmpRasterField((2, 3), (1, 2), (0, 0), indexing='ij')
+>>> g.get_cell_count()
+2
+>>> g.get_point_count()
+6
 
 Add some data at the points of our grid.
 
-    >>> data = np.arange(6)
-    >>> g.add_field('var0', data, centering='point')
-    >>> f = g.get_field('var0')
-    >>> f.data
-    array([ 0.,  1.,  2.,  3.,  4.,  5.])
+>>> data = np.arange(6)
+>>> g.add_field('var0', data, centering='point')
+>>> f = g.get_field('var0')
+>>> f.data
+array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
 The data can be given either as a 1D array or with the same shape
 as the point grid. In either case, though, it will be flattened.
 
-    >>> data = np.arange(6)
-    >>> data.shape = (2, 3)
-    >>> g.add_field('var0', data, centering='point')
-    >>> f = g.get_field('var0')
-    >>> f.data
-    array([ 0.,  1.,  2.,  3.,  4.,  5.])
+>>> data = np.arange(6)
+>>> data.shape = (2, 3)
+>>> g.add_field('var0', data, centering='point')
+>>> f = g.get_field('var0')
+>>> f.data
+array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
 If the size or shape doesn't match, it's an error.
 
-    >>> data = np.arange(2)
-    >>> g.add_field('bad var', data, centering='point')
-    Traceback (most recent call last):
-        ...
-    DimensionError: 2 != 6
+>>> data = np.arange(2)
+>>> g.add_field('bad var', data, centering='point')
+Traceback (most recent call last):
+    ...
+DimensionError: 2 != 6
 
-    >>> data = np.ones((3, 2))
-    >>> g.add_field ('bad var', data, centering='point')
-    Traceback (most recent call last):
-        ...
-    DimensionError: (3, 2) != (2, 3)
+>>> data = np.ones((3, 2))
+>>> g.add_field ('bad var', data, centering='point')
+Traceback (most recent call last):
+    ...
+DimensionError: (3, 2) != (2, 3)
 
 
-Map between two fields
-----------------------
-    >>> from pymt.grids.raster import UniformRectilinear
-    >>> from pymt.grids.rectilinear import Rectilinear
+**Map between two fields**
 
-    >>> src = EsmpRasterField((3,3), (1,1), (0, 0), indexing='ij')
-    >>> data = np.arange(src.get_cell_count(), dtype=np.float64)
-    >>> src.add_field('srcfield', data, centering='zonal')
-    >>> src.get_point_count()
-    9
-    >>> src.get_cell_count()
-    4
-    >>> src.get_x()
-    array([ 0.,  1.,  2.,  0.,  1.,  2.,  0.,  1.,  2.])
-    >>> src.get_y()
-    array([ 0.,  0.,  0.,  1.,  1.,  1.,  2.,  2.,  2.])
-    >>> src.get_connectivity() + 1
-    array([1, 2, 5, 4, 2, 3, 6, 5, 4, 5, 8, 7, 5, 6, 9, 8], dtype=int32)
+>>> from pymt.grids.raster import UniformRectilinear
+>>> from pymt.grids.rectilinear import Rectilinear
 
-    >>> dst = EsmpRectilinearField([0., .5, 1.5, 2.], [0., .5, 1.5, 2.])
-    >>> data = np.empty(dst.get_cell_count(), dtype=np.float64)
-    >>> dst.add_field('dstfield', data, centering='zonal')
-    >>> dst.get_point_count()
-    16
-    >>> dst.get_cell_count()
-    9
-    >>> dst.get_x()
-    array([ 0. ,  0.5,  1.5,  2. ,  0. ,  0.5,  1.5,  2. ,  0. ,  0.5,  1.5,
-            2. ,  0. ,  0.5,  1.5,  2. ])
-    >>> dst.get_y()
-    array([ 0. ,  0. ,  0. ,  0. ,  0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,
-            1.5,  2. ,  2. ,  2. ,  2. ])
-    >>> dst.get_connectivity() + 1
-    array([ 1,  2,  6,  5,  2,  3,  7,  6,  3,  4,  8,  7,  5,  6, 10,  9,  6,
-            7, 11, 10,  7,  8, 12, 11,  9, 10, 14, 13, 10, 11, 15, 14, 11, 12,
-           16, 15], dtype=int32)
+>>> src = EsmpRasterField((3,3), (1,1), (0, 0), indexing='ij')
+>>> data = np.arange(src.get_cell_count(), dtype=np.float64)
+>>> src.add_field('srcfield', data, centering='zonal')
+>>> src.get_point_count()
+9
+>>> src.get_cell_count()
+4
+>>> src.get_x()
+array([ 0.,  1.,  2.,  0.,  1.,  2.,  0.,  1.,  2.])
+>>> src.get_y()
+array([ 0.,  0.,  0.,  1.,  1.,  1.,  2.,  2.,  2.])
+>>> src.get_connectivity() + 1
+array([1, 2, 5, 4, 2, 3, 6, 5, 4, 5, 8, 7, 5, 6, 9, 8], dtype=int32)
 
-    >>> src_field = src.as_esmp('srcfield')
-    >>> dst_field = dst.as_esmp('dstfield')
-    >>> src.as_mesh().element_count
-    4
-    >>> src.as_mesh().node_count
-    9
-    >>> dst.as_mesh().element_count
-    9
-    >>> dst.as_mesh().node_count
-    16
+>>> dst = EsmpRectilinearField([0., .5, 1.5, 2.], [0., .5, 1.5, 2.])
+>>> data = np.empty(dst.get_cell_count(), dtype=np.float64)
+>>> dst.add_field('dstfield', data, centering='zonal')
+>>> dst.get_point_count()
+16
+>>> dst.get_cell_count()
+9
+>>> dst.get_x()
+array([ 0. ,  0.5,  1.5,  2. ,  0. ,  0.5,  1.5,  2. ,  0. ,  0.5,  1.5,
+        2. ,  0. ,  0.5,  1.5,  2. ])
+>>> dst.get_y()
+array([ 0. ,  0. ,  0. ,  0. ,  0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,
+        1.5,  2. ,  2. ,  2. ,  2. ])
+>>> dst.get_connectivity() + 1
+array([ 1,  2,  6,  5,  2,  3,  7,  6,  3,  4,  8,  7,  5,  6, 10,  9,  6,
+        7, 11, 10,  7,  8, 12, 11,  9, 10, 14, 13, 10, 11, 15, 14, 11, 12,
+       16, 15], dtype=int32)
 
-    >>> f = run_regridding(src_field, dst_field)
-    >>> f.data
-    array([ 0. ,  0.5,  1. ,  1. ,  1.5,  2. ,  2. ,  2.5,  3. ])
+>>> src_field = src.as_esmp('srcfield')
+>>> dst_field = dst.as_esmp('dstfield')
+>>> src.as_mesh().element_count
+4
+>>> src.as_mesh().node_count
+9
+>>> dst.as_mesh().element_count
+9
+>>> dst.as_mesh().node_count
+16
 
-A bigger grid
--------------
+>>> f = run_regridding(src_field, dst_field)
+>>> f.data
+array([ 0. ,  0.5,  1. ,  1. ,  1.5,  2. ,  2. ,  2.5,  3. ])
 
-    >>> (M, N) = (300, 300)
-    >>> src = EsmpRasterField((M, N), (1, 1), (0, 0))
+**A bigger grid**
 
-Map values on cells
--------------------
+>>> (M, N) = (300, 300)
+>>> src = EsmpRasterField((M, N), (1, 1), (0, 0))
 
-    >>> (X, Y) = np.meshgrid(np.arange (0.5, 299.5, 1.),
-    ...                      np.arange (0.5, 299.5, 1.))
-    >>> data = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-    >>> src.add_field('srcfield', data, centering='zonal')
+**Map values on cells**
 
-    >>> dst = EsmpRasterField((M * 2 - 1, N * 2 - 1), (1. / 2, 1. / 2), (0, 0))
-    >>> data = np.empty(dst.get_cell_count(), dtype=np.float64)
-    >>> dst.add_field('dstfield', data, centering='zonal')
+>>> (X, Y) = np.meshgrid(np.arange (0.5, 299.5, 1.),
+...                      np.arange (0.5, 299.5, 1.))
+>>> data = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
+>>> src.add_field('srcfield', data, centering='zonal')
 
-    >>> src_field = src.as_esmp('srcfield')
-    >>> dst_field = dst.as_esmp('dstfield')
+>>> dst = EsmpRasterField((M * 2 - 1, N * 2 - 1), (1. / 2, 1. / 2), (0, 0))
+>>> data = np.empty(dst.get_cell_count(), dtype=np.float64)
+>>> dst.add_field('dstfield', data, centering='zonal')
 
-    >>> f = run_regridding(src_field, dst_field)
+>>> src_field = src.as_esmp('srcfield')
+>>> dst_field = dst.as_esmp('dstfield')
 
-    >>> (X, Y) = np.meshgrid(np.arange (0.5, 299.5, .5),
-    ...                      np.arange (0.5, 299.5, .5))
-    >>> exact = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-    >>> np.sum(np.abs(exact.flat - f.data))/(M * N * 4.) < 1e-2
-    True
+>>> f = run_regridding(src_field, dst_field)
 
-Map values on points
---------------------
+>>> (X, Y) = np.meshgrid(np.arange (0.5, 299.5, .5),
+...                      np.arange (0.5, 299.5, .5))
+>>> exact = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
+>>> np.sum(np.abs(exact.flat - f.data))/(M * N * 4.) < 1e-2
+True
 
-    >>> (X, Y) = np.meshgrid(np.arange(0.5, 300.5, 1.),
-    ...                      np.arange(0.5, 300.5, 1.))
-    >>> data = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
-    >>> src.add_field('srcfield_at_points', data, centering='point')
+**Map values on points**
 
-    >>> data = np.empty(dst.get_point_count(), dtype=np.float64)
-    >>> dst.add_field('dstfield_at_points', data, centering='point')
+>>> (X, Y) = np.meshgrid(np.arange(0.5, 300.5, 1.),
+...                      np.arange(0.5, 300.5, 1.))
+>>> data = np.sin(np.sqrt(X ** 2 + Y ** 2) * np.pi / M)
+>>> src.add_field('srcfield_at_points', data, centering='point')
 
-    >>> src_field = src.as_esmp('srcfield_at_points')
-    >>> dst_field = dst.as_esmp('dstfield_at_points')
+>>> data = np.empty(dst.get_point_count(), dtype=np.float64)
+>>> dst.add_field('dstfield_at_points', data, centering='point')
 
-    >>> f = run_regridding(src_field, dst_field,
-    ...                    method=ESMF.RegridMethod.BILINEAR)
+>>> src_field = src.as_esmp('srcfield_at_points')
+>>> dst_field = dst.as_esmp('dstfield_at_points')
 
-    >>> (X, Y) = np.meshgrid(np.arange(0.5, 300., .5), np.arange(0.5, 300., .5))
-    >>> exact = np.sin(np.sqrt (X ** 2 + Y ** 2) * np.pi / M)
-    >>> np.sum(np.abs(exact.flat - f.data))/(M * N * 4.) < 1e-5
-    True
+>>> f = run_regridding(src_field, dst_field,
+...                    method=ESMF.RegridMethod.BILINEAR)
+
+>>> (X, Y) = np.meshgrid(np.arange(0.5, 300., .5), np.arange(0.5, 300., .5))
+>>> exact = np.sin(np.sqrt (X ** 2 + Y ** 2) * np.pi / M)
+>>> np.sum(np.abs(exact.flat - f.data))/(M * N * 4.) < 1e-5
+True
 """
 
 import numpy as np
@@ -231,7 +227,8 @@ from pymt.grids.igrid import (IGrid, IField, DimensionError,
 
 try:
     import ESMF
-except ImportError:
+# except (ImportError, ValueError):
+except Exception:
     import warnings
     warnings.warn('unable to import ESMF', ImportWarning)
     _WITH_ESMF = False
@@ -239,8 +236,8 @@ else:
     _WITH_ESMF = True
 
 
-if not _WITH_ESMF:
-    __doc__ = "This module is not available (no ESMF installation was found)"
+# if not _WITH_ESMF:
+#     __doc__ = "This module is not available (no ESMF installation was found)"
 
 
 class EsmpGrid(IGrid):
