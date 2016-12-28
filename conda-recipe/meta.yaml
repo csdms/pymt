@@ -1,6 +1,10 @@
+{% set name = "pymt" %}
+{% set version = "0.1.1" %}
+
+
 package:
-  name: pymt
-  version: "0.1.1"
+  name: {{ name }}
+  version: {{ version }}
 
 source:
   path: ..
@@ -31,8 +35,17 @@ requirements:
     - cfunits-python
 
 about:
+  home: http://github.com/csdms/pymt
+  license: MIT
+  license_file: LICENSE
   summary: The CSDMS Python Modeling Tools
 
+  description: |
+    pymt is the Python interface to the CSDMS modeling tools. It provides
+    utilities that run, and couple models that expose the Basic
+    Model Interface.
+  doc_url: http://pymt.readthedocs.org
+  dev_url: http://github.com/csdms/pymt
+
 build:
-  number: 2
-  string: {{ environ.get('BUILD_STR', '') }}
+  string: {{ environ.get('GIT_BUILD_STR', '') }}
