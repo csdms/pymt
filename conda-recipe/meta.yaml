@@ -21,6 +21,7 @@ requirements:
     - pyyaml
     - esmpy
     - cfunits-python
+    - numpydoc
 
   run:
     - python
