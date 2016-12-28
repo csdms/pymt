@@ -1,24 +1,27 @@
-language: python
-python:
-    - "2.7"
-
+env:
+  matrix:
+  - TRAVIS_PYTHON_VERSION="2.7"
+  global:
+    - secure: KEm0QwqwPnYuwk1sZ9tjUXWD+ZqDXgJ2DL25Iv77s4KqXfDkrQ+Q2JkWRQgN9IWRpsQf1/SorIeZzCkCXy+GkErAqJDGk/EVnpzdLitZ1caZgKj2H7W3cMZ51qZh3UQrxwo+H9FW6PaltCezkOIk5Q/VdewlSYny7dqpoYjsc/o=
+    - THIS_PACKAGE=pymt
 os:
-    - linux
-
+- linux
+- osx
+sudo: false
 install:
-    - sudo apt-get install gfortran
-    - bash .travis/install_esmf.sh
-    - bash .travis/install_python.sh
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - source activate test-env
-    - pip install coveralls
-    - bash .travis/install_esmpy.sh
-
+- echo "Running Travis-CI for $THIS_PACKAGE"
+- echo "Build on $TRAVIS_OS_NAME for Python $TRAVIS_PYTHON_VERSION"
+- if [[ "$TRAVIS_TAG" == v* ]]; then export BUILD_STR=""; else export BUILD_STR="dev";
+  fi
+- bash .ci/travis/install_python.sh $HOME/miniconda
+- export PATH="$HOME/miniconda/bin:$PATH"
+- conda config --add channels conda-forge
+- conda info -a
+- conda build -q conda-recipe -c conda-forge -c csdms
+- conda install -q $THIS_PACKAGE --use-local -c conda-forge -c csdms
+- pip install coveralls
 script:
-    - nosetests --with-doctest --with-coverage --cover-package=cmt
-
-virtualenv:
-    system_site_packages: false
-
+- nosetests --with-doctest --with-coverage --cover-package=$THIS_PACKAGE $THIS_PACKAGE
 after_success:
-    coveralls
+- coveralls --verbose
+- bash .ci/travis/deploy_to_anaconda.sh $THIS_PACKAGE

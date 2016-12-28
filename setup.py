@@ -1,6 +1,6 @@
-from ez_setup import use_setuptools
+# from ez_setup import use_setuptools
 
-use_setuptools ()
+# use_setuptools ()
 
 from setuptools import setup, find_packages
 
@@ -22,15 +22,20 @@ def read_requirements():
         return [require.split() for require in requires]
 
 
-setup(name='Cmt',
+setup(name='PyMT',
       version=__version__,
-      description='The Component Modeling Tools',
+      description='The CSDMS Python Modeling Toolkit',
       author='Eric Hutton',
       author_email='huttone@colorado.edu',
       url='http://csdms.colorado.edu',
       install_requires=read_requirements(),
       setup_requires=read_requirements(),
       packages=find_packages(),
+      entry_points={
+          'console_scripts': [
+              'cmt-config=cmt.cmd.cmt_config:main',
+          ],
+      },
       scripts=[
           'scripts/scrape_html_block',
           'scripts/vtu2ncu.py',

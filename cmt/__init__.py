@@ -1,1 +1,4 @@
-__version__ = '0.1.0'
+import sys
+
+import pymt
+sys.modules['cmt'] = pymt
