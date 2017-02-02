@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.interpolate import interp1d
+import json
+import yaml
 
 from cfunits import Units
 
@@ -14,7 +16,7 @@ class BmiError(Exception):
 
     def __str__(self):
         return 'Error calling BMI function: {fname} ({code})'.format(
-            fname=self._fname, code=status)
+            fname=self._fname, code=self._status)
 
 
 def val_or_raise(func, args):
@@ -238,11 +240,11 @@ class BmiTimeInterpolator(object):
         return self._interpolators[name].interpolate(at)
 
     def update_until(self, then, method=None):
-        # if hasattr(self.bmi, 'update_until'):
-        #     try:
-        #         bmi_call(self.bmi.update_until, then)
-        #     except NotImplementedError:
-        #         pass
+        if hasattr(self.bmi, 'update_until'):
+            try:
+                bmi_call(self.bmi.update_until, then)
+            except NotImplementedError:
+                pass
 
         self.reset()
         while self.get_current_time() < then:
@@ -465,7 +467,80 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         return bmi_call(self.bmi.get_var_type, name)
 
     def get_var_units(self, name):
-        return bmi_call(self.bmi.get_var_units, name)
+        units = bmi_call(self.bmi.get_var_units, name)
+        if units == '-':
+            return ''
+        else:
+            return units
+
+    def as_dict(self):
+        vars = {}
+        grid_ids = set()
+        for var in set(self.input_var_names + self.output_var_names):
+            var_desc = {
+                # 'name': var,
+                'intent': '',
+                'units': self.get_var_units(var),
+                'dtype': self.get_var_type(var),
+                'itemsize': self.get_var_itemsize(var),
+                'nbytes': self.get_var_nbytes(var),
+                'grid': self.get_var_grid(var),
+            }
+            vars[var] = var_desc
+
+            if var in self.input_var_names:
+                var_desc['intent'] += 'in'
+            if var in self.output_var_names:
+                var_desc['intent'] += 'out'
+            # vars.append(var_desc)
+            grid_ids.add(var_desc['grid'])
+        # vars.sort(cmp=lambda a, b: cmp(a['name'], b['name']))
+
+        grids = {}
+        for grid_id in grid_ids:
+            grid_desc = {
+                # 'id': grid_id,
+                'rank': self.get_grid_rank(grid_id),
+                'size': self.get_grid_size(grid_id),
+                'type': self.get_grid_type(grid_id),
+            }
+            grids[grid_id] = grid_desc
+            # grids.append(grid_desc)
+        # grids.sort(cmp=lambda a, b: cmp(a['id'], b['id']))
+
+        in_vars = list(self.input_var_names)
+        out_vars = list(self.output_var_names)
+        in_vars.sort()
+        out_vars.sort()
+
+        times = {
+            'start': self.get_start_time(),
+            'end': self.get_end_time(),
+            'current': self.get_current_time(),
+            # 'time_step': self.get_time_step(),
+            'units': self.get_time_units(),
+        }
+        return {
+            'name': self.name,
+            'input_var_names': in_vars,
+            'output_var_names': out_vars,
+            'vars': vars,
+            'grids': grids,
+            'times': times,
+        }
+
+    def as_yaml(self):
+        return yaml.dump(self.as_dict(), default_flow_style=False)
+
+    def as_json(self):
+        return json.dumps(self.as_dict())
+
+    def __str__(self):
+        return yaml.dump({
+            'name': self.name,
+            'input_var_names': list(self.input_var_names),
+            'output_var_names': list(self.output_var_names),
+        }, default_flow_style=False)
 
 
 def bmi_factory(cls):
