@@ -14,6 +14,7 @@ from ..babel import query_config_var
 Parameter = namedtuple('Parameter', ('name', 'value', 'units', 'desc', 'type'))
 ModelInfo = namedtuple('ModelInfo', ('name', 'author', 'version', 'license',
                                      'doi', 'url', 'summary'))
+ModelRun = namedtuple('ModelRun', ('config_file', ))
 ParameterSection = namedtuple('ParameterSection', ('title', 'members'))
 
 
@@ -147,7 +148,7 @@ def bmi_data_dir(name):
 def bmi_data_files(path):
     files = []
     for file_ in os.listdir(path):
-        if file_ not in ('api.yaml', 'parameters.yaml', 'info.yaml'):
+        if file_ not in ('api.yaml', 'parameters.yaml', 'info.yaml', 'run.yaml'):
             files.append(os.path.join(path, file_))
 
     return files
@@ -182,6 +183,19 @@ def load_model_info(path):
         doi=info.get('doi', 'None'),
         url=info.get('url', 'None'),
         summary=info.get('summary', ''),
+    )
+
+
+def load_run_section(path):
+    run_yaml = os.path.join(path, 'run.yaml')
+    if os.path.isfile(run_yaml):
+        with open(run_yaml, 'r') as fp:
+            run = yaml.load(fp.read())
+    else:
+        run = {}
+
+    return ModelRun(
+        config_file=run.get('config_file', ''),
     )
 
 
@@ -251,6 +265,7 @@ def load_bmi_metadata(name):
     datadir = bmi_data_dir(name)
     meta['defaults'] = load_default_parameters(datadir)
     meta['info'] = load_model_info(datadir)
+    meta['run'] = load_run_section(datadir)
 
     parameters = dict()
     for name, param in meta['defaults'].items():
