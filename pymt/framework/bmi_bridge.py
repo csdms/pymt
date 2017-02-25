@@ -1,5 +1,8 @@
+from pprint import pformat
+
 import numpy as np
 from scipy.interpolate import interp1d
+import xarray as xr
 import json
 import yaml
 
@@ -7,6 +10,9 @@ from cfunits import Units
 
 from .bmi_setup import SetupMixIn
 from .bmi_docstring import bmi_docstring
+from .bmi_ugrid import (dataset_from_bmi_points,
+                        dataset_from_bmi_uniform_rectilinear,
+                        dataset_from_bmi_scalar)
 
 
 class BmiError(Exception):
@@ -56,7 +62,7 @@ def bmi_call(func, *args):
         status, val = rtn, None
 
     if status != 0:
-        raise BmiError(func.__name__, status)
+        raise BmiError(func.__name__ + pformat(args), status)
     else:
         return val
 
@@ -234,7 +240,11 @@ class BmiTimeInterpolator(object):
         time = self.get_current_time()
 
         for name in self._interpolators:
-            self._interpolators[name].add_data(self.get_value(name), time)
+            try:
+                self._interpolators[name].add_data(self.get_value(name), time)
+            except BmiError:
+                self._interpolators.pop(name)
+                print 'unable to get value for {name}. ignoring'.format(name=name)
 
     def interpolate(self, name, at):
         return self._interpolators[name].interpolate(at)
@@ -272,9 +282,63 @@ def transform_azimuth_to_math(angle, units):
         angle -= 90.
 
 
+class DataValues(object):
+    def __init__(self, bmi, name):
+        self._bmi = bmi
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def units(self):
+        return self._bmi.get_var_units(self.name)
+
+    @property
+    def grid(self):
+        return self._bmi.get_var_grid(self.name)
+
+    @property
+    def size(self):
+        return self._bmi.get_var_size(self.name)
+
+    @property
+    def type(self):
+        return self._bmi.get_var_type(self.name)
+
+    @property
+    def intent(self):
+        return self._bmi.get_var_intent(self.name)
+
+    def values(self, **kwds):
+        if 'out' in self.intent:
+            return self._bmi.get_value(self.name, **kwds)
+        else:
+            raise ValueError('not an output var')
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return """
+<DataValues>
+{dtype} {name}(n_nodes)
+Attributes:
+    units: {units}
+    grid: {grid}
+    intent: {intent}
+    location: node
+""".format(dtype=self.type, name=self.name, units=self.units,
+           grid=self.grid, intent=self.intent).strip()
+
+
 class BmiCap(BmiTimeInterpolator, SetupMixIn):
     def __init__(self):
         self._bmi = self._cls()
+        self._initialized = False
+        self._grid = dict()
+        self._var = dict()
         super(BmiCap, self).__init__()
 
     @property
@@ -285,13 +349,39 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
     def name(self):
         return self.get_component_name()
 
+    @property
+    def grid(self):
+        return self._grid
+
+    @property
+    def var(self):
+        return self._var
+
+    def _grid_ids(self):
+        grids = set()
+        for var in set(self.input_var_names + self.output_var_names):
+            grids.add(self.get_var_grid(var))
+        return tuple(grids)
+
     def get_component_name(self):
         return bmi_call(self.bmi.get_component_name)
 
     def initialize(self, *args):
         if len(args) == 0:
             args = (self.setup(case=kwds.pop('case', 'default')), )
-        return bmi_call(self.bmi.initialize, *args)
+        if bmi_call(self.bmi.initialize, *args) == 0:
+            self._initialized = True
+
+        for grid_id in self._grid_ids():
+            if self.get_grid_type(grid_id) == 'points':
+                self._grid[grid_id] = dataset_from_bmi_points(self, grid_id)
+            elif self.get_grid_type(grid_id) == 'uniform_rectilinear':
+                self._grid[grid_id] = dataset_from_bmi_uniform_rectilinear(self, grid_id)
+            elif self.get_grid_type(grid_id) == 'scalar':
+                self._grid[grid_id] = dataset_from_bmi_scalar(self, grid_id)
+
+        for name in set(self.output_var_names + self.input_var_names):
+            self._var[name] = DataValues(self, name)
 
     def update(self):
         return bmi_call(self.bmi.update)
@@ -375,26 +465,40 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         bmi_call(self.bmi.get_grid_origin, grid, out)
         return out
 
-    def get_grid_connectivity(self, grid):
-        return bmi_call(self.bmi.get_grid_connectivity, grid)
+    def get_grid_n_vertices(self, grid):
+        return bmi_call(self.bmi.n_vertices, grid)
 
-    def get_grid_offset(self, grid):
-        return bmi_call(self.bmi.get_grid_offset, grid)
+    # def get_grid_connectivity(self, grid, out=None):
+    def get_grid_face_node_connectivity(self, grid, out=None):
+        if out is None:
+            out = np.empty(self.get_grid_n_vertices(grid), dtype=int)
+        bmi_call(self.bmi.get_grid_connectivity, grid, out)
+        return out
+
+    # def get_grid_offset(self, grid, out=None):
+    def get_grid_face_node_offset(self, grid, out=None):
+        if out is None:
+            out = np.empty(self.get_grid_n_faces(grid), dtype=int)
+        bmi_call(self.bmi.get_grid_offset, grid, out)
+        return out
 
     def get_grid_x(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
-        return bmi_call(self.bmi.get_grid_x, grid, out)
+        bmi_call(self.bmi.get_grid_x, grid, out)
+        return out
 
     def get_grid_y(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
-        return bmi_call(self.bmi.get_grid_y, grid, out)
+        bmi_call(self.bmi.get_grid_y, grid, out)
+        return out
 
     def get_grid_z(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
-        return bmi_call(self.bmi.get_grid_z, grid, out)
+        bmi_call(self.bmi.get_grid_z, grid, out)
+        return out
 
     @property
     def input_var_names(self):
@@ -453,6 +557,14 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
                 time = Units.conform(time, from_units, to_units)
 
         return time
+
+    def get_var_intent(self, name):
+        intent = ''
+        if name in self.input_var_names:
+            intent += 'in'
+        if name in self.output_var_names:
+            intent += 'out'
+        return intent
 
     def get_var_grid(self, name):
         return bmi_call(self.bmi.get_var_grid, name)
