@@ -154,7 +154,28 @@ def bmi_data_files(path):
     return files
 
 
-def load_model_info(path):
+def load_meta_section(path, section):
+    meta_path = os.path.join(path, 'meta.yaml')
+    if os.path.isfile(meta_path):
+        with open(meta_path, 'r') as fp:
+            meta = yaml.load(fp.read())
+    else:
+        meta = {}
+
+    try:
+        meta_section = meta[section]
+    except KeyError:
+        section_path = os.path.join(path, '{section}.yaml'.format(section=section))
+        try:
+            with open(section_path, 'r') as fp:
+                meta_section = yaml.load(fp.read())
+        except IOError:
+            meta_section = {}
+
+    return meta_section
+
+
+def load_info_section(path):
     """Load model info from a BMI metadata file.
 
     Parameters
@@ -167,13 +188,8 @@ def load_model_info(path):
     ModelInfo
         A namedtuple that contains the model metadata.
     """
-    meta_yaml = os.path.join(path, 'info.yaml')
-    with open(meta_yaml, 'r') as fp:
-        info = yaml.load(fp.read())
-
-    api_yaml = os.path.join(path, 'api.yaml')
-    with open(api_yaml, 'r') as fp:
-        api = yaml.load(fp.read())
+    info = load_meta_section(path, 'info')
+    api = load_meta_section(path, 'api')
 
     return ModelInfo(
         name=api['name'],
@@ -187,12 +203,7 @@ def load_model_info(path):
 
 
 def load_run_section(path):
-    run_yaml = os.path.join(path, 'run.yaml')
-    if os.path.isfile(run_yaml):
-        with open(run_yaml, 'r') as fp:
-            run = yaml.load(fp.read())
-    else:
-        run = {}
+    run = load_meta_section(path, 'run')
 
     return ModelRun(
         config_file=run.get('config_file', ''),
@@ -216,6 +227,8 @@ def load_default_parameters(path):
     params_yaml = os.path.join(path, 'parameters.yaml')
     with open(params_yaml, 'r') as fp:
         param_groups = yaml.load_all(fp.read())
+
+    # param_groups = load_meta_section(path, 'parameters')
 
     p = {}
     for group in param_groups:
@@ -264,7 +277,7 @@ def load_bmi_metadata(name):
 
     datadir = bmi_data_dir(name)
     meta['defaults'] = load_default_parameters(datadir)
-    meta['info'] = load_model_info(datadir)
+    meta['info'] = load_info_section(datadir)
     meta['run'] = load_run_section(datadir)
 
     parameters = dict()

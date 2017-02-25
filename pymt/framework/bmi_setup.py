@@ -77,7 +77,7 @@ def find_bmi_data_files(datadir):
     end_prefix = len(os.path.commonprefix(fnames))
 
     fnames = [fname[end_prefix:] for fname in fnames]
-    for fname in ('api.yaml', 'parameters.yaml', 'info.yaml'):
+    for fname in ('api.yaml', 'parameters.yaml', 'info.yaml', 'run.yaml'):
         try:
             fnames.remove(fname)
         except ValueError:
@@ -142,11 +142,11 @@ class SetupMixIn(object):
         name = self.__class__.__name__.split('.')[-1]
 
         self._datadir = bmi_data_dir(name)
-        meta = load_bmi_metadata(name)
+        self._meta = load_bmi_metadata(name)
 
         self._defaults = {}
         self._parameters = {}
-        for name, param in meta['defaults'].items():
+        for name, param in self._meta['defaults'].items():
             self._parameters[name] = param.value
             self._defaults[name] = param.value, param.units
 
@@ -173,7 +173,7 @@ class SetupMixIn(object):
 
         copy_data_files(self.datadir, dir, **self._parameters)
         
-        return dir
+        return dir, self._meta['run'].config_file
 
     @property
     def parameters(self):
