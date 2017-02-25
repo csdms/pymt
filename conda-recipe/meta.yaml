@@ -15,6 +15,7 @@ requirements:
     - setuptools
     - numpy
     - scipy >=0.17.0
+    - xarray
     - nose
     - shapely
     - netcdf4
@@ -28,6 +29,7 @@ requirements:
     - setuptools
     - numpy
     - scipy >=0.17.0
+    - xarray
     - nose
     - shapely
     - netcdf4
