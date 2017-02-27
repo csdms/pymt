@@ -56,14 +56,16 @@ class TestCoordinateNames(unittest.TestCase):
 
 class TestArraysAreEqualSize(unittest.TestCase):
     def test_one_array(self):
-        utils.assert_arrays_are_equal_size(np.empty(5.))
+        utils.assert_arrays_are_equal_size(np.empty(5, dtype=float))
 
     def test_two_arrays_equal_size(self):
-        utils.assert_arrays_are_equal_size(np.empty(5.), np.empty(5))
+        utils.assert_arrays_are_equal_size(np.empty(5, dtype=float),
+                                           np.empty(5))
 
     def test_two_arrays_unequal_size(self):
         with self.assertRaises(AssertionError):
-            utils.assert_arrays_are_equal_size(np.empty(5.), np.empty(4))
+            utils.assert_arrays_are_equal_size(np.empty(5, dtype=float),
+                                               np.empty(4))
 
 
 class TestArgsAsNumpyArrays(unittest.TestCase, NumpyArrayMixIn):
