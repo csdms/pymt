@@ -465,8 +465,11 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         bmi_call(self.bmi.get_grid_origin, grid, out)
         return out
 
-    def get_grid_n_vertices(self, grid):
-        return bmi_call(self.bmi.n_vertices, grid)
+    def get_grid_vertex_count(self, grid):
+        return bmi_call(self.bmi.get_grid_vertex_count, grid)
+
+    def get_grid_face_count(self, grid):
+        return bmi_call(self.bmi.get_grid_face_count, grid)
 
     # def get_grid_connectivity(self, grid, out=None):
     def get_grid_face_node_connectivity(self, grid, out=None):
