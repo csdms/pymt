@@ -474,14 +474,14 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
     # def get_grid_connectivity(self, grid, out=None):
     def get_grid_face_node_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_n_vertices(grid), dtype=int)
+            out = np.empty(self.get_grid_vertex_count(grid), dtype=int)
         bmi_call(self.bmi.get_grid_connectivity, grid, out)
         return out
 
     # def get_grid_offset(self, grid, out=None):
     def get_grid_face_node_offset(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_n_faces(grid), dtype=int)
+            out = np.empty(self.get_grid_face_count(grid), dtype=int)
         bmi_call(self.bmi.get_grid_offset, grid, out)
         return out
 
