@@ -311,6 +311,10 @@ class DataValues(object):
     def intent(self):
         return self._bmi.get_var_intent(self.name)
 
+    @property
+    def location(self):
+        return self._bmi.get_var_location(self.name)
+
     def values(self, **kwds):
         if 'out' in self.intent:
             return self._bmi.get_value(self.name, **kwds)
@@ -328,9 +332,9 @@ Attributes:
     units: {units}
     grid: {grid}
     intent: {intent}
-    location: node
+    location: {location}
 """.format(dtype=self.type, name=self.name, units=self.units,
-           grid=self.grid, intent=self.intent).strip()
+           grid=self.grid, intent=self.intent, location=self.location).strip()
 
 
 class BmiCap(BmiTimeInterpolator, SetupMixIn):
@@ -568,6 +572,9 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         if name in self.output_var_names:
             intent += 'out'
         return intent
+
+    def get_var_location(self, name):
+        return 'node'
 
     def get_var_grid(self, name):
         return bmi_call(self.bmi.get_var_grid, name)
