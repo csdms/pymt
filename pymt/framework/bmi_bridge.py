@@ -251,7 +251,9 @@ class BmiTimeInterpolator(object):
     def interpolate(self, name, at):
         return self._interpolators[name].interpolate(at)
 
-    def update_until(self, then, method=None):
+    def update_until(self, then, method=None, units=None):
+        then = self.time_from(then, units)
+
         if hasattr(self.bmi, 'update_until'):
             try:
                 bmi_call(self.bmi.update_until, then)
@@ -578,6 +580,23 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         else:
             from_units = Units(units_str)
             to_units = Units(units)
+
+            if not from_units.equals(to_units):
+                time = Units.conform(time, from_units, to_units)
+
+        return time
+
+    def time_from(self, time, units):
+        if units is None:
+            return time
+
+        try:
+            units_str = self.get_time_units()
+        except (AttributeError, NotImplementedError):
+            pass
+        else:
+            to_units = Units(units_str)
+            from_units = Units(units)
 
             if not from_units.equals(to_units):
                 time = Units.conform(time, from_units, to_units)
