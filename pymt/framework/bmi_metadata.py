@@ -175,6 +175,10 @@ def load_meta_section(path, section):
     return meta_section
 
 
+def load_names_section(path):
+    return load_meta_section(path, 'names')
+
+
 def load_info_section(path):
     """Load model info from a BMI metadata file.
 
@@ -279,6 +283,7 @@ def load_bmi_metadata(name):
     meta['defaults'] = load_default_parameters(datadir)
     meta['info'] = load_info_section(datadir)
     meta['run'] = load_run_section(datadir)
+    meta['names'] = load_names_section(datadir)
 
     parameters = dict()
     for name, param in meta['defaults'].items():
