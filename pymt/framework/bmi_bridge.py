@@ -8,6 +8,8 @@ import yaml
 
 from cfunits import Units
 
+from scripting.contexts import cd
+
 from .bmi_setup import SetupMixIn
 from .bmi_docstring import bmi_docstring
 from .bmi_ugrid import (dataset_from_bmi_points,
@@ -315,6 +317,10 @@ class DataValues(object):
     def location(self):
         return self._bmi.get_var_location(self.name)
 
+    @property
+    def data(self):
+        return self.values()
+
     def values(self, **kwds):
         if 'out' in self.intent:
             return self._bmi.get_value(self.name, **kwds)
@@ -370,11 +376,24 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
     def get_component_name(self):
         return bmi_call(self.bmi.get_component_name)
 
-    def initialize(self, *args):
-        if len(args) == 0:
-            args = (self.setup(case=kwds.pop('case', 'default')), )
-        if bmi_call(self.bmi.initialize, *args) == 0:
-            self._initialized = True
+    def initialize(self, fname=None, dir='.'):
+        """Initialize the model.
+
+        Parameters
+        ----------
+        fname : str
+            Name of initialization file.
+        dir : str
+            Path to folder in which to run initialization.
+        """
+        # if len(args) == 0:
+        #     args = (self.setup(case=kwds.pop('case', 'default')), )
+        # if bmi_call(self.bmi.initialize, *args) == 0:
+        #     self._initialized = True
+
+        with cd(dir, create=False):
+            if bmi_call(self.bmi.initialize, fname or '') == 0:
+                self._initialized = True
 
         for grid_id in self._grid_ids():
             if self.get_grid_type(grid_id) == 'points':

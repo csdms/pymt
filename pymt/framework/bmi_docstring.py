@@ -24,8 +24,8 @@ Examples
 --------
 >>> from pymt.components import {name}
 >>> model = {name}()
->>> model.setup()
->>> model.initialize()
+>>> (fname, initdir) = model.setup()
+>>> model.initialize(fname, dir=initdir)
 >>> for _ in xrange(10):
 ...     model.update()
 >>> model.finalize()
