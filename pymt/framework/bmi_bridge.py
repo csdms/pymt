@@ -351,6 +351,7 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         self._initialized = False
         self._grid = dict()
         self._var = dict()
+        self._time_units = None
         super(BmiCap, self).__init__()
 
     @property
@@ -544,7 +545,12 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
 
     @property
     def time_units(self):
-        return self.get_time_units()
+        return self._time_units or self.get_time_units()
+        # return self.get_time_units()
+
+    @time_units.setter
+    def time_units(self, new_units):
+        self._time_units = new_units
 
     def get_time_units(self):
         return bmi_call(self.bmi.get_time_units)
@@ -571,10 +577,12 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
 
     def time_in(self, time, units):
         if units is None:
-            return time
+            units = self.time_units
+            # return time
 
         try:
             units_str = self.get_time_units()
+            # units_str = self.time_units
         except (AttributeError, NotImplementedError):
             pass
         else:
@@ -591,7 +599,8 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
             return time
 
         try:
-            units_str = self.get_time_units()
+            # units_str = self.get_time_units()
+            units_str = self.time_units
         except (AttributeError, NotImplementedError):
             pass
         else:
