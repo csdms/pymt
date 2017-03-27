@@ -25,6 +25,7 @@ class Bmi(_BmiCap):
 
 
 def test_time_wrap():
+    """Test wrapping BMI time methods."""
     bmi = Bmi()
 
     assert_equal(bmi.get_time_units(), 'h')
@@ -36,6 +37,7 @@ def test_time_wrap():
 
 
 def test_time_conversion():
+    """Test unit conversion through units keyword."""
     bmi = Bmi()
 
     assert_equal(bmi.get_start_time(units='h'), 1.)
@@ -46,10 +48,12 @@ def test_time_conversion():
 
 
 def test_change_time_units():
+    """Test changing a component's time units."""
     bmi = Bmi()
 
     assert_equal(bmi.time_units, 'h')
     bmi.time_units = 'min'
+    assert_equal(bmi.time_units, 'min')
 
     assert_equal(bmi.get_start_time(), 60.)
     assert_equal(bmi.get_current_time(), 630.)
