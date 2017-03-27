@@ -10,13 +10,13 @@ from .bmi_metadata import load_bmi_metadata
 _DOCSTRING = u"""
 Basic Model Interface for {{ name }}.
 
-{{ desc|trim|wordwrap(70) }}
+{{ desc|trim|wordwrap(70) if desc }}
 
-author: {{author}}
-version: {{version}}
-license: {{license}}
-DOI: {{doi}}
-URL: {{url}}
+Author: {{ author }}
+Version: {{ version }}
+License: {{ license }}
+DOI: {{ doi }}
+URL: {{ url }}
 {% if parameters %}
 Parameters
 ----------
@@ -39,7 +39,7 @@ Examples
 
 
 def bmi_docstring(name, author=None, version=None, license=None, doi=None,
-                  url=None, parameters=None):
+                  url=None, parameters=None, summary=None):
     """Build the docstring for a BMI model.
 
     Parameters
@@ -72,17 +72,17 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     license = license or meta['info'].license
     doi = doi or meta['info'].doi
     url = url or meta['info'].url
-
+    summary = summary or meta['info'].summary
     parameters = parameters or meta['defaults'].values()
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
     return env.get_template('docstring').render(
-        desc=meta['info'].summary,
+        desc=summary,
         name=name,
         parameters=parameters,
-        author=meta['info'].author,
-        version=meta['info'].version,
-        license=meta['info'].license,
-        doi=meta['info'].doi,
-        url=meta['info'].url,
+        author=author,
+        version=version,
+        license=license,
+        doi=doi,
+        url=url,
     )
