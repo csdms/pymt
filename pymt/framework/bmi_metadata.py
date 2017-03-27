@@ -13,7 +13,7 @@ from ..babel import query_config_var
 
 Parameter = namedtuple('Parameter', ('name', 'value', 'units', 'desc', 'type'))
 ModelInfo = namedtuple('ModelInfo', ('name', 'author', 'version', 'license',
-                                     'doi', 'url', 'summary'))
+                                     'doi', 'url', 'summary', 'cite_as'))
 ModelRun = namedtuple('ModelRun', ('config_file', ))
 ParameterSection = namedtuple('ParameterSection', ('title', 'members'))
 
@@ -195,6 +195,10 @@ def load_info_section(path):
     info = load_meta_section(path, 'info')
     api = load_meta_section(path, 'api')
 
+    info.setdefault('cite_as', [])
+    if isinstance(info['cite_as'], types.StringTypes):
+        info['cite_as'] = [info['cite_as']]
+
     return ModelInfo(
         name=api['name'],
         author=info.get('author', '-'),
@@ -203,6 +207,7 @@ def load_info_section(path):
         doi=info.get('doi', 'None'),
         url=info.get('url', 'None'),
         summary=info.get('summary', ''),
+        cite_as=info['cite_as'],
     )
 
 

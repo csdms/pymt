@@ -17,6 +17,13 @@ Version: {{ version }}
 License: {{ license }}
 DOI: {{ doi }}
 URL: {{ url }}
+
+{% if cite_as -%}
+Cite as:
+{% for citation in cite_as %}
+{{ citation|trim|indent(width=4, indentfirst=True) }}
+{% endfor %}
+{%- endif %}
 {% if parameters %}
 Parameters
 ----------
@@ -39,7 +46,7 @@ Examples
 
 
 def bmi_docstring(name, author=None, version=None, license=None, doi=None,
-                  url=None, parameters=None, summary=None):
+                  url=None, parameters=None, summary=None, cite_as=None):
     """Build the docstring for a BMI model.
 
     Parameters
@@ -59,6 +66,8 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     parameters : iterable, optional
         List of input parameters for the component. Each parameter object
         must have attributes for name, type, value, units, and desc.
+    cite_as : iterable of str, optional
+        List of citations for this component.
 
     Returns
     -------
@@ -76,7 +85,8 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
         meta = load_bmi_metadata(name)
     except IOError:
         info = ModelInfo(name=name, author=author, version=version,
-                         license=license, doi=doi, url=url, summary=summary)
+                         license=license, doi=doi, url=url, summary=summary,
+                         cite_as=cite_as)
         defaults = []
     else:
         info = meta['info']
@@ -88,7 +98,7 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     doi = doi or info.doi
     url = url or info.url
     summary = summary or info.summary
-    # parameters = parameters or meta['defaults'].values()
+    cite_as = cite_as or info.cite_as
     parameters = parameters or defaults
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
@@ -101,4 +111,5 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
         license=license,
         doi=doi,
         url=url,
+        cite_as=cite_as,
     )
