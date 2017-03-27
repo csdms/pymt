@@ -345,14 +345,14 @@ Attributes:
            grid=self.grid, intent=self.intent, location=self.location).strip()
 
 
-class BmiCap(BmiTimeInterpolator, SetupMixIn):
+class _BmiCap(object):
     def __init__(self):
         self._bmi = self._cls()
         self._initialized = False
         self._grid = dict()
         self._var = dict()
         self._time_units = None
-        super(BmiCap, self).__init__()
+        super(_BmiCap, self).__init__()
 
     @property
     def bmi(self):
@@ -712,49 +712,14 @@ class BmiCap(BmiTimeInterpolator, SetupMixIn):
         }, default_flow_style=False)
 
 
+class BmiCap(_BmiCap, BmiTimeInterpolator, SetupMixIn):
+    pass
+
+
 def bmi_factory(cls):
     class BmiWrapper(BmiCap):
         __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
         _cls = cls
-
-    BmiWrapper.__name__ = cls.__name__
-    return BmiWrapper
-
-
-def _bmi_factory(cls):
-    import inspect
-
-    class BmiWrapper(SetupMixIn):
-        __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
-        _cls = cls
-        def __init__(self):
-            self._base = self._cls()
-            super(BmiWrapper, self).__init__()
-
-    for name, func in inspect.getmembers(cls):
-        if name == 'initialize':
-            setattr(BmiWrapper, name, wrap_initialize(func))
-        elif name == 'set_value':
-            setattr(BmiWrapper, name, wrap_set_value(func))
-        elif name == 'get_value':
-            setattr(BmiWrapper, name, wrap_get_value(func))
-        elif name in ('get_grid_spacing', 'get_grid_origin'):
-            setattr(BmiWrapper, name, wrap_get_grid_with_out_arg(func, float))
-        elif name == 'get_grid_shape':
-            setattr(BmiWrapper, name, wrap_get_grid_with_out_arg(func, 'int32'))
-        elif name in ('get_input_var_names', 'get_output_var_names'):
-            setattr(BmiWrapper, name, wrap_var_names(func))
-        elif name == 'update':
-            pass
-        elif name in ('get_current_time', 'get_start_time', 'get_end_time'):
-            setattr(BmiWrapper, name, wrap_get_time(func))
-        elif name == 'update_until':
-            setattr(BmiWrapper, name, wrap_update_until(func))
-        elif name.startswith('get_') or name in ('update', 'finalize'):
-            setattr(BmiWrapper, name, wrap_default(func))
-        else:
-            pass
-    setattr(BmiWrapper, 'update', wrap_default(cls.update_until))
 
     BmiWrapper.__name__ = cls.__name__
     return BmiWrapper
