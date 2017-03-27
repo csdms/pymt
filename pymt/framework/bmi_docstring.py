@@ -8,9 +8,9 @@ from .bmi_metadata import load_bmi_metadata
 
 
 _DOCSTRING = u"""
-Basic Model Interface for {name}.
+Basic Model Interface for {{ name }}.
 
-{{desc}}
+{{ desc|trim|wordwrap(70) }}
 
 author: {{author}}
 version: {{version}}
@@ -38,13 +38,27 @@ Examples
 """.strip()
 
 
-def bmi_docstring(name):
+def bmi_docstring(name, author=None, version=None, license=None, doi=None,
+                  url=None, parameters=None):
     """Build the docstring for a BMI model.
 
     Parameters
     ----------
     name : str
         Name of a BMI component.
+    author : str, optional
+        Name of author or authors.
+    version : str, optional
+        Version string for the component.
+    license : str, optional
+        Name of the license of the component.
+    doi : str, optional
+        A DOI for the component.
+    url : str, optional
+        URL of the component's location on the internet.
+    parameters : iterable, optional
+        List of input parameters for the component. Each parameter object
+        must have attributes for name, type, value, units, and desc.
 
     Returns
     -------
@@ -52,15 +66,21 @@ def bmi_docstring(name):
         The docstring.
     """
     meta = load_bmi_metadata(name)
-    desc = '\n'.join(textwrap.wrap(meta['info'].summary))
-    
-    params = meta['defaults'].values()
-    params.sort(key=lambda p: p.name)
+
+    author = author or meta['info'].author
+    version = version or meta['info'].version
+    license = license or meta['info'].license
+    doi = doi or meta['info'].doi
+    url = url or meta['info'].url
+
+    parameters = parameters or meta['defaults'].values()
+    parameters.sort(key=lambda p: p.name)
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
     return env.get_template('docstring').render(
-        desc=desc, name=name,
-        parameters=params,
+        desc=meta['info'].summary,
+        name=name,
+        parameters=parameters,
         author=meta['info'].author,
         version=meta['info'].version,
         license=meta['info'].license,
