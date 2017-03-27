@@ -4,7 +4,7 @@ import textwrap
 
 import jinja2
 
-from .bmi_metadata import load_bmi_metadata
+from .bmi_metadata import load_bmi_metadata, ModelInfo
 
 
 _DOCSTRING = u"""
@@ -64,16 +64,32 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     -------
     str
         The docstring.
-    """
-    meta = load_bmi_metadata(name)
 
-    author = author or meta['info'].author
-    version = version or meta['info'].version
-    license = license or meta['info'].license
-    doi = doi or meta['info'].doi
-    url = url or meta['info'].url
-    summary = summary or meta['info'].summary
-    parameters = parameters or meta['defaults'].values()
+    Examples
+    --------
+    >>> from pymt.framework.bmi_docstring import bmi_docstring
+    >>> print bmi_docstring('Model', author='Walt Disney') #doctest: +ELLIPSIS
+    Basic Model Interface for Model.
+    ...
+    """
+    try:
+        meta = load_bmi_metadata(name)
+    except IOError:
+        info = ModelInfo(name=name, author=author, version=version,
+                         license=license, doi=doi, url=url, summary=summary)
+        defaults = []
+    else:
+        info = meta['info']
+        defaults = meta['defaults'].values()
+
+    author = author or info.author
+    version = version or info.version
+    license = license or info.license
+    doi = doi or info.doi
+    url = url or info.url
+    summary = summary or info.summary
+    # parameters = parameters or meta['defaults'].values()
+    parameters = parameters or defaults
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
     return env.get_template('docstring').render(
