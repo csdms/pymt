@@ -2,28 +2,34 @@
 import os
 import textwrap
 
-from .bmi_metadata import load_bmi_metadata
+import jinja2
+
+from .bmi_metadata import load_bmi_metadata, ModelInfo
 
 
 _DOCSTRING = u"""
-Basic Modeling Interface for {name}.
+Basic Model Interface for {{ name }}.
 
-{desc}
+{{ desc|trim|wordwrap(70) if desc }}
 
-author: {author}
-version: {version}
-license: {license}
-DOI: {doi}
-URL: {url}
-
+Author: {{ author }}
+Version: {{ version }}
+License: {{ license }}
+DOI: {{ doi }}
+URL: {{ url }}
+{% if parameters %}
 Parameters
 ----------
-{parameters}
+{% for param in parameters|sort(attribute='name') -%}
+{{param.name}} : {{param.type}}, optional
+    {{ "%s [default=%s %s]"|format(param.desc, param.value, param.units)|trim|wordwrap(70)|indent(4) }}
+{% endfor %}
+{% endif -%}
 
 Examples
 --------
->>> from pymt.components import {name}
->>> model = {name}()
+>>> from pymt.components import {{name}}
+>>> model = {{name}}()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
 >>> for _ in xrange(10):
@@ -32,63 +38,67 @@ Examples
 """.strip()
 
 
-_PARAM_DECL = "{name} : {type}, optional"
-_PARAM_DESC = "{desc} [default={default} {units}]."
-
-
-def build_parameters_section(parameters):
-    """Build the paramters section of the docstring for a BMI model.
-
-    Parameters
-    ----------
-    parameters : dict
-        Parameters names and descriptions.
-
-    Returns
-    -------
-    str
-        The paramters section.
-    """
-    params = parameters.values()
-    params.sort(key=lambda p: p.name)
-
-    docstrings = []
-    for param in params:
-        decl = _PARAM_DECL.format(name=param.name, type=param.type)
-        desc = _PARAM_DESC.format(desc=param.desc, default=param.value,
-                                  units=param.units)
-
-        docstrings.extend(
-            textwrap.wrap(decl, subsequent_indent=' ' * (decl.find(':') + 3)))
-        docstrings.extend(
-            textwrap.wrap(desc, initial_indent=' ' * 4,
-                          subsequent_indent=' ' * 4))
-
-    return os.linesep.join(docstrings)
-
-
-def bmi_docstring(name):
+def bmi_docstring(name, author=None, version=None, license=None, doi=None,
+                  url=None, parameters=None, summary=None):
     """Build the docstring for a BMI model.
 
     Parameters
     ----------
     name : str
         Name of a BMI component.
+    author : str, optional
+        Name of author or authors.
+    version : str, optional
+        Version string for the component.
+    license : str, optional
+        Name of the license of the component.
+    doi : str, optional
+        A DOI for the component.
+    url : str, optional
+        URL of the component's location on the internet.
+    parameters : iterable, optional
+        List of input parameters for the component. Each parameter object
+        must have attributes for name, type, value, units, and desc.
 
     Returns
     -------
     str
         The docstring.
+
+    Examples
+    --------
+    >>> from pymt.framework.bmi_docstring import bmi_docstring
+    >>> print bmi_docstring('Model', author='Walt Disney') #doctest: +ELLIPSIS
+    Basic Model Interface for Model.
+    ...
     """
-    meta = load_bmi_metadata(name)
-    desc = '\n'.join(textwrap.wrap(meta['info'].summary))
-    
-    return _DOCSTRING.format(
-        desc=desc, name=name,
-        parameters=build_parameters_section(meta['defaults']),
-        author=meta['info'].author,
-        version=meta['info'].version,
-        license=meta['info'].license,
-        doi=meta['info'].doi,
-        url=meta['info'].url,
+    try:
+        meta = load_bmi_metadata(name)
+    except IOError:
+        info = ModelInfo(name=name, author=author, version=version,
+                         license=license, doi=doi, url=url, summary=summary)
+        defaults = []
+    else:
+        info = meta['info']
+        defaults = meta['defaults'].values()
+
+    author = author or info.author
+    version = version or info.version
+    license = license or info.license
+    doi = doi or info.doi
+    url = url or info.url
+    summary = summary or info.summary
+    # parameters = parameters or meta['defaults'].values()
+    parameters = parameters or defaults
+
+    env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
+    return env.get_template('docstring').render(
+        desc=summary,
+        name=name,
+        parameters=parameters,
+        author=author,
+        version=version,
+        license=license,
+        doi=doi,
+        url=url,
     )
