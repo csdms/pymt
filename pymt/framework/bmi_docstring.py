@@ -20,7 +20,7 @@ URL: {{url}}
 {% if parameters %}
 Parameters
 ----------
-{% for param in parameters -%}
+{% for param in parameters|sort(attribute='name') -%}
 {{param.name}} : {{param.type}}, optional
     {{ "%s [default=%s %s]"|format(param.desc, param.value, param.units)|trim|wordwrap(70)|indent(4) }}
 {% endfor %}
@@ -74,7 +74,6 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     url = url or meta['info'].url
 
     parameters = parameters or meta['defaults'].values()
-    parameters.sort(key=lambda p: p.name)
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
     return env.get_template('docstring').render(
