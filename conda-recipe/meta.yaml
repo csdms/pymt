@@ -13,16 +13,6 @@ requirements:
   build:
     - python
     - setuptools
-    - numpy
-    - scipy >=0.17.0
-    - xarray
-    - nose
-    - shapely
-    - netcdf4
-    - pyyaml
-    - esmpy
-    - cfunits-python
-    - numpydoc
 
   run:
     - python
