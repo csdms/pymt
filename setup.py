@@ -4,7 +4,7 @@
 
 from setuptools import setup, find_packages
 
-from cmt import __version__
+from pymt import __version__
 
 
 def read_requirements():
