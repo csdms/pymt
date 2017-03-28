@@ -28,12 +28,14 @@ install:
 - export PATH="$CONDA_PREFIX/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
+- conda config --add channels csdms-stack
+- conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
 - conda install -q conda-build anaconda-client coverage sphinx
 - pip install coveralls
 script:
 - nosetests --with-doctest --with-coverage --cover-package=$THIS_PACKAGE $THIS_PACKAGE
-- conda build ./recipe -c csdms-stack -c conda-forge
+- conda build ./recipe
 after_success:
 - coveralls --verbose
 - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
