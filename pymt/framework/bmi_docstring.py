@@ -5,6 +5,7 @@ import textwrap
 import jinja2
 
 from .bmi_metadata import load_bmi_metadata, ModelInfo
+from ..babel import BabelConfigError
 
 
 _DOCSTRING = u"""
@@ -83,7 +84,7 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     """
     try:
         meta = load_bmi_metadata(name)
-    except IOError:
+    except (IOError, BabelConfigError):
         info = ModelInfo(name=name, author=author, version=version,
                          license=license, doi=doi, url=url, summary=summary,
                          cite_as=cite_as)

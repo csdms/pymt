@@ -13,16 +13,6 @@ requirements:
   build:
     - python
     - setuptools
-    - numpy
-    - scipy >=0.17.0
-    - xarray
-    - nose
-    - shapely
-    - netcdf4
-    - pyyaml
-    - esmpy
-    - cfunits-python
-    - numpydoc
 
   run:
     - python
@@ -37,6 +27,17 @@ requirements:
     - esmpy
     - cfunits-python
     - jinja2
+    - scripting
+
+test:
+  requires:
+    - nose
+  commands:
+    - nosetests --with-doctest --with-coverage --cover-package=pymt pymt
+
+build:
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record record.txt
 
 about:
   home: http://github.com/csdms/pymt
@@ -50,6 +51,3 @@ about:
     Model Interface.
   doc_url: http://pymt.readthedocs.org
   dev_url: http://github.com/csdms/pymt
-
-build:
-  string: {{ environ.get('GIT_BUILD_STR', '') }}

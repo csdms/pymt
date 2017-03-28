@@ -4,7 +4,7 @@
 
 from setuptools import setup, find_packages
 
-from cmt import __version__
+from pymt import __version__
 
 
 def read_requirements():
@@ -29,7 +29,7 @@ setup(name='PyMT',
       author_email='huttone@colorado.edu',
       url='http://csdms.colorado.edu',
       install_requires=read_requirements(),
-      setup_requires=read_requirements(),
+      setup_requires=['setuptools', ],
       packages=find_packages(),
       entry_points={
           'console_scripts': [
