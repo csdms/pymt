@@ -31,10 +31,8 @@ install:
 - conda config --add channels csdms-stack
 - conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
-- conda install -q conda-build anaconda-client coverage sphinx
-- pip install coveralls
+- conda install -q conda-build anaconda-client coverage sphinx coveralls nose
 script:
-- nosetests --with-doctest --with-coverage --cover-package=$THIS_PACKAGE $THIS_PACKAGE
 - conda build ./recipe
 after_success:
 - coveralls --verbose

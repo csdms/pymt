@@ -38,6 +38,12 @@ requirements:
     - cfunits-python
     - jinja2
 
+test:
+  requires:
+    - nose
+  commands:
+    - nosetests --with-doctest --with-coverage --cover-package=pymt pymt
+
 about:
   home: http://github.com/csdms/pymt
   license: MIT
