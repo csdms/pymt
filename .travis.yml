@@ -31,10 +31,11 @@ install:
 - conda config --add channels csdms-stack
 - conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
-- conda install -q conda-build anaconda-client coverage sphinx coveralls nose
+- conda install -q conda-build anaconda-client sphinx
 script:
 - conda build ./recipe
 after_success:
+- conda install -q coverage coveralls
 - coveralls --verbose
 - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
   > $HOME/anaconda_upload.py
