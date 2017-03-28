@@ -44,6 +44,10 @@ test:
   commands:
     - nosetests --with-doctest --with-coverage --cover-package=pymt pymt
 
+build:
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record record.txt
+
 about:
   home: http://github.com/csdms/pymt
   license: MIT
@@ -56,6 +60,3 @@ about:
     Model Interface.
   doc_url: http://pymt.readthedocs.org
   dev_url: http://github.com/csdms/pymt
-
-build:
-  string: {{ environ.get('GIT_BUILD_STR', '') }}
