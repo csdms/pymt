@@ -33,7 +33,7 @@ install:
 - conda install python=$TRAVIS_PYTHON_VERSION
 - conda install -q conda-build anaconda-client sphinx
 script:
-- conda build ./recipe
+- conda build ./conda-recipe
 after_success:
 - conda install -q coverage coveralls
 - coveralls --verbose
