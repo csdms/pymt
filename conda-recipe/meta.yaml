@@ -37,6 +37,7 @@ requirements:
     - esmpy
     - cfunits-python
     - jinja2
+    - scripting
 
 test:
   requires:
