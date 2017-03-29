@@ -2,9 +2,9 @@
 """Utility functions for working with babel projects."""
 import os
 import subprocess
-import warnings
 from string import Template
 import shlex
+import logging
 
 
 class BabelConfigError(Exception):
@@ -48,9 +48,9 @@ def query_config_all(config='csdms-config'):
     try:
         contents = subprocess.check_output([config, '--dump'])
     except subprocess.CalledProcessError:
-        warnings.warn('Error running the {prog} program.'.format(prog=config))
+        logging.info('Error running {prog}.'.format(prog=config))
     except OSError:
-        warnings.warn('Unable to run {prog} program.'.format(prog=config))
+        logging.info('Unable to run {prog} program.'.format(prog=config))
 
     vars = {}
     for line in shlex.split(contents):
@@ -71,9 +71,9 @@ def query_config_var(var, config='csdms-config', interpolate=True):
     try:
         value = subprocess.check_output([config, '--var', var]).strip()
     except subprocess.CalledProcessError:
-        warnings.warn('Error running the {prog} program.'.format(prog=config))
+        logging.info('Error running {prog}.'.format(prog=config))
     except OSError:
-        warnings.warn('Unable to run {prog} program.'.format(prog=config))
+        logging.info('Unable to run {prog} program.'.format(prog=config))
 
     if value is None:
         raise BabelConfigError(config)
@@ -92,7 +92,7 @@ def setup_babel_environ():
         ccaspec_babel_libs = query_config_var('CCASPEC_BABEL_LIBS',
                                               config='cca-spec-babel-config')
     except BabelConfigError:
-        warnings.warn('Unable to configure for babel. Not loading components.')
+        logging.info('Unable to configure for babel. Not loading components.')
     else:
         prepend_env_path('SIDL_DLL_PATH', os.path.join(prefix, 'share', 'cca'),
                          sep=';')
