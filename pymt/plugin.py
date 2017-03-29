@@ -4,7 +4,7 @@ from __future__ import print_function
 __all__ = []
 
 import os
-import warnings
+import logging
 import importlib
 from glob import glob
 
@@ -36,14 +36,13 @@ def load_plugin(entry_point, callback=None):
     try:
         module = importlib.import_module(module_name)
     except ImportError:
-        warnings.warn('Unable to import {module}.'.format(module_name))
+        logging.info('Unable to import {module}.'.format(module_name))
     else:
         try:
             plugin = module.__dict__[cls_name]
         except KeyError:
-            warnings.warn(
-                'warning: {plugin} not contained in {module}.'.format(
-                    plugin=cls_name, module=module_name))
+            logging.info('{plugin} not contained in {module}.'.format(
+                plugin=cls_name, module=module_name))
     if callback and plugin:
         plugin = callback(plugin)
 
@@ -89,7 +88,7 @@ def discover_csdms_plugins():
     try:
         csdms_module = importlib.import_module('csdms')
     except ImportError:
-        warnings.warn('Unable to import csdms. Not loading components.')
+        logging.info('Unable to import {module}.'.format(module_name))
     else:
         files = glob(os.path.join(csdms_module.__path__[0], '*so'))
         for path in files:
