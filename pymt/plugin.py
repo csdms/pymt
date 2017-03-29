@@ -88,7 +88,7 @@ def discover_csdms_plugins():
     try:
         csdms_module = importlib.import_module('csdms')
     except ImportError:
-        logging.info('Unable to import {module}.'.format(module_name))
+        logging.info('Unable to import {module}.'.format(csdms_name))
     else:
         files = glob(os.path.join(csdms_module.__path__[0], '*so'))
         for path in files:
