@@ -76,6 +76,24 @@ def load_all_plugins(entry_points=[], callback=None):
     return all_plugins
 
 
+def load_bmi_plugin(entry_point):
+    """Load a plugin that implements as BMI.
+
+    Parameters
+    ----------
+    entry_point : str
+        A entry point specify for the plugin. The specifier should be a
+        dotted module name followed by a ``:`` and an identifier nameing an
+        object within the module.
+
+    Returns
+    -------
+    object
+        The BMI plugin.
+    """
+    return load_plugin(entry_point, callback=bmi_factory)
+
+
 def discover_csdms_plugins():
     """Look for plugins in the csdms package.
 
