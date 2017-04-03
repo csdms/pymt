@@ -38,8 +38,8 @@ script:
 - |
   mkdir _testing
   pushd _testing
-    nosetests --with-doctest --with-coverage --cover-package=pymt \
-      --xunit-file=test-results.xml pymt
+    nosetests --exclude=examples --with-doctest --with-coverage --cover-package=pymt \
+      --with-xunit --xunit-file=test-results.xml pymt
     cp test-results.xml ..
   popd
 after_success:
