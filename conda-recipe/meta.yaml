@@ -32,8 +32,10 @@ requirements:
 test:
   requires:
     - nose
+    - coverage [linux]
   commands:
-    - nosetests --with-doctest --with-coverage --cover-package=pymt pymt
+    - nosetests --with-doctest --with-coverage --cover-package=pymt pymt [linux]
+    - nosetests --with-doctest pymt [not linux]
 
 build:
   number: 0
