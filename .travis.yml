@@ -33,7 +33,15 @@ install:
 - conda install python=$TRAVIS_PYTHON_VERSION
 - conda install -q conda-build anaconda-client sphinx
 script:
-- conda build ./conda-recipe
+- conda build ./conda-recipe --no-test
+- conda install pymt nose coverage --use-local
+- |
+  mkdir _testing
+  pushd _testing
+    nosetests --with-doctest --with-coverage --cover-package=pymt \
+      --xunit-file=test-results.xml pymt
+    cp test-results.xml ..
+  popd
 after_success:
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
