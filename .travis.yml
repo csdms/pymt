@@ -36,12 +36,13 @@ script:
 - conda build ./conda-recipe --no-test
 - conda install pymt nose coverage --use-local
 - |
-  mkdir _testing
-  pushd _testing
+  (
+    mkdir _testing && \
+    cd _testing && \
     nosetests --exclude=examples --with-doctest --with-coverage --cover-package=pymt \
-      --with-xunit --xunit-file=test-results.xml pymt
-    cp test-results.xml ..
-  popd
+      --with-xunit --xunit-file=test-results.xml pymt \
+  )
+- cp _testing/test-results.xml .
 after_success:
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
