@@ -35,8 +35,11 @@ install:
 script:
 - conda build ./conda-recipe
 after_success:
-- conda install -q coverage coveralls
-- coveralls --verbose
+- |
+  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+    conda install -q coverage coveralls
+    coveralls --verbose
+  fi
 - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
   > $HOME/anaconda_upload.py
 - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --channel=main --org=csdms
