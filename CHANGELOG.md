@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 This file was auto-generated using `scripts/make_changelog.py`.
 
 
-## [HEAD] 2017-03-29
+## [HEAD] 2017-04-04
 
 ### Fixed
+* Fix coverage and upload results to coveralls
 * Fix continuous integration
 
 ### Added
+* Added change log and scrip
 * Added plugin framework to dynamically load arbitrary components
 * Add a "cite as" section to component metadata and docstring
 * Add setter to change a component's time units
