@@ -1,3 +1,4 @@
+import os
 from pprint import pformat
 
 import numpy as np
@@ -352,6 +353,7 @@ class _BmiCap(object):
         self._grid = dict()
         self._var = dict()
         self._time_units = None
+        self._initdir = None
         super(_BmiCap, self).__init__()
 
     @property
@@ -369,6 +371,10 @@ class _BmiCap(object):
     @property
     def var(self):
         return self._var
+
+    @property
+    def initdir(self):
+        return self._initdir
 
     def _grid_ids(self):
         grids = set()
@@ -394,6 +400,7 @@ class _BmiCap(object):
         # if bmi_call(self.bmi.initialize, *args) == 0:
         #     self._initialized = True
 
+        self._initdir = os.path.abspath(dir)
         with cd(dir, create=False):
             if bmi_call(self.bmi.initialize, fname or '') == 0:
                 self._initialized = True
@@ -410,10 +417,12 @@ class _BmiCap(object):
             self._var[name] = DataValues(self, name)
 
     def update(self):
-        return bmi_call(self.bmi.update)
+        with cd(self.initdir):
+            return bmi_call(self.bmi.update)
 
     def finalize(self):
-        return bmi_call(self.bmi.finalize)
+        with cd(self.initdir):
+            return bmi_call(self.bmi.finalize)
 
     def set_value(self, name, val):
         val = np.asarray(val).reshape((-1, ))
