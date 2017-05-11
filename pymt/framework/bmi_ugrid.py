@@ -16,6 +16,23 @@ def coordinate_names(rank):
     return ['node_' + d for d in COORDINATE_NAMES[-rank:]]
 
 
+def dataset_from_bmi_grid(bmi, grid_id):
+    grid_type = bmi.get_grid_type(grid_id)
+    if grid_type == 'points':
+        grid = dataset_from_bmi_points(bmi, grid_id)
+    elif grid_type == 'uniform_rectilinear':
+        grid = dataset_from_bmi_uniform_rectilinear(bmi, grid_id)
+    elif grid_type == 'scalar':
+        grid = dataset_from_bmi_scalar(bmi, grid_id)
+    elif grid_type == 'unstructured':
+        grid = dataset_from_bmi_unstructured(bmi, grid_id)
+    else:
+        raise ValueError(
+            'grid type not understood ({gtype})'.format(gtype=grid_type))
+
+    return grid
+
+
 def dataset_from_bmi_scalar(bmi, grid_id):
     rank = bmi.get_grid_rank(grid_id)
 
@@ -46,15 +63,12 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
         ('long_name',
          'Topology data of {rank}D structured quadrilateral'.format(rank=rank)),
         ('topology_dimension', rank),
-        ('node_coordinates',
-         ' '.join(['node_' + d for d in coordinate_names(rank)])),
-        ('node_dimensions',
-         ' '.join(['node_' + d for d in index_names(rank)])),
+        ('node_coordinates', ' '.join(coordinate_names(rank))),
+        ('node_dimensions', ' '.join(index_names(rank))),
         ('node_spacing', 'node_spacing'),
         ('node_origin', 'node_origin'),
         ('type', 'structured_quad'),
     ])
-
     dataset = xr.Dataset(
         {'mesh': xr.DataArray(data=grid_id, attrs=attrs),
          'node_shape': xr.DataArray(data=shape, dims=('rank', )),
@@ -95,5 +109,37 @@ def dataset_from_bmi_points(bmi, grid_id):
         coords['node_' + dim_name] = coord
 
     ugrid.update(coords)
+
+    return ugrid
+
+
+def dataset_from_bmi_unstructured(bmi, grid_id):
+    rank = bmi.get_grid_rank(grid_id)
+    attrs=OrderedDict([
+        ('cf_role', 'mesh_topology'),
+        ('long_name', 'Topology data of 2D unstructured points'),
+        ('topology_dimension', rank),
+        ('node_coordinates', 'node_x node_y'),
+        ('type', 'unstructured'),
+    ])
+
+    ugrid = xr.Dataset({'mesh': xr.DataArray(data=grid_id, attrs=attrs)})
+
+    coords = {}
+    for dim_name in COORDINATE_NAMES[:-(rank + 1):-1]:
+        data=getattr(bmi, 'get_grid_' + dim_name)(grid_id)
+        coord = xr.DataArray(
+            data=data,
+            dims=('n_node', ),
+            attrs={'standard_name': dim_name, 'units': 'm'})
+        coords['node_' + dim_name] = coord
+
+    ugrid.update(coords)
+
+    face_node_connectivity = xr.DataArray(
+        data=bmi.get_grid_face_node_connectivity(grid_id),
+        dims=('n_vertices', ),
+        attrs={'standard_name': 'Face-node connectivity'})
+    ugrid.update({'face_node_connectivity': face_node_connectivity})
 
     return ugrid

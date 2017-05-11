@@ -13,9 +13,7 @@ from scripting.contexts import cd
 
 from .bmi_setup import SetupMixIn
 from .bmi_docstring import bmi_docstring
-from .bmi_ugrid import (dataset_from_bmi_points,
-                        dataset_from_bmi_uniform_rectilinear,
-                        dataset_from_bmi_scalar)
+from .bmi_ugrid import dataset_from_bmi_grid
 
 
 class BmiError(Exception):
@@ -406,12 +404,7 @@ class _BmiCap(object):
                 self._initialized = True
 
         for grid_id in self._grid_ids():
-            if self.get_grid_type(grid_id) == 'points':
-                self._grid[grid_id] = dataset_from_bmi_points(self, grid_id)
-            elif self.get_grid_type(grid_id) == 'uniform_rectilinear':
-                self._grid[grid_id] = dataset_from_bmi_uniform_rectilinear(self, grid_id)
-            elif self.get_grid_type(grid_id) == 'scalar':
-                self._grid[grid_id] = dataset_from_bmi_scalar(self, grid_id)
+            self._grid[grid_id] = dataset_from_bmi_grid(self, grid_id)
 
         for name in set(self.output_var_names + self.input_var_names):
             self._var[name] = DataValues(self, name)
