@@ -14,6 +14,7 @@ from scripting.contexts import cd
 from .bmi_setup import SetupMixIn
 from .bmi_docstring import bmi_docstring
 from .bmi_ugrid import dataset_from_bmi_grid
+from .bmi_plot import quick_plot
 
 
 class BmiError(Exception):
@@ -705,6 +706,9 @@ class _BmiCap(object):
 
     def as_json(self):
         return json.dumps(self.as_dict())
+
+    def quick_plot(self, name, **kwds):
+        return quick_plot(self, name, **kwds)
 
     def __str__(self):
         return yaml.dump({
