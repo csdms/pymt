@@ -47,7 +47,8 @@ Examples
 
 
 def bmi_docstring(name, author=None, version=None, license=None, doi=None,
-                  url=None, parameters=None, summary=None, cite_as=None):
+                  url=None, parameters=None, summary=None, cite_as=None,
+                  email=None):
     """Build the docstring for a BMI model.
 
     Parameters
@@ -69,6 +70,8 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
         must have attributes for name, type, value, units, and desc.
     cite_as : iterable of str, optional
         List of citations for this component.
+    email : str, optional
+        Contact email address.
 
     Returns
     -------
@@ -87,13 +90,14 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     except (IOError, BabelConfigError):
         info = ModelInfo(name=name, author=author, version=version,
                          license=license, doi=doi, url=url, summary=summary,
-                         cite_as=cite_as)
+                         cite_as=cite_as, email=None)
         defaults = []
     else:
         info = meta['info']
         defaults = meta['defaults'].values()
 
     author = author or info.author
+    email = email or '-'
     version = version or info.version
     license = license or info.license
     doi = doi or info.doi
