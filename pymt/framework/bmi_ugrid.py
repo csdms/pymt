@@ -24,7 +24,8 @@ def dataset_from_bmi_grid(bmi, grid_id):
         grid = dataset_from_bmi_uniform_rectilinear(bmi, grid_id)
     elif grid_type == 'scalar':
         grid = dataset_from_bmi_scalar(bmi, grid_id)
-    elif grid_type == 'unstructured':
+    # elif grid_type == 'unstructured':
+    elif grid_type.startswith('unstructured'):
         grid = dataset_from_bmi_unstructured(bmi, grid_id)
     else:
         raise ValueError(
@@ -81,7 +82,9 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
     for dim in xrange(rank):
         data = np.arange(shape[dim], dtype=float) * spacing[dim] + origin[dim]
         dataset = dataset.update({
-            coord_names[dim]: xr.DataArray(data=data, dims=(dim_names[dim], ))
+            coord_names[dim]: xr.DataArray(
+                data=data, dims=(dim_names[dim], ),
+                attrs={'standard_name': coord_names[dim], 'units': 'm'})
         })
 
     return dataset
