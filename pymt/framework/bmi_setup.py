@@ -189,32 +189,45 @@ class SetupMixIn(object):
     def datadir(self):
         return self._datadir
 
-    # @property
-    # def author(self):
-    #     try:
-    #         return '{author} <{email}>'.format(**self._info)
-    #     except KeyError:
-    #         return self._info.get('author', 'unknown')
+    @property
+    def author(self):
+        return self._meta['info'].author
 
-    # @property
-    # def url(self):
-    #     return self._info.get('url', 'unknown')
+    @property
+    def email(self):
+        return self._meta['info'].email
 
-    # @property
-    # def license(self):
-    #     return self._info.get('license', 'unknown')
+    @property
+    def contact(self):
+        contact = self.author
+        email = self.email
+        if email != '-':
+            contact = '{name} <{email}>'.format(name=contact, email=email)
+        return contact
 
-    # @property
-    # def doi(self):
-    #     return self._info.get('doi', 'unknown')
+    @property
+    def url(self):
+        return self._meta['info'].url
 
-    # @property
-    # def version(self):
-    #     return self._info.get('version', 'unknown')
+    @property
+    def license(self):
+        return self._meta['info'].license
 
-    # @property
-    # def summary(self):
-    #     return self._info.get('summary', '')
+    @property
+    def doi(self):
+        return self._meta['info'].doi
+
+    @property
+    def version(self):
+        return self._meta['info'].version
+
+    @property
+    def summary(self):
+        return self._meta['info'].summary
+
+    @property
+    def cite_as(self):
+        return self._meta['info'].cite_as
 
 
 class GitHubSetupMixIn(object):
