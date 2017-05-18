@@ -252,22 +252,23 @@ class BmiTimeInterpolator(object):
         return self._interpolators[name].interpolate(at)
 
     def update_until(self, then, method=None, units=None):
-        then = self.time_from(then, units)
+        with cd(self.initdir):
+            then = self.time_from(then, units)
 
-        if hasattr(self.bmi, 'update_until'):
-            try:
-                bmi_call(self.bmi.update_until, then)
-            except NotImplementedError:
-                pass
+            if hasattr(self.bmi, 'update_until'):
+                try:
+                    bmi_call(self.bmi.update_until, then)
+                except NotImplementedError:
+                    pass
 
-        self.reset()
-        while self.get_current_time() < then:
-            if self.get_current_time() + self.get_time_step() > then:
+            self.reset()
+            while self.get_current_time() < then:
+                if self.get_current_time() + self.get_time_step() > then:
+                    self.add_data()
+                self.update()
+
+            if self.get_current_time() > then:
                 self.add_data()
-            self.update()
-
-        if self.get_current_time() > then:
-            self.add_data()
 
 
 def transform_math_to_azimuth(angle, units):
