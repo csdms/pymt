@@ -402,7 +402,7 @@ class _BmiCap(object):
         #     self._initialized = True
 
         self._initdir = os.path.abspath(dir)
-        with cd(dir, create=False):
+        with cd(self.initdir, create=False):
             if bmi_call(self.bmi.initialize, fname or '') == 0:
                 self._initialized = True
 

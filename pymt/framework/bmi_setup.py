@@ -173,7 +173,7 @@ class SetupMixIn(object):
 
         copy_data_files(self.datadir, dir, **self._parameters)
         
-        return self._meta['run'].config_file, dir
+        return self._meta['run'].config_file, os.path.abspath(dir)
 
         # return dir, self._meta['run'].config_file
 
