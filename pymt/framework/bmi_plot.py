@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -20,10 +21,15 @@ def quick_plot(bmi, name, **kwds):
         plt.tripcolor(x, y, tris, z, **kwds)
     elif gtype in ('uniform_rectilinear', 'structured_quad'):
         shape = bmi.get_grid_shape(gid)
+        spacing = bmi.get_grid_spacing(gid)
+        origin = bmi.get_grid_origin(gid)
+        x = np.arange(shape[-1]) * spacing[-1] + origin[-1]
+        y = np.arange(shape[-2]) * spacing[-2] + origin[-2]
         plt.pcolormesh(x, y, z.reshape(shape), **kwds)
     else:
         raise ValueError('no plotter for {gtype}'.format(gtype=gtype))
 
+    plt.axis('tight')
     plt.gca().set_aspect('equal')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
