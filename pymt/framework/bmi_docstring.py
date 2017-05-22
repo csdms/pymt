@@ -1,8 +1,10 @@
 #! /usr/bin/env python
 import os
 import textwrap
+import types
 
 import jinja2
+import six
 
 from .bmi_metadata import load_bmi_metadata, ModelInfo
 from ..babel import BabelConfigError
@@ -89,6 +91,9 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     Basic Model Interface for Model.
     ...
     """
+    author = author or []
+    cite_as = cite_as or []
+
     try:
         meta = load_bmi_metadata(name)
     except (IOError, BabelConfigError):
@@ -109,6 +114,11 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     summary = summary or info.summary
     cite_as = cite_as or info.cite_as
     parameters = parameters or defaults
+
+    if isinstance(author, types.StringTypes):
+        author = [author]
+    if isinstance(cite_as, types.StringTypes):
+        cite_as = [cite_as]
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
     return env.get_template('docstring').render(
