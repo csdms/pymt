@@ -199,10 +199,13 @@ def load_info_section(path):
     info.setdefault('cite_as', [])
     if isinstance(info['cite_as'], types.StringTypes):
         info['cite_as'] = [info['cite_as']]
+    author = info.get('author', ['anonymous'])
+    if isinstance(author, types.StringTypes):
+        author = [author]
 
     return ModelInfo(
         name=api['name'],
-        author=info.get('author', '-'),
+        author=author,
         email=info.get('email', '-'),
         version=info.get('version', '-'),
         license=info.get('license', 'None'),
