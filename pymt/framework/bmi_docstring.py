@@ -13,7 +13,11 @@ Basic Model Interface for {{ name }}.
 
 {{ desc|trim|wordwrap(70) if desc }}
 
-Author: {{ author }}
+{% if author -%}
+Author:
+{%- for name in author %}
+{{"- " + name|trim }}{% endfor %}
+{%- endif %}
 Version: {{ version }}
 License: {{ license }}
 DOI: {{ doi }}
