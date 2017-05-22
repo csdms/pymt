@@ -6,7 +6,7 @@ DOCSTRING = u"""Basic Model Interface for Model.
 
 
 
-Author: None
+
 Version: None
 License: None
 DOI: None
@@ -40,7 +40,8 @@ Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
 
-Author: Clint Eastwood
+Author:
+- Clint Eastwood
 Version: 0.1
 License: To kill
 DOI: 1977.12.23
@@ -71,7 +72,8 @@ Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
 
-Author: Clint Eastwood
+Author:
+- Clint Eastwood
 Version: 0.1
 License: To kill
 DOI: 1977.12.23
