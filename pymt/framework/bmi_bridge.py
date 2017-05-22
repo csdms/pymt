@@ -720,7 +720,7 @@ class _BmiCap(object):
         }, default_flow_style=False)
 
 
-class BmiCap(_BmiCap, BmiTimeInterpolator, SetupMixIn, GridMapperMixIn):
+class BmiCap(GridMapperMixIn, _BmiCap, BmiTimeInterpolator, SetupMixIn):
     pass
 
 

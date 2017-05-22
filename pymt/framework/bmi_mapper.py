@@ -223,6 +223,36 @@ class GridMapperMixIn(object):
         data = self.regrid(name, to=destination, to_name=at, **kwds)
         dst.set_value(at, data)
 
+    def set_value(self, name, *args, **kwds):
+        """Set values for a variable.
+        set_value(name, value)
+        set_value(name, mapfrom=self, nomap=None)
+
+        Parameters
+        ----------
+        name : str
+            Name of the destination values.
+        """
+        if len(args) == 1:
+            return super(GridMapperMixIn, self).set_value(name, *args)
+
+        mapfrom = kwds.pop('mapfrom', self)
+        nomap = kwds.pop('nomap', None)
+        try:
+            value, source = mapfrom
+        except TypeError:
+            value, source = name, mapfrom
+
+        if nomap is not None:
+            orig = self.get_value(name)
+
+        data = source.regrid(value, to=self, to_name=name, **kwds)
+
+        if nomap is not None:
+            data[nomap] = orig[nomap]
+
+        super(GridMapperMixIn, self).set_value(name, data)
+
     def map_value(self, name, **kwds):
         """Map values from another grid.
 
@@ -230,11 +260,13 @@ class GridMapperMixIn(object):
         ----------
         name : str
             Name of values to map to.
-        mapfrom : bmi_like, optional
-            BMI object from which values are mapped from. If not provided,
+        mapfrom : tuple or bmi_like, optional
+            BMI object from which values are mapped from. This can also be
+            a tuple of *(name, bmi)*, where *name* is the variable of the
+            source grid and *bmi* is the bmi-like source. If not provided,
             use *self*.
-        value : str, optional
-            Name of values to map from. If not provided, use *name*.
+        nomap : narray of bool, optional
+            Values in the destination grid to not map.
         """
         mapfrom = kwds.pop('mapfrom', self)
         nomap = kwds.pop('nomap', None)
