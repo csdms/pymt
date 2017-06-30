@@ -5,11 +5,11 @@ import xarray as xr
 
 
 COORDINATE_NAMES = ['z', 'y', 'x']
-INDEX_NAMES = ['i', 'j', 'k']
+INDEX_NAMES = ['k', 'j', 'i']
 
 
 def index_names(rank):
-    return ['node_' + ind for ind in INDEX_NAMES[:rank]]
+    return ['node_' + ind for ind in INDEX_NAMES[-rank:]]
 
 
 def coordinate_names(rank):
@@ -24,7 +24,6 @@ def dataset_from_bmi_grid(bmi, grid_id):
         grid = dataset_from_bmi_uniform_rectilinear(bmi, grid_id)
     elif grid_type == 'scalar':
         grid = dataset_from_bmi_scalar(bmi, grid_id)
-    # elif grid_type == 'unstructured':
     elif grid_type.startswith('unstructured'):
         grid = dataset_from_bmi_unstructured(bmi, grid_id)
     else:
@@ -51,6 +50,8 @@ def dataset_from_bmi_scalar(bmi, grid_id):
 
 
 def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
+    from landlab.graph import UniformRectilinearGraph
+
     rank = bmi.get_grid_rank(grid_id)
     shape = bmi.get_grid_shape(grid_id)
     spacing = bmi.get_grid_spacing(grid_id)
@@ -77,14 +78,34 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
          'node_origin': xr.DataArray(data=origin, dims=('rank', )),
         })
 
-    dim_names = dataset.mesh.attrs['node_dimensions'].split()
-    coord_names = dataset.mesh.attrs['node_coordinates'].split()
-    for dim in xrange(rank):
-        data = np.arange(shape[dim], dtype=float) * spacing[dim] + origin[dim]
+    coords = []
+    for dim in range(rank):
+        coords.append(np.arange(shape[dim], dtype=float) * spacing[dim] +
+                      origin[dim])
+
+    coords_at_node = np.meshgrid(*coords, indexing='ij')
+
+    for axis, name in enumerate(COORDINATE_NAMES[-rank:]):
         dataset = dataset.update({
-            coord_names[dim]: xr.DataArray(
-                data=data, dims=(dim_names[dim], ),
-                attrs={'standard_name': coord_names[dim], 'units': 'm'})
+            'node_' + name: xr.DataArray(
+                data=coords_at_node[axis].reshape(-1), dims=('n_node', ),
+                attrs={'standard_name': name, 'units': 'm'})
+        })
+
+    if rank == 2:
+        graph = UniformRectilinearGraph(shape, spacing=spacing, origin=origin)
+
+        dataset = dataset.update({
+            'face_node_connectivity': xr.DataArray(
+                data=graph.nodes_at_patch.reshape((-1 ,)),
+                dims=('n_vertices', ),
+                attrs={'standard_name': 'Face-node connectivity'})
+        })
+        dataset = dataset.update({
+            'face_node_offset': xr.DataArray(
+                data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4,
+                dims=('n_faces', ),
+                attrs={'standard_name': 'Offset to face-node connectivity'})
         })
 
     return dataset
@@ -144,5 +165,11 @@ def dataset_from_bmi_unstructured(bmi, grid_id):
         dims=('n_vertices', ),
         attrs={'standard_name': 'Face-node connectivity'})
     ugrid.update({'face_node_connectivity': face_node_connectivity})
+
+    face_node_offset = xr.DataArray(
+        data=bmi.get_grid_face_node_offset(grid_id),
+        dims=('n_faces', ),
+        attrs={'standard_name': 'Offset to face-node connectivity'})
+    ugrid.update({'face_node_offset': face_node_offset})
 
     return ugrid

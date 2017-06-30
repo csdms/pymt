@@ -12,6 +12,7 @@ from cfunits import Units
 from scripting.contexts import cd
 
 from .bmi_setup import SetupMixIn
+from .bmi_mapper import GridMapperMixIn
 from .bmi_docstring import bmi_docstring
 from .bmi_ugrid import dataset_from_bmi_grid
 from .bmi_plot import quick_plot
@@ -719,7 +720,7 @@ class _BmiCap(object):
         }, default_flow_style=False)
 
 
-class BmiCap(_BmiCap, BmiTimeInterpolator, SetupMixIn):
+class BmiCap(GridMapperMixIn, _BmiCap, BmiTimeInterpolator, SetupMixIn):
     pass
 
 
