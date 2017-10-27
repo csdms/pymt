@@ -19,6 +19,7 @@ requirements:
     - setuptools
     - numpy
     - scipy >=0.17.0
+    - matplotlib
     - xarray
     - nose
     - shapely
