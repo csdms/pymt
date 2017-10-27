@@ -1,10 +1,10 @@
 {% set name = "pymt" %}
-{% set version = "0.1.1" %}
+{% set data = load_setup_py_data() %}
 
 
 package:
   name: {{ name }}
-  version: {{ version }}
+  version: {{ data.get('version') }}
 
 source:
   path: ..
@@ -19,6 +19,7 @@ requirements:
     - setuptools
     - numpy
     - scipy >=0.17.0
+    - matplotlib
     - xarray
     - nose
     - shapely
