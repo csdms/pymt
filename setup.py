@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from pymt import __version__
+import versioneer
 
 
 def read_requirements():
@@ -19,7 +19,8 @@ def read_requirements():
 
 
 setup(name='PyMT',
-      version=__version__,
+      version=versioneer.get_version(),
+      cmdclass=versioneer.get_cmdclass(),
       description='The CSDMS Python Modeling Toolkit',
       author='Eric Hutton',
       author_email='huttone@colorado.edu',
