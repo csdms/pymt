@@ -1,3 +1,4 @@
+"""Bridge between BMI and a PyMT component."""
 import os
 from pprint import pformat
 
@@ -726,7 +727,8 @@ class BmiCap(GridMapperMixIn, _BmiCap, BmiTimeInterpolator, SetupMixIn):
 
 def bmi_factory(cls):
     class BmiWrapper(BmiCap):
-        __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
+        # __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
+        __doc__ = bmi_docstring(cls)
         _cls = cls
 
     BmiWrapper.__name__ = cls.__name__
