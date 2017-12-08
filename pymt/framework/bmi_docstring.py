@@ -6,7 +6,9 @@ import types
 import jinja2
 import six
 
-from .bmi_metadata import load_bmi_metadata, ModelInfo
+from model_metadata import MetadataNotFoundError
+
+from .bmi_metadata import PluginMetadata
 from ..babel import BabelConfigError
 
 
@@ -35,8 +37,8 @@ Cite as:
 Parameters
 ----------
 {% for param in parameters|sort(attribute='name') -%}
-{{param.name}} : {{param.type}}, optional
-    {{ "%s [default=%s %s]"|format(param.desc, param.value, param.units)|trim|wordwrap(70)|indent(4) }}
+{{param.name}} : {{param.value.type}}, optional
+    {{ "%s [default=%s %s]"|format(param.description, param.value.default, param.value.units)|trim|wordwrap(70)|indent(4) }}
 {% endfor %}
 {% endif -%}
 
@@ -52,7 +54,7 @@ Examples
 """.strip()
 
 
-def bmi_docstring(name, author=None, version=None, license=None, doi=None,
+def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
                   url=None, parameters=None, summary=None, cite_as=None,
                   email=None):
     """Build the docstring for a BMI model.
@@ -95,24 +97,32 @@ def bmi_docstring(name, author=None, version=None, license=None, doi=None,
     cite_as = cite_as or []
 
     try:
-        meta = load_bmi_metadata(name)
-    except (IOError, BabelConfigError):
-        info = ModelInfo(name=name, author=author, version=version,
-                         license=license, doi=doi, url=url, summary=summary,
-                         cite_as=cite_as, email=None)
-        defaults = []
+        meta = PluginMetadata(plugin)
+    except MetadataNotFoundError:
+        if isinstance(plugin, six.string_types):
+            info = dict(authors=author, version=version, license=license,
+                        doi=doi, url=url, summary=summary, cite_as=cite_as)
+            defaults = {}
+            name = plugin
+        else:
+            raise
     else:
-        info = meta['info']
-        defaults = meta['defaults'].values()
+        info = meta.info
+        defaults = meta.parameters
+        name = meta.name
 
-    author = author or info.author
+    for param_name, param in defaults.items():
+        param['name'] = param_name
+    defaults = defaults.values()
+
+    author = author or info['authors']
     email = email or '-'
-    version = version or info.version
-    license = license or info.license
-    doi = doi or info.doi
-    url = url or info.url
-    summary = summary or info.summary
-    cite_as = cite_as or info.cite_as
+    version = version or info['version']
+    license = license or info['license']
+    doi = doi or info['doi']
+    url = url or info['url']
+    summary = summary or info['summary']
+    cite_as = cite_as or info['cite_as']
     parameters = parameters or defaults
 
     if isinstance(author, types.StringTypes):

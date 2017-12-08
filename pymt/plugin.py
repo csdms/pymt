@@ -1,4 +1,32 @@
-"""Dynamically find and load plugins."""
+"""Dynamically find and load plugins.
+
+PyMT plugins are components that expose the CSDMS Basic
+Model Interface and provide CSDMS Model Metadata. With
+these two things, third-party components can be imported
+into the PyMT modeling framework.
+
+By default PyMT searches a package named `csdms`, if
+it exists, for possible plugins that implement a BMI.
+The corresponding model metadata for each plugin is
+assumed to be located under `share/csdms` in a folder
+named for that plugin. This is the file structure that
+the CSDMS babelizer tool uses when wrapping models.
+
+Although components written in Python can be processed
+with the babelizer to bring them into PyMT, this
+step should not be necessary as they are already
+written in Python with a BMI. For these models,
+plugins can be specified by a string that gives the
+fully qualified name of the module (in dotted notation)
+that contains the object followed by a colon and the
+name of the class that implents the BMI. For example,
+
+    pypkg.mymodule:MyPlugin
+
+Standard plugins (those contained in the csdms package)
+are automatically loaded while other plugins are
+dynamically loaded the the pymt `load_plugin` function.
+"""
 from __future__ import print_function
 
 __all__ = []

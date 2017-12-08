@@ -9,7 +9,7 @@ import socket
 import json
 import yaml
 
-from ..framework.bmi_metadata import load_bmi_metadata, bmi_data_files
+from model_metadata.metadata import find_model_data_files
 
 
 class redirect(object):
@@ -64,7 +64,7 @@ def read_component_configuration(names, vars=None):
             with open(os.path.join(component.datadir, 'parameters.yaml')) as fp:
                 config['parameters'] = yaml.load(fp)
         if 'files' in vars:
-            config['files'] = bmi_data_files(component.datadir)
+            config['files'] = find_model_data_files(component.datadir)
         if 'api' in vars:
             with open(os.path.join(component.datadir, 'api.yaml')) as fp:
                 api = yaml.load(fp)
