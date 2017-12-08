@@ -33,6 +33,7 @@ install:
 - conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
 - conda install -q conda-build anaconda-client sphinx
+- conda update -q conda-build
 script:
 - conda build ./conda-recipe --no-test --old-build-string
 - conda install pymt nose coverage --use-local
