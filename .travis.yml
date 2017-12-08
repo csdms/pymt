@@ -33,8 +33,9 @@ install:
 - conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
 - conda install -q conda-build anaconda-client sphinx
+- conda update -n root conda-build -c defaults
 script:
-- conda build ./conda-recipe --no-test
+- conda build ./conda-recipe --no-test --old-build-string
 - conda install pymt nose coverage --use-local
 - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
 after_success:
@@ -45,5 +46,5 @@ after_success:
   fi
 - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
   > $HOME/anaconda_upload.py
-- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --channel=main --org=csdms
+- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms
   --token=-
