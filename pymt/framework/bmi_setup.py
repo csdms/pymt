@@ -10,145 +10,26 @@ import string
 import yaml
 
 from ..utils.run_dir import cd
-from .bmi_metadata import bmi_data_dir, load_bmi_metadata
-
-
-def mkdir_p(path):
-    """Make a directory along with any parents."""
-    if not path:
-        return
-
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
-
-def update_values(values, defaults):
-    if not set(values.keys()).issubset(defaults.keys()):
-        raise ValueError('Unknown values')
-
-    updated = defaults.copy()
-    updated.update(values)
-    return updated
-
-
-class SafeFormatter(string.Formatter):
-    def get_field(self, field_name, args, kwargs):
-        try:
-            val = super(SafeFormatter, self).get_field(field_name, args,
-                                                       kwargs)
-        except (KeyError, AttributeError):
-            val = '{' + field_name + '}', field_name 
-
-        return val 
-
-    def format_field(self, value, spec):
-        try:
-            return super(SafeFormatter, self).format_field(value, spec)
-        except ValueError:
-            return value
-
-
-def sub_parameters(string, **kwds):
-    formatter = SafeFormatter()
-    return formatter.format(string, **kwds)
-
-
-def find_bmi_data_files(datadir):
-    """Look for BMI data files.
-    
-    Parameters
-    ----------
-    datadir : str
-        Path the the BMI component's data directory.
-
-    Returns
-    -------
-    list of str
-        List of the data files relative to their data directory.
-    """
-    fnames = []
-    for dir, _, files in os.walk(datadir):
-        fnames += [os.path.join(dir, fname) for fname in files]
-    end_prefix = len(os.path.commonprefix(fnames))
-
-    fnames = [fname[end_prefix:] for fname in fnames]
-    for fname in ('api.yaml', 'parameters.yaml', 'info.yaml', 'run.yaml'):
-        try:
-            fnames.remove(fname)
-        except ValueError:
-            pass
-
-    return fnames
-
-
-def fill_template_file(src, dest, **kwds):
-    """Substitute values into a template file.
-
-    Parameters
-    ----------
-    src : str
-        Path to a template file.
-    dest : str
-        Path to output file that will contain the substitutions.
-    """
-    (srcdir, fname) = os.path.split(src)
-    dest = os.path.abspath(dest)
-
-    with cd(srcdir):
-        with open(fname, 'r') as fp:
-            template = fp.read()
-
-        (base, ext) = os.path.splitext(dest)
-        if ext == '.tmpl':
-            dest = base
-        else:
-            dest = fname
-
-        with open(dest, 'w') as fp:
-            fp.write(sub_parameters(template, **kwds))
-
-
-def copy_data_files(datadir, destdir, **kwds):
-    """Copy BMI data files into a folder, filling template files on the way.
-
-    Parameters
-    ----------
-    datadir : str
-        Path to the BMI component's data folder.
-    destdir : str
-        Path to the folder to copy the data into.
-    """
-    files = find_bmi_data_files(datadir)
-
-    with cd(destdir, create=True):
-        for dest in files:
-            src = os.path.join(datadir, dest)
-
-            mkdir_p(os.path.dirname(dest))
-
-            if src.endswith('.tmpl'):
-                fill_template_file(src, dest, **kwds)
-            else:
-                shutil.copy2(src, dest)
+from .bmi_metadata import PluginMetadata
+from model_metadata.model_setup import FileSystemLoader
+from model_metadata.model_data_files import FileTemplate
 
 
 class SetupMixIn(object):
     def __init__(self):
         name = self.__class__.__name__.split('.')[-1]
 
-        self._datadir = bmi_data_dir(name)
-        self._meta = load_bmi_metadata(name)
+        self._meta = PluginMetadata(self)
 
         self._defaults = {}
         self._parameters = {}
-        for name, param in self._meta['defaults'].items():
-            self._parameters[name] = param.value
-            self._defaults[name] = param.value, param.units
+        for name, param in self._meta.parameters.items():
+            self._parameters[name] = param['value']['default']
+            try:
+                units = param['units']
+            except KeyError:
+                units = None
+            self._defaults[name] = param['value'], units
 
     def setup(self, *args, **kwds):
         """Set up a simulation.
@@ -171,11 +52,20 @@ class SetupMixIn(object):
 
         self._parameters.update(kwds)
 
-        copy_data_files(self.datadir, dir, **self._parameters)
-        
-        return self._meta['run'].config_file, os.path.abspath(dir)
+        FileSystemLoader(self.datadir).stage_all(dir, **self._parameters)
 
-        # return dir, self._meta['run'].config_file
+        config = self._meta.run['config_file']
+        if config['contents'] and not config['path']:
+            config['path'] = dir
+
+        if config['path']:
+            config_file = FileTemplate.write(config['contents'],
+                                             config['path'],
+                                             **self._parameters)
+        else:
+            config_file = None
+
+        return config_file, os.path.abspath(dir)
 
     @property
     def parameters(self):
@@ -187,15 +77,15 @@ class SetupMixIn(object):
 
     @property
     def datadir(self):
-        return self._datadir
+        return self._meta.base
 
     @property
     def author(self):
-        return self._meta['info'].author
+        return self._meta.info['author']
 
     @property
     def email(self):
-        return self._meta['info'].email
+        return self._meta.info['email']
 
     @property
     def contact(self):
@@ -207,27 +97,27 @@ class SetupMixIn(object):
 
     @property
     def url(self):
-        return self._meta['info'].url
+        return self._meta.info['url']
 
     @property
     def license(self):
-        return self._meta['info'].license
+        return self._meta.info['license']
 
     @property
     def doi(self):
-        return self._meta['info'].doi
+        return self._meta.info['doi']
 
     @property
     def version(self):
-        return self._meta['info'].version
+        return self._meta.info['version']
 
     @property
     def summary(self):
-        return self._meta['info'].summary
+        return self._meta.info['summary']
 
     @property
     def cite_as(self):
-        return self._meta['info'].cite_as
+        return self._meta.info['cite_as']
 
 
 class GitHubSetupMixIn(object):
