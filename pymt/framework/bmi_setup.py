@@ -9,10 +9,10 @@ import string
 
 import yaml
 
-from ..utils.run_dir import cd
 from .bmi_metadata import PluginMetadata
 from model_metadata.model_setup import FileSystemLoader
 from model_metadata.model_data_files import FileTemplate
+from scripting.contexts import cd
 
 
 class SetupMixIn(object):
@@ -59,9 +59,10 @@ class SetupMixIn(object):
             config['path'] = dir
 
         if config['path']:
-            config_file = FileTemplate.write(config['contents'],
-                                             config['path'],
-                                             **self._parameters)
+            with cd(dir):
+                config_file = FileTemplate.write(config['contents'],
+                                                 config['path'],
+                                                 **self._parameters)
         else:
             config_file = None
 
