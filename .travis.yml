@@ -8,24 +8,26 @@ env:
   - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda2-latest"
   - TRAVIS_PYTHON_VERSION="2.7"
   - CHANNEL="dev"
-  - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
+  - secure: N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk=
+  - secure: Spa6UUmSZ0UakjhVMBPhVZBe8p6YXNYH4TDnHU/ZVHZAhVt4yqp70HzihUQ1YoSCcDh1hVVr1tdsdWG+DIAprUOI/0BE2o2RMhpGDOUZ3iKL/rhsQlqgdXrdlvwNu8fDnLnX/uzAsWVWglO9RVgHtbOkN5g2aoHUFCM1oK0SgeA=
+  - secure: UI6Sgt5sZVoqjtkSVN15esMSJBylFAq8D5/F0zbX17d+M9a2ahXIXN2tO7K63ZhaLN2L37Z31kBmyA4LMXZNpXv/ZxKgKKJFaUxesY/7I+OhpA230hVFXxw4ARoJT/z/qe6LWB1j/ly6aAGjqBtRykMmi0SbNKi0RhF7bvESo64=
 sudo: false
 jobs:
   include:
-    - stage: docs
-      script:
-        - conda install numpydoc
-        - (cd docs/source && make html)
-      after_success: skip
-      os: linux
-    - &deploy
-      stage: deploy
-      env: CHANNEL="main"
-      os: linux
-    - <<: *deploy
-      os: osx
-
-
+  - stage: docs
+    script:
+    - conda install numpydoc
+    - "(cd docs/source && make html)"
+    after_success: skip
+    os: linux
+  - stage: deploy
+    env: CHANNEL="main"
+    os: linux
+    script:
+    - rsync -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
+    - for f in $TRAVIS_BUILD_NUMBER/pymt*; do anaconda -t $ANACONDA_TOKEN upload $f
+      --channel=$CHANNEL --user=csdms; done
+    after_success: skip
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -54,12 +56,14 @@ install:
 script:
 - conda build ./conda-recipe --no-test --old-build-string
 - conda install pymt nose coverage --use-local
-- nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
+- nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt
+  --verbosity=2 pymt
 after_success:
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     conda install -q coverage coveralls
     coveralls --verbose
   fi
-- curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
-- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=$CHANNEL --org=csdms --token=-
+- mkdir -p $TRAVIS_BUILD_NUMBER
+- mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER
+- rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
