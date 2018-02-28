@@ -18,12 +18,13 @@ jobs:
         - (cd docs/source && make html)
       after_success: skip
       os: linux
-    - stage: deploy
+    - &deploy
+      stage: deploy
       env: CHANNEL="main"
       os: linux
-    - stage: deploy
-      env: CHANNEL="main"
+    - <<: *deploy
       os: osx
+
 
 before_install:
 - |
