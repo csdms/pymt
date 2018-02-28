@@ -12,7 +12,10 @@ sudo: false
 jobs:
   include:
     - stage: docs
-      script: (cd docs/source && make html)
+      script:
+        - conda install numpydoc
+        - (cd docs/source && make html)
+      os: linux
     - stage: deploy
       script:
         - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
