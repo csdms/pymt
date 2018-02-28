@@ -19,10 +19,11 @@ jobs:
       after_success: skip
       os: linux
     - stage: deploy
-      os:
-        - linux
-        - osx
       env: CHANNEL="main"
+      os: linux
+    - stage: deploy
+      env: CHANNEL="main"
+      os: osx
 
 before_install:
 - |
