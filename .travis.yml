@@ -9,6 +9,15 @@ env:
   - TRAVIS_PYTHON_VERSION="2.7"
   - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 sudo: false
+jobs:
+  include:
+    - stage: docs
+      script: (cd docs/source && make html)
+    - stage: deploy
+      script:
+        - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
+        - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms --token=-
+
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -44,7 +53,5 @@ after_success:
     conda install -q coverage coveralls
     coveralls --verbose
   fi
-- curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
-  > $HOME/anaconda_upload.py
-- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms
-  --token=-
+# - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
+# - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms --token=-
