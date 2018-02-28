@@ -24,7 +24,7 @@ jobs:
     env: CHANNEL="main"
     os: linux
     script:
-    - rsync -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
+    - rsync -e "ssh -o StrictHostKeyChecking=no" -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
     - for f in $TRAVIS_BUILD_NUMBER/pymt*; do anaconda -t $ANACONDA_TOKEN upload $f
       --channel=$CHANNEL --user=csdms; done
     after_success: skip
@@ -66,4 +66,4 @@ after_success:
   fi
 - mkdir -p $TRAVIS_BUILD_NUMBER
 - mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER
-- rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
+- rsync -e "ssh -o StrictHostKeyChecking=no" -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
