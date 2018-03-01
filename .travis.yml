@@ -9,8 +9,7 @@ env:
   - TRAVIS_PYTHON_VERSION="2.7"
   - CHANNEL="dev"
   - secure: N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk=
-  - secure: Spa6UUmSZ0UakjhVMBPhVZBe8p6YXNYH4TDnHU/ZVHZAhVt4yqp70HzihUQ1YoSCcDh1hVVr1tdsdWG+DIAprUOI/0BE2o2RMhpGDOUZ3iKL/rhsQlqgdXrdlvwNu8fDnLnX/uzAsWVWglO9RVgHtbOkN5g2aoHUFCM1oK0SgeA=
-  - secure: UI6Sgt5sZVoqjtkSVN15esMSJBylFAq8D5/F0zbX17d+M9a2ahXIXN2tO7K63ZhaLN2L37Z31kBmyA4LMXZNpXv/ZxKgKKJFaUxesY/7I+OhpA230hVFXxw4ARoJT/z/qe6LWB1j/ly6aAGjqBtRykMmi0SbNKi0RhF7bvESo64=
+  - secure: WAJ1mJAw3aNPUX0PGKAvPnNU+7t2t5dNZv/pTl307UyxZOabSmA88q04VQaq/nwMHCcwO4CDeJY0NxVUURzIWm+K7Hc728MLXUGoM675jUwkQZjjMa2qssRRa5BtWxk790fwdnYjFe7X/3yp2qcOvNzLydYIfSEyZBMLv2iL/64=
 sudo: false
 jobs:
   include:
@@ -29,7 +28,7 @@ jobs:
       --channel=$CHANNEL --user=csdms; done
     after_success: skip
 addons:
-  ssh_known_hosts: diluvium.colorado.edu
+  ssh_known_hosts: 128.138.70.87
 before_install:
 - openssl aes-256-cbc -K $encrypted_06a730d1e26a_key -iv $encrypted_06a730d1e26a_iv
   -in deploy_rsa.enc -out deploy_rsa -d
