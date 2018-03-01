@@ -30,14 +30,13 @@ jobs:
     after_success:
     - rm -rf $TRAVIS_BUILD_NUMBER/*
     - rsync --delete -avR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
-addons:
-  ssh_known_hosts: diluvium.colorado.edu
 before_install:
 - openssl aes-256-cbc -K $encrypted_06a730d1e26a_key -iv $encrypted_06a730d1e26a_iv
   -in deploy_rsa.enc -out deploy_rsa -d
 - chmod 600 deploy_rsa
 - eval "$(ssh-agent -s)"
 - ssh-add deploy_rsa
+- cat server_rsa.pub >> $HOME/.ssh/known_hosts
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     brew remove --force $(brew list)
@@ -78,3 +77,6 @@ after_success:
 - mkdir -p $TRAVIS_BUILD_NUMBER/$CONDA_ARCH
 - mv $CONDA_PACKAGE $TRAVIS_BUILD_NUMBER/$CONDA_ARCH
 - rsync -avR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
+after_failure:
+- rm -rf $TRAVIS_BUILD_NUMBER/*
+- rsync --delete -avR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
