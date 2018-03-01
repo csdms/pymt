@@ -27,7 +27,9 @@ jobs:
     - rsync -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
     - for f in $TRAVIS_BUILD_NUMBER/**/pymt*; do anaconda -t $ANACONDA_TOKEN upload $f
       --channel=$CHANNEL --user=csdms; done
-    after_success: skip
+    after_success:
+    - rm -rf $TRAVIS_BUILD_NUMBER/*
+    - rsync --delete -avR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
 addons:
   ssh_known_hosts: diluvium.colorado.edu
 before_install:
@@ -36,9 +38,6 @@ before_install:
 - chmod 600 deploy_rsa
 - eval "$(ssh-agent -s)"
 - ssh-add deploy_rsa
-- mkdir -p $TRAVIS_BUILD_NUMBER
-- echo "start build..." > $TRAVIS_BUILD_NUMBER/start.txt
-- rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     brew remove --force $(brew list)
@@ -69,14 +68,13 @@ script:
 - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt
   --verbosity=2 pymt
 after_success:
+- CONDA_PACKAGE=$(conda build --output ./conda-recipe --old-build-string)
+- CONDA_ARCH=$(basename $(dirname $CONDA_PACKAGE))
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     conda install -q coverage coveralls
     coveralls --verbose
-    mkdir -p $TRAVIS_BUILD_NUMBER/linux-64
-    mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER/linux-64
-  else
-    mkdir -p $TRAVIS_BUILD_NUMBER/osx-64
-    mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER/osx-64
   fi
+- mkdir -p $TRAVIS_BUILD_NUMBER/$CONDA_ARCH
+- mv $CONDA_PACKAGE $TRAVIS_BUILD_NUMBER/$CONDA_ARCH
 - rsync -avR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
