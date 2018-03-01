@@ -35,7 +35,7 @@ before_install:
 - eval "$(ssh-agent -s)"
 - ssh-add deploy_rsa
 - mkdir -p $TRAVIS_BUILD_NUMBER
-- cat "start build..." > $TRAVIS_BUILD_NUMBER/start.txt
+- echo "start build..." > $TRAVIS_BUILD_NUMBER/start.txt
 - rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
