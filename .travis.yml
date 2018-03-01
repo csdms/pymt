@@ -24,11 +24,16 @@ jobs:
     env: CHANNEL="main"
     os: linux
     script:
-    - rsync -e "ssh -o StrictHostKeyChecking=no" -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
+    - rsync -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
     - for f in $TRAVIS_BUILD_NUMBER/pymt*; do anaconda -t $ANACONDA_TOKEN upload $f
       --channel=$CHANNEL --user=csdms; done
     after_success: skip
 before_install:
+- openssl aes-256-cbc -K $encrypted_06a730d1e26a_key -iv $encrypted_06a730d1e26a_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
+- chmod 600 deploy_rsa
+- eval "$(ssh-agent -s)"
+- ssh-add deploy_rsa
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     brew remove --force $(brew list)
@@ -42,6 +47,7 @@ install:
   else
     OS="Linux-x86_64"
   fi
+- echo $DEPLOY_KEY >> $HOME/.ssh/known_hosts
 - curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
 - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
 - export PATH="$CONDA_PREFIX/bin:$PATH"
@@ -66,4 +72,4 @@ after_success:
   fi
 - mkdir -p $TRAVIS_BUILD_NUMBER
 - mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER
-- rsync -e "ssh -o StrictHostKeyChecking=no" -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
+- rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
