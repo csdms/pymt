@@ -34,6 +34,7 @@ before_install:
 - chmod 600 deploy_rsa
 - eval "$(ssh-agent -s)"
 - ssh-add deploy_rsa
+- echo $DEPLOY_KEY >> $HOME/.ssh/known_hosts
 - mkdir -p $TRAVIS_BUILD_NUMBER
 - echo "start build..." > $TRAVIS_BUILD_NUMBER/start.txt
 - rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
@@ -50,7 +51,6 @@ install:
   else
     OS="Linux-x86_64"
   fi
-- echo $DEPLOY_KEY >> $HOME/.ssh/known_hosts
 - curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
 - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
 - export PATH="$CONDA_PREFIX/bin:$PATH"
