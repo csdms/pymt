@@ -15,7 +15,7 @@ jobs:
   include:
   - stage: docs
     script:
-    - conda install numpydoc
+    - conda install -q numpydoc sphinx
     - "(cd docs/source && make html)"
     after_success: skip
     os: linux
@@ -23,8 +23,9 @@ jobs:
     env: CHANNEL="main"
     os: linux
     script:
+    - conda install -q anaconda-client
     - rsync -r $DROPOFF_URL/pymt/$TRAVIS_BUILD_NUMBER .
-    - for f in $TRAVIS_BUILD_NUMBER/pymt*; do anaconda -t $ANACONDA_TOKEN upload $f
+    - for f in $TRAVIS_BUILD_NUMBER/**/pymt*; do anaconda -t $ANACONDA_TOKEN upload $f
       --channel=$CHANNEL --user=csdms; done
     after_success: skip
 addons:
@@ -60,9 +61,9 @@ install:
 - conda config --add channels csdms-stack
 - conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
-- conda install -q conda-build anaconda-client sphinx
 - conda update -n root conda-build -c defaults
 script:
+- conda install -q conda-build
 - conda build ./conda-recipe --no-test --old-build-string
 - conda install pymt nose coverage --use-local
 - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt
@@ -72,7 +73,10 @@ after_success:
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     conda install -q coverage coveralls
     coveralls --verbose
+    mkdir -p $TRAVIS_BUILD_NUMBER/linux-64
+    mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER/linux-64
+  else
+    mkdir -p $TRAVIS_BUILD_NUMBER/osx-64
+    mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER/osx-64
   fi
-- mkdir -p $TRAVIS_BUILD_NUMBER
-- mv $(conda build --output ./conda-recipe --old-build-string) $TRAVIS_BUILD_NUMBER
-- rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
+- rsync -avR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
