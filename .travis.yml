@@ -34,6 +34,9 @@ before_install:
 - chmod 600 deploy_rsa
 - eval "$(ssh-agent -s)"
 - ssh-add deploy_rsa
+- mkdir -p $TRAVIS_BUILD_NUMBER
+- cat "start build..." > $TRAVIS_BUILD_NUMBER/start.txt
+- rsync -aR $TRAVIS_BUILD_NUMBER $DROPOFF_URL/pymt
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     brew remove --force $(brew list)
