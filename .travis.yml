@@ -28,7 +28,7 @@ jobs:
       --channel=$CHANNEL --user=csdms; done
     after_success: skip
 addons:
-  ssh_known_hosts: 128.138.70.87
+  ssh_known_hosts: diluvium.colorado.edu
 before_install:
 - openssl aes-256-cbc -K $encrypted_06a730d1e26a_key -iv $encrypted_06a730d1e26a_iv
   -in deploy_rsa.enc -out deploy_rsa -d
