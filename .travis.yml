@@ -61,9 +61,9 @@ install:
 - conda config --add channels csdms-stack
 - conda config --add channels conda-forge
 - conda install python=$TRAVIS_PYTHON_VERSION
-- conda update -n root conda-build -c defaults
 script:
 - conda install -q conda-build
+- conda update -n root conda-build -c defaults
 - conda build ./conda-recipe --no-test --old-build-string
 - conda install pymt nose coverage --use-local
 - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt
