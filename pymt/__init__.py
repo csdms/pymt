@@ -1,3 +1,6 @@
+from __future__ import print_function
+import sys
+
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
@@ -8,3 +11,12 @@ try:
     np.set_printoptions(legacy='1.13')
 except TypeError:
     pass
+del np
+
+
+from .plugin import load_pymt_plugins
+
+
+plugins = load_pymt_plugins()
+
+del load_pymt_plugins

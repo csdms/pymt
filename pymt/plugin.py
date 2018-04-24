@@ -36,6 +36,8 @@ import logging
 import importlib
 from glob import glob
 
+import pkg_resources
+
 from .framework.bmi_bridge import bmi_factory
 from .babel import setup_babel_environ
 
@@ -155,3 +157,23 @@ def load_csdms_plugins():
     setup_babel_environ()
     entry_points = discover_csdms_plugins()
     return load_all_plugins(entry_points, callback=bmi_factory)
+
+
+def load_pymt_plugins():
+    class Plugins(object):
+        pass
+
+    plugins = Plugins()
+
+    for entry_point in pkg_resources.iter_entry_points(group='pymt.plugins'):
+        try:
+            plugin = entry_point.load()
+        except Exception as err:
+            print('unable to import: {0}'.format(entry_point.name),
+                  file=sys.stderr)
+        else:
+            print('imported plugin: {0}'.format(entry_point.name))
+            plugin = bmi_factory(plugin)
+            setattr(plugins, entry_point.name, plugin)
+
+    return plugins
