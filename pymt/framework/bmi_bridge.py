@@ -555,6 +555,9 @@ class _BmiCap(object):
         bmi_call(self.bmi.get_grid_origin, grid, out)
         return out
 
+    def get_grid_number_of_nodes(self, grid):
+        return self.get_grid_size(grid)
+
     def get_grid_number_of_vertices(self, grid):
         return self.get_grid_nodes_per_face(grid).sum()
 
@@ -577,8 +580,7 @@ class _BmiCap(object):
 
     def get_grid_face_node_offset(self, grid, out=None):
         nodes_per_face = self.get_grid_nodes_per_face(grid, out=out)
-        np.cumsum(nodes_per_face, out=out)
-        return out
+        return np.cumsum(nodes_per_face, out=out)
 
     def get_grid_nodes_per_face(self, grid, out=None):
         if out is None:
@@ -696,7 +698,10 @@ class _BmiCap(object):
         return intent
 
     def get_var_location(self, name):
-        return 'node'
+        return self.get_var_grid_loc(name)
+
+    def get_var_grid_loc(self, name):
+        return bmi_call(self.bmi.get_var_location, name)
 
     def get_var_grid(self, name):
         return bmi_call(self.bmi.get_var_grid, name)
