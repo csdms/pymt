@@ -161,7 +161,8 @@ def dataset_from_bmi_unstructured(bmi, grid_id):
     ugrid.update(coords)
 
     face_node_connectivity = xr.DataArray(
-        data=bmi.get_grid_face_node_connectivity(grid_id),
+        data=bmi.get_grid_face_nodes(grid_id),
+        # data=bmi.get_grid_face_node_connectivity(grid_id),
         dims=('n_vertices', ),
         attrs={'standard_name': 'Face-node connectivity'})
     ugrid.update({'face_node_connectivity': face_node_connectivity})
