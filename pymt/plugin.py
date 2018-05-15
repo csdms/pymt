@@ -32,11 +32,14 @@ from __future__ import print_function
 __all__ = []
 
 import os
+import sys
 import logging
 import importlib
 from glob import glob
 
 import pkg_resources
+
+from scripting import success, error
 
 from .framework.bmi_bridge import bmi_factory
 from .babel import setup_babel_environ
@@ -169,10 +172,9 @@ def load_pymt_plugins():
         try:
             plugin = entry_point.load()
         except Exception as err:
-            print('unable to import: {0}'.format(entry_point.name),
-                  file=sys.stderr)
+            error(entry_point.name)
         else:
-            print('imported plugin: {0}'.format(entry_point.name))
+            success(entry_point.name)
             plugin = bmi_factory(plugin)
             setattr(plugins, entry_point.name, plugin)
 
