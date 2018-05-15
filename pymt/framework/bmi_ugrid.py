@@ -98,13 +98,13 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
         dataset = dataset.update({
             'face_node_connectivity': xr.DataArray(
                 data=graph.nodes_at_patch.reshape((-1 ,)),
-                dims=('n_vertices', ),
+                dims=('n_vertex', ),
                 attrs={'standard_name': 'Face-node connectivity'})
         })
         dataset = dataset.update({
             'face_node_offset': xr.DataArray(
                 data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4,
-                dims=('n_faces', ),
+                dims=('n_face', ),
                 attrs={'standard_name': 'Offset to face-node connectivity'})
         })
 
@@ -163,13 +163,13 @@ def dataset_from_bmi_unstructured(bmi, grid_id):
     face_node_connectivity = xr.DataArray(
         data=bmi.get_grid_face_nodes(grid_id),
         # data=bmi.get_grid_face_node_connectivity(grid_id),
-        dims=('n_vertices', ),
+        dims=('n_vertex', ),
         attrs={'standard_name': 'Face-node connectivity'})
     ugrid.update({'face_node_connectivity': face_node_connectivity})
 
     face_node_offset = xr.DataArray(
         data=bmi.get_grid_face_node_offset(grid_id),
-        dims=('n_faces', ),
+        dims=('n_face', ),
         attrs={'standard_name': 'Offset to face-node connectivity'})
     ugrid.update({'face_node_offset': face_node_offset})
 
