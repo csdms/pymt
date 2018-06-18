@@ -325,7 +325,7 @@ class DataValues(object):
 
     @property
     def location(self):
-        return self._bmi.get_var_location(self.name)
+        return self._bmi.get_var_grid_loc(self.name)
 
     @property
     def data(self):
@@ -343,7 +343,7 @@ class DataValues(object):
     def __str__(self):
         return """
 <DataValues>
-{dtype} {name}(n_nodes)
+{dtype} {name}({location})
 Attributes:
     units: {units}
     grid: {grid}
@@ -490,7 +490,8 @@ class _BmiCap(object):
             dtype = self.get_var_type(name)
             if dtype == '':
                 raise ValueError('{name} not understood'.format(name=name))
-            out = np.empty(self.get_grid_size(grid), dtype=dtype)
+            loc = self.get_var_grid_loc(name)
+            out = np.empty(self.get_grid_dim(grid, loc), dtype=dtype)
 
         bmi_call(self.bmi.get_value, name, out)
 
@@ -528,35 +529,50 @@ class _BmiCap(object):
     def get_value_ptr(self, name):
         return bmi_call(self.bmi.get_value_ptr, name)
 
+    @deprecated(use='get_grid_ndim')
     def get_grid_rank(self, grid):
+        return self.get_grid_ndim(grid)
+
+    def get_grid_ndim(self, grid):
         return bmi_call(self.bmi.get_grid_rank, grid)
 
+    NUMBER_OF_ELEMENTS = {
+        'node': 'get_grid_number_of_nodes',
+        'edge': 'get_grid_number_of_edges',
+        'face': 'get_grid_number_of_faces',
+        'vertex': 'get_grid_number_of_vertices',
+    }
+
+    def get_grid_dim(self, grid, dim):
+        return getattr(self, self.NUMBER_OF_ELEMENTS[dim])(grid)
+
+    @deprecated(use='get_grid_number_of_nodes')
     def get_grid_size(self, grid):
-        return bmi_call(self.bmi.get_grid_size, grid)
+        return self.get_grid_number_of_nodes(grid)
 
     def get_grid_type(self, grid):
         return bmi_call(self.bmi.get_grid_type, grid)
 
     def get_grid_shape(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_rank(grid), dtype='int32')
+            out = np.empty(self.get_grid_ndim(grid), dtype='int32')
         bmi_call(self.bmi.get_grid_shape, grid, out)
         return out
 
     def get_grid_spacing(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_rank(grid), dtype=float)
+            out = np.empty(self.get_grid_ndim(grid), dtype=float)
         bmi_call(self.bmi.get_grid_spacing, grid, out)
         return out
 
     def get_grid_origin(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_rank(grid), dtype=float)
+            out = np.empty(self.get_grid_ndim(grid), dtype=float)
         bmi_call(self.bmi.get_grid_origin, grid, out)
         return out
 
     def get_grid_number_of_nodes(self, grid):
-        return self.get_grid_size(grid)
+        return bmi_call(self.bmi.get_grid_size, grid)
 
     def get_grid_number_of_vertices(self, grid):
         return self.get_grid_nodes_per_face(grid).sum()
@@ -701,7 +717,12 @@ class _BmiCap(object):
         return self.get_var_grid_loc(name)
 
     def get_var_grid_loc(self, name):
-        return bmi_call(self.bmi.get_var_location, name)
+        try:
+            self.bmi.get_var_location
+        except AttributeError:
+            return 'node'
+        else:
+            return bmi_call(self.bmi.get_var_location, name)
 
     def get_var_grid(self, name):
         return bmi_call(self.bmi.get_var_grid, name)
@@ -749,7 +770,7 @@ class _BmiCap(object):
         for grid_id in grid_ids:
             grid_desc = {
                 # 'id': grid_id,
-                'rank': self.get_grid_rank(grid_id),
+                'rank': self.get_grid_ndim(grid_id),
                 'size': self.get_grid_size(grid_id),
                 'type': self.get_grid_type(grid_id),
             }
