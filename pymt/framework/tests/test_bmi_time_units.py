@@ -5,19 +5,19 @@ from pymt.framework.bmi_bridge import _BmiCap
 
 class SimpleTimeBmi():
     def get_time_units(self):
-        return 0, 'h'
+        return 'h'
 
     def get_start_time(self):
-        return 0, 1.
+        return 1.
 
     def get_current_time(self):
-        return 0, 10.5
+        return 10.5
 
     def get_end_time(self):
-        return 0, 72
+        return 72
 
     def get_time_step(self):
-        return 0, 0.25
+        return 0.25
 
 
 class Bmi(_BmiCap):
