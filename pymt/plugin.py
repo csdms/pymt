@@ -32,9 +32,14 @@ from __future__ import print_function
 __all__ = []
 
 import os
+import sys
 import logging
 import importlib
 from glob import glob
+
+import pkg_resources
+
+from scripting import success, error
 
 from .framework.bmi_bridge import bmi_factory
 from .babel import setup_babel_environ
@@ -155,3 +160,29 @@ def load_csdms_plugins():
     setup_babel_environ()
     entry_points = discover_csdms_plugins()
     return load_all_plugins(entry_points, callback=bmi_factory)
+
+
+def load_pymt_plugins(include_old_style=False):
+    class Plugins(object):
+        """PyMT BMI component plugins."""
+        pass
+
+    plugins = Plugins()
+
+    for entry_point in pkg_resources.iter_entry_points(group='pymt.plugins'):
+        try:
+            plugin = entry_point.load()
+        except Exception as err:
+            error(entry_point.name)
+        else:
+            success(entry_point.name)
+            plugin = bmi_factory(plugin)
+            setattr(plugins, entry_point.name, plugin)
+
+    if include_old_style:
+        for plugin in load_csdms_plugins():
+            if not hasattr(plugins, plugin.__name__):
+                success(plugin.__name__)
+                setattr(plugins, plugin.__name__, plugin)
+
+    return plugins

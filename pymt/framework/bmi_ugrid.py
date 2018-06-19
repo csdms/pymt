@@ -34,7 +34,7 @@ def dataset_from_bmi_grid(bmi, grid_id):
 
 
 def dataset_from_bmi_scalar(bmi, grid_id):
-    rank = bmi.get_grid_rank(grid_id)
+    rank = bmi.get_grid_ndim(grid_id)
 
     if rank != 0:
         raise ValueError('scalar must be rank 0')
@@ -52,7 +52,7 @@ def dataset_from_bmi_scalar(bmi, grid_id):
 def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
     from landlab.graph import UniformRectilinearGraph
 
-    rank = bmi.get_grid_rank(grid_id)
+    rank = bmi.get_grid_ndim(grid_id)
     shape = bmi.get_grid_shape(grid_id)
     spacing = bmi.get_grid_spacing(grid_id)
     origin = bmi.get_grid_origin(grid_id)
@@ -88,7 +88,7 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
     for axis, name in enumerate(COORDINATE_NAMES[-rank:]):
         dataset = dataset.update({
             'node_' + name: xr.DataArray(
-                data=coords_at_node[axis].reshape(-1), dims=('n_node', ),
+                data=coords_at_node[axis].reshape(-1), dims=('node', ),
                 attrs={'standard_name': name, 'units': 'm'})
         })
 
@@ -98,13 +98,13 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
         dataset = dataset.update({
             'face_node_connectivity': xr.DataArray(
                 data=graph.nodes_at_patch.reshape((-1 ,)),
-                dims=('n_vertices', ),
+                dims=('vertex', ),
                 attrs={'standard_name': 'Face-node connectivity'})
         })
         dataset = dataset.update({
             'face_node_offset': xr.DataArray(
                 data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4,
-                dims=('n_faces', ),
+                dims=('face', ),
                 attrs={'standard_name': 'Offset to face-node connectivity'})
         })
 
@@ -112,7 +112,7 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
 
 
 def dataset_from_bmi_points(bmi, grid_id):
-    rank = bmi.get_grid_rank(grid_id)
+    rank = bmi.get_grid_ndim(grid_id)
     attrs=OrderedDict([
         ('cf_role', 'mesh_topology'),
         ('long_name', 'Topology data of 2D unstructured points'),
@@ -128,7 +128,7 @@ def dataset_from_bmi_points(bmi, grid_id):
         data=getattr(bmi, 'get_grid_' + dim_name)(grid_id)
         coord = xr.DataArray(
             data=data,
-            dims=('n_node', ),
+            dims=('node', ),
             attrs={'standard_name': dim_name, 'units': 'm'})
         coords['node_' + dim_name] = coord
 
@@ -138,7 +138,7 @@ def dataset_from_bmi_points(bmi, grid_id):
 
 
 def dataset_from_bmi_unstructured(bmi, grid_id):
-    rank = bmi.get_grid_rank(grid_id)
+    rank = bmi.get_grid_ndim(grid_id)
     attrs=OrderedDict([
         ('cf_role', 'mesh_topology'),
         ('long_name', 'Topology data of 2D unstructured points'),
@@ -154,21 +154,22 @@ def dataset_from_bmi_unstructured(bmi, grid_id):
         data=getattr(bmi, 'get_grid_' + dim_name)(grid_id)
         coord = xr.DataArray(
             data=data,
-            dims=('n_node', ),
+            dims=('node', ),
             attrs={'standard_name': dim_name, 'units': 'm'})
         coords['node_' + dim_name] = coord
 
     ugrid.update(coords)
 
     face_node_connectivity = xr.DataArray(
-        data=bmi.get_grid_face_node_connectivity(grid_id),
-        dims=('n_vertices', ),
+        data=bmi.get_grid_face_nodes(grid_id),
+        # data=bmi.get_grid_face_node_connectivity(grid_id),
+        dims=('vertex', ),
         attrs={'standard_name': 'Face-node connectivity'})
     ugrid.update({'face_node_connectivity': face_node_connectivity})
 
     face_node_offset = xr.DataArray(
         data=bmi.get_grid_face_node_offset(grid_id),
-        dims=('n_faces', ),
+        dims=('face', ),
         attrs={'standard_name': 'Offset to face-node connectivity'})
     ugrid.update({'face_node_offset': face_node_offset})
 
