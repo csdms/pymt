@@ -17,6 +17,6 @@ del np
 from .plugin import load_pymt_plugins
 
 
-plugins = load_pymt_plugins()
+plugins = load_pymt_plugins(include_old_style=True)
 
 del load_pymt_plugins

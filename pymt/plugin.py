@@ -162,8 +162,9 @@ def load_csdms_plugins():
     return load_all_plugins(entry_points, callback=bmi_factory)
 
 
-def load_pymt_plugins():
+def load_pymt_plugins(include_old_style=False):
     class Plugins(object):
+        """PyMT BMI component plugins."""
         pass
 
     plugins = Plugins()
@@ -177,5 +178,11 @@ def load_pymt_plugins():
             success(entry_point.name)
             plugin = bmi_factory(plugin)
             setattr(plugins, entry_point.name, plugin)
+
+    if include_old_style:
+        for plugin in load_csdms_plugins():
+            if not hasattr(plugins, plugin.__name__):
+                success(plugin.__name__)
+                setattr(plugins, plugin.__name__, plugin)
 
     return plugins
