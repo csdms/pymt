@@ -51,10 +51,10 @@ class TempFileMixIn(object):
 class NetcdfMixIn(TempFileMixIn, unittest.TestCase, NumpyArrayMixIn,
              AssertIsFileMixIn):
     def assertDimensionsEqual(self, root, expected_keys):
-        self.assertItemsEqual(expected_keys, root.dimensions.keys())
+        self.assertSetEqual(set(expected_keys), set(root.dimensions.keys()))
 
     def assertDataVariableNames(self, root, expected_names):
-        self.assertItemsEqual(root.variables.keys(), expected_names)
+        self.assertSetEqual(set(root.variables.keys()), set(expected_names))
 
     def assertDataVariableArrayEqual(self, root, var, expected_values):
         self.assertArrayEqual(expected_values, root.variables[var])
