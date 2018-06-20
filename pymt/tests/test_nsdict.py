@@ -131,8 +131,8 @@ class TestNamespaceDict(unittest.TestCase):
     def test_has_key(self):
         d = NamespaceDict({'/foo/bar': 'baz'})
 
-        self.assertTrue(d.has_key('/foo/bar')
-        self.assertTrue(d.has_key('/foo/bar/')
+        self.assertTrue(d.has_key('/foo/bar'))
+        self.assertTrue(d.has_key('/foo/bar/'))
 
     def test_pop_item(self):
         d = NamespaceDict({'/foo/bar': 'baz', '/foo/baz': 'bar'})
