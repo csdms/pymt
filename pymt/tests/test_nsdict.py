@@ -67,8 +67,8 @@ class TestNamespaceDict(unittest.TestCase):
     def test_normalize_names_with_trailing_sep(self):
         d = NamespaceDict({'/foo/bar/': 'baz'})
 
-        self.assertTrue(d.has_key('/foo/bar'))
-        self.assertTrue(d.has_key('/foo/bar/'))
+        self.assertTrue('/foo/bar' in d)
+        self.assertTrue('/foo/bar/' in d)
         self.assertSetEqual(set(['/foo/bar', '/foo', '/']), d.keys())
 
         self.assertEqual('baz', d['/foo/bar/'])
@@ -131,8 +131,8 @@ class TestNamespaceDict(unittest.TestCase):
     def test_has_key(self):
         d = NamespaceDict({'/foo/bar': 'baz'})
 
-        self.assertTrue(d.has_key('/foo/bar'))
-        self.assertTrue(d.has_key('/foo/bar/'))
+        self.assertTrue('/foo/bar' in d)
+        self.assertTrue('/foo/bar/' in d)
 
     def test_pop_item(self):
         d = NamespaceDict({'/foo/bar': 'baz', '/foo/baz': 'bar'})

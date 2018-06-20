@@ -30,8 +30,8 @@ class TestRasterField (unittest.TestCase):
 
         fields = g.get_point_fields ()
         self.assertEqual (len (fields), 2)
-        self.assertTrue (fields.has_key ('point_var_1'))
-        self.assertTrue (fields.has_key ('point_var_2'))
+        self.assertTrue ('point_var_1' in fields)
+        self.assertTrue ('point_var_2' in fields)
 
         self.assert_field_values (g, 'point_var_1', [0, 1, 2, 3, 4, 5])
         self.assert_field_values (g, 'point_var_2', [0, 2, 4, 6, 8, 10])
@@ -57,8 +57,8 @@ class TestRasterField (unittest.TestCase):
 
         fields = g.get_cell_fields ()
         self.assertEqual (len (fields), 2)
-        self.assertTrue (fields.has_key ('cell_var_1'))
-        self.assertTrue (fields.has_key ('cell_var_2'))
+        self.assertTrue ('cell_var_1' in fields)
+        self.assertTrue ('cell_var_2' in fields)
 
         self.assert_field_values (g, 'cell_var_1', [0, 1])
         self.assert_field_values (g, 'cell_var_2', [0, 2])
