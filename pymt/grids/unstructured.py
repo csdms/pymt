@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from sys import maxint as MAXINT
+from six import MAXSIZE
 
 from .igrid import IGrid
 from .utils import (get_default_coordinate_units, get_default_coordinate_names,
@@ -155,7 +155,7 @@ class UnstructuredPoints(IGrid):
         nodes_per_cell = np.diff(self._offset)
         return max(self._offset[0], nodes_per_cell.max())
 
-    def get_connectivity_as_matrix(self, fill_val=MAXINT):
+    def get_connectivity_as_matrix(self, fill_val=MAXSIZE):
         nodes_per_cell = np.diff(self._offset)
 
         max_vertices = max(self._offset[0], nodes_per_cell.max())
