@@ -35,7 +35,7 @@ class OrderedTaskStatus(object):
     >>> status = OrderedTaskStatus()
     >>> print(status)
     idling
-    >>> print(status).task
+    >>> print(status.task)
     create
 
     >>> status.start_task('create')
