@@ -17,7 +17,9 @@ def test_initialize():
         c = ConstantScalars()
         c.initialize('params.yml')
 
-    assert_list_equal(c.get_output_var_names(), ['foo', 'bar'])
+    names = c.get_output_var_names()
+    names.sort()
+    assert_list_equal(names, ['bar', 'foo'])
     assert_list_equal(c.get_input_var_names(), [])
 
     assert_array_almost_equal(c.get_value('foo'), np.array(2.))
