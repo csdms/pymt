@@ -13,31 +13,31 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> g = UniformRectilinear ((2,3), (1,2), (.5, 0), indexing='ij', units=('m', 'km'))
     >>> g.get_x()
-    [ 0. 2. 4. 0. 2. 4.]
+    array([ 0.,  2.,  4.,  0.,  2.,  4.])
     >>> g.get_y()
-    [ 0.5 0.5 0.5 1.5 1.5 1.5]
-    >>> ','.join([g.get_x_units(), g.get_y_units()])
-    km,m
+    array([ 0.5,  0.5,  0.5,  1.5,  1.5,  1.5])
+    >>> [g.get_x_units(), g.get_y_units()]
+    ['km', 'm']
     >>> g.get_z_units()
     Traceback (most recent call last):
             ...
     IndexError: Dimension out of bounds
-    >>> ','.join([g.get_coordinate_units(i) for i in [0, 1]])
-    m,km
+    >>> [g.get_coordinate_units(i) for i in [0, 1]]
+    ['m', 'km']
     >>> g.get_coordinate_units(2)
     Traceback (most recent call last):
             ...
     IndexError: Dimension out of bounds
     >>> g.get_shape()
-    [2 3]
+    array([2, 3])
     >>> g.get_spacing()
-    [ 1.  2.]
+    array([ 1.,  2.])
     >>> g.get_origin()
-    [ 0.5  0. ]
+    array([ 0.5,  0. ])
     >>> g.get_offset()
-    [4 8]
+    array([4, 8], dtype=int32)
     >>> g.get_connectivity()
-    [0 1 4 3 1 2 5 4]
+    array([0, 1, 4, 3, 1, 2, 5, 4], dtype=int32)
 
 Uniform rectilinear grid of points
 ----------------------------------
@@ -46,19 +46,19 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> g = UniformRectilinearPoints ((2,3), (1,2), (.5, 0), indexing='ij', set_connectivity=True)
     >>> g.get_x()
-    [ 0. 2. 4. 0. 2. 4.]
+    array([ 0.,  2.,  4.,  0.,  2.,  4.])
     >>> g.get_y()
-    [ 0.5 0.5 0.5 1.5 1.5 1.5]
+    array([ 0.5,  0.5,  0.5,  1.5,  1.5,  1.5])
     >>> g.get_shape()
-    [2 3]
+    array([2, 3])
     >>> g.get_spacing()
-    [ 1.  2.]
+    array([ 1.,  2.])
     >>> g.get_origin()
-    [ 0.5  0. ]
+    array([ 0.5,  0. ])
 
-    >>> g.get_point_count ()
+    >>> g.get_point_count()
     6
-    >>> g.get_cell_count ()
+    >>> g.get_cell_count()
     0
 
 The offset runs from 1 up to (and including) the number of points.
@@ -76,18 +76,21 @@ The connectivity runs from 0 to one less than the number of points.
 -----------------
     >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='ij', set_connectivity=True)
     >>> g.get_x()
-    [ 0.5 1.5 2.5 3.5 4.5]
+    array([ 0.5,  1.5,  2.5,  3.5,  4.5])
 
 3D-grid of cells
 ----------------
 
     >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='ij')
     >>> g.get_x()
-    [ 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4. 1. 4.]
+    array([ 1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,
+            4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.])
     >>> g.get_y()
-    [ 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4. 0. 0. 2. 2. 4. 4.]
+    array([ 0.,  0.,  2.,  2.,  4.,  4.,  0.,  0.,  2.,  2.,  4.,  4.,  0.,
+            0.,  2.,  2.,  4.,  4.,  0.,  0.,  2.,  2.,  4.,  4.])
     >>> g.get_z()
-    [-1. -1. -1. -1. -1. -1. 0. 0. 0. 0. 0. 0. 1. 1. 1. 1. 1. 1. 2. 2. 2. 2. 2. 2.]
+    array([-1., -1., -1., -1., -1., -1.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,
+            1.,  1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  2.,  2.])
 
 """
 

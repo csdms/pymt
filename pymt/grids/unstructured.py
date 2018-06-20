@@ -206,37 +206,17 @@ Create the grid,
     >>> g.get_dim_count()
     2
 
-    >>> x = g.get_x()
-    >>> type(x)
-    <type 'numpy.ndarray'>
-    >>> x.dtype
-    dtype('float64')
-    >>> x
-    [ 0. 2. 1. 3.]
+    >>> g.get_x()
+    array([ 0.,  2.,  1.,  3.])
 
-    >>> y = g.get_y()
-    >>> type(y)
-    <type 'numpy.ndarray'>
-    >>> y.dtype
-    dtype('float64')
-    >>> y
-    [ 0. 0. 1. 1.]
+    >>> g.get_y()
+    array([ 0.,  0.,  1.,  1.])
 
-    >>> c = g.get_connectivity()
-    >>> type(c)
-    <type 'numpy.ndarray'>
-    >>> c.dtype
-    dtype('int32')
-    >>> c
-    [0 2 1 2 3 1]
+    >>> g.get_connectivity()
+    array([0, 2, 1, 2, 3, 1], dtype=int32)
 
-    >>> o = g.get_offset()
-    >>> type(o)
-    <type 'numpy.ndarray'>
-    >>> o.dtype
-    dtype('int32')
-    >>> o
-    [3 6]
+    >>> g.get_offset()
+    array([3, 6], dtype=int32)
 
 
 Define a grid that consists of points in a line.
@@ -265,11 +245,11 @@ Eight point that form a unit cube.
     >>> g.get_cell_count()
     1
     >>> g.get_x()
-    [ 0. 1. 0. 1. 0. 1. 0. 1.]
+    array([ 0.,  1.,  0.,  1.,  0.,  1.,  0.,  1.])
     >>> g.get_y()
-    [ 0. 0. 1. 1. 0. 0. 1. 1.]
+    array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
     >>> g.get_z()
-    [ 0. 0. 0. 0. 1. 1. 1. 1.]
+    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
 
 
     """

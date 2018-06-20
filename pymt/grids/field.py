@@ -263,18 +263,19 @@ A 3D-Field,
     array([  0.,  10.,  20.,  30.,  40.,  50.])
 
     >>> g.get_field('Point Data')
-    [-0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5
-     -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5]
+    array([-0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,
+            2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5,
+           -0.5,  2.5])
 
     >>> g.get_shape()
-    [4 3 2]
+    array([4, 3, 2])
 
-    >>> g.get_x ().size == g.get_field ('Point Data').size
+    >>> g.get_x().size == g.get_field('Point Data').size
     True
-    >>> x = g.get_x ()
+    >>> x = g.get_x()
     >>> x.shape
     (24,)
-    >>> x.shape = g.get_shape ()
+    >>> x.shape = g.get_shape()
     >>> x.shape
     (4, 3, 2)
 
