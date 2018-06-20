@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy as np
 from pymt.grids import UniformRectilinearPoints
 
@@ -83,14 +85,14 @@ class EmptyPort(UniformRectilinearPoints):
         try:
             return self._values[var_name]
         except KeyError:
-            print self._values.keys()
+            print(self._values.keys())
             raise
 
     def set_value(self, var_name, values):
         try:
             self._values[var_name].flat = values.flat
         except KeyError:
-            print self._values.keys()
+            print(self._values.keys())
             raise
 
     @property

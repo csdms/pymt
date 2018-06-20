@@ -1,4 +1,7 @@
+from __future__ import print_function
+
 import numpy as np
+from six.moves import xrange
 
 from pymt.grids.connectivity import get_connectivity
 
@@ -337,9 +340,9 @@ class GridMixIn(object):
             self._set_coords(grid_id)
             return self._coords[grid_id][dim]
         except IndexError:
-            print self._port
-            print grid_id
-            print self._coords
+            print(self._port)
+            print(grid_id)
+            print(self._coords)
             raise
 
     def _set_connectivity(self, grid_id):
