@@ -1,3 +1,4 @@
+from six.moves import xrange
 from nose.tools import assert_equal
 
 from pymt.component.component import Component

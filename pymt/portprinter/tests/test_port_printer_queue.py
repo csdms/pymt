@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+from six.moves import xrange
 
 from nose.tools import assert_is_instance
 
