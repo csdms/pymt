@@ -262,8 +262,8 @@ class Timeline(object):
         --------
         >>> timeline = Timeline()
         >>> timeline.add_recurring_event('say hello', 1.)
-        >>> timeline.events
-        set(['say hello'])
+        >>> timeline.events == {'say hello'}
+        True
         """
         self._insert_event(event, self.time + interval, interval)
 
