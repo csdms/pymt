@@ -262,11 +262,11 @@ A 3D-Field,
     >>> g.get_field ('Cell Data')
     array([  0.,  10.,  20.,  30.,  40.,  50.])
 
-    >>> print g.get_field ('Point Data') #doctest: +NORMALIZE_WHITESPACE
+    >>> g.get_field('Point Data')
     [-0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5
      -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5]
 
-    >>> print g.get_shape ()
+    >>> g.get_shape()
     [4 3 2]
 
     >>> g.get_x ().size == g.get_field ('Point Data').size

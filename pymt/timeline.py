@@ -3,6 +3,8 @@
 
 Examples
 --------
+>>> from __future__ import print_function
+
 >>> timeline = Timeline()
 >>> timeline.add_recurring_event('event 1', 1.)
 >>> timeline.add_recurring_event('event 2', .3)
@@ -18,7 +20,7 @@ Examples
 >>> timeline.time
 1.0
 
->>> for event in timeline.iter_until(2.0): print event
+>>> for event in timeline.iter_until(2.0): print(event)
 event 2
 event 2
 event 2
@@ -30,7 +32,7 @@ event 1
 When events occur at the same time, events are popped in as first-in, first-out.
 
 >>> timeline = Timeline([('event 1', 1.), ('event 2', .5)])
->>> for event in timeline.iter_until(1.0): print event
+>>> for event in timeline.iter_until(1.0): print(event)
 event 2
 event 1
 event 2
@@ -42,17 +44,17 @@ event 2
 >>> timeline.time
 1.05
 
->>> for event in timeline.iter_until(1.05): print event
+>>> for event in timeline.iter_until(1.05): print(event)
 >>> timeline.time
 1.05
->>> for event in timeline.iter_until(1.06): print event
+>>> for event in timeline.iter_until(1.06): print(event)
 >>> timeline.time
 1.06
 
 The event key can be any object, even a `tuple`.
 
 >>> timeline = Timeline([(('event', 2), .5), (('event', 0), 1.)])
->>> for event in timeline.iter_until(1.05): print event
+>>> for event in timeline.iter_until(1.05): print(event)
 ('event', 2)
 ('event', 0)
 ('event', 2)
@@ -61,7 +63,7 @@ Events do not have to be recurring.
 
 >>> timeline = Timeline([(('event', 2), .5), (('event', 0), 1.)])
 >>> timeline.add_one_time_event('one-timer', .1)
->>> for event in timeline.iter_until(1.05): print event
+>>> for event in timeline.iter_until(1.05): print(event)
 one-timer
 ('event', 2)
 ('event', 0)

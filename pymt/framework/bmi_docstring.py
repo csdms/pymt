@@ -88,8 +88,9 @@ def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
 
     Examples
     --------
+    >>> from __future__ import print_function
     >>> from pymt.framework.bmi_docstring import bmi_docstring
-    >>> print bmi_docstring('Model', author='Walt Disney') #doctest: +ELLIPSIS
+    >>> print(bmi_docstring('Model', author='Walt Disney')) #doctest: +ELLIPSIS
     Basic Model Interface for Model.
     ...
     """

@@ -2,16 +2,16 @@
 
 """
 
->>> print get_connectivity ((6, ))
+>>> get_connectivity((6, ))
 [0 1 1 2 2 3 3 4 4 5]
 
->>> print get_connectivity ((6, ), ordering='ccw')
+>>> get_connectivity((6, ), ordering='ccw')
 [1 0 2 1 3 2 4 3 5 4]
 
->>> print get_connectivity ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
+>>> get_connectivity((3, 4))
 [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
->>> print get_connectivity ((3, 4), ordering='ccw') #doctest: +NORMALIZE_WHITESPACE
+>>> get_connectivity ((3, 4), ordering='ccw')
 [ 1 0 4 5 2 1 5 6 3 2 6 7 5 4 8 9 6 5 9 10 7 6 10 11]
 
 >>> shape = np.array ([3, 4, 4])
@@ -24,15 +24,15 @@ True
 >>> np.all (np.diff (o)==8)
 True
 
->>> print c[:o[0]]
+>>> c[:o[0]]
 [ 0  1  5  4 16 17 21 20]
->>> print c[o[-2]:o[-1]]
+>>> c[o[-2]:o[-1]]
 [26 27 31 30 42 43 47 46]
 
 >>> ids = get_connectivity ((3, 4, 4), ordering='ccw')
->>> print ids[:8]
+>>> ids[:8]
 [ 1  0  4  5 17 16 20 21]
->>> print ids[-8:]
+>>> ids[-8:]
 [27 26 30 31 43 42 46 47]
 
 """
@@ -48,13 +48,13 @@ def _get_interior_ids (shape, dtype='int64'):
     3D grid this is the upper-left corner of the closest face of each
     cube.
 
-    >>> print _get_interior_ids ((6, ))
+    >>> _get_interior_ids((6, ))
     [0 1 2 3 4]
-    >>> print _get_interior_ids ((3, 4))
+    >>> _get_interior_ids((3, 4))
     [0 1 2 4 5 6]
-    >>> print _get_interior_ids ((2, 3, 4))
+    >>> _get_interior_ids((2, 3, 4))
     [0 1 2 4 5 6]
-    >>> print _get_interior_ids ((3, 3, 4))
+    >>> _get_interior_ids((3, 3, 4))
     [ 0  1  2  4  5  6 12 13 14 16 17 18]
     """
     i = np.arange (np.prod (shape), dtype=dtype)
@@ -67,18 +67,18 @@ def _get_interior_ids (shape, dtype='int64'):
 
 def _get_offsets (shape, ordering='cw', dtype='int64'):
     """
-    >>> print _get_offsets ((16, ))
+    >>> _get_offsets((16, ))
     [0 1]
-    >>> print _get_offsets ((3, 4))
+    >>> _get_offsets((3, 4))
     [0 1 5 4]
-    >>> print _get_offsets ((3, 4, 4))
+    >>> _get_offsets((3, 4, 4))
     [ 0  1  5  4 16 17 21 20]
 
-    >>> print _get_offsets ((16, ), ordering='ccw')
+    >>> _get_offsets((16, ), ordering='ccw')
     [1 0]
-    >>> print _get_offsets ((3, 4), ordering='ccw')
+    >>> _get_offsets((3, 4), ordering='ccw')
     [1 0 4 5]
-    >>> print _get_offsets ((3, 4, 4), ordering='ccw')
+    >>> _get_offsets((3, 4, 4), ordering='ccw')
     [ 1  0  4  5 17 16 20 21]
     """
 
@@ -135,11 +135,11 @@ A 1D grid with three points has 2 elements.
     >>> ids = get_connectivity ((3, ))
     >>> len (ids)
     4
-    >>> print ids
+    >>> ids
     [0 1 1 2]
 
     >>> ids = get_connectivity ((3, ), ordering='ccw')
-    >>> print ids
+    >>> ids
     [1 0 2 1]
 
 
@@ -156,18 +156,20 @@ A 2D grid with 3 rows and 4 columns of nodes.
       |         |         |         |
     ( 8 ) --- ( 9 ) --- ( 10) --- ( 11)
 
-    >>> print get_connectivity ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
+    >>> get_connectivity((3, 4))
     [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
-    >>> print get_connectivity ((3, 4), ordering='ccw') #doctest: +NORMALIZE_WHITESPACE
+    >>> get_connectivity((3, 4), ordering='ccw')
     [ 1 0 4 5 2 1 5 6 3 2 6 7 5 4 8 9 6 5 9 10 7 6 10 11]
 
 If ordering doesn't matter, set ordering to 'none' as this could be slightly faster.
 
-    >>> (ids, offsets) = get_connectivity ((3, 4), ordering='none', with_offsets=True)
+    >>> (ids, offsets) = get_connectivity((3, 4), ordering='none', with_offsets=True)
+    >>> offsets
+
     >>> for offset in offsets:
     ...     o = ids[offset-4:offset]
-    ...     o.sort ()
+    ...     o.sort()
     ...     print o
     [0 1 4 5]
     [1 2 5 6]
@@ -183,6 +185,8 @@ a list of connectivity arrays for each cell.
     >>> ids = get_connectivity (shape, ordering='cw', as_cell_list=True)
     >>> len (ids) == (shape-1).prod ()
     True
+    >>> ids
+
     >>> for id in ids: print id
     [0 1 5 4]
     [1 2 6 5]
@@ -227,7 +231,7 @@ def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
     """
     This is a little slower than the above and less general.
 
-    >>> print get_connectivity_2d ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
+    >>> get_connectivity_2d((3, 4))
     [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
 
     """

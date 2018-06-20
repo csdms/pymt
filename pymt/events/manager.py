@@ -17,13 +17,14 @@ Examples
 --------
 Create an event that prints, "hello".
 
+>>> from __future__ import print_function
 >>> class PrintHello(object):
 ...     def initialize(self):
-...         print "hello from initialize"
+...         print("hello from initialize")
 ...     def run(self, time):
-...         print "hello!"
+...         print("hello!")
 ...     def finalize(self):
-...         print "hello from finalize"
+...         print("hello from finalize")
 
 Add an instance of the event to be run at a regular interval to the manager.
 

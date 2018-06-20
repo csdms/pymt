@@ -1,22 +1,24 @@
 #! /usr/bin/env python
 """
+>>> from __future__ import print_function
+
 >>> status = OrderedTaskStatus()
 >>> status.start_task('create')
->>> print status
+>>> print(status)
 creating
 >>> status.complete_task()
->>> print status
+>>> print(status)
 created
 
 >>> status.start_task('initialize')
->>> print status
+>>> print(status)
 initializing
 >>> status.start_task('initialize')
->>> print status
+>>> print(status)
 initializing
 
 >>> status.complete_task()
->>> print status
+>>> print(status)
 initialized
 
 """
@@ -31,16 +33,16 @@ class OrderedTaskStatus(object):
     """OrderedTaskStatus([task, [status]])
 
     >>> status = OrderedTaskStatus()
-    >>> print status
+    >>> print(status)
     idling
-    >>> print status.task
+    >>> print(status).task
     create
 
     >>> status.start_task('create')
-    >>> print status
+    >>> print(status)
     creating
     >>> status.complete_task()
-    >>> print status
+    >>> print(status)
     created
     """
     def __init__(self, current=0, status='idling'):

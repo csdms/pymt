@@ -211,7 +211,7 @@ Create the grid,
     <type 'numpy.ndarray'>
     >>> x.dtype
     dtype('float64')
-    >>> print x #doctest:+NORMALIZE_WHITESPACE
+    >>> x
     [ 0. 2. 1. 3.]
 
     >>> y = g.get_y()
@@ -219,7 +219,7 @@ Create the grid,
     <type 'numpy.ndarray'>
     >>> y.dtype
     dtype('float64')
-    >>> print y #doctest:+NORMALIZE_WHITESPACE
+    >>> y
     [ 0. 0. 1. 1.]
 
     >>> c = g.get_connectivity()
@@ -227,7 +227,7 @@ Create the grid,
     <type 'numpy.ndarray'>
     >>> c.dtype
     dtype('int32')
-    >>> print c
+    >>> c
     [0 2 1 2 3 1]
 
     >>> o = g.get_offset()
@@ -235,7 +235,7 @@ Create the grid,
     <type 'numpy.ndarray'>
     >>> o.dtype
     dtype('int32')
-    >>> print o
+    >>> o
     [3 6]
 
 
@@ -264,11 +264,11 @@ Eight point that form a unit cube.
     8
     >>> g.get_cell_count()
     1
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
+    >>> g.get_x()
     [ 0. 1. 0. 1. 0. 1. 0. 1.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
+    >>> g.get_y()
     [ 0. 0. 1. 1. 0. 0. 1. 1.]
-    >>> print g.get_z() #doctest:+NORMALIZE_WHITESPACE
+    >>> g.get_z()
     [ 0. 0. 0. 0. 1. 1. 1. 1.]
 
 
