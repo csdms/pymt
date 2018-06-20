@@ -1,8 +1,8 @@
 #! /bin/env python
-
 import sys
 
 import numpy as np
+from six.moves import xrange
 import xml.dom.minidom
 
 from .encoders import encode
