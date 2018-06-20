@@ -2,6 +2,7 @@
 
 import numpy as np
 from scipy.spatial import KDTree
+from six.moves import zip
 
 from .imapper import IGridMapper, IncompatibleGridError
 #from .mapper import IncompatibleGridError
@@ -29,8 +30,8 @@ class CellToPoint(IGridMapper):
         dst_x = dest_grid.get_x()
         dst_y = dest_grid.get_y()
 
-        tree = KDTree(zip(src_grid.get_x(), src_grid.get_y()))
-        (_, self._nearest_src_id) = tree.query(zip(dst_x, dst_y))
+        tree = KDTree(list(zip(src_grid.get_x(), src_grid.get_y())))
+        (_, self._nearest_src_id) = tree.query(list(zip(dst_x, dst_y)))
 
         self._map = map_points_to_cells((dst_x, dst_y), src_grid,
                                         self._nearest_src_id, bad_val=-1)

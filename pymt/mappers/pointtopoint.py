@@ -93,7 +93,7 @@ class NearestVal(IGridMapper):
             (x, y) = (src_grid.get_x(src_name).flat,
                       src_grid.get_y(src_name).flat)
 
-        tree = KDTree(zip(x, y))
+        tree = KDTree(list(zip(x, y)))
 
         if len(var_names) == 0:
             (x, y) = dest_grid.get_x().flat, dest_grid.get_y().flat
@@ -102,7 +102,7 @@ class NearestVal(IGridMapper):
             (x, y) = (dest_grid.get_x(dst_name).flat,
                       dest_grid.get_y(dst_name).flat)
 
-        (_, self._nearest_src_id) = tree.query(zip(x, y))
+        (_, self._nearest_src_id) = tree.query(list(zip(x, y)))
 
     def run(self, src_values, dest_values=None):
         """Map source values onto destination values.
