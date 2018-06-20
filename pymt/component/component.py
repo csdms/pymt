@@ -56,6 +56,7 @@ import types
 import warnings
 
 import yaml
+import six
 
 from ..events.manager import EventManager
 from ..events.port import PortEvent, PortMapEvent
@@ -134,7 +135,7 @@ class Component(GridMixIn):
         if provides is None:
             provides = set()
 
-        if isinstance(port, types.StringTypes):
+        if isinstance(port, six.string_types):
             if name is None:
                 name = port
             self._port = services.instantiate_component(port, name)

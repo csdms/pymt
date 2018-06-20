@@ -23,6 +23,7 @@ initialized
 
 import types
 
+import six
 from pymt.task_status import TaskStatus
 
 
@@ -51,7 +52,7 @@ class OrderedTaskStatus(object):
             TaskStatus('finalize', started='finalizing', completed='finalized'),
         ]
 
-        if isinstance(current, types.StringTypes):
+        if isinstance(current, six.string_types):
             self._current = self.tasks.index(current)
         else:
             self._current = current

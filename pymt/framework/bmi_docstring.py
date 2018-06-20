@@ -125,9 +125,9 @@ def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
     cite_as = cite_as or info['cite_as']
     parameters = parameters or defaults
 
-    if isinstance(author, types.StringTypes):
+    if isinstance(author, six.string_types):
         author = [author]
-    if isinstance(cite_as, types.StringTypes):
+    if isinstance(cite_as, six.string_types):
         cite_as = [cite_as]
 
     env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))

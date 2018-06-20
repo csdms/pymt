@@ -2,6 +2,7 @@
 import types
 
 import numpy as np
+import six
 
 from .igrid import (IField, DimensionError, CenteringValueError,
                     CENTERING_CHOICES)
@@ -17,7 +18,7 @@ def combine_args_to_list (*args, **kwds):
     args = list (args)
     combined_args = []
     for arg in args:
-        if isinstance (arg, types.StringTypes):
+        if isinstance (arg, six.string_types):
             combined_args.append (arg)
         else:
             combined_args.extend (arg)
@@ -48,7 +49,7 @@ class GridField (Unstructured, IField):
             raise DimensionError (val.size, self.get_point_count ())
 
         self._field_times = {}
-        if not self._fields.has_key (field_name) or exist_action == 'clobber':
+        if field_name not in self._fields or exist_action == 'clobber':
             self._fields[field_name] = [val]
             self._field_times[field_name] = [time]
         else:
@@ -113,7 +114,7 @@ class GridField (Unstructured, IField):
     def values (self):
         return self._fields.values ()
     def has_field (self, name):
-        return self._fields.has_key (name)
+        return name in self._fields
 
 
 class UnstructuredField (GridField):
