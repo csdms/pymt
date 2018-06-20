@@ -3,12 +3,13 @@ os:
 - linux
 - osx
 env:
-  global:
-  - CONDA_PREFIX=$HOME/miniconda
-  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
+  matrix:
   - TRAVIS_PYTHON_VERSION="2.7"
   - TRAVIS_PYTHON_VERSION="3.5"
   - TRAVIS_PYTHON_VERSION="3.6"
+  global:
+  - CONDA_PREFIX=$HOME/miniconda
+  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
   - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 sudo: false
 before_install:
