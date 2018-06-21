@@ -186,13 +186,13 @@ as the point grid. In either case, though, it will be flattened.
 If the size or shape doesn't match, it's an error.
 
     >>> data = np.arange (2)
-    >>> g.add_field ('bad var', data, centering='point')
+    >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: 2 != 6
 
     >>> data = np.ones ((3, 2))
-    >>> g.add_field ('bad var', data, centering='point')
+    >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: (3, 2) != (2, 3)
@@ -202,24 +202,24 @@ as a 1D array or with the same shape as the cell grid and if the
 size or shape doesn't match raise an exception.
 
     >>> data = np.arange (2)
-    >>> g.add_field ('var1', data, centering='zonal')
-    >>> g.get_field ('var1')
+    >>> g.add_field('var1', data, centering='zonal')
+    >>> g.get_field('var1')
     array([0, 1])
 
-    >>> data = np.ones ((2, 1))
-    >>> g.add_field ('bad var', data, centering='zonal')
+    >>> data = np.ones((2, 1))
+    >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: (2, 1) != (1, 2)
 
-    >>> data = np.arange (3)
-    >>> g.add_field ('bad var', data, centering='zonal')
+    >>> data = np.arange(3)
+    >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: 3 != 2
 
-    >>> data = np.array (3)
-    >>> g.add_field ('bad var', data, centering='zonal')
+    >>> data = np.array(3)
+    >>> g.add_field('bad var', data, centering='zonal')  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: 1 != 2
