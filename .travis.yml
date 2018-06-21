@@ -40,13 +40,11 @@ script:
 - conda install --file=requirements.txt -c csdms-stack -c conda-forge
 - pytest
 # - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
-after_success:
-- |
-  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-    conda install -q coverage coveralls
-    coveralls --verbose
-  fi
-- curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
-  > $HOME/anaconda_upload.py
-- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms
-  --token=-
+# after_success:
+# - |
+#   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+#     conda install -q coverage coveralls
+#     coveralls --verbose
+#   fi
+# - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
+# - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms --token=-
