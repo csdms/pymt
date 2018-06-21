@@ -25,7 +25,6 @@ setup(name='PyMT',
       author='Eric Hutton',
       author_email='huttone@colorado.edu',
       url='http://csdms.colorado.edu',
-      install_requires=read_requirements(),
       setup_requires=['setuptools', ],
       packages=find_packages(),
       entry_points={
