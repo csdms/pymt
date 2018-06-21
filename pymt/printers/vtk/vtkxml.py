@@ -144,7 +144,7 @@ class VtkAppendedDataElement (VtkElement):
         VtkElement.__init__ (self, 'AppendedData', **kwargs)
         self.appendChild (VtkTextElement ('_'+data))
     def addData (self, data):
-        self.firstChild.appendData (data)
+        self.firstChild.appendData(str(data))
 
     def offset (self):
         return self.firstChild.length-1
