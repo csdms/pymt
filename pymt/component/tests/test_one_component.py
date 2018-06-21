@@ -6,7 +6,7 @@ from pymt.testing.assertions import assert_isfile_and_remove
 from pymt.framework.services import del_component_instances
 
 
-def test_no_events():
+def test_no_events(setup):
     del_component_instances(['AirPort'])
 
     comp = Component('AirPort', uses=[], provides=[], events=[])
@@ -14,7 +14,7 @@ def test_no_events():
     assert_equal(comp._port.current_time, 100.)
 
 
-def test_from_string():
+def test_from_string(setup):
     del_component_instances(['air_port'])
 
     contents = """
@@ -26,7 +26,7 @@ class: AirPort
     assert_equal(comp._port.current_time, 100.)
 
 
-def test_print_events():
+def test_print_events(setup):
     del_component_instances(['earth_port'])
 
     contents = """
@@ -53,7 +53,7 @@ print:
         assert_isfile_and_remove('earth_surface__density_%04d.vtu' % i)
 
 
-def test_rerun():
+def test_rerun(setup):
     del_component_instances(['AirPort'])
 
     comp = Component('AirPort', uses=[], provides=[], events=[])
@@ -64,7 +64,7 @@ def test_rerun():
     assert_equal(comp._port.current_time, 100.)
 
 
-def test_rerun_with_print():
+def test_rerun_with_print(setup):
     del_component_instances(['earth_port'])
 
     contents = """

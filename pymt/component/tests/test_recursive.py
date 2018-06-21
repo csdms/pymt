@@ -6,7 +6,7 @@ from pymt.testing.assertions import assert_isfile_and_remove
 from pymt.framework.services import del_component_instances
 
 
-def test_no_events():
+def test_no_events(setup):
     del_component_instances(['air_port', 'earth_port'])
 
     air = Component('AirPort', name='air_port', uses=[], provides=[], events=[])
@@ -20,7 +20,7 @@ def test_no_events():
     assert_equal(earth._port.current_time, 100.)
 
 
-def test_print_events():
+def test_print_events(setup):
     air_init_string = """
 name: air_port
 class: AirPort
