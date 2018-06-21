@@ -37,6 +37,7 @@ install:
 script:
 - conda build ./conda-recipe --no-test --old-build-string -c csdms-stack -c conda-forge
 - conda install pymt nose coverage pytest --use-local -c csdms-stack -c conda-forge
+- conda install --file=requirements.txt -c csdms-stack -c conda-forge
 - pytest
 # - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
 after_success:
