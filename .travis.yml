@@ -36,8 +36,9 @@ install:
 - conda install -q conda-build anaconda-client sphinx
 script:
 - conda build ./conda-recipe --no-test --old-build-string -c csdms-stack -c conda-forge
-- conda install pymt nose coverage --use-local -c csdms-stack -c conda-forge
-- nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
+- conda install pymt nose coverage pytest --use-local -c csdms-stack -c conda-forge
+- pytest
+# - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
 after_success:
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
