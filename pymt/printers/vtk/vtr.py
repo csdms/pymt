@@ -1,8 +1,8 @@
 #! /bin/env python
-from vtktypes import VtkRectilinear
-from vtkxml import (VtkAppendedDataElement, VtkExtent, VtkRootElement,
-                    VtkGridElement, VtkPieceElement, VtkCoordinatesElement,
-                    VtkPointDataElement, VtkCellDataElement)
+from .vtktypes import VtkRectilinear
+from .vtkxml import (VtkAppendedDataElement, VtkExtent, VtkRootElement,
+                     VtkGridElement, VtkPieceElement, VtkCoordinatesElement,
+                     VtkPointDataElement, VtkCellDataElement)
 
 
 def get_elements(field, data_format='ascii', encoding='ascii'):
