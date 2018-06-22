@@ -35,7 +35,7 @@ def get_exchange_item_mapping(items):
             item_map = (item, item)
         else:
             try:
-                item_map = (item['destination'], item['source'])
+                item_map = (item["destination"], item["source"])
             except TypeError:
                 item_map = item
         if len(item_map) != 2:
@@ -72,7 +72,7 @@ class Model(object):
         if driver in self.components:
             self._driver = driver
         else:
-            raise ValueError('%s not a component of the model' % driver)
+            raise ValueError("%s not a component of the model" % driver)
 
     @property
     def duration(self):
@@ -90,9 +90,9 @@ class Model(object):
         """Start the model.
         """
         if filename:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 model = yaml.load(f.read())
-            self._driver, self._duration = (model['driver'], model['duration'])
+            self._driver, self._duration = (model["driver"], model["duration"])
 
         self._components[self.driver].go(self.duration)
 
@@ -139,13 +139,15 @@ class Model(object):
         1.0
         """
         components, connectivities = Model.load_components(
-            source, with_connectivities=True)
+            source, with_connectivities=True
+        )
 
         for (name, component) in components.items():
             for port in connectivities[name]:
-                mapping = get_exchange_item_mapping(port['exchange_items'])
-                component.connect(port['name'], components[port['connect']],
-                                  vars_to_map=mapping)
+                mapping = get_exchange_item_mapping(port["exchange_items"])
+                component.connect(
+                    port["name"], components[port["connect"]], vars_to_map=mapping
+                )
 
         return cls(components)
 
@@ -163,7 +165,7 @@ class Model(object):
         model : Model
             A newly-created model.
         """
-        with open(filename, 'r') as fp:
+        with open(filename, "r") as fp:
             return cls.load(fp)
 
     @classmethod
@@ -235,14 +237,13 @@ class Model(object):
         prefix = os.getcwd()
         for section in yaml.load_all(source):
             try:
-                section['run_dir'] = os.path.join(prefix,
-                                                  section.get('run_dir', '.'))
+                section["run_dir"] = os.path.join(prefix, section.get("run_dir", "."))
             except AttributeError:
                 raise ValueError(section)
 
-            components[section['name']] = Component.from_dict(section)
+            components[section["name"]] = Component.from_dict(section)
             if with_connectivities:
-                connectivities[section['name']] = section['connectivity']
+                connectivities[section["name"]] = section["connectivity"]
 
         if with_connectivities:
             return components, connectivities

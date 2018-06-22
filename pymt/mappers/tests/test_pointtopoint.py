@@ -1,8 +1,14 @@
 #! /usr/bin/env python
 import numpy as np
 from numpy.testing import assert_array_almost_equal
-from nose.tools import (assert_equal, assert_is, assert_true, assert_false,
-                        assert_is_instance, assert_raises)
+from nose.tools import (
+    assert_equal,
+    assert_is,
+    assert_true,
+    assert_false,
+    assert_is_instance,
+    assert_raises,
+)
 
 from pymt.grids.map import RectilinearMap as Rectilinear
 from pymt.mappers import find_mapper, NearestVal
@@ -12,7 +18,7 @@ def test_all_good():
     src = Rectilinear([0, 1, 2], [0, 2])
     dst = Rectilinear([.5, 1.5, 2.5], [.25, 1.25])
 
-    src_vals = np.arange(src.get_point_count ())
+    src_vals = np.arange(src.get_point_count())
 
     mapper = NearestVal()
     mapper.initialize(dst, src)
@@ -81,7 +87,7 @@ def test_find_mapper():
 
     mappers = find_mapper(dst, src)
     assert_equal(len(mappers), 3)
-    assert_equal(mappers[0].name(), 'PointToPoint')
+    assert_equal(mappers[0].name(), "PointToPoint")
     assert_is_instance(mappers[0], NearestVal)
 
 

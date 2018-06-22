@@ -27,19 +27,22 @@ class PortEvent(GridMixIn):
     run_dir : str, optional
         Path to directory to execute port.
     """
-    def __init__(self, *args, **kwds):
-        if isinstance(kwds['port'], six.string_types):
-            self._port = services.get_component_instance(kwds['port'])
-        else:
-            self._port = kwds['port']
 
-        self._init_args = kwds.get('init_args', [])
-        self._run_dir = kwds.get('run_dir', '.')
+    def __init__(self, *args, **kwds):
+        if isinstance(kwds["port"], six.string_types):
+            self._port = services.get_component_instance(kwds["port"])
+        else:
+            self._port = kwds["port"]
+
+        self._init_args = kwds.get("init_args", [])
+        self._run_dir = kwds.get("run_dir", ".")
 
         if isinstance(self._init_args, six.string_types):
             self._init_args = [self._init_args]
 
-        self._status_fp = open(os.path.abspath(os.path.join(self._run_dir, '_time.txt')), 'w')
+        self._status_fp = open(
+            os.path.abspath(os.path.join(self._run_dir, "_time.txt")), "w"
+        )
 
         GridMixIn.__init__(self)
 
@@ -50,11 +53,7 @@ class PortEvent(GridMixIn):
         the initialize method as arguments.
         """
         with open_run_dir(self._run_dir):
-            status = {
-                'name': self.name,
-                'time': 0.,
-                'status': 'initializing',
-            }
+            status = {"name": self.name, "time": 0., "status": "initializing"}
             self._status_fp.write(yaml.dump(status))
             try:
                 self._port.initialize(*self._init_args)
@@ -72,11 +71,7 @@ class PortEvent(GridMixIn):
             Time to run the event to.
         """
         with open_run_dir(self._run_dir):
-            status = {
-                'name': self.name,
-                'time': time,
-                'status': 'running',
-            }
+            status = {"name": self.name, "time": time, "status": "running"}
             print(yaml.dump(status), file=self._status_fp)
             self._status_fp.flush()
             sys.stdout.flush()
@@ -98,18 +93,10 @@ class PortEvent(GridMixIn):
         Run the `finalize` method of the underlying port.
         """
         with open_run_dir(self._run_dir):
-            status = {
-                'name': self.name,
-                'time': None,
-                'status': 'finishing',
-            }
+            status = {"name": self.name, "time": None, "status": "finishing"}
             self._status_fp.write(yaml.dump(status))
             self._port.finalize()
-        status = {
-            'name': self.name,
-            'time': None,
-            'status': 'finished',
-        }
+        status = {"name": self.name, "time": None, "status": "finished"}
         self._status_fp.write(yaml.dump(status))
         self._status_fp.close()
 
@@ -128,24 +115,25 @@ class PortMapEvent(object):
     method : {'direct', 'nearest'}, optional
         Method used to map values.
     """
-    def __init__(self, *args, **kwds):
-        if isinstance(kwds['src_port'], six.string_types):
-            self._src = services.get_component_instance(kwds['src_port'])
-        else:
-            self._src = kwds['src_port']
-        if isinstance(kwds['dst_port'], six.string_types):
-            self._dst = services.get_component_instance(kwds['dst_port'])
-        else:
-            self._dst = kwds['dst_port']
-        self._vars_to_map = kwds.get('vars_to_map', [])
-        self._method = kwds.get('method', 'direct')
 
-        if self._method == 'direct':
+    def __init__(self, *args, **kwds):
+        if isinstance(kwds["src_port"], six.string_types):
+            self._src = services.get_component_instance(kwds["src_port"])
+        else:
+            self._src = kwds["src_port"]
+        if isinstance(kwds["dst_port"], six.string_types):
+            self._dst = services.get_component_instance(kwds["dst_port"])
+        else:
+            self._dst = kwds["dst_port"]
+        self._vars_to_map = kwds.get("vars_to_map", [])
+        self._method = kwds.get("method", "direct")
+
+        if self._method == "direct":
             self._mapper = None
-        elif self._method == 'nearest':
+        elif self._method == "nearest":
             self._mapper = NearestVal()
         else:
-            raise ValueError('method %s not understood' % self._method)
+            raise ValueError("method %s not understood" % self._method)
 
     def initialize(self):
         """Initialize the data mappers."""
@@ -155,7 +143,9 @@ class PortMapEvent(object):
     def run(self, stop_time):
         """Map values from one port to another."""
         for (dst_name, src_name) in self._vars_to_map:
-            src_values = self._src.get_value(src_name, units=self._dst.get_var_units(dst_name))
+            src_values = self._src.get_value(
+                src_name, units=self._dst.get_var_units(dst_name)
+            )
 
             if self._mapper is None:
                 dst_values = src_values

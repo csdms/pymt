@@ -220,17 +220,22 @@ True
 
 import numpy as np
 
-from pymt.grids import (UniformRectilinear, Rectilinear, Structured,
-                        Unstructured)
-from pymt.grids.igrid import (IGrid, IField, DimensionError,
-                              CenteringValueError, CENTERING_CHOICES)
+from pymt.grids import UniformRectilinear, Rectilinear, Structured, Unstructured
+from pymt.grids.igrid import (
+    IGrid,
+    IField,
+    DimensionError,
+    CenteringValueError,
+    CENTERING_CHOICES,
+)
 
 try:
     import ESMF
 # except (ImportError, ValueError):
 except Exception:
     import warnings
-    warnings.warn('unable to import ESMF', ImportWarning)
+
+    warnings.warn("unable to import ESMF", ImportWarning)
     _WITH_ESMF = False
 else:
     _WITH_ESMF = True
@@ -250,10 +255,10 @@ class EsmpGrid(IGrid):
         super(EsmpGrid, self).__init__()
 
     def get_point_count(self):
-        raise NotImplementedError('get_point_count')
+        raise NotImplementedError("get_point_count")
 
     def get_cell_count(self):
-        raise NotImplementedError('get_cell_count')
+        raise NotImplementedError("get_cell_count")
 
     def as_mesh(self):
         return self._mesh
@@ -267,34 +272,32 @@ class EsmpGrid(IGrid):
 
         node_owner = np.zeros(self.get_point_count(), dtype=np.int32)
 
-        self._mesh.add_nodes(self.get_point_count(), node_ids, node_coords,
-                             node_owner)
+        self._mesh.add_nodes(self.get_point_count(), node_ids, node_coords, node_owner)
 
     def _mesh_add_elements(self):
         cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=np.int32)
         cell_types = np.empty(self.get_cell_count(), dtype=np.int32)
         cell_types.fill(ESMF.MeshElemType.QUAD)
 
-        cell_conn = np.array(self.get_connectivity(), dtype=np.int32)# + 1
+        cell_conn = np.array(self.get_connectivity(), dtype=np.int32)  # + 1
 
-        self._mesh.add_elements(self.get_cell_count(), cell_ids, cell_types,
-                                cell_conn)
+        self._mesh.add_elements(self.get_cell_count(), cell_ids, cell_types, cell_conn)
 
 
 class EsmpUnstructured(Unstructured, EsmpGrid):
-    name = 'ESMPUnstructured'
+    name = "ESMPUnstructured"
 
 
 class EsmpStructured(Structured, EsmpGrid):
-    name = 'ESMPStructured'
+    name = "ESMPStructured"
 
 
 class EsmpRectilinear(Rectilinear, EsmpGrid):
-    name = 'ESMPRectilinear'
+    name = "ESMPRectilinear"
 
 
 class EsmpUniformRectilinear(UniformRectilinear, EsmpStructured):
-    name = 'ESMPUniformRectilinear'
+    name = "ESMPUniformRectilinear"
 
 
 class EsmpField(IField):
@@ -303,21 +306,21 @@ class EsmpField(IField):
         self._fields = {}
 
     def get_point_count(self):
-        raise NotImplementedError('get_point_count')
+        raise NotImplementedError("get_point_count")
 
     def get_cell_count(self):
-        raise NotImplementedError('get_cell_count')
+        raise NotImplementedError("get_cell_count")
 
-    def add_field(self, field_name, val, centering='zonal'):
+    def add_field(self, field_name, val, centering="zonal"):
         if centering not in CENTERING_CHOICES:
             raise CenteringValueError(centering)
 
-        if centering == 'zonal' and val.size != self.get_cell_count():
+        if centering == "zonal" and val.size != self.get_cell_count():
             raise DimensionError(val.size, self.get_cell_count())
-        elif centering != 'zonal' and val.size != self.get_point_count():
+        elif centering != "zonal" and val.size != self.get_point_count():
             raise DimensionError(val.size, self.get_point_count())
 
-        if centering == 'zonal':
+        if centering == "zonal":
             meshloc = ESMF.MeshLoc.ELEMENT
         else:
             meshloc = ESMF.MeshLoc.NODE
@@ -334,16 +337,17 @@ class EsmpField(IField):
 
 
 class EsmpStructuredField(EsmpStructured, EsmpField):
-    def add_field(self, field_name, val, centering='zonal'):
-        if centering == 'zonal':
+    def add_field(self, field_name, val, centering="zonal"):
+        if centering == "zonal":
             if val.ndim > 1 and np.any(val.shape != self.get_shape() - 1):
                 raise DimensionError(val.shape, self.get_shape() - 1)
-        elif centering != 'zonal':
+        elif centering != "zonal":
             if val.ndim > 1 and np.any(val.shape != self.get_shape()):
                 raise DimensionError(val.shape, self.get_shape())
         try:
-            super(EsmpStructuredField, self).add_field(field_name, val,
-                                                       centering=centering)
+            super(EsmpStructuredField, self).add_field(
+                field_name, val, centering=centering
+            )
         except (DimensionError, CenteringValueError):
             raise
 
@@ -370,12 +374,13 @@ def run_regridding(srcfield, dstfield, **kwds):
                    is desired from 'srcfield' to 'dstfield'.
     POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
     """
-    method = kwds.get('method', ESMF.RegridMethod.CONSERVE)
-    unmapped = kwds.get('unmapped', ESMF.UnmappedAction.ERROR)
+    method = kwds.get("method", ESMF.RegridMethod.CONSERVE)
+    unmapped = kwds.get("unmapped", ESMF.UnmappedAction.ERROR)
 
     # call the regridding functions
-    regridder = ESMF.Regrid(srcfield, dstfield, regrid_method=method,
-                            unmapped_action=unmapped)
+    regridder = ESMF.Regrid(
+        srcfield, dstfield, regrid_method=method, unmapped_action=unmapped
+    )
     dstfield = regridder(srcfield, dstfield)
 
     return dstfield

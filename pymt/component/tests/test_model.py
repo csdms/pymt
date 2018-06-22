@@ -19,33 +19,34 @@ time_step: 1.0
 connectivity: []
 """
 
+
 def test_model_load(setup):
-    del_component_instances(['air_port'])
+    del_component_instances(["air_port"])
     with cd_temp() as _:
-        os.mkdir('air')
+        os.mkdir("air")
         model = Model.load(AIR_PORT_CONTENTS)
 
-        assert_equal(model.components, ['air_port'])
+        assert_equal(model.components, ["air_port"])
 
 
 def test_model_from_file(setup):
-    del_component_instances(['air_port'])
+    del_component_instances(["air_port"])
     with cd_temp() as _:
-        os.mkdir('air')
-        with open('components.yml', 'w') as fp:
+        os.mkdir("air")
+        with open("components.yml", "w") as fp:
             fp.write(AIR_PORT_CONTENTS)
-        model = Model.from_file('components.yml')
+        model = Model.from_file("components.yml")
 
-        assert_equal(model.components, ['air_port'])
+        assert_equal(model.components, ["air_port"])
 
 
 def test_model_from_file_like(setup):
-    del_component_instances(['air_port'])
+    del_component_instances(["air_port"])
     with cd_temp() as _:
-        os.mkdir('air')
-        with open('components.yml', 'w') as fp:
+        os.mkdir("air")
+        with open("components.yml", "w") as fp:
             fp.write(AIR_PORT_CONTENTS)
-        with open('components.yml', 'r') as fp:
+        with open("components.yml", "r") as fp:
             model = Model.from_file_like(fp)
 
-        assert_equal(model.components, ['air_port'])
+        assert_equal(model.components, ["air_port"])

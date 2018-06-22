@@ -4,150 +4,164 @@ import types
 import numpy as np
 import six
 
-from .igrid import (IField, DimensionError, CenteringValueError,
-                    CENTERING_CHOICES)
+from .igrid import IField, DimensionError, CenteringValueError, CENTERING_CHOICES
 from .raster import UniformRectilinear
 from .rectilinear import Rectilinear
 from .structured import Structured
 from .unstructured import Unstructured
 
 
-def combine_args_to_list (*args, **kwds):
-    if len (args) == 0:
-        args = kwds.get ('default', [])
-    args = list (args)
+def combine_args_to_list(*args, **kwds):
+    if len(args) == 0:
+        args = kwds.get("default", [])
+    args = list(args)
     combined_args = []
     for arg in args:
-        if isinstance (arg, six.string_types):
-            combined_args.append (arg)
+        if isinstance(arg, six.string_types):
+            combined_args.append(arg)
         else:
-            combined_args.extend (arg)
+            combined_args.extend(arg)
     return combined_args
 
 
-class GridField (Unstructured, IField):
-    def __init__ (self, *args, **kwargs):
-        super (GridField, self).__init__ (*args, **kwargs) 
+class GridField(Unstructured, IField):
+    def __init__(self, *args, **kwargs):
+        super(GridField, self).__init__(*args, **kwargs)
         self._fields = {}
         self._field_units = {}
 
-    def add_field (self, field_name, val, centering='zonal', units='-',
-                   exist_action='clobber', time=None):
-        assert (exist_action in ['clobber', 'append'])
+    def add_field(
+        self,
+        field_name,
+        val,
+        centering="zonal",
+        units="-",
+        exist_action="clobber",
+        time=None,
+    ):
+        assert exist_action in ["clobber", "append"]
 
         try:
             val.shape = val.size
         except AttributeError:
-            val = np.array (val)
+            val = np.array(val)
 
         if centering not in CENTERING_CHOICES:
-            raise CenteringValueError (centering)
+            raise CenteringValueError(centering)
 
-        if centering=='zonal' and val.size != self.get_cell_count ():
-            raise DimensionError (val.size, self.get_cell_count ())
-        elif centering!='zonal' and val.size != self.get_point_count ():
-            raise DimensionError (val.size, self.get_point_count ())
+        if centering == "zonal" and val.size != self.get_cell_count():
+            raise DimensionError(val.size, self.get_cell_count())
+        elif centering != "zonal" and val.size != self.get_point_count():
+            raise DimensionError(val.size, self.get_point_count())
 
         self._field_times = {}
-        if field_name not in self._fields or exist_action == 'clobber':
+        if field_name not in self._fields or exist_action == "clobber":
             self._fields[field_name] = [val]
             self._field_times[field_name] = [time]
         else:
-            self._fields[field_name].append (val)
-            self._field_times[field_name].append (time)
+            self._fields[field_name].append(val)
+            self._field_times[field_name].append(time)
         self._field_units[field_name] = units
 
-        #self._fields[field_name].shape = val.size
+        # self._fields[field_name].shape = val.size
 
-    def pop_field (self, field_name, *args, **kwds):
-        return_with_time = kwds.get ('return_with_time', False)
+    def pop_field(self, field_name, *args, **kwds):
+        return_with_time = kwds.get("return_with_time", False)
 
-        field = self._fields[field_name].pop (*args)
+        field = self._fields[field_name].pop(*args)
         if return_with_time:
-            time =  self._field_times[field_name].pop (*args)
+            time = self._field_times[field_name].pop(*args)
             return (time, field)
         else:
             return field
 
-    def get_field (self, field_name):
-        if len (self._fields[field_name]) == 1:
+    def get_field(self, field_name):
+        if len(self._fields[field_name]) == 1:
             return self._fields[field_name][0]
         else:
             return self._fields[field_name]
 
-    def get_field_units (self, field_name):
+    def get_field_units(self, field_name):
         return self._field_units[field_name]
-    def set_field_units (self, field_name, units):
+
+    def set_field_units(self, field_name, units):
         try:
             self._field_units[field_name] = units
         except KeyError:
             pass
-    def get_point_fields (self, *args):
-        names = combine_args_to_list (*args, default=self._fields.keys ())
+
+    def get_point_fields(self, *args):
+        names = combine_args_to_list(*args, default=self._fields.keys())
 
         fields = {}
         for name in names:
-            array = self.get_field (name)
-            if array.size == self.get_point_count ():
+            array = self.get_field(name)
+            if array.size == self.get_point_count():
                 fields[name] = array
         return fields
 
-        #fields = {}
-        #for (field, array) in self._fields.items ():
+        # fields = {}
+        # for (field, array) in self._fields.items ():
         #    if array.size == self.get_point_count ():
         #        fields[field] = array
-        #return fields
-    def get_cell_fields (self, *args):
-        names = combine_args_to_list (*args, default=self._fields.keys ())
+        # return fields
+
+    def get_cell_fields(self, *args):
+        names = combine_args_to_list(*args, default=self._fields.keys())
 
         fields = {}
         for name in names:
-            array = self.get_field (name)
-            if array.size == self.get_cell_count ():
+            array = self.get_field(name)
+            if array.size == self.get_cell_count():
                 fields[name] = array
         return fields
 
-    def items (self):
-        return self._fields.items ()
-    def keys (self):
-        return self._fields.keys ()
-    def values (self):
-        return self._fields.values ()
-    def has_field (self, name):
+    def items(self):
+        return self._fields.items()
+
+    def keys(self):
+        return self._fields.keys()
+
+    def values(self):
+        return self._fields.values()
+
+    def has_field(self, name):
         return name in self._fields
 
 
-class UnstructuredField (GridField):
+class UnstructuredField(GridField):
     pass
 
 
-class StructuredField (Structured, GridField):
-    def add_field (self, field_name, val, centering='zonal', units='-'):
-        if not hasattr(val, 'ndim'):
+class StructuredField(Structured, GridField):
+    def add_field(self, field_name, val, centering="zonal", units="-"):
+        if not hasattr(val, "ndim"):
             val = np.array(val)
-        #try:
+        # try:
         #    ndim = val.ndim
-        #except AttributeError:
+        # except AttributeError:
         #    val = np.array (val)
         #    ndim = val.ndim
 
-        if centering=='zonal':
-            if val.ndim > 1 and np.any (val.shape != self.get_shape ()-1):
-                raise DimensionError (val.shape, self.get_shape ()-1)
-        elif centering!='zonal':
-            if val.ndim > 1 and np.any (val.shape != self.get_shape ()):
-                raise DimensionError (val.shape, self.get_shape ())
+        if centering == "zonal":
+            if val.ndim > 1 and np.any(val.shape != self.get_shape() - 1):
+                raise DimensionError(val.shape, self.get_shape() - 1)
+        elif centering != "zonal":
+            if val.ndim > 1 and np.any(val.shape != self.get_shape()):
+                raise DimensionError(val.shape, self.get_shape())
         try:
-            super (StructuredField, self).add_field (field_name, val, centering=centering, units=units)
+            super(StructuredField, self).add_field(
+                field_name, val, centering=centering, units=units
+            )
         except (DimensionError, CenteringValueError):
             raise
 
 
-class RectilinearField (Rectilinear, StructuredField):
+class RectilinearField(Rectilinear, StructuredField):
     pass
 
 
-class RasterField (UniformRectilinear, StructuredField):
+class RasterField(UniformRectilinear, StructuredField):
     """
 Create a field that looks like this,
 
@@ -280,10 +294,11 @@ A 3D-Field,
     (4, 3, 2)
 
     """
+
     pass
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
 
-
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

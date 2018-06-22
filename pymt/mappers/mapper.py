@@ -170,5 +170,5 @@ def find_mapper(dst_grid, src_grid):
 
     if len(choices) == 0:
         raise IncompatibleGridError()
-    
+
     return choices

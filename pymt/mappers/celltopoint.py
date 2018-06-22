@@ -5,7 +5,8 @@ from scipy.spatial import KDTree
 from six.moves import zip
 
 from .imapper import IGridMapper, IncompatibleGridError
-#from .mapper import IncompatibleGridError
+
+# from .mapper import IncompatibleGridError
 
 
 def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
@@ -25,24 +26,25 @@ def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
 class CellToPoint(IGridMapper):
     def initialize(self, dest_grid, src_grid):
         if not self.test(dest_grid, src_grid):
-            raise IncompatibleGridError(dest_grid.name,
-                                        src_grid.name)
+            raise IncompatibleGridError(dest_grid.name, src_grid.name)
         dst_x = dest_grid.get_x()
         dst_y = dest_grid.get_y()
 
         tree = KDTree(list(zip(src_grid.get_x(), src_grid.get_y())))
         (_, self._nearest_src_id) = tree.query(list(zip(dst_x, dst_y)))
 
-        self._map = map_points_to_cells((dst_x, dst_y), src_grid,
-                                        self._nearest_src_id, bad_val=-1)
+        self._map = map_points_to_cells(
+            (dst_x, dst_y), src_grid, self._nearest_src_id, bad_val=-1
+        )
         self._bad = self._map == -1
 
     def run(self, src_values, dst_vals=None, bad_val=-999.):
         if dst_vals is None:
             dst_vals = np.zeros(len(self._map)) + bad_val
 
-        rtn = np.choose(src_values.take(self._map) < bad_val,
-                        (src_values.take(self._map), dst_vals))
+        rtn = np.choose(
+            src_values.take(self._map) < bad_val, (src_values.take(self._map), dst_vals)
+        )
         rtn[self._bad] = bad_val
         dst_vals[:] = rtn
 
@@ -52,4 +54,4 @@ class CellToPoint(IGridMapper):
         return all(np.diff(src_grid.get_offset()) > 2)
 
     def name(self):
-        return 'CellToPoint'
+        return "CellToPoint"

@@ -7,7 +7,7 @@ def prefix_is_empty(prefix):
 
     Return ``True`` if empty, otherwise ``False``.
     """
-    return prefix is None or prefix == '.' or len(prefix) == 0
+    return prefix is None or prefix == "." or len(prefix) == 0
 
 
 def names_with_prefix(names, prefix):
@@ -25,8 +25,8 @@ def names_with_prefix(names, prefix):
     if prefix_is_empty(prefix):
         return set(names)
 
-    if not prefix.endswith('.'):
-        prefix = prefix + '.'
+    if not prefix.endswith("."):
+        prefix = prefix + "."
 
     matching_names = OrderedDict()
     for name in names:
@@ -47,10 +47,10 @@ def strip_prefix(name, prefix):
     if prefix_is_empty(prefix):
         return name
 
-    if not prefix.endswith('.'):
-        prefix += '.'
+    if not prefix.endswith("."):
+        prefix += "."
 
     if name.startswith(prefix):
-        return name[len(prefix):]
+        return name[len(prefix) :]
     else:
-        raise ValueError('%s does not start with %s' % (name, prefix))
+        raise ValueError("%s does not start with %s" % (name, prefix))

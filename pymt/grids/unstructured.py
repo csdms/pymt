@@ -5,8 +5,12 @@ import numpy as np
 from six import MAXSIZE
 
 from .igrid import IGrid
-from .utils import (get_default_coordinate_units, get_default_coordinate_names,
-                    coordinates_to_numpy_matrix, args_as_numpy_arrays)
+from .utils import (
+    get_default_coordinate_units,
+    get_default_coordinate_names,
+    coordinates_to_numpy_matrix,
+    args_as_numpy_arrays,
+)
 
 
 class UnstructuredPoints(IGrid):
@@ -14,14 +18,15 @@ class UnstructuredPoints(IGrid):
         """
         UnstructuredPoints(x0 [, x1 [, x2]])
         """
-        set_connectivity = kwds.pop('set_connectivity', False)
-        units = kwds.pop('units', get_default_coordinate_units(len(args)))
-        coordinate_names = kwds.pop('coordinate_names',
-                                    get_default_coordinate_names(len(args)))
-        self._attrs = kwds.pop('attrs', {})
+        set_connectivity = kwds.pop("set_connectivity", False)
+        units = kwds.pop("units", get_default_coordinate_units(len(args)))
+        coordinate_names = kwds.pop(
+            "coordinate_names", get_default_coordinate_names(len(args))
+        )
+        self._attrs = kwds.pop("attrs", {})
 
-        assert(len(args) <= 3)
-        assert(len(args) >= 1)
+        assert len(args) <= 3
+        assert len(args) >= 1
 
         args = args_as_numpy_arrays(*args)
 
@@ -49,27 +54,27 @@ class UnstructuredPoints(IGrid):
         try:
             return self._coords[-1]
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_y(self):
         try:
             return self._coords[-2]
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_z(self):
         try:
             return self._coords[-3]
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_xyz(self):
         return self._coords
 
     def get_point_coordinates(self, *args, **kwds):
-        axis = kwds.pop('axis', None)
+        axis = kwds.pop("axis", None)
 
-        assert(len(args) < 2)
+        assert len(args) < 2
 
         if len(args) == 0:
             inds = np.arange(self.get_point_count())
@@ -82,13 +87,13 @@ class UnstructuredPoints(IGrid):
 
         return tuple(self._coords[axis, inds])
 
-    def get_axis_coordinates(self, axis=None, indexing='ij'):
-        assert(indexing == 'ij')
+    def get_axis_coordinates(self, axis=None, indexing="ij"):
+        assert indexing == "ij"
 
         if axis is None:
             return self._coords
         else:
-            assert(axis < self.get_dim_count())
+            assert axis < self.get_dim_count()
             return self._coords[axis]
 
     def get_x_units(self):
@@ -104,37 +109,37 @@ class UnstructuredPoints(IGrid):
         try:
             self._units[-1] = units
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def set_y_units(self, units):
         try:
             self._units[-2] = units
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def set_z_units(self, units):
         try:
             self._units[-3] = units
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_coordinate_units(self, i):
         try:
             return self._units[i]
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_coordinate_name(self, i):
         try:
             return self._coordinate_name[i]
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_coordinate(self, i):
         try:
             return self._coords[i]
         except IndexError:
-            raise IndexError('Dimension out of bounds')
+            raise IndexError("Dimension out of bounds")
 
     def get_connectivity(self):
         return self._connectivity
@@ -166,7 +171,9 @@ class UnstructuredPoints(IGrid):
         matrix[0, offset:] = fill_val
         for (cell, offset) in enumerate(self._offset[:-1]):
             n_vertices = nodes_per_cell[cell]
-            matrix[cell + 1, :n_vertices] = self._connectivity[offset: offset + n_vertices ]
+            matrix[cell + 1, :n_vertices] = self._connectivity[
+                offset : offset + n_vertices
+            ]
             matrix[cell + 1, n_vertices:] = fill_val
 
         return (matrix, fill_val)
@@ -253,10 +260,11 @@ Eight point that form a unit cube.
 
 
     """
+
     def __init__(self, *args, **kwds):
-        set_connectivity = kwds.pop('set_connectivity', True)
-        connectivity = kwds.pop('connectivity', None)
-        offset = kwds.pop('offset', None)
+        set_connectivity = kwds.pop("set_connectivity", True)
+        connectivity = kwds.pop("connectivity", None)
+        offset = kwds.pop("offset", None)
 
         if set_connectivity:
             if offset is None:
@@ -265,17 +273,18 @@ Eight point that form a unit cube.
                 connectivity, args = args[-1], args[:-1]
             self._set_connectivity(connectivity, offset)
 
-        kwds['set_connectivity'] = False
+        kwds["set_connectivity"] = False
         super(Unstructured, self).__init__(*args, **kwds)
 
     def _set_connectivity(self, connectivity, offset):
-        self._connectivity  = np.array(connectivity, dtype=np.int32)
-        self._offset  = np.array(offset, dtype=np.int32)
+        self._connectivity = np.array(connectivity, dtype=np.int32)
+        self._offset = np.array(offset, dtype=np.int32)
         self._connectivity.shape = self._connectivity.size
         self._offset.shape = self._offset.size
         self._cell_count = self._offset.size
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

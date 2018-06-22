@@ -12,20 +12,20 @@ def ravel_jaggedarray(array):
     raveled_array = np.empty(values_per_row.sum(), dtype=array.dtype)
     offset = 0
     for row, n_values in zip(array, values_per_row):
-        raveled_array[offset:offset + n_values] = row[row >= 0]
+        raveled_array[offset : offset + n_values] = row[row >= 0]
         offset += n_values
 
     return raveled_array, values_per_row
 
 
 def bmi_as_esmf_mesh(bmi_grid):
-    xy_at_node = np.vstack((bmi_grid.node_x.values,
-                            bmi_grid.node_y.values)).T.copy()
+    xy_at_node = np.vstack((bmi_grid.node_x.values, bmi_grid.node_y.values)).T.copy()
 
-    if 'face_node_connectivity' in bmi_grid:
+    if "face_node_connectivity" in bmi_grid:
         nodes_at_patch = bmi_grid.face_node_connectivity.values
         nodes_per_patch = np.diff(
-            np.concatenate(([0], bmi_grid.face_node_offset.values)))
+            np.concatenate(([0], bmi_grid.face_node_offset.values))
+        )
     else:
         nodes_at_patch = None
         nodes_per_patch = None
@@ -69,20 +69,18 @@ def as_esmf_mesh(xy_of_node, nodes_at_patch=None, nodes_per_patch=None):
 
             mesh.add_elements(n_faces, face_ids, face_types, face_conn)
         else:
-            warnings.warn(
-                'mesh contains non-triangular or quadrilateral elements')
+            warnings.warn("mesh contains non-triangular or quadrilateral elements")
 
     return mesh
 
 
-def as_esmf_field(mesh, field_name, data=None, at='node'):
-    if at == 'node':
+def as_esmf_field(mesh, field_name, data=None, at="node"):
+    if at == "node":
         meshloc = ESMF.MeshLoc.NODE
-    elif at == 'cell':
+    elif at == "cell":
         meshloc = ESMF.MeshLoc.ELEMENT
     else:
-        raise ValueError(
-            "'at' location not understood (must be 'cell' or 'node')")
+        raise ValueError("'at' location not understood (must be 'cell' or 'node')")
 
     field = ESMF.Field(mesh, field_name, meshloc=meshloc)
     if data is not None:
@@ -91,7 +89,7 @@ def as_esmf_field(mesh, field_name, data=None, at='node'):
     return field
 
 
-def graph_as_esmf(graph, field_name, data=None, at='node'):
+def graph_as_esmf(graph, field_name, data=None, at="node"):
     mesh = as_esmf_mesh(graph.xy_of_node, graph.nodes_at_patch)
     field = as_esmf_field(mesh, field_name, data=data, at=at)
 
@@ -99,17 +97,17 @@ def graph_as_esmf(graph, field_name, data=None, at='node'):
 
 
 REGRID_METHODS = {
-    'bilinear': ESMF.RegridMethod.BILINEAR,
-    'nearest': ESMF.RegridMethod.NEAREST_STOD,
-    'conserve': ESMF.RegridMethod.CONSERVE,
+    "bilinear": ESMF.RegridMethod.BILINEAR,
+    "nearest": ESMF.RegridMethod.NEAREST_STOD,
+    "conserve": ESMF.RegridMethod.CONSERVE,
 }
 UNMAPPED_ACTIONS = {
-    'pass': ESMF.UnmappedAction.IGNORE,
-    'raise': ESMF.UnmappedAction.ERROR,
+    "pass": ESMF.UnmappedAction.IGNORE,
+    "raise": ESMF.UnmappedAction.ERROR,
 }
 
 
-def run_regridding(srcfield, dstfield, method='nearest', unmapped='pass'):
+def run_regridding(srcfield, dstfield, method="nearest", unmapped="pass"):
     """
     run_regridding(source_field, destination_field,
                    method=ESMP_REGRIDMETHOD_CONSERVE,
@@ -128,25 +126,28 @@ def run_regridding(srcfield, dstfield, method='nearest', unmapped='pass'):
     try:
         method = REGRID_METHODS[method]
     except KeyError:
-        raise ValueError('regrid method not understood')
+        raise ValueError("regrid method not understood")
     try:
         unmapped = UNMAPPED_ACTIONS[unmapped]
     except KeyError:
-        raise ValueError('unmapped action not understood')
+        raise ValueError("unmapped action not understood")
 
     # call the regridding functions
     masked_values = np.array([-9999.])
-    regridder = ESMF.Regrid(srcfield, dstfield, regrid_method=method,
-                            unmapped_action=unmapped,
-                            src_mask_values=masked_values,
-                            dst_mask_values=masked_values)
+    regridder = ESMF.Regrid(
+        srcfield,
+        dstfield,
+        regrid_method=method,
+        unmapped_action=unmapped,
+        src_mask_values=masked_values,
+        dst_mask_values=masked_values,
+    )
     dstfield = regridder(srcfield, dstfield)
 
     return dstfield
 
 
 class GridMapperMixIn(object):
-
     def esmf_mesh(self, gid):
         try:
             self._esmf_mesh
@@ -157,25 +158,24 @@ class GridMapperMixIn(object):
             self._esmf_mesh[gid]
         except KeyError:
             self._esmf_mesh[gid] = bmi_as_esmf_mesh(self.grid[gid])
-        
+
         return self._esmf_mesh[gid]
 
-    def esmf_field(self, gid, name=None, at='node'):
-        name = name or 'generic'
+    def esmf_field(self, gid, name=None, at="node"):
+        name = name or "generic"
 
         try:
             self._esmf_field
         except AttributeError:
             self._esmf_field = dict()
 
-        _id = '{gid}.{name}@{at}'.format(gid=gid, name=name, at=at)
+        _id = "{gid}.{name}@{at}".format(gid=gid, name=name, at=at)
 
         try:
             self._esmf_field[_id]
         except KeyError:
-            self._esmf_field[_id] = as_esmf_field(self.esmf_mesh(gid),
-                                                  name, at=at)
-        
+            self._esmf_field[_id] = as_esmf_field(self.esmf_mesh(gid), name, at=at)
+
         return self._esmf_field[_id]
 
     def regrid(self, name, **kwds):
@@ -196,13 +196,13 @@ class GridMapperMixIn(object):
         ndarray
             The regridded values.
         """
-        dst = kwds.pop('to', self)
-        dst_name = kwds.pop('to_name', name)
+        dst = kwds.pop("to", self)
+        dst_name = kwds.pop("to_name", name)
 
         data = self.get_value(name, **kwds)
 
-        src_field = self.esmf_field(self.var[name].grid, at='node')
-        dst_field = dst.esmf_field(dst.var[dst_name].grid, at='node')
+        src_field = self.esmf_field(self.var[name].grid, at="node")
+        dst_field = dst.esmf_field(dst.var[dst_name].grid, at="node")
 
         np.copyto(src_field.data, data.reshape(src_field.data.shape))
 
@@ -218,8 +218,8 @@ class GridMapperMixIn(object):
         name : str
             Name of values to push.
         """
-        destination = kwds.pop('destination', self)
-        at = kwds.pop('at', name)
+        destination = kwds.pop("destination", self)
+        at = kwds.pop("at", name)
         data = self.regrid(name, to=destination, to_name=at, **kwds)
         dst.set_value(at, data)
 
@@ -236,8 +236,8 @@ class GridMapperMixIn(object):
         if len(args) == 1:
             return super(GridMapperMixIn, self).set_value(name, *args)
 
-        mapfrom = kwds.pop('mapfrom', self)
-        nomap = kwds.pop('nomap', None)
+        mapfrom = kwds.pop("mapfrom", self)
+        nomap = kwds.pop("nomap", None)
         try:
             value, source = mapfrom
         except TypeError:
@@ -268,8 +268,8 @@ class GridMapperMixIn(object):
         nomap : narray of bool, optional
             Values in the destination grid to not map.
         """
-        mapfrom = kwds.pop('mapfrom', self)
-        nomap = kwds.pop('nomap', None)
+        mapfrom = kwds.pop("mapfrom", self)
+        nomap = kwds.pop("nomap", None)
         try:
             value, source = mapfrom
         except TypeError:

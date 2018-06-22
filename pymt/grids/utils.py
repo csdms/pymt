@@ -1,27 +1,26 @@
 import numpy as np
 
 
-from pymt.grids.assertions import (is_rectilinear, is_structured,
-                                   is_unstructured)
+from pymt.grids.assertions import is_rectilinear, is_structured, is_unstructured
 
 
 def get_default_coordinate_units(n_dims):
     if n_dims <= 0 or n_dims > 3:
-        raise ValueError('dimension must be between one and three')
-    return ['-'] * n_dims
+        raise ValueError("dimension must be between one and three")
+    return ["-"] * n_dims
 
 
 def get_default_coordinate_names(n_dims):
     if n_dims <= 0 or n_dims > 3:
-        raise ValueError('dimension must be between one and three')
-    return ['z', 'y', 'x'][- n_dims:]
+        raise ValueError("dimension must be between one and three")
+    return ["z", "y", "x"][-n_dims:]
 
 
 def assert_arrays_are_equal_size(*args):
     first_size = args[0].size
     for arg in args[1:]:
         if arg.size != first_size:
-            raise AssertionError('arrays are not the same length')
+            raise AssertionError("arrays are not the same length")
 
 
 def args_as_numpy_arrays(*args):
@@ -31,7 +30,7 @@ def args_as_numpy_arrays(*args):
             np_array = arg.view()
         else:
             np_array = np.array(arg)
-        np_array.shape = (np_array.size, )
+        np_array.shape = (np_array.size,)
         np_arrays.append(np_array)
     return tuple(np_arrays)
 
@@ -52,13 +51,13 @@ def non_singleton_axes(grid):
     except AttributeError:
         return np.arange(grid.get_dim_count())
     else:
-        (indices, ) = np.where(shape > 1)
+        (indices,) = np.where(shape > 1)
         return indices
 
 
 def non_singleton_shape(grid):
     shape = grid.get_shape()
-    (indices, ) = np.where(shape > 1)
+    (indices,) = np.where(shape > 1)
     return shape[indices]
 
 
@@ -70,10 +69,10 @@ def non_singleton_coordinate_names(grid):
 def non_singleton_dimension_names(grid):
     if is_structured(grid, strict=False):
         coordinate_names = non_singleton_coordinate_names(grid)
-        #return np.array(['n' + name for name in coordinate_names])
+        # return np.array(['n' + name for name in coordinate_names])
         return coordinate_names
     else:
-        return np.array(['n_node'])
+        return np.array(["n_node"])
 
 
 def non_singleton_dimension_shape(grid):
@@ -84,7 +83,7 @@ def non_singleton_dimension_shape(grid):
         shape = non_singleton_dimension_names(grid)
         return np.tile(shape, (len(shape), 1))
     elif is_unstructured(grid, strict=True):
-        shape = np.array(['n_node'])
+        shape = np.array(["n_node"])
         return np.tile(shape, (grid.get_dim_count(), 1))
 
 
@@ -102,13 +101,13 @@ def connectivity_matrix_as_array(face_nodes, bad_val):
         if nnodes > 0:
             nodes_per_face[face_id] = _find_first(face, bad_val)
         else:
-            raise ValueError('face contains no nodes')
+            raise ValueError("face contains no nodes")
     offsets = np.cumsum(nodes_per_face)
 
     connectivity = np.empty(offsets[-1], dtype=int)
     offset = 0
     for (n_nodes, face) in zip(nodes_per_face, face_nodes):
-        connectivity[offset: offset + n_nodes] = face[:n_nodes]
+        connectivity[offset : offset + n_nodes] = face[:n_nodes]
         offset += n_nodes
 
     return (connectivity, offsets)

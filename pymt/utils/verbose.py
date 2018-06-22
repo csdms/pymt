@@ -6,15 +6,15 @@ import logging
 
 from six import MAXSIZE
 
-_LEVEL_STRING = {'DEBUG': 10, 'INFO': 20, 'WARNING': 30, 'ERROR': 40}
-_CMT_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+_LEVEL_STRING = {"DEBUG": 10, "INFO": 20, "WARNING": 30, "ERROR": 40}
+_CMT_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
 
 def log_level_string_to_int(level):
-    if level.upper() in ['TRUE', 'YES', 'ON', 'ENABLED']:
+    if level.upper() in ["TRUE", "YES", "ON", "ENABLED"]:
         verbosity = MAXSIZE
-    elif level.upper() in ['FALSE', 'NO', 'OFF', 'DISABLED']:
-        verbosity = 0 
+    elif level.upper() in ["FALSE", "NO", "OFF", "DISABLED"]:
+        verbosity = 0
     else:
         try:
             verbosity = _LEVEL_STRING[level]
@@ -26,7 +26,7 @@ def log_level_string_to_int(level):
 
 def get_log_level_from_environ(level):
     try:
-        level = int(os.environ['CMT_VERBOSE'])
+        level = int(os.environ["CMT_VERBOSE"])
     except KeyError:
         pass
     except ValueError:
@@ -53,11 +53,11 @@ class CmtLogger(logging.Logger):
 
 
 class Verbose(object):
-    def __init__ (self, verbosity=0, log=sys.stderr):
+    def __init__(self, verbosity=0, log=sys.stderr):
         self._verbosity = verbosity
         self._log = log
 
-    def __call__ (self, verbosity, msg):
+    def __call__(self, verbosity, msg):
         if verbosity <= self._verbosity:
             print(self._construct_msg(verbosity, msg), file=self._log)
 
@@ -65,7 +65,7 @@ class Verbose(object):
         if verbosity == 0:
             return msg
         else:
-            return '*' * verbosity + ' ' + msg
+            return "*" * verbosity + " " + msg
 
 
 class CmtVerbose(Verbose):
@@ -99,13 +99,14 @@ class CmtVerbose(Verbose):
     >>> verbose (0, 'No message')
     #CMT No message
     """
+
     def __init__(self, verbosity=1, log=sys.stderr):
-        if 'CMT_VERBOSE' in os.environ:
-            level = os.environ['CMT_VERBOSE']
-            if level.upper() in ['TRUE', 'YES', 'ON', 'ENABLED']:
+        if "CMT_VERBOSE" in os.environ:
+            level = os.environ["CMT_VERBOSE"]
+            if level.upper() in ["TRUE", "YES", "ON", "ENABLED"]:
                 verbosity = MAXSIZE
-            elif level.upper() in ['FALSE', 'NO', 'OFF', 'DISABLED']:
-                verbosity = 0 
+            elif level.upper() in ["FALSE", "NO", "OFF", "DISABLED"]:
+                verbosity = 0
             else:
                 try:
                     verbosity = int(level)
@@ -115,4 +116,4 @@ class CmtVerbose(Verbose):
         Verbose.__init__(self, verbosity, log)
 
     def _construct_msg(self, verbosity, msg):
-        return '#CMT ' + msg.strip ()
+        return "#CMT " + msg.strip()

@@ -7,15 +7,15 @@ from pymt.framework.services import del_component_instances
 
 
 def test_no_events(setup):
-    del_component_instances(['AirPort'])
+    del_component_instances(["AirPort"])
 
-    comp = Component('AirPort', uses=[], provides=[], events=[])
+    comp = Component("AirPort", uses=[], provides=[], events=[])
     comp.go()
     assert_equal(comp._port.current_time, 100.)
 
 
 def test_from_string(setup):
-    del_component_instances(['air_port'])
+    del_component_instances(["air_port"])
 
     contents = """
 name: air_port
@@ -27,7 +27,7 @@ class: AirPort
 
 
 def test_print_events(setup):
-    del_component_instances(['earth_port'])
+    del_component_instances(["earth_port"])
 
     contents = """
 name: earth_port
@@ -47,16 +47,16 @@ print:
     comp.go()
 
     assert_equal(comp._port.current_time, 100.)
-    assert_isfile_and_remove('earth_surface__temperature.nc')
-    assert_isfile_and_remove('glacier_top_surface__slope.nc')
+    assert_isfile_and_remove("earth_surface__temperature.nc")
+    assert_isfile_and_remove("glacier_top_surface__slope.nc")
     for i in xrange(5):
-        assert_isfile_and_remove('earth_surface__density_%04d.vtu' % i)
+        assert_isfile_and_remove("earth_surface__density_%04d.vtu" % i)
 
 
 def test_rerun(setup):
-    del_component_instances(['AirPort'])
+    del_component_instances(["AirPort"])
 
-    comp = Component('AirPort', uses=[], provides=[], events=[])
+    comp = Component("AirPort", uses=[], provides=[], events=[])
     comp.go()
     assert_equal(comp._port.current_time, 100.)
 
@@ -65,7 +65,7 @@ def test_rerun(setup):
 
 
 def test_rerun_with_print(setup):
-    del_component_instances(['earth_port'])
+    del_component_instances(["earth_port"])
 
     contents = """
 name: earth_port
@@ -81,13 +81,13 @@ print:
 
     assert_equal(comp._port.current_time, 100.)
     for i in xrange(5):
-        assert_isfile_and_remove('earth_surface__temperature_%04d.vtu' % i)
+        assert_isfile_and_remove("earth_surface__temperature_%04d.vtu" % i)
 
-    del_component_instances(['earth_port'])
+    del_component_instances(["earth_port"])
 
     comp = Component.from_string(contents)
     comp.go()
 
     assert_equal(comp._port.current_time, 100.)
     for i in xrange(5):
-        assert_isfile_and_remove('earth_surface__temperature_%04d.vtu' % i)
+        assert_isfile_and_remove("earth_surface__temperature_%04d.vtu" % i)

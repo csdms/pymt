@@ -7,12 +7,11 @@ class UniformRectilinearGridPort(object):
         self._spacing = (1., 2.)
         self._origin = (0., 1.)
         self._values = {
-            'landscape_surface__elevation': np.ones(self._shape),
-            'sea_surface__temperature': np.zeros(self._shape),
-            'sea_floor_surface_sediment__mean_of_grain_size':
-                np.zeros(self._shape),
-            'air__density': np.zeros(self._shape),
-            'glacier_top_surface__slope': np.zeros(self._shape),
+            "landscape_surface__elevation": np.ones(self._shape),
+            "sea_surface__temperature": np.zeros(self._shape),
+            "sea_floor_surface_sediment__mean_of_grain_size": np.zeros(self._shape),
+            "air__density": np.zeros(self._shape),
+            "glacier_top_surface__slope": np.zeros(self._shape),
         }
 
     def get_var_grid(self, var_name):

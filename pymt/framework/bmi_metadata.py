@@ -62,10 +62,10 @@ def bmi_data_dir(name):
         The absolute path to the data directory for the component.
     """
     try:
-        datarootdir = query_config_var('datarootdir')
+        datarootdir = query_config_var("datarootdir")
     except BabelConfigError:
-        datarootdir = os.path.join(sys.prefix, 'share')
-    return os.path.join(datarootdir, 'csdms', name)
+        datarootdir = os.path.join(sys.prefix, "share")
+    return os.path.join(datarootdir, "csdms", name)
 
 
 def find_model_metadata(plugin):
@@ -90,18 +90,18 @@ def find_model_metadata(plugin):
             try:
                 plugin_name = plugin.__name__
             except AttributeError:
-                plugin_name = plugin.__class__.__name__.split('.')[-1]
+                plugin_name = plugin.__class__.__name__.split(".")[-1]
 
         path_to_mmd = bmi_data_dir(plugin_name)
     else:
-        path_to_mmd = pkg_resources.resource_filename(plugin.__module__,
-                                                      model_metadata_dir)
+        path_to_mmd = pkg_resources.resource_filename(
+            plugin.__module__, model_metadata_dir
+        )
 
     return path_to_mmd
 
 
 class PluginMetadata(ModelMetadata):
-
     def __init__(self, model):
         path_to_mmd = find_model_metadata(model)
 

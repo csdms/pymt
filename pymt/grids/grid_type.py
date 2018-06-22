@@ -1,4 +1,3 @@
-
 class GridType(object):
     _type = None
 
@@ -9,16 +8,16 @@ class GridType(object):
         return self._type
 
     def __repr__(self):
-        return '%s()' % self.__class__.__name__
+        return "%s()" % self.__class__.__name__
 
 
 class GridTypeRectilinear(GridType):
-    _type = 'rectilinear'
+    _type = "rectilinear"
 
 
 class GridTypeStructured(GridType):
-    _type = 'structured'
+    _type = "structured"
 
 
 class GridTypeUnstructured(GridType):
-    _type = 'unstructured'
+    _type = "unstructured"

@@ -1,10 +1,12 @@
 class Error(Exception):
     """Base class for BMI exceptions"""
+
     pass
 
 
 class VarNameError(Error):
     """Exception to indicate a bad input/output variable name"""
+
     def __init__(self, name):
         self.name = name
 

@@ -13,14 +13,14 @@ def find_executable_in_paths(prog, paths):
     return None
 
 
-#def which(prog, mode=os.F_OK | os.X_OK, path=None):
+# def which(prog, mode=os.F_OK | os.X_OK, path=None):
 def which(prog, path=None):
     if os.path.isabs(prog) and file_is_executable(prog):
         return prog
     else:
         if path is None:
             try:
-                path = os.environ['PATH'].split(os.pathsep)
+                path = os.environ["PATH"].split(os.pathsep)
             except KeyError:
                 path = os.defpath.split(os.pathsep)
         return find_executable_in_paths(prog, path)

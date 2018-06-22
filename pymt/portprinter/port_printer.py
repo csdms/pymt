@@ -12,12 +12,16 @@ from ..printers.nc.database import Database as NcDatabase
 from ..utils.prefix import strip_prefix, names_with_prefix
 
 
-from .utils import (construct_port_as_field, reconstruct_port_as_field,
-                    construct_file_name, next_unique_file_name, )
+from .utils import (
+    construct_port_as_field,
+    reconstruct_port_as_field,
+    construct_file_name,
+    next_unique_file_name,
+)
 
 
 class PortPrinter(object):
-    _format = ''
+    _format = ""
     _printer_class = None
 
     def __init__(self, port, var_name, filename=None):
@@ -42,8 +46,7 @@ class PortPrinter(object):
         return self._format
 
     def open(self, clobber=False):
-        file_name = construct_file_name(self._filename, fmt=self.format,
-                                        prefix='')
+        file_name = construct_file_name(self._filename, fmt=self.format, prefix="")
         if not clobber:
             file_name = next_unique_file_name(file_name)
 
@@ -61,26 +64,30 @@ class PortPrinter(object):
         self._field = reconstruct_port_as_field(self._port, self._field)
 
     @classmethod
-    def from_string(cls, source, prefix='print'):
+    def from_string(cls, source, prefix="print"):
         config = ConfigParser()
         config.readfp(six.StringIO(source))
         return cls._from_config(config, prefix=prefix)
 
     @classmethod
-    def from_path(cls, path, prefix='print'):
+    def from_path(cls, path, prefix="print"):
         config = ConfigParser()
         config.read(path)
         return cls._from_config(config, prefix=prefix)
 
     @classmethod
-    def _from_config(cls, config, prefix='print'):
+    def _from_config(cls, config, prefix="print"):
         printers = []
         for section in names_with_prefix(config.sections(), prefix):
-            printers.append(cls.from_dict({
-                'port': config.get(section, 'port'),
-                'format': config.get(section, 'format'),
-                'name': strip_prefix(section, prefix),
-            }))
+            printers.append(
+                cls.from_dict(
+                    {
+                        "port": config.get(section, "port"),
+                        "format": config.get(section, "format"),
+                        "name": strip_prefix(section, prefix),
+                    }
+                )
+            )
         if len(printers) == 1:
             return printers[0]
         else:
@@ -89,31 +96,32 @@ class PortPrinter(object):
     @classmethod
     def from_dict(cls, d):
         try:
-            printer_class = _FORMAT_TO_PRINTER[d['format']]
+            printer_class = _FORMAT_TO_PRINTER[d["format"]]
         except KeyError:
-            raise ValueError('%s: unknown printer format' % d['format'])
-        return printer_class(d['port'], d['name'],
-                             filename=d.get('filename', d['name']))
+            raise ValueError("%s: unknown printer format" % d["format"])
+        return printer_class(
+            d["port"], d["name"], filename=d.get("filename", d["name"])
+        )
 
 
 class VtkPortPrinter(PortPrinter):
-    _format = 'vtk'
+    _format = "vtk"
     _printer_class = VtkDatabase
 
 
 class NcPortPrinter(PortPrinter):
-    _format = 'nc'
+    _format = "nc"
     _printer_class = NcDatabase
 
 
 class BovPortPrinter(PortPrinter):
-    _format = 'bov'
+    _format = "bov"
     _printer_class = BovDatabase
 
 
 _FORMAT_TO_PRINTER = {
-    'vtk': VtkPortPrinter,
-    'nc': NcPortPrinter,
-    'netcdf': NcPortPrinter,
-    'bov': BovPortPrinter,
+    "vtk": VtkPortPrinter,
+    "nc": NcPortPrinter,
+    "netcdf": NcPortPrinter,
+    "bov": BovPortPrinter,
 }

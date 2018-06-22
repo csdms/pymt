@@ -4,8 +4,8 @@ from ..utils.run_dir import open_run_dir
 
 class PrintEvent(object):
     def __init__(self, *args, **kwds):
-        #self._printer = PortPrinter.from_dict(kwds)
-        self._run_dir = kwds.pop('run_dir', '.')
+        # self._printer = PortPrinter.from_dict(kwds)
+        self._run_dir = kwds.pop("run_dir", ".")
         self._kwds = kwds
 
     def initialize(self, *args):

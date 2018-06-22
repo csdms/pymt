@@ -128,8 +128,18 @@ class Component(GridMixIn):
     run_dir : str, optional
         Directory where the component will run.
     """
-    def __init__(self, port, uses=None, provides=None, events=(), argv=(),
-                 time_step=1., run_dir='.', name=None):
+
+    def __init__(
+        self,
+        port,
+        uses=None,
+        provides=None,
+        events=(),
+        argv=(),
+        time_step=1.,
+        run_dir=".",
+        name=None,
+    ):
         if uses is None:
             uses = set()
         if provides is None:
@@ -145,12 +155,12 @@ class Component(GridMixIn):
         self._provides = provides
         self._time_step = time_step
 
-        self._events = EventManager([
-            (PortEvent(port=self._port, init_args=argv, run_dir=run_dir),
-             time_step)
-        ] + list(events))
-        #self._events = EventManager([(self._port, 1.)] + events)
-        #self._events = EventManager(
+        self._events = EventManager(
+            [(PortEvent(port=self._port, init_args=argv, run_dir=run_dir), time_step)]
+            + list(events)
+        )
+        # self._events = EventManager([(self._port, 1.)] + events)
+        # self._events = EventManager(
         #    [(self._port, self._port.time_step)] + events)
 
         GridMixIn.__init__(self)
@@ -215,18 +225,21 @@ class Component(GridMixIn):
             Names of variables to map.
         """
         if uses not in self.uses:
-            warnings.warn('component does not use %s' % uses)
+            warnings.warn("component does not use %s" % uses)
 
         if len(vars_to_map) > 0:
-            event = ChainEvent([port,
-                                PortMapEvent(src_port=port, dst_port=self,
-                                             vars_to_map=vars_to_map)])
-            #PortMapEvent(src_port=port, dst_port=self._port,
+            event = ChainEvent(
+                [
+                    port,
+                    PortMapEvent(src_port=port, dst_port=self, vars_to_map=vars_to_map),
+                ]
+            )
+            # PortMapEvent(src_port=port, dst_port=self._port,
         else:
             event = port
         self._events.add_recurring_event(event, port.time_step)
-        #self._events.add_recurring_event(event, port._port.time_step)
-        #self._events.add_recurring_event(port, port._port.time_step)
+        # self._events.add_recurring_event(event, port._port.time_step)
+        # self._events.add_recurring_event(port, port._port.time_step)
 
     def go(self, stop=None):
         """Run a component from start to end.
@@ -265,7 +278,7 @@ class Component(GridMixIn):
             Time to run the component until.
         """
         if stop_time > self.end_time:
-            raise ValueError('stop time is greater than end time.')
+            raise ValueError("stop time is greater than end time.")
         self._events.run(stop_time)
 
     def finalize(self):
@@ -369,27 +382,34 @@ class Component(GridMixIn):
         Component
             A newly-created Component instance.
         """
-        #port = services.get_port(d['name'])
-        port = services.instantiate_component(d['class'], d['name'])
-        #argv = d.get('argv', [])
+        # port = services.get_port(d['name'])
+        port = services.instantiate_component(d["class"], d["name"])
+        # argv = d.get('argv', [])
         try:
-            argv = d['initialize_args']
+            argv = d["initialize_args"]
         except KeyError:
-            argv = d.get('argv', [])
-        time_step = float(d.get('time_step', 1.))
-        run_dir = d.get('run_dir', '.')
+            argv = d.get("argv", [])
+        time_step = float(d.get("time_step", 1.))
+        run_dir = d.get("run_dir", ".")
 
         events = []
-        for conf in d.get('print', []):
-            conf['port'] = port
-            conf['run_dir'] = run_dir
-            events.append((PrintEvent(**conf), conf['interval']))
+        for conf in d.get("print", []):
+            conf["port"] = port
+            conf["run_dir"] = run_dir
+            events.append((PrintEvent(**conf), conf["interval"]))
 
-        uses = d.get('uses', [])
-        provides = d.get('provides', [])
+        uses = d.get("uses", [])
+        provides = d.get("provides", [])
 
-        return cls(port, uses=uses, provides=provides, events=events,
-                   argv=argv, time_step=time_step, run_dir=run_dir)
+        return cls(
+            port,
+            uses=uses,
+            provides=provides,
+            events=events,
+            argv=argv,
+            time_step=time_step,
+            run_dir=run_dir,
+        )
 
     @classmethod
     def from_path(cls, path):
@@ -405,7 +425,7 @@ class Component(GridMixIn):
         Component
             A newly-created component.
         """
-        with open(path, 'r') as yaml_file:
+        with open(path, "r") as yaml_file:
             return cls._from_yaml(yaml_file.read())
 
     @classmethod

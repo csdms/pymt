@@ -45,8 +45,8 @@ def raster_node_coordinates(shape, spacing=None, origin=None):
     for dim in xrange(len(shape)):
         start, stop = origin[dim], origin[dim] + shape[dim] * spacing[dim]
         coordinate_vectors.append(np.arange(start, stop, spacing[dim]))
-    
-    return np.meshgrid(*coordinate_vectors, indexing='ij')
+
+    return np.meshgrid(*coordinate_vectors, indexing="ij")
 
 
 def get_raster_node_coordinates(grid, grid_id):
@@ -83,9 +83,11 @@ def get_raster_node_coordinates(grid, grid_id):
     array([[ 1.,  3.,  5.],
            [ 1.,  3.,  5.]])
     """
-    (shape, spacing, origin) = (grid.get_grid_shape(grid_id),
-                                grid.get_grid_spacing(grid_id),
-                                grid.get_grid_origin(grid_id))
+    (shape, spacing, origin) = (
+        grid.get_grid_shape(grid_id),
+        grid.get_grid_spacing(grid_id),
+        grid.get_grid_origin(grid_id),
+    )
 
     return raster_node_coordinates(shape, spacing=spacing, origin=origin)
 
@@ -123,14 +125,14 @@ def get_rectilinear_node_coordinates(grid, grid_id):
            [ 0.,  3.,  4.]])
     """
     coordinate_vectors = []
-    for coordinate_name in ['z', 'y', 'x']:
+    for coordinate_name in ["z", "y", "x"]:
         try:
-            func = getattr(grid, 'get_grid_' + coordinate_name)
+            func = getattr(grid, "get_grid_" + coordinate_name)
             coordinate_vectors.append(func(grid_id))
         except (AttributeError, NotImplementedError):
             pass
 
-    return np.meshgrid(*coordinate_vectors, indexing='ij')
+    return np.meshgrid(*coordinate_vectors, indexing="ij")
 
 
 def get_structured_node_coordinates(grid, grid_id):
@@ -168,9 +170,9 @@ def get_structured_node_coordinates(grid, grid_id):
            [ 0.,  3.,  4.]])
     """
     node_coordinates = []
-    for coordinate_name in ['z', 'y', 'x']:
+    for coordinate_name in ["z", "y", "x"]:
         try:
-            func = getattr(grid, 'get_grid_' + coordinate_name)
+            func = getattr(grid, "get_grid_" + coordinate_name)
             node_coordinates.append(np.array(func(grid_id)))
         except (AttributeError, NotImplementedError):
             pass
@@ -253,6 +255,7 @@ class GridMixIn(object):
     array([[ 0.,  0.,  0.],
            [ 2.,  2.,  2.]])
     """
+
     def __init__(self):
         self._coords = {}
         self._connectivity = {}
@@ -288,18 +291,18 @@ class GridMixIn(object):
             if shape is None:
                 raise Exception
         except Exception:
-            grid_type = 'UNSTRUCTURED'
+            grid_type = "UNSTRUCTURED"
         else:
             try:
                 self._port.get_grid_spacing(grid_id)
             except Exception:
                 x = self._port.get_grid_x(grid_id)
                 if len(x) == shape[-1]:
-                    grid_type = 'RECTILINEAR'
+                    grid_type = "RECTILINEAR"
                 else:
-                    grid_type = 'STRUCTURED'
+                    grid_type = "STRUCTURED"
             else:
-                grid_type = 'RASTER'
+                grid_type = "RASTER"
         self._grid_type[grid_id] = grid_type
 
     def get_grid_type(self, grid_id):
@@ -324,9 +327,9 @@ class GridMixIn(object):
     def _set_coords(self, grid_id):
         grid_type = self.get_grid_type(grid_id)
 
-        if grid_type == 'RASTER':
+        if grid_type == "RASTER":
             coords = get_raster_node_coordinates(self._port, grid_id)
-        elif grid_type == 'RECTILINEAR':
+        elif grid_type == "RECTILINEAR":
             coords = get_rectilinear_node_coordinates(self._port, grid_id)
         else:
             coords = get_structured_node_coordinates(self._port, grid_id)
@@ -347,12 +350,15 @@ class GridMixIn(object):
 
     def _set_connectivity(self, grid_id):
         grid_type = self.get_grid_type(grid_id)
-        if grid_type != 'UNSTRUCTURED':
+        if grid_type != "UNSTRUCTURED":
             (connectivity, offset) = get_structured_node_connectivity(
-                self._port, grid_id)
+                self._port, grid_id
+            )
         else:
-            (connectivity, offset) = (self.get_grid_connectivity(grid_id),
-                                      self.get_grid_offset(grid_id))
+            (connectivity, offset) = (
+                self.get_grid_connectivity(grid_id),
+                self.get_grid_offset(grid_id),
+            )
 
         self._connectivity[grid_id] = (connectivity, offset)
 

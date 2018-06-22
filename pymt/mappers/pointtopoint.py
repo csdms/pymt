@@ -3,11 +3,12 @@
 import numpy as np
 from scipy.spatial import KDTree
 from .imapper import IGridMapper, IncompatibleGridError
-#from .mapper import IncompatibleGridError
+
+# from .mapper import IncompatibleGridError
 
 
 def _flat_view(array):
-    return array.view().reshape((array.size, ))
+    return array.view().reshape((array.size,))
 
 
 def copy_good_values(src, dst, bad_val=-999):
@@ -42,7 +43,7 @@ def copy_good_values(src, dst, bad_val=-999):
     >>> copy_good_values(x, np.zeros(6), bad_val=3.)
     array([ 0.,  0.,  0.,  0.,  4.,  5.])
     """
-    assert(src.size == dst.size)
+    assert src.size == dst.size
 
     flat_src, flat_dst = _flat_view(src), _flat_view(dst)
 
@@ -66,6 +67,7 @@ class NearestVal(IGridMapper):
     >>> mapper.run(np.arange(6.))
     array([ 0.,  1.,  2.,  3.,  4.,  5.])
     """
+
     def initialize(self, dest_grid, src_grid, var_names=None):
         """Map points on one grid to the nearest points on another.
 
@@ -84,14 +86,13 @@ class NearestVal(IGridMapper):
         if not self.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
-        assert(len(var_names) <= 1)
+        assert len(var_names) <= 1
 
         if len(var_names) == 0:
             (x, y) = src_grid.get_x().flat, src_grid.get_y().flat
         else:
             dst_name, src_name = var_names[0]
-            (x, y) = (src_grid.get_x(src_name).flat,
-                      src_grid.get_y(src_name).flat)
+            (x, y) = (src_grid.get_x(src_name).flat, src_grid.get_y(src_name).flat)
 
         tree = KDTree(list(zip(x, y)))
 
@@ -99,8 +100,7 @@ class NearestVal(IGridMapper):
             (x, y) = dest_grid.get_x().flat, dest_grid.get_y().flat
         else:
             dst_name, src_name = var_names[0]
-            (x, y) = (dest_grid.get_x(dst_name).flat,
-                      dest_grid.get_y(dst_name).flat)
+            (x, y) = (dest_grid.get_x(dst_name).flat, dest_grid.get_y(dst_name).flat)
 
         (_, self._nearest_src_id) = tree.query(list(zip(x, y)))
 
@@ -120,13 +120,13 @@ class NearestVal(IGridMapper):
             The (possibly newly-created) destination array.
         """
         if dest_values is None:
-            dest_values = np.zeros(len(self._nearest_src_id),
-                                   dtype=src_values.dtype)
+            dest_values = np.zeros(len(self._nearest_src_id), dtype=src_values.dtype)
         elif not isinstance(dest_values, np.ndarray):
-            raise TypeError('Destination array must be a numpy array')
+            raise TypeError("Destination array must be a numpy array")
 
-        copy_good_values(src_values.flat[self._nearest_src_id],
-                         dest_values, bad_val=-999)
+        copy_good_values(
+            src_values.flat[self._nearest_src_id], dest_values, bad_val=-999
+        )
 
         return dest_values
 
@@ -145,4 +145,4 @@ class NearestVal(IGridMapper):
     def name(self):
         """Name of the grid mapper.
         """
-        return 'PointToPoint'
+        return "PointToPoint"

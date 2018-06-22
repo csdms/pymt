@@ -35,9 +35,9 @@ def get_vtk_types(grid):
     return np.array(types, dtype=np.uint8)
 
 
-def get_vtu_elements(field, data_format='ascii', encoding='ascii'):
-    if data_format == 'appended':
-        data = VtkAppendedDataElement('', encoding=encoding)
+def get_vtu_elements(field, data_format="ascii", encoding="ascii"):
+    if data_format == "appended":
+        data = VtkAppendedDataElement("", encoding=encoding)
     else:
         data = None
 
@@ -45,22 +45,29 @@ def get_vtu_elements(field, data_format='ascii', encoding='ascii'):
     types = get_vtk_types(field)
 
     element = {
-        "VTKFile": VtkRootElement('UnstructuredGrid'),
-        "Grid": VtkGridElement('UnstructuredGrid'),
-        "Piece": VtkPieceElement(NumberOfPoints=field.get_point_count(),
-                                 NumberOfCells=field.get_cell_count()),
+        "VTKFile": VtkRootElement("UnstructuredGrid"),
+        "Grid": VtkGridElement("UnstructuredGrid"),
+        "Piece": VtkPieceElement(
+            NumberOfPoints=field.get_point_count(), NumberOfCells=field.get_cell_count()
+        ),
         "Points": VtkPointsElement(coords, append=data, encoding=encoding),
-        "PointData": VtkPointDataElement(field.get_point_fields(),
-                                         append=data, encoding=encoding),
-        "Cells": VtkCellsElement(field.get_connectivity(),
-                                 field.get_offset(), types, append=data,
-                                 encoding=encoding),
-        "CellData": VtkCellDataElement(field.get_cell_fields(),
-                                       append=data, encoding=encoding),
+        "PointData": VtkPointDataElement(
+            field.get_point_fields(), append=data, encoding=encoding
+        ),
+        "Cells": VtkCellsElement(
+            field.get_connectivity(),
+            field.get_offset(),
+            types,
+            append=data,
+            encoding=encoding,
+        ),
+        "CellData": VtkCellDataElement(
+            field.get_cell_fields(), append=data, encoding=encoding
+        ),
     }
 
     if data is not None:
-        element['AppendedData'] = data
+        element["AppendedData"] = data
 
     return element
 
@@ -89,24 +96,23 @@ def tofile(field, path, **kwds):
         * get_cell_fields
         * get_point_fields
     """
-    data_format = kwds.get('format', 'ascii')
-    encoding = kwds.get('encoding', 'ascii')
+    data_format = kwds.get("format", "ascii")
+    encoding = kwds.get("encoding", "ascii")
 
     if data_format not in valid_formats:
         raise InvalidFormatError(data_format)
     if encoding not in valid_encodings:
         raise InvalidEncodingError(encoding)
 
-    if data_format == 'ascii':
-        encoding = 'ascii'
+    if data_format == "ascii":
+        encoding = "ascii"
 
     doc = xml.dom.minidom.Document()
 
-    elements = get_vtu_elements(field, data_format=data_format,
-                                encoding=encoding)
+    elements = get_vtu_elements(field, data_format=data_format, encoding=encoding)
     doc.appendChild(assemble_vtk_elements(elements))
 
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         f.write(doc.toprettyxml())
 
 
@@ -140,9 +146,9 @@ class Database(IDatabase):
 
             self._var_name = var_name
             self._path = path
-            self._template = '%s_%%04d%s' % (root, ext)
+            self._template = "%s_%%04d%s" % (root, ext)
         except Exception as e:
-            print('Unable to open database: %s' % e)
+            print("Unable to open database: %s" % e)
 
     def write(self, field, **kwargs):
         file_name = self._next_file_name()
@@ -175,30 +181,30 @@ class VtkDatabase(object):
         (base, filename) = os.path.split(path)
         (root, ext) = os.path.splitext(filename)
 
-        next_file = '%s_%04d%s' % (root, self._count, ext)
+        next_file = "%s_%04d%s" % (root, self._count, ext)
 
         tofile(self._field, os.path.join(base, next_file), **kwargs)
 
         self._count += 1
 
 
-DataArray = namedtuple('DataArray', ['name', 'data'])
-Piece = namedtuple('Piece', ['points', 'cells', 'point_data', 'cell_data'])
-Point = namedtuple('Point', ['x', 'y', 'z'])
-Cell = namedtuple('Cell', ['connectivity', 'offsets', 'types'])
+DataArray = namedtuple("DataArray", ["name", "data"])
+Piece = namedtuple("Piece", ["points", "cells", "point_data", "cell_data"])
+Point = namedtuple("Point", ["x", "y", "z"])
+Cell = namedtuple("Cell", ["connectivity", "offsets", "types"])
 
 
 def parse_data_array(data_array):
-    assert(data_array.tag == 'DataArray')
+    assert data_array.tag == "DataArray"
 
-    name = data_array.get('Name')
-    noc = data_array.get('NumberOfComponents', default='1')
-    data_type = data_array.get('type')
-    data_format = data_array.get('format', default='ascii')
+    name = data_array.get("Name")
+    noc = data_array.get("NumberOfComponents", default="1")
+    data_type = data_array.get("type")
+    data_format = data_array.get("format", default="ascii")
 
     noc = int(noc)
 
-    assert(data_format == 'ascii')
+    assert data_format == "ascii"
 
     data = [float(val) for val in data_array.text.split()]
     array = np.array(data, dtype=vtk_to_np_type[data_type])
@@ -212,7 +218,7 @@ def parse_data_array(data_array):
 
 def parse_all_data_array(element):
     d = {}
-    for data_array in element.findall('DataArray'):
+    for data_array in element.findall("DataArray"):
         data = parse_data_array(data_array)
         d[data.name] = data.data
 
@@ -220,9 +226,9 @@ def parse_all_data_array(element):
 
 
 def parse_points(points):
-    assert(points.tag == 'Points')
+    assert points.tag == "Points"
 
-    data = parse_data_array(points.find('DataArray'))
+    data = parse_data_array(points.find("DataArray"))
 
     n_points = len(data.data[0])
     components = data.data
@@ -233,7 +239,7 @@ def parse_points(points):
 
 
 def parse_cells(cells):
-    assert(cells.tag == 'Cells')
+    assert cells.tag == "Cells"
 
     d = parse_all_data_array(cells)
     for (key, value) in d.items():
@@ -243,25 +249,24 @@ def parse_cells(cells):
 
 
 def parse_piece(piece):
-    assert(piece.tag == 'Piece')
+    assert piece.tag == "Piece"
 
-    cell_count = int(piece.get('NumberOfCells'))
-    point_count = int(piece.get('NumberOfPoints'))
+    cell_count = int(piece.get("NumberOfCells"))
+    point_count = int(piece.get("NumberOfPoints"))
 
-    points = parse_points(piece.find('Points'))
-    cells = parse_cells(piece.find('Cells'))
+    points = parse_points(piece.find("Points"))
+    cells = parse_cells(piece.find("Cells"))
 
-    point_data = parse_all_data_array(piece.find('PointData'))
-    cell_data = parse_all_data_array(piece.find('CellData'))
+    point_data = parse_all_data_array(piece.find("PointData"))
+    cell_data = parse_all_data_array(piece.find("CellData"))
 
-    assert(cell_count == len(cells.offsets))
-    assert(cell_count == len(cells.types))
-    assert(point_count == len(points.x))
-    assert(point_count == len(points.y))
-    assert(point_count == len(points.z))
-    
-    return Piece(points=points, cells=cells,
-                 point_data=point_data, cell_data=cell_data)
+    assert cell_count == len(cells.offsets)
+    assert cell_count == len(cells.types)
+    assert point_count == len(points.x)
+    assert point_count == len(points.y)
+    assert point_count == len(points.z)
+
+    return Piece(points=points, cells=cells, point_data=point_data, cell_data=cell_data)
 
 
 def fromfile(source):
@@ -280,32 +285,31 @@ def fromfile(source):
     tree.parse(source)
     root = tree.getroot()
 
-    if root.tag != 'VTKFile':
-        raise MissingElementError('Root element must be \'VTKFile\'')
+    if root.tag != "VTKFile":
+        raise MissingElementError("Root element must be 'VTKFile'")
 
-    data_type = root.get('type')
-    version = root.get('version')
-    byte_order = root.get('byte_order')
+    data_type = root.get("type")
+    version = root.get("version")
+    byte_order = root.get("byte_order")
     if data_type is None or version is None or byte_order is None:
         raise MissingAttributeError()
 
-    #data = root.find ('AppendedData')
-    #if data is not None:
+    # data = root.find ('AppendedData')
+    # if data is not None:
     #    appended_data = data.text
     #    #appended_data = decode(data.text, encoding=data.get('encoding',
     #    #                                                    'base64'))
 
     grid = root.find(data_type)
-    piece = parse_piece(grid.find('Piece'))
+    piece = parse_piece(grid.find("Piece"))
 
     points = piece.points
     cells = piece.cells
 
-    field = UnstructuredField(points.x, points.y, cells.connectivity,
-                              cells.offsets)
+    field = UnstructuredField(points.x, points.y, cells.connectivity, cells.offsets)
     for (key, val) in piece.point_data.items():
-        field.add_field(key, val, centering='point')
+        field.add_field(key, val, centering="point")
     for (key, val) in piece.cell_data.items():
-        field.add_field(key, val, centering='zonal')
+        field.add_field(key, val, centering="zonal")
 
     return field

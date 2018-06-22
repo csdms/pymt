@@ -27,8 +27,8 @@ import os
 import xml.dom.minidom
 
 
-valid_encodings = ['ascii', 'base64', 'raw']
-valid_formats = ['ascii', 'base64', 'raw', 'appended']
+valid_encodings = ["ascii", "base64", "raw"]
+valid_formats = ["ascii", "base64", "raw", "appended"]
 
 
 class VtkError(Exception):
@@ -40,14 +40,15 @@ class InvalidFormatError(VtkError):
         self.name = fmt
 
     def __str__(self):
-        return '%s: Invalid format' % self.name
+        return "%s: Invalid format" % self.name
 
 
 class InvalidEncodingError(VtkError):
     def __init__(self, encoding):
         self.name = encoding
+
     def __str__(self):
-        return '%s: Invalid encoder' % self.name
+        return "%s: Invalid encoder" % self.name
 
 
 class VtkWriter(xml.dom.minidom.Document):
@@ -55,52 +56,52 @@ class VtkWriter(xml.dom.minidom.Document):
         xml.dom.minidom.Document.__init__(self)
 
     def get_elements(self, **kwds):
-        raise NotImplementedError('get_elements')
+        raise NotImplementedError("get_elements")
 
     def assemble(self, element):
-        root = element['VTKFile']
-        grid = element['Grid']
-        piece = element['Piece']
-        for section in ['Points', 'Coordinates', 'PointData', 'Cells',
-                        'CellData']:
+        root = element["VTKFile"]
+        grid = element["Grid"]
+        piece = element["Piece"]
+        for section in ["Points", "Coordinates", "PointData", "Cells", "CellData"]:
             try:
                 piece.appendChild(element[section])
             except KeyError:
                 pass
         grid.appendChild(piece)
         root.appendChild(grid)
-  
+
         try:
-            root.appendChild(element['AppendedData'])
+            root.appendChild(element["AppendedData"])
         except KeyError:
             pass
-  
+
         return root
-  
-    def write(self, path, fmt='ascii', encoding='ascii'):
+
+    def write(self, path, fmt="ascii", encoding="ascii"):
         if fmt not in valid_formats:
             raise InvalidFormatError(fmt)
         if encoding not in valid_encodings:
             raise InvalidEncodingError(encoding)
-  
-        if fmt == 'ascii':
-            encoding = 'ascii'
-  
+
+        if fmt == "ascii":
+            encoding = "ascii"
+
         self.unlink()
-        self.appendChild(self.assemble(self.get_elements(format=fmt,
-                                                         encoding=encoding)))
+        self.appendChild(
+            self.assemble(self.get_elements(format=fmt, encoding=encoding))
+        )
         self.to_xml(path)
-  
+
     def to_xml(self, path):
-        with open(path, 'w') as fp:
+        with open(path, "w") as fp:
             fp.write(self.toprettyxml())
 
 
 def assemble_vtk_elements(element):
-    root = element['VTKFile']
-    grid = element['Grid']
-    piece = element['Piece']
-    for section in ['Points', 'Coordinates', 'PointData', 'Cells', 'CellData']:
+    root = element["VTKFile"]
+    grid = element["Grid"]
+    piece = element["Piece"]
+    for section in ["Points", "Coordinates", "PointData", "Cells", "CellData"]:
         try:
             piece.appendChild(element[section])
         except KeyError:
@@ -109,7 +110,7 @@ def assemble_vtk_elements(element):
     root.appendChild(grid)
 
     try:
-        root.appendChild(element['AppendedData'])
+        root.appendChild(element["AppendedData"])
     except KeyError:
         pass
 
@@ -125,8 +126,8 @@ class VtkDatabase(VtkWriter):
         (base, filename) = os.path.split(path)
         (root, ext) = os.path.splitext(filename)
 
-        next_file = '%s_%04d%s' % (root, self._count, ext)
+        next_file = "%s_%04d%s" % (root, self._count, ext)
 
-        VtkWriter.write(self, os.path.join (base, next_file), **kwargs)
+        VtkWriter.write(self, os.path.join(base, next_file), **kwargs)
 
         self._count += 1
