@@ -33,18 +33,17 @@ install:
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$TRAVIS_PYTHON_VERSION
 - source activate _testing
-- conda install -q conda-build anaconda-client sphinx
+- conda install -q conda-build anaconda-client sphinx pytest pytest-cov coveralls
 script:
 - conda build ./conda-recipe --no-test --old-build-string -c csdms-stack -c conda-forge
-- conda install pymt nose coverage pytest --use-local -c csdms-stack -c conda-forge
+- conda install pymt --use-local -c csdms-stack -c conda-forge
 - conda install --file=requirements.txt -c csdms-stack -c conda-forge
-- pytest
+- pytest --cov=pymt --cov-report= --cov-report=xml
 # - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
-# after_success:
-# - |
-#   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-#     conda install -q coverage coveralls
-#     coveralls --verbose
-#   fi
+after_success:
+- |
+  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+    coveralls --verbose
+  fi
 # - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
 # - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms --token=-
