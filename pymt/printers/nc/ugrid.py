@@ -1,4 +1,8 @@
 #! /usr/bin/env python
+from __future__ import print_function
+
+from six.moves import xrange
+
 from .constants import (open_netcdf, _NP_TO_NC_TYPE)
 from ...grids import utils as gutils
 
@@ -129,9 +133,9 @@ class NetcdfField(object):
             try:
                 self._root.createVariable(name, *args, **kwds)
             except ValueError as error:
-                print 'error is', error
-                print args
-                print self._root.dimensions
+                print('error is', error)
+                print(args)
+                print(self._root.dimensions)
                 raise
                
     def set_variable(self, name, *args, **kwds):

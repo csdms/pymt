@@ -1,3 +1,5 @@
+from six.moves import xrange
+
 from pymt.portprinter.port_printer import BovPortPrinter, PortPrinter
 from pymt.testing.ports import UniformRectilinearGridPort
 from pymt.testing.assertions import assert_isfile_and_remove

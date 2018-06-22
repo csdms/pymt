@@ -23,11 +23,11 @@ def teardown():
 
 
 def fetch_data_file(filename):
-    import urllib2
+    from six.moves import urllib
 
-    remote_file = urllib2.urlopen(_BASE_URL_FOR_TEST_FILES + filename)
+    remote_file = urllib.request.urlopen(_BASE_URL_FOR_TEST_FILES + filename)
     local_file = os.path.join(_TMP_DIR, filename)
-    with open(local_file, 'w') as netcdf_file:
+    with open(local_file, 'wb') as netcdf_file:
         netcdf_file.write(remote_file.read())
 
     return local_file

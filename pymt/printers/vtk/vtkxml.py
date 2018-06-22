@@ -1,8 +1,8 @@
 #! /bin/env python
-
 import sys
 
 import numpy as np
+from six.moves import xrange
 import xml.dom.minidom
 
 from .encoders import encode
@@ -62,8 +62,12 @@ class VtkSpacing (object):
     def __str__ (self):
         return self._spacing_str
     
-class VtkElement (object, xml.dom.minidom.Element):
+# class VtkElement (object, xml.dom.minidom.Element):
+class VtkElement (xml.dom.minidom.Element):
     def __init__ (self, name, **kwargs):
+        self.ownerDocument = None
+        self.parentNode = None
+        self.nextSibling = self.previousSibling = None
         xml.dom.minidom.Element.__init__ (self, str (name), namespaceURI='VTK')
         self.setAttributes (**kwargs)
 
@@ -89,6 +93,8 @@ class VtkElement (object, xml.dom.minidom.Element):
 
 class VtkTextElement (xml.dom.minidom.Text):
     def __init__ (self, text):
+        self.parentNode = None
+        self.nextSibling = self.previousSibling = None
         self.replaceWholeText (text)
 
 
@@ -138,7 +144,8 @@ class VtkAppendedDataElement (VtkElement):
         VtkElement.__init__ (self, 'AppendedData', **kwargs)
         self.appendChild (VtkTextElement ('_'+data))
     def addData (self, data):
-        self.firstChild.appendData (data)
+        self.firstChild.appendData(str(data))
+
     def offset (self):
         return self.firstChild.length-1
 

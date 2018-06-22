@@ -7,33 +7,34 @@ Examples
 Create a grid of length 2 in the x direction, and 3 in the y direction.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
-    >>> g = Structured (y.flatten (), x.flatten (), [3, 4])
-    >>> g.get_point_count ()
+    >>> g = Structured(y.flatten(), x.flatten(), [3, 4])
+    >>> g.get_point_count()
     12
-    >>> g.get_cell_count ()
+    >>> g.get_cell_count()
     6
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
-    >>> print g.get_shape ()
-    [3 4]
+    >>> g.get_x()
+    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+    >>> g.get_y()
+    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+    >>> g.get_shape()
+    array([3, 4])
 
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
     >>> g = Structured (y.flatten (), x.flatten (), (3, 4), indexing='ij')
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
-    >>> print g.get_shape ()
-    [3 4]
+    >>> g.get_x()
+    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+    >>> g.get_y()
+    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+    >>> g.get_shape()
+    array([3, 4])
 
-    >>> print g.get_offset () # doctest: +NORMALIZE_WHITESPACE
-    [ 4 8 12 16 20 24]
-    >>> print g.get_connectivity () # doctest: +NORMALIZE_WHITESPACE
-    [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
+    >>> g.get_offset()
+    array([ 4,  8, 12, 16, 20, 24], dtype=int32)
+    >>> g.get_connectivity()
+    array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
+            6, 10,  9,  6,  7, 11, 10], dtype=int32)
 
 Structured grid of points
 -------------------------
@@ -42,18 +43,18 @@ The same grid as the previous example but without any cells - just points.
 
     >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
     >>> g = StructuredPoints (y.flatten (), x.flatten (), (3, 4), indexing='ij', set_connectivity=True)
-    >>> print g.get_x () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y () #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
-    >>> print g.get_shape ()
-    [3 4]
+    >>> g.get_x()
+    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+    >>> g.get_y()
+    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+    >>> g.get_shape()
+    array([3, 4])
 
 The number of points are the same, but the number of cells is now 0.
 
-    >>> g.get_point_count ()
+    >>> g.get_point_count()
     12
-    >>> g.get_cell_count ()
+    >>> g.get_cell_count()
     0
 
 The offset runs from 1 up to (and including) the number of points.
@@ -70,19 +71,19 @@ The connectivity runs from 0 to one less than the number of points.
 ------------------------
 
     >>> g = Structured([-1, 2, 3, 6], (4, ))
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [-1. 2. 3. 6.]
-    >>> print g.get_y()
+    >>> g.get_x()
+    array([-1.,  2.,  3.,  6.])
+    >>> g.get_y()
     Traceback (most recent call last):
             ...
     IndexError: Dimension out of bounds
-    >>> print g.get_shape()
-    [4]
+    >>> g.get_shape()
+    array([4])
 
-    >>> print g.get_offset() # doctest: +NORMALIZE_WHITESPACE
-    [2 4 6]
-    >>> print g.get_connectivity() # doctest: +NORMALIZE_WHITESPACE
-    [0 1 1 2 2 3]
+    >>> g.get_offset()
+    array([2, 4, 6], dtype=int32)
+    >>> g.get_connectivity()
+    array([0, 1, 1, 2, 2, 3], dtype=int32)
 
 
 3D Grid of cubes
@@ -94,21 +95,21 @@ The connectivity runs from 0 to one less than the number of points.
 
     >>> g = Structured(z, y, x, (2, 2, 2))
 
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 1. 0. 1. 0. 1. 0. 1.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 1. 1. 0. 0. 1. 1.]
-    >>> print g.get_z() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 0. 0. 1. 1. 1. 1.]
+    >>> g.get_x()
+    array([ 0.,  1.,  0.,  1.,  0.,  1.,  0.,  1.])
+    >>> g.get_y()
+    array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
+    >>> g.get_z()
+    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
 
-    >>> print g.get_connectivity()
-    [0 1 3 2 4 5 7 6]
-    >>> print g.get_offset()
-    [8]
+    >>> g.get_connectivity()
+    array([0, 1, 3, 2, 4, 5, 7, 6], dtype=int32)
+    >>> g.get_offset()
+    array([8], dtype=int32)
 
     >>> g = Structured(x, y, z, (2, 2, 2), ordering='ccw')
-    >>> print g.get_connectivity()
-    [1 0 2 3 5 4 6 7]
+    >>> g.get_connectivity()
+    array([1, 0, 2, 3, 5, 4, 6, 7], dtype=int32)
 
 """
 import warnings

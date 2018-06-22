@@ -3,10 +3,13 @@ os:
 - linux
 - osx
 env:
+  matrix:
+  - TRAVIS_PYTHON_VERSION="2.7"
+  - TRAVIS_PYTHON_VERSION="3.5"
+  - TRAVIS_PYTHON_VERSION="3.6"
   global:
   - CONDA_PREFIX=$HOME/miniconda
-  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda2-latest"
-  - TRAVIS_PYTHON_VERSION="2.7"
+  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
   - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 sudo: false
 before_install:
@@ -28,23 +31,20 @@ install:
 - export PATH="$CONDA_PREFIX/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
-- conda config --add channels csdms
-- conda config --add channels csdms-stack
-- conda config --add channels conda-forge
-- conda install python=$TRAVIS_PYTHON_VERSION
+- conda create -n _testing python=$TRAVIS_PYTHON_VERSION
+- source activate _testing
 - conda install -q conda-build anaconda-client sphinx
-- conda update -n root conda-build -c defaults
 script:
-- conda build ./conda-recipe --no-test --old-build-string
-- conda install pymt nose coverage --use-local
-- nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
-after_success:
-- |
-  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-    conda install -q coverage coveralls
-    coveralls --verbose
-  fi
-- curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py
-  > $HOME/anaconda_upload.py
-- echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms
-  --token=-
+- conda build ./conda-recipe --no-test --old-build-string -c csdms-stack -c conda-forge
+- conda install pymt nose coverage pytest --use-local -c csdms-stack -c conda-forge
+- conda install --file=requirements.txt -c csdms-stack -c conda-forge
+- pytest
+# - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
+# after_success:
+# - |
+#   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+#     conda install -q coverage coveralls
+#     coveralls --verbose
+#   fi
+# - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
+# - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms --token=-

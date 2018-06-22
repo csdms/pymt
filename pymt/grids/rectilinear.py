@@ -7,29 +7,32 @@ Examples
 Create a grid of length 2 in the x direction, and 3 in the y direction.
 
     >>> g = Rectilinear([1., 2., 3.], [1., 2., 4., 8.])
-    >>> assert (g.get_point_count() == 12)
-    >>> assert (g.get_cell_count() == 6)
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 2. 4. 8. 1. 2. 4. 8. 1. 2. 4. 8.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 1. 2. 2. 2. 2. 3. 3. 3. 3.]
-    >>> print g.get_shape()
-    [3 4]
+    >>> g.get_point_count()
+    12
+    >>> g.get_cell_count()
+    6
+    >>> g.get_x()
+    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+    >>> g.get_y()
+    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+    >>> g.get_shape()
+    array([3, 4])
 
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> g = Rectilinear([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 2. 3. 1. 2. 3. 1. 2. 3. 1. 2. 3.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 2. 2. 2. 4. 4. 4. 8. 8. 8.]
-    >>> print g.get_shape()
-    [4 3]
+    >>> g.get_x()
+    array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
+    >>> g.get_y()
+    array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
+    >>> g.get_shape()
+    array([4, 3])
 
-    >>> print g.get_offset() # doctest: +NORMALIZE_WHITESPACE
-    [ 4 8 12 16 20 24]
-    >>> print g.get_connectivity() # doctest: +NORMALIZE_WHITESPACE
-    [ 0 1 4 3 1 2 5 4 3 4 7 6 4 5 8 7 6 7 10 9 7 8 11 10]
+    >>> g.get_offset()
+    array([ 4,  8, 12, 16, 20, 24], dtype=int32)
+    >>> g.get_connectivity()
+    array([ 0,  1,  4,  3,  1,  2,  5,  4,  3,  4,  7,  6,  4,  5,  8,  7,  6,
+            7, 10,  9,  7,  8, 11, 10], dtype=int32)
 
 Rectilinear grid of points
 --------------------------
@@ -37,14 +40,16 @@ Rectilinear grid of points
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
     >>> g = RectilinearPoints ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij', set_connectivity=True)
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 2. 3. 1. 2. 3. 1. 2. 3. 1. 2. 3.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 1. 1. 2. 2. 2. 4. 4. 4. 8. 8. 8.]
-    >>> print g.get_shape ()
-    [4 3]
-    >>> assert(g.get_point_count() == 12)
-    >>> assert(g.get_cell_count() == 0)
+    >>> g.get_x()
+    array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
+    >>> g.get_y()
+    array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
+    >>> g.get_shape ()
+    array([4, 3])
+    >>> g.get_point_count()
+    12
+    >>> g.get_cell_count()
+    0
 
 The offset runs from 1 up to (and including) the number of points.
 
@@ -61,41 +66,44 @@ The connectivity runs from 0 to one less than the number of points.
 -------------------
 
     >>> g = Rectilinear([1,3,4,5,6], set_connectivity=True)
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 1. 3. 4. 5. 6.]
-    >>> assert(g.get_point_count () == 5)
-    >>> assert(g.get_cell_count () == 4)
-    >>> print g.get_connectivity()
-    [0 1 1 2 2 3 3 4]
-    >>> print g.get_offset()
-    [2 4 6 8]
+    >>> g.get_x()
+    array([ 1.,  3.,  4.,  5.,  6.])
+    >>> g.get_point_count()
+    5
+    >>> g.get_cell_count()
+    4
+    >>> g.get_connectivity()
+    array([0, 1, 1, 2, 2, 3, 3, 4], dtype=int32)
+    >>> g.get_offset()
+    array([2, 4, 6, 8], dtype=int32)
 
 
 3D Rectilinear grid
 -------------------
     >>> g = Rectilinear ([0, 1], [2, 3], set_connectivity=True, indexing='ij')
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 2. 3. 2. 3.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 1. 1.]
+    >>> g.get_x()
+    array([ 2.,  3.,  2.,  3.])
+    >>> g.get_y()
+    array([ 0.,  0.,  1.,  1.])
 
     >>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 4. 5. 4. 5. 4. 5. 4. 5.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 2. 2. 3. 3. 2. 2. 3. 3.]
-    >>> print g.get_z() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 0. 0. 1. 1. 1. 1.]
-    >>> print g.get_point_count()
+    >>> g.get_x()
+    array([ 4.,  5.,  4.,  5.,  4.,  5.,  4.,  5.])
+    >>> g.get_y()
+    array([ 2.,  2.,  3.,  3.,  2.,  2.,  3.,  3.])
+    >>> g.get_z()
+    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
+    >>> g.get_point_count()
     8
-    >>> print g.get_cell_count()
+    >>> g.get_cell_count()
     1
 
     >>> g = Rectilinear([0, 1, 2, 3], [4, 5, 6], [7, 8], set_connectivity=True, indexing='ij')
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8. 7. 8.]
-    >>> print g.get_shape()
-    [4 3 2]
+    >>> g.get_x()
+    array([ 7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,
+            8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.])
+    >>> g.get_shape()
+    array([4, 3, 2])
     >>> x = g.get_x()
     >>> x.shape = g.get_shape()
 
@@ -143,24 +151,24 @@ class RectilinearPoints(StructuredPoints):
     def get_x_coordinates(self):
         """
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-        >>> print g.get_x_coordinates()
-        [ 4.  5.]
+        >>> g.get_x_coordinates()
+        array([ 4.,  5.])
         """
         return self._x_coordinates
 
     def get_y_coordinates(self):
         """
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-        >>> print g.get_y_coordinates()
-        [ 2.  3.]
+        >>> g.get_y_coordinates()
+        array([ 2.,  3.])
         """
         return self._y_coordinates
 
     def get_z_coordinates(self):
         """
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-        >>> print g.get_z_coordinates()
-        [ 0.  1.]
+        >>> g.get_z_coordinates()
+        array([ 0.,  1.])
         """
         return self._z_coordinates
 

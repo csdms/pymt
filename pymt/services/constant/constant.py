@@ -27,7 +27,7 @@ class ConstantScalars(object):
         self._origin = (0., )
 
         self._input_exchange_items = []
-        self._output_exchange_items = self._vars.keys()
+        self._output_exchange_items = list(self._vars.keys())
 
         self._start_time = 0.
         self._end_time = np.inf

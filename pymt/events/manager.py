@@ -17,13 +17,14 @@ Examples
 --------
 Create an event that prints, "hello".
 
+>>> from __future__ import print_function
 >>> class PrintHello(object):
 ...     def initialize(self):
-...         print "hello from initialize"
+...         print("hello from initialize")
 ...     def run(self, time):
-...         print "hello!"
+...         print("hello!")
 ...     def finalize(self):
-...         print "hello from finalize"
+...         print("hello from finalize")
 
 Add an instance of the event to be run at a regular interval to the manager.
 
@@ -45,8 +46,10 @@ hello!
 hello!
 hello from finalize
 """
-from ConfigParser import ConfigParser
-from StringIO import StringIO
+from __future__ import print_function
+
+from six.moves.configparser import ConfigParser
+from six import StringIO
 
 from ..timeline import Timeline
 from ..utils.prefix import names_with_prefix
@@ -113,8 +116,8 @@ class EventManager(object):
                 try:
                     event.initialize()
                 except Exception:
-                    print 'error initializing'
-                    print event
+                    print('error initializing')
+                    print(event)
                     raise
             self._initialized = True
 
@@ -134,9 +137,11 @@ class EventManager(object):
             self._running = True
             for event in self._timeline.iter_until(stop_time):
                 try:
-                    event.run(self._timeline.time)
+                    event.run
                 except AttributeError:
                     event.update(self._timeline.time)
+                else:
+                    event.run(self._timeline.time)
             self._running = False
 
     def finalize(self):

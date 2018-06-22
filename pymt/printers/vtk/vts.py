@@ -1,8 +1,8 @@
 #! /bin/env python
-from vtktypes import VtkStructured
-from vtkxml import (VtkAppendedDataElement, VtkExtent, VtkRootElement,
-                    VtkGridElement, VtkPieceElement, VtkPointsElement,
-                    VtkPointDataElement, VtkCellDataElement)
+from .vtktypes import VtkStructured
+from .vtkxml import (VtkAppendedDataElement, VtkExtent, VtkRootElement,
+                     VtkGridElement, VtkPieceElement, VtkPointsElement,
+                     VtkPointDataElement, VtkCellDataElement)
 
 
 def get_elements(field, data_format='ascii', encoding='ascii'):

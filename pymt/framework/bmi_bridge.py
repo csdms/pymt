@@ -1,4 +1,6 @@
 """Bridge between BMI and a PyMT component."""
+from __future__ import print_function
+
 import os
 from pprint import pformat
 
@@ -115,7 +117,7 @@ def wrap_get_value(func):
             grid = self.get_var_grid(name)
             dtype = self.get_var_type(name)
             if dtype == '':
-                print self.get_output_var_names()
+                print(self.get_output_var_names())
                 raise ValueError('{name} not understood'.format(name=name))
             out = np.empty(self.get_grid_size(grid), dtype=dtype)
 
@@ -124,7 +126,7 @@ def wrap_get_value(func):
         if units is not None:
             try:
                 from_units = self.get_var_units(name)
-            except AttributeError, NotImplementedError:
+            except (AttributeError, NotImplementedError):
                 pass
             else:
                 Units.conform(out, Units(from_units), Units(units),
@@ -142,7 +144,7 @@ def wrap_get_time(func):
             try:
                 from_units = Units(self.get_time_units())
                 to_units = Units(units)
-            except AttributeError, NotImplementedError:
+            except (AttributeError, NotImplementedError):
                 pass
             else:
                 if not from_units.equals(to_units):
@@ -253,7 +255,7 @@ class BmiTimeInterpolator(object):
                 self._interpolators[name].add_data(self.get_value(name), time)
             except BmiError:
                 self._interpolators.pop(name)
-                print 'unable to get value for {name}. ignoring'.format(name=name)
+                print('unable to get value for {name}. ignoring'.format(name=name))
 
     def interpolate(self, name, at):
         return self._interpolators[name].interpolate(at)

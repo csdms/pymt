@@ -4,6 +4,7 @@ import os
 import sys
 import logging
 
+from six import MAXSIZE
 
 _LEVEL_STRING = {'DEBUG': 10, 'INFO': 20, 'WARNING': 30, 'ERROR': 40}
 _CMT_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -11,7 +12,7 @@ _CMT_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 def log_level_string_to_int(level):
     if level.upper() in ['TRUE', 'YES', 'ON', 'ENABLED']:
-        verbosity = sys.maxint
+        verbosity = MAXSIZE
     elif level.upper() in ['FALSE', 'NO', 'OFF', 'DISABLED']:
         verbosity = 0 
     else:
@@ -102,7 +103,7 @@ class CmtVerbose(Verbose):
         if 'CMT_VERBOSE' in os.environ:
             level = os.environ['CMT_VERBOSE']
             if level.upper() in ['TRUE', 'YES', 'ON', 'ENABLED']:
-                verbosity = sys.maxint
+                verbosity = MAXSIZE
             elif level.upper() in ['FALSE', 'NO', 'OFF', 'DISABLED']:
                 verbosity = 0 
             else:

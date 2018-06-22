@@ -1,39 +1,40 @@
 #! /bin/env python
 
 """
+>>> get_connectivity((6, ))
+array([0, 1, 1, 2, 2, 3, 3, 4, 4, 5])
 
->>> print get_connectivity ((6, ))
-[0 1 1 2 2 3 3 4 4 5]
+>>> get_connectivity((6, ), ordering='ccw')
+array([1, 0, 2, 1, 3, 2, 4, 3, 5, 4])
 
->>> print get_connectivity ((6, ), ordering='ccw')
-[1 0 2 1 3 2 4 3 5 4]
+>>> get_connectivity((3, 4))
+array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
+        6, 10,  9,  6,  7, 11, 10])
 
->>> print get_connectivity ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
-[ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
+>>> get_connectivity((3, 4), ordering='ccw')
+array([ 1,  0,  4,  5,  2,  1,  5,  6,  3,  2,  6,  7,  5,  4,  8,  9,  6,
+        5,  9, 10,  7,  6, 10, 11])
 
->>> print get_connectivity ((3, 4), ordering='ccw') #doctest: +NORMALIZE_WHITESPACE
-[ 1 0 4 5 2 1 5 6 3 2 6 7 5 4 8 9 6 5 9 10 7 6 10 11]
+>>> shape = np.array([3, 4, 4])
+>>> (c, o) = get_connectivity(shape, with_offsets=True)
 
->>> shape = np.array ([3, 4, 4])
->>> (c, o) = get_connectivity (shape, with_offsets=True)
-
->>> len (c) == (shape-1).prod ()*8
+>>> len(c) == (shape - 1).prod() * 8
 True
->>> len (o) == (shape-1).prod ()
+>>> len(o) == (shape - 1).prod()
 True
->>> np.all (np.diff (o)==8)
+>>> np.all(np.diff(o) == 8)
 True
 
->>> print c[:o[0]]
-[ 0  1  5  4 16 17 21 20]
->>> print c[o[-2]:o[-1]]
-[26 27 31 30 42 43 47 46]
+>>> c[:o[0]]
+array([ 0,  1,  5,  4, 16, 17, 21, 20])
+>>> c[o[-2]:o[-1]]
+array([26, 27, 31, 30, 42, 43, 47, 46])
 
->>> ids = get_connectivity ((3, 4, 4), ordering='ccw')
->>> print ids[:8]
-[ 1  0  4  5 17 16 20 21]
->>> print ids[-8:]
-[27 26 30 31 43 42 46 47]
+>>> ids = get_connectivity((3, 4, 4), ordering='ccw')
+>>> ids[:8]
+array([ 1,  0,  4,  5, 17, 16, 20, 21])
+>>> ids[-8:]
+array([27, 26, 30, 31, 43, 42, 46, 47])
 
 """
 
@@ -48,14 +49,14 @@ def _get_interior_ids (shape, dtype='int64'):
     3D grid this is the upper-left corner of the closest face of each
     cube.
 
-    >>> print _get_interior_ids ((6, ))
-    [0 1 2 3 4]
-    >>> print _get_interior_ids ((3, 4))
-    [0 1 2 4 5 6]
-    >>> print _get_interior_ids ((2, 3, 4))
-    [0 1 2 4 5 6]
-    >>> print _get_interior_ids ((3, 3, 4))
-    [ 0  1  2  4  5  6 12 13 14 16 17 18]
+    >>> _get_interior_ids((6, ))
+    array([0, 1, 2, 3, 4])
+    >>> _get_interior_ids((3, 4))
+    array([0, 1, 2, 4, 5, 6])
+    >>> _get_interior_ids((2, 3, 4))
+    array([0, 1, 2, 4, 5, 6])
+    >>> _get_interior_ids((3, 3, 4))
+    array([ 0,  1,  2,  4,  5,  6, 12, 13, 14, 16, 17, 18])
     """
     i = np.arange (np.prod (shape), dtype=dtype)
     i.shape = shape
@@ -67,19 +68,19 @@ def _get_interior_ids (shape, dtype='int64'):
 
 def _get_offsets (shape, ordering='cw', dtype='int64'):
     """
-    >>> print _get_offsets ((16, ))
-    [0 1]
-    >>> print _get_offsets ((3, 4))
-    [0 1 5 4]
-    >>> print _get_offsets ((3, 4, 4))
-    [ 0  1  5  4 16 17 21 20]
+    >>> _get_offsets((16, ))
+    array([0, 1])
+    >>> _get_offsets((3, 4))
+    array([0, 1, 5, 4])
+    >>> _get_offsets((3, 4, 4))
+    array([ 0,  1,  5,  4, 16, 17, 21, 20])
 
-    >>> print _get_offsets ((16, ), ordering='ccw')
-    [1 0]
-    >>> print _get_offsets ((3, 4), ordering='ccw')
-    [1 0 4 5]
-    >>> print _get_offsets ((3, 4, 4), ordering='ccw')
-    [ 1  0  4  5 17 16 20 21]
+    >>> _get_offsets((16, ), ordering='ccw')
+    array([1, 0])
+    >>> _get_offsets((3, 4), ordering='ccw')
+    array([1, 0, 4, 5])
+    >>> _get_offsets((3, 4, 4), ordering='ccw')
+    array([ 1,  0,  4,  5, 17, 16, 20, 21])
     """
 
     if ordering not in ['cw', 'ccw', 'none']:
@@ -132,19 +133,14 @@ The nodes of an element can be ordered either clockwise or counter-clockwise.
 
 A 1D grid with three points has 2 elements.
 
-    >>> ids = get_connectivity ((3, ))
-    >>> len (ids)
-    4
-    >>> print ids
-    [0 1 1 2]
+    >>> get_connectivity ((3, ))
+    array([0, 1, 1, 2])
 
-    >>> ids = get_connectivity ((3, ), ordering='ccw')
-    >>> print ids
-    [1 0 2 1]
+    >>> get_connectivity ((3, ), ordering='ccw')
+    array([1, 0, 2, 1])
 
 
-A 2D grid with 3 rows and 4 columns of nodes.
-::
+A 2D grid with 3 rows and 4 columns of nodes::
 
     ( 0 ) --- ( 1 ) --- ( 2 ) --- ( 3 )
       |         |         |         |
@@ -156,41 +152,47 @@ A 2D grid with 3 rows and 4 columns of nodes.
       |         |         |         |
     ( 8 ) --- ( 9 ) --- ( 10) --- ( 11)
 
-    >>> print get_connectivity ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
-    [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
+    >>> get_connectivity((3, 4))
+    array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
+            6, 10,  9,  6,  7, 11, 10])
 
-    >>> print get_connectivity ((3, 4), ordering='ccw') #doctest: +NORMALIZE_WHITESPACE
-    [ 1 0 4 5 2 1 5 6 3 2 6 7 5 4 8 9 6 5 9 10 7 6 10 11]
+    >>> get_connectivity((3, 4), ordering='ccw')
+    array([ 1,  0,  4,  5,  2,  1,  5,  6,  3,  2,  6,  7,  5,  4,  8,  9,  6,
+            5,  9, 10,  7,  6, 10, 11])
 
 If ordering doesn't matter, set ordering to 'none' as this could be slightly faster.
 
-    >>> (ids, offsets) = get_connectivity ((3, 4), ordering='none', with_offsets=True)
-    >>> for offset in offsets:
-    ...     o = ids[offset-4:offset]
-    ...     o.sort ()
-    ...     print o
-    [0 1 4 5]
-    [1 2 5 6]
-    [2 3 6 7]
-    [4 5 8 9]
-    [ 5  6  9 10]
-    [ 6  7 10 11]
+    >>> (ids, offsets) = get_connectivity((3, 4), ordering='none', with_offsets=True)
+    >>> offsets
+    array([ 4,  8, 12, 16, 20, 24])
+    >>> ids
+    array([ 0,  1,  4,  5,  1,  2,  5,  6,  2,  3,  6,  7,  4,  5,  8,  9,  5,
+            6,  9, 10,  6,  7, 10, 11])
+
+Nodes connected to the first cell,
+
+    >>> ids[:offsets[0]]
+    array([0, 1, 4, 5])
+
+Nodes connected to the second cell,
+
+    >>> ids[offsets[0]:offsets[1]]
+    array([1, 2, 5, 6])
 
 Instead of using an offset array to indicate the end of each cell, you can return
 a list of connectivity arrays for each cell.
 
-    >>> shape = np.array ((3, 4))
-    >>> ids = get_connectivity (shape, ordering='cw', as_cell_list=True)
-    >>> len (ids) == (shape-1).prod ()
+    >>> shape = np.array((3, 4))
+    >>> ids = get_connectivity(shape, ordering='cw', as_cell_list=True)
+    >>> len(ids) == (shape - 1).prod()
     True
-    >>> for id in ids: print id
-    [0 1 5 4]
-    [1 2 6 5]
-    [2 3 7 6]
-    [4 5 9 8]
-    [ 5  6 10  9]
-    [ 6  7 11 10]
-
+    >>> ids # doctest: +NORMALIZE_WHITESPACE
+    [array([0, 1, 5, 4]),
+     array([1, 2, 6, 5]),
+     array([2, 3, 7, 6]),
+     array([4, 5, 9, 8]),
+     array([ 5,  6, 10,  9]),
+     array([ 6,  7, 11, 10])]
     """
     kwds.setdefault ('dtype', 'int64')
     kwds.setdefault ('ordering', 'cw')
@@ -227,9 +229,9 @@ def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
     """
     This is a little slower than the above and less general.
 
-    >>> print get_connectivity_2d ((3, 4)) #doctest: +NORMALIZE_WHITESPACE
-    [ 0 1 5 4 1 2 6 5 2 3 7 6 4 5 9 8 5 6 10 9 6 7 11 10]
-
+    >>> get_connectivity_2d((3, 4))
+    array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
+            6, 10,  9,  6,  7, 11, 10])
     """
     assert (len (shape)==2)
 

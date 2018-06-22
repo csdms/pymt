@@ -3,7 +3,7 @@
 import os
 import numpy as np
 from numpy.testing import assert_array_equal
-from nose.tools import (assert_true, assert_equal, assert_items_equal,
+from nose.tools import (assert_true, assert_equal, assert_list_equal,
                         assert_tuple_equal)
 
 from pymt.grids import RasterField
@@ -64,9 +64,9 @@ def test_2d_constant_shape():
     except Exception:
         raise AssertionError('%s: Could not open' % nc_file)
     else:
-        assert_items_equal(['x', 'y', 'time'], root.dimensions.keys())
-        assert_items_equal(['Elevation', 'x', 'y', 'time',
-                            'mesh'], root.variables)
+        assert_list_equal(['y', 'x', 'time'], list(root.dimensions.keys()))
+        assert_list_equal(['mesh', 'y', 'x', 'Elevation', 'time'],
+                          list(root.variables))
 
         assert_equal(3, len(root.dimensions['x']))
         assert_equal(2, len(root.dimensions['y']))
@@ -126,9 +126,9 @@ def test_2d_changing_shape():
     except Exception:
         raise AssertionError('%s: Could not open' % nc_file)
     else:
-        assert_items_equal(['x', 'y', 'time'], root.dimensions.keys())
-        assert_items_equal(['Temperature', 'x', 'y', 'time',
-                            'mesh'], root.variables)
+        assert_list_equal(['y', 'x', 'time'], list(root.dimensions.keys()))
+        assert_list_equal(['mesh', 'y', 'x', 'Temperature', 'time'],
+                          list(root.variables))
 
         assert_equal(3, len(root.dimensions['x']))
         assert_equal(3, len(root.dimensions['y']))

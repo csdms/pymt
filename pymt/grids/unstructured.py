@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from sys import maxint as MAXINT
+from six import MAXSIZE
 
 from .igrid import IGrid
 from .utils import (get_default_coordinate_units, get_default_coordinate_names,
@@ -155,7 +155,7 @@ class UnstructuredPoints(IGrid):
         nodes_per_cell = np.diff(self._offset)
         return max(self._offset[0], nodes_per_cell.max())
 
-    def get_connectivity_as_matrix(self, fill_val=MAXINT):
+    def get_connectivity_as_matrix(self, fill_val=MAXSIZE):
         nodes_per_cell = np.diff(self._offset)
 
         max_vertices = max(self._offset[0], nodes_per_cell.max())
@@ -206,37 +206,17 @@ Create the grid,
     >>> g.get_dim_count()
     2
 
-    >>> x = g.get_x()
-    >>> type(x)
-    <type 'numpy.ndarray'>
-    >>> x.dtype
-    dtype('float64')
-    >>> print x #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 2. 1. 3.]
+    >>> g.get_x()
+    array([ 0.,  2.,  1.,  3.])
 
-    >>> y = g.get_y()
-    >>> type(y)
-    <type 'numpy.ndarray'>
-    >>> y.dtype
-    dtype('float64')
-    >>> print y #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 1. 1.]
+    >>> g.get_y()
+    array([ 0.,  0.,  1.,  1.])
 
-    >>> c = g.get_connectivity()
-    >>> type(c)
-    <type 'numpy.ndarray'>
-    >>> c.dtype
-    dtype('int32')
-    >>> print c
-    [0 2 1 2 3 1]
+    >>> g.get_connectivity()
+    array([0, 2, 1, 2, 3, 1], dtype=int32)
 
-    >>> o = g.get_offset()
-    >>> type(o)
-    <type 'numpy.ndarray'>
-    >>> o.dtype
-    dtype('int32')
-    >>> print o
-    [3 6]
+    >>> g.get_offset()
+    array([3, 6], dtype=int32)
 
 
 Define a grid that consists of points in a line.
@@ -264,12 +244,12 @@ Eight point that form a unit cube.
     8
     >>> g.get_cell_count()
     1
-    >>> print g.get_x() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 1. 0. 1. 0. 1. 0. 1.]
-    >>> print g.get_y() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 1. 1. 0. 0. 1. 1.]
-    >>> print g.get_z() #doctest:+NORMALIZE_WHITESPACE
-    [ 0. 0. 0. 0. 1. 1. 1. 1.]
+    >>> g.get_x()
+    array([ 0.,  1.,  0.,  1.,  0.,  1.,  0.,  1.])
+    >>> g.get_y()
+    array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
+    >>> g.get_z()
+    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
 
 
     """

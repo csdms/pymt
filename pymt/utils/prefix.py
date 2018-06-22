@@ -33,7 +33,7 @@ def names_with_prefix(names, prefix):
         if name.startswith(prefix):
             matching_names[name] = None
 
-    return matching_names.keys()
+    return list(matching_names.keys())
 
 
 def strip_prefix(name, prefix):

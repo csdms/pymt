@@ -1,10 +1,11 @@
+from six.moves import xrange
 from nose.tools import assert_equal
 
 from pymt.component.component import Component
 from pymt.testing.assertions import assert_isfile_and_remove
 
 
-def test_print_events():
+def test_print_events(setup):
     air = Component.load("""
 name: air_port
 class: AirPort

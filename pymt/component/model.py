@@ -2,6 +2,7 @@ import types
 import os
 
 import yaml
+import six
 
 from .component import Component
 
@@ -30,7 +31,7 @@ def get_exchange_item_mapping(items):
     """
     mapping = []
     for item in items:
-        if isinstance(item, types.StringTypes):
+        if isinstance(item, six.string_types):
             item_map = (item, item)
         else:
             try:
@@ -56,7 +57,7 @@ class Model(object):
     def components(self):
         """Names of the components.
         """
-        return self._components.keys()
+        return list(self._components.keys())
 
     @property
     def driver(self):
@@ -225,7 +226,7 @@ class Model(object):
         ... connectivity: []
         ... '''
         >>> components = Model.load_components(source)
-        >>> components.keys()
+        >>> list(components.keys())
         ['air_port']
         """
         components = {}

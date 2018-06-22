@@ -2,6 +2,7 @@ import unittest
 import sys
 
 import numpy as np
+import six
 
 from pymt.grids import Unstructured
 from .test_utils import NumpyArrayMixIn
@@ -60,7 +61,7 @@ class TestUnstructuredGrid(unittest.TestCase, NumpyArrayMixIn):
                               np.array([0, 2, 1, 2, 3, 1]))
         mat, fill_val = grid.get_connectivity_as_matrix()
         self.assertArrayEqual(mat, np.array([[0, 2, 1], [2, 3, 1]]))
-        self.assertEqual(fill_val, sys.maxint)
+        self.assertEqual(fill_val, six.MAXSIZE)
 
     def test_connectivity_as_matrix_mixed_shapes(self):
         grid = Unstructured([0, 1, 2, 1, 2], [0, 0, 0, 1, 1],

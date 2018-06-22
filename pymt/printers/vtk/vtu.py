@@ -1,8 +1,8 @@
 #! /bin/env python
-
 import os
 from collections import namedtuple
 from xml.etree.ElementTree import ElementTree
+from six.moves import xrange
 
 from ...grids import UnstructuredField
 
@@ -142,7 +142,7 @@ class Database(IDatabase):
             self._path = path
             self._template = '%s_%%04d%s' % (root, ext)
         except Exception as e:
-            print 'Unable to open database: %s' % e
+            print('Unable to open database: %s' % e)
 
     def write(self, field, **kwargs):
         file_name = self._next_file_name()

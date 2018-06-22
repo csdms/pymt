@@ -2,6 +2,7 @@
 import types
 
 import numpy as np
+import six
 
 from .igrid import (IField, DimensionError, CenteringValueError,
                     CENTERING_CHOICES)
@@ -17,7 +18,7 @@ def combine_args_to_list (*args, **kwds):
     args = list (args)
     combined_args = []
     for arg in args:
-        if isinstance (arg, types.StringTypes):
+        if isinstance (arg, six.string_types):
             combined_args.append (arg)
         else:
             combined_args.extend (arg)
@@ -48,7 +49,7 @@ class GridField (Unstructured, IField):
             raise DimensionError (val.size, self.get_point_count ())
 
         self._field_times = {}
-        if not self._fields.has_key (field_name) or exist_action == 'clobber':
+        if field_name not in self._fields or exist_action == 'clobber':
             self._fields[field_name] = [val]
             self._field_times[field_name] = [time]
         else:
@@ -113,7 +114,7 @@ class GridField (Unstructured, IField):
     def values (self):
         return self._fields.values ()
     def has_field (self, name):
-        return self._fields.has_key (name)
+        return name in self._fields
 
 
 class UnstructuredField (GridField):
@@ -185,13 +186,13 @@ as the point grid. In either case, though, it will be flattened.
 If the size or shape doesn't match, it's an error.
 
     >>> data = np.arange (2)
-    >>> g.add_field ('bad var', data, centering='point')
+    >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: 2 != 6
 
     >>> data = np.ones ((3, 2))
-    >>> g.add_field ('bad var', data, centering='point')
+    >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: (3, 2) != (2, 3)
@@ -201,24 +202,24 @@ as a 1D array or with the same shape as the cell grid and if the
 size or shape doesn't match raise an exception.
 
     >>> data = np.arange (2)
-    >>> g.add_field ('var1', data, centering='zonal')
-    >>> g.get_field ('var1')
+    >>> g.add_field('var1', data, centering='zonal')
+    >>> g.get_field('var1')
     array([0, 1])
 
-    >>> data = np.ones ((2, 1))
-    >>> g.add_field ('bad var', data, centering='zonal')
+    >>> data = np.ones((2, 1))
+    >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: (2, 1) != (1, 2)
 
-    >>> data = np.arange (3)
-    >>> g.add_field ('bad var', data, centering='zonal')
+    >>> data = np.arange(3)
+    >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: 3 != 2
 
-    >>> data = np.array (3)
-    >>> g.add_field ('bad var', data, centering='zonal')
+    >>> data = np.array(3)
+    >>> g.add_field('bad var', data, centering='zonal')  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
     DimensionError: 1 != 2
@@ -261,19 +262,20 @@ A 3D-Field,
     >>> g.get_field ('Cell Data')
     array([  0.,  10.,  20.,  30.,  40.,  50.])
 
-    >>> print g.get_field ('Point Data') #doctest: +NORMALIZE_WHITESPACE
-    [-0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5
-     -0.5 2.5 -0.5 2.5 -0.5 2.5 -0.5 2.5]
+    >>> g.get_field('Point Data')
+    array([-0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,
+            2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5,
+           -0.5,  2.5])
 
-    >>> print g.get_shape ()
-    [4 3 2]
+    >>> g.get_shape()
+    array([4, 3, 2])
 
-    >>> g.get_x ().size == g.get_field ('Point Data').size
+    >>> g.get_x().size == g.get_field('Point Data').size
     True
-    >>> x = g.get_x ()
+    >>> x = g.get_x()
     >>> x.shape
     (24,)
-    >>> x.shape = g.get_shape ()
+    >>> x.shape = g.get_shape()
     >>> x.shape
     (4, 3, 2)
 

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
-
 import unittest
+
+from six.moves import xrange
 
 from pymt.task_status import TaskStatus
 

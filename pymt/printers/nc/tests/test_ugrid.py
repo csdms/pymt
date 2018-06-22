@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import unittest
 
 import numpy as np
@@ -42,7 +44,7 @@ class UniqueNameMixIn(object):
             try:
                 os.remove(file)
             except OSError as error:
-                print error
+                print(error)
                 pass
 
 

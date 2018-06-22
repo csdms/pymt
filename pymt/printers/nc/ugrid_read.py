@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+from six.moves import xrange
+
 from .constants import open_netcdf
 from ...grids import utils as gutils
 from ...grids import RectilinearField, StructuredField, UnstructuredField

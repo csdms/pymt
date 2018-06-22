@@ -105,13 +105,13 @@ array([ 0.,  1.,  2.,  3.,  4.,  5.])
 If the size or shape doesn't match, it's an error.
 
 >>> data = np.arange(2)
->>> g.add_field('bad var', data, centering='point')
+>>> g.add_field('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
     ...
 DimensionError: 2 != 6
 
 >>> data = np.ones((3, 2))
->>> g.add_field ('bad var', data, centering='point')
+>>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
     ...
 DimensionError: (3, 2) != (2, 3)

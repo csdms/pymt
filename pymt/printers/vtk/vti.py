@@ -1,8 +1,8 @@
 #! /bin/env python
 from .vtktypes import VtkUniformRectilinear
-from vtkxml import (VtkAppendedDataElement, VtkExtent, VtkOrigin, VtkSpacing,
-                    VtkRootElement, VtkGridElement, VtkPieceElement,
-                    VtkPointDataElement, VtkCellDataElement)
+from .vtkxml import (VtkAppendedDataElement, VtkExtent, VtkOrigin, VtkSpacing,
+                     VtkRootElement, VtkGridElement, VtkPieceElement,
+                     VtkPointDataElement, VtkCellDataElement)
 
 
 def get_elements(field, data_format='ascii', encoding='ascii'):

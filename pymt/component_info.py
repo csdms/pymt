@@ -1,9 +1,9 @@
 #! /usr/bin/env python
-
-
 import types
 import collections
-import ConfigParser
+
+import six
+from six.moves import configparser
 
 
 _KEY_TYPES = {
@@ -29,7 +29,7 @@ class Error(Exception):
 
 class InfoKeyError(Error):
     def __init__(self, keys):
-        if isinstance(keys, types.StringTypes):
+        if isinstance(keys, six.string_types):
             self._keys = keys
         else:
             self._keys = ', '.join(keys)
@@ -227,7 +227,7 @@ class ComponentInfo(object):
 
 
 def from_config_file(filenames, prefix='csdms.cmi.'):
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.read(filenames)
 
     component_infos = dict()
@@ -242,7 +242,7 @@ def to_config_file(filename, section, params):
     all_params = collections.defaultdict(str)
     all_params.update(params)
 
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
     config.add_section(section)
     for key in _VALID_KEYS:
         if key in _KEYS_BY_TYPE[str]:

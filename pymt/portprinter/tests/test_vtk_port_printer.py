@@ -1,3 +1,5 @@
+from six.moves import xrange
+
 from pymt.portprinter.port_printer import VtkPortPrinter
 from pymt.testing.ports import UniformRectilinearGridPort
 from pymt.testing.assertions import assert_isfile_and_remove
@@ -44,7 +46,7 @@ def test_multiple_files():
     assert_isfile_and_remove('sea_surface__temperature_0000.vtu')
 
 
-def test_port_as_string():
+def test_port_as_string(setup):
     printer = VtkPortPrinter('air_port', 'air__density')
     printer.open()
     printer.write()

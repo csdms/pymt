@@ -19,7 +19,7 @@ time_step: 1.0
 connectivity: []
 """
 
-def test_model_load():
+def test_model_load(setup):
     del_component_instances(['air_port'])
     with cd_temp() as _:
         os.mkdir('air')
@@ -28,7 +28,7 @@ def test_model_load():
         assert_equal(model.components, ['air_port'])
 
 
-def test_model_from_file():
+def test_model_from_file(setup):
     del_component_instances(['air_port'])
     with cd_temp() as _:
         os.mkdir('air')
@@ -39,7 +39,7 @@ def test_model_from_file():
         assert_equal(model.components, ['air_port'])
 
 
-def test_model_from_file_like():
+def test_model_from_file_like(setup):
     del_component_instances(['air_port'])
     with cd_temp() as _:
         os.mkdir('air')

@@ -235,7 +235,7 @@ def del_component_instances(names):
 
 def del_services():
     del_component_instances(get_component_instance_names())
-    for name in _COMPONENT_CLASSES.keys():
+    for name in list(_COMPONENT_CLASSES.keys()):
         del _COMPONENT_CLASSES[name]
 
 
@@ -247,4 +247,4 @@ def get_component_instance_names():
     list
         Names of all the instanciated components.
     """
-    return _COMPONENT_INSTANCES.keys()
+    return list(_COMPONENT_INSTANCES.keys())

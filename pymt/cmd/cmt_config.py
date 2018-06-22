@@ -8,6 +8,7 @@ import socket
 
 import json
 import yaml
+import six
 
 from model_metadata.metadata import find_model_data_files
 
@@ -21,19 +22,19 @@ class redirect(object):
         self._err = stderr or sys.stderr
 
     def __enter__(self):
-        if isinstance(self._out, types.StringTypes):
+        if isinstance(self._out, six.string_types):
             sys.stdout = open(self._out, 'w')
         else:
             sys.stdout = self._out
-        if isinstance(self._err, types.StringTypes):
+        if isinstance(self._err, six.string_types):
             sys.stderr = open(self._err, 'w')
         else:
             sys.stderr = self._err
 
     def __exit__(self, type, value, traceback):
-        if isinstance(self._out, types.StringTypes):
+        if isinstance(self._out, six.string_types):
             sys.stdout.close()
-        if isinstance(self._err, types.StringTypes):
+        if isinstance(self._err, six.string_types):
             sys.stderr.close()
             
         sys.stdout = self._stdout
@@ -113,7 +114,6 @@ def main():
                                     str(sys.version_info.micro)]),
     }
 
-    # print json.dumps(config)
     print(yaml.dump({'host': host, 'components': config},
                     default_flow_style=False), file=args.output)
 

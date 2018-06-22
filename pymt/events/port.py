@@ -7,6 +7,7 @@ import sys
 import types
 
 import yaml
+import six
 
 from ..mappers import NearestVal
 from ..component.grid import GridMixIn
@@ -27,7 +28,7 @@ class PortEvent(GridMixIn):
         Path to directory to execute port.
     """
     def __init__(self, *args, **kwds):
-        if isinstance(kwds['port'], types.StringTypes):
+        if isinstance(kwds['port'], six.string_types):
             self._port = services.get_component_instance(kwds['port'])
         else:
             self._port = kwds['port']
@@ -35,7 +36,7 @@ class PortEvent(GridMixIn):
         self._init_args = kwds.get('init_args', [])
         self._run_dir = kwds.get('run_dir', '.')
 
-        if isinstance(self._init_args, types.StringTypes):
+        if isinstance(self._init_args, six.string_types):
             self._init_args = [self._init_args]
 
         self._status_fp = open(os.path.abspath(os.path.join(self._run_dir, '_time.txt')), 'w')
@@ -128,11 +129,11 @@ class PortMapEvent(object):
         Method used to map values.
     """
     def __init__(self, *args, **kwds):
-        if isinstance(kwds['src_port'], types.StringTypes):
+        if isinstance(kwds['src_port'], six.string_types):
             self._src = services.get_component_instance(kwds['src_port'])
         else:
             self._src = kwds['src_port']
-        if isinstance(kwds['dst_port'], types.StringTypes):
+        if isinstance(kwds['dst_port'], six.string_types):
             self._dst = services.get_component_instance(kwds['dst_port'])
         else:
             self._dst = kwds['dst_port']
