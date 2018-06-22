@@ -5,7 +5,7 @@ import collections
 import six
 
 
-_TIME_SERIES_NAME_RE_PATTERN = '(?P<name>[a-zA-Z_]+)@t=(?P<time_stamp>\d+)$'
+_TIME_SERIES_NAME_RE_PATTERN = "(?P<name>[a-zA-Z_]+)@t=(?P<time_stamp>\d+)$"
 _TIME_SERIES_NAME_RE = re.compile(_TIME_SERIES_NAME_RE_PATTERN)
 
 
@@ -18,7 +18,7 @@ class TimeSeriesNameError(Error):
         self._name = name
 
     def __str__(self):
-        return 'invalid time series name: %s' % self._name
+        return "invalid time series name: %s" % self._name
 
 
 class TimeStampError(Error):
@@ -26,7 +26,7 @@ class TimeStampError(Error):
         self._time_stamp = time_stamp
 
     def __str__(self):
-        return 'invalid time stamp: %s' % self._time_stamp
+        return "invalid time stamp: %s" % self._time_stamp
 
 
 def time_stamp_as_string(time_stamp):
@@ -44,18 +44,18 @@ def time_stamp_as_string(time_stamp):
 def split(name):
     match = _TIME_SERIES_NAME_RE.match(name)
     if match is not None:
-        return match.group('name'), int(match.group('time_stamp'))
+        return match.group("name"), int(match.group("time_stamp"))
     else:
         raise TimeSeriesNameError(name)
 
 
 def unsplit(name, time_stamp):
-    return name + '@t=' + time_stamp_as_string(time_stamp)
+    return name + "@t=" + time_stamp_as_string(time_stamp)
 
 
-def extract_time_stamps_from_names(names, ordering='ascending', prefix=''):
-    if ordering not in ['ascending', 'descending', None]:
-        raise TypeError('ordering not understood: %s' % ordering)
+def extract_time_stamps_from_names(names, ordering="ascending", prefix=""):
+    if ordering not in ["ascending", "descending", None]:
+        raise TypeError("ordering not understood: %s" % ordering)
 
     time_stamps = collections.defaultdict(list)
 
@@ -70,16 +70,17 @@ def extract_time_stamps_from_names(names, ordering='ascending', prefix=''):
 
     if ordering is not None:
         for name in time_stamps:
-            time_stamps[name].sort(reverse=(ordering == 'descending'))
+            time_stamps[name].sort(reverse=(ordering == "descending"))
 
     return time_stamps
 
 
-def sort_time_series_names(names, ordering='ascending', prefix=''):
+def sort_time_series_names(names, ordering="ascending", prefix=""):
     ordered_names = dict()
 
-    time_stamps = extract_time_stamps_from_names(names, ordering=ordering,
-                                                 prefix=prefix)
+    time_stamps = extract_time_stamps_from_names(
+        names, ordering=ordering, prefix=prefix
+    )
     for (name, stamps) in time_stamps.items():
         ordered_names[name] = [unsplit(name, stamp) for stamp in stamps]
 

@@ -46,6 +46,7 @@ class cd_temp(object):
     >>> os.path.exists(temp_dir)
     False
     """
+
     def __init__(self, **kwds):
         self._dir = os.path.abspath(tempfile.mkdtemp(**kwds))
         self._starting_dir = os.path.abspath(os.getcwd())

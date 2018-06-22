@@ -51,12 +51,13 @@ append the variable name to the file name.
 
     >>> db.close ()
     """
+
     def __init__(self):
         super(Database, self).__init__()
 
-        self._var_name = ''
-        self._path = ''
-        self._template = ''
+        self._var_name = ""
+        self._path = ""
+        self._template = ""
         self._options = {}
 
     def open(self, path, var_name, **kwargs):
@@ -66,7 +67,7 @@ append the variable name to the file name.
 
         self._var_name = var_name
         self._path = path
-        self._template = '%s_%%04d%s' % (root, ext)
+        self._template = "%s_%%04d%s" % (root, ext)
 
         self._options.update(**kwargs)
 

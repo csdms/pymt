@@ -26,16 +26,23 @@ Examples
 
 
 def test_empty_docstring():
-    docstring = bmi_docstring('Model')
+    docstring = bmi_docstring("Model")
     assert_equal(docstring, DOCSTRING)
 
 
 def test_full_docstring():
-    docstring = bmi_docstring('DirtyHarry', author='Clint Eastwood',
-                              summary='The Good, The Bad, and the Ugly',
-                              version='0.1', license='To kill',
-                              doi='1977.12.23', url='welldoyapunk.org')
-    assert_equal(docstring, """
+    docstring = bmi_docstring(
+        "DirtyHarry",
+        author="Clint Eastwood",
+        summary="The Good, The Bad, and the Ugly",
+        version="0.1",
+        license="To kill",
+        doi="1977.12.23",
+        url="welldoyapunk.org",
+    )
+    assert_equal(
+        docstring,
+        """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -57,17 +64,25 @@ Examples
 >>> for _ in xrange(10):
 ...     model.update()
 >>> model.finalize()
-""".strip())
+""".strip(),
+    )
 
 
 def test_cite_as():
-    docstring = bmi_docstring('DirtyHarry', author='Clint Eastwood',
-                              summary='The Good, The Bad, and the Ugly',
-                              version='0.1', license='To kill',
-                              doi='1977.12.23', url='welldoyapunk.org',
-                              cite_as=['ref1', 'ref2'])
+    docstring = bmi_docstring(
+        "DirtyHarry",
+        author="Clint Eastwood",
+        summary="The Good, The Bad, and the Ugly",
+        version="0.1",
+        license="To kill",
+        doi="1977.12.23",
+        url="welldoyapunk.org",
+        cite_as=["ref1", "ref2"],
+    )
 
-    assert_equal(docstring, """
+    assert_equal(
+        docstring,
+        """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -94,4 +109,5 @@ Examples
 >>> for _ in xrange(10):
 ...     model.update()
 >>> model.finalize()
-""".strip())
+""".strip(),
+    )

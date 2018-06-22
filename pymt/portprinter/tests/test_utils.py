@@ -14,7 +14,7 @@ class TestFixArrayShape(unittest.TestCase):
         self.assertTupleEqual((4, 5), shape)
 
         shape = pp.fix_unknown_shape((), 0)
-        self.assertTupleEqual((0, ), shape)
+        self.assertTupleEqual((0,), shape)
 
     def test_one_unknown_dimension(self):
         shape = pp.fix_unknown_shape((4, -1), 20)
@@ -23,8 +23,8 @@ class TestFixArrayShape(unittest.TestCase):
         shape = pp.fix_unknown_shape((-1, 5), 20)
         self.assertTupleEqual((4, 5), shape)
 
-        shape = pp.fix_unknown_shape((-1, ), 20)
-        self.assertTupleEqual((20, ), shape)
+        shape = pp.fix_unknown_shape((-1,), 20)
+        self.assertTupleEqual((20,), shape)
 
     def test_multiple_unknown_dimension(self):
         with self.assertRaises(pp.DimensionError):
@@ -47,7 +47,7 @@ class TestFindUnknownDimension(unittest.TestCase):
         dimen = pp.find_unknown_dimension((4, 5))
         self.assertEqual(None, dimen)
 
-        dimen = pp.find_unknown_dimension((4, ))
+        dimen = pp.find_unknown_dimension((4,))
         self.assertEqual(None, dimen)
 
         dimen = pp.find_unknown_dimension(())
@@ -58,7 +58,7 @@ class TestFindUnknownDimension(unittest.TestCase):
         self.assertEqual(0, dimen)
         dimen = pp.find_unknown_dimension((4, -1))
         self.assertEqual(1, dimen)
-        dimen = pp.find_unknown_dimension((-1, ))
+        dimen = pp.find_unknown_dimension((-1,))
         self.assertEqual(0, dimen)
 
     def test_multiple_unknown_dimensions(self):

@@ -54,9 +54,18 @@ Examples
 """.strip()
 
 
-def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
-                  url=None, parameters=None, summary=None, cite_as=None,
-                  email=None):
+def bmi_docstring(
+    plugin,
+    author=None,
+    version=None,
+    license=None,
+    doi=None,
+    url=None,
+    parameters=None,
+    summary=None,
+    cite_as=None,
+    email=None,
+):
     """Build the docstring for a BMI model.
 
     Parameters
@@ -101,8 +110,15 @@ def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
         meta = PluginMetadata(plugin)
     except MetadataNotFoundError:
         if isinstance(plugin, six.string_types):
-            info = dict(authors=author, version=version, license=license,
-                        doi=doi, url=url, summary=summary, cite_as=cite_as)
+            info = dict(
+                authors=author,
+                version=version,
+                license=license,
+                doi=doi,
+                url=url,
+                summary=summary,
+                cite_as=cite_as,
+            )
             defaults = {}
             name = plugin
         else:
@@ -113,17 +129,17 @@ def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
         name = meta.name
 
     for param_name, param in defaults.items():
-        param['name'] = param_name
+        param["name"] = param_name
     defaults = defaults.values()
 
-    author = author or info['authors']
-    email = email or '-'
-    version = version or info['version']
-    license = license or info['license']
-    doi = doi or info['doi']
-    url = url or info['url']
-    summary = summary or info['summary']
-    cite_as = cite_as or info['cite_as']
+    author = author or info["authors"]
+    email = email or "-"
+    version = version or info["version"]
+    license = license or info["license"]
+    doi = doi or info["doi"]
+    url = url or info["url"]
+    summary = summary or info["summary"]
+    cite_as = cite_as or info["cite_as"]
     parameters = parameters or defaults
 
     if isinstance(author, six.string_types):
@@ -131,8 +147,8 @@ def bmi_docstring(plugin, author=None, version=None, license=None, doi=None,
     if isinstance(cite_as, six.string_types):
         cite_as = [cite_as]
 
-    env = jinja2.Environment(loader=jinja2.DictLoader({'docstring': _DOCSTRING}))
-    return env.get_template('docstring').render(
+    env = jinja2.Environment(loader=jinja2.DictLoader({"docstring": _DOCSTRING}))
+    return env.get_template("docstring").render(
         desc=summary,
         name=name,
         parameters=parameters,

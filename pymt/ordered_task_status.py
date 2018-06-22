@@ -45,13 +45,13 @@ class OrderedTaskStatus(object):
     >>> print(status)
     created
     """
-    def __init__(self, current=0, status='idling'):
+
+    def __init__(self, current=0, status="idling"):
         self._task_list = [
-            TaskStatus('create', started='creating', completed='created'),
-            TaskStatus('initialize', started='initializing',
-                       completed='initialized'),
-            TaskStatus('update', started='updating', completed='updated'),
-            TaskStatus('finalize', started='finalizing', completed='finalized'),
+            TaskStatus("create", started="creating", completed="created"),
+            TaskStatus("initialize", started="initializing", completed="initialized"),
+            TaskStatus("update", started="updating", completed="updated"),
+            TaskStatus("finalize", started="finalizing", completed="finalized"),
         ]
 
         if isinstance(current, six.string_types):
@@ -72,7 +72,7 @@ class OrderedTaskStatus(object):
             self._pop_next()
             self.current.start()
         else:
-            raise ValueError('%s: task is not next' % task)
+            raise ValueError("%s: task is not next" % task)
 
     def complete_task(self):
         """
@@ -109,11 +109,11 @@ class OrderedTaskStatus(object):
         if self.current.is_completed():
             self._current += 1
         else:
-            raise ValueError('current task is not complete')
+            raise ValueError("current task is not complete")
 
     def __str__(self):
         return self.status
 
     def __repr__(self):
-        kwds = ['current=%d' % self._current, 'status=%s' % repr(self.status)]
-        return 'OrderedTaskStatus(%s)' % ', '.join(kwds)
+        kwds = ["current=%d" % self._current, "status=%s" % repr(self.status)]
+        return "OrderedTaskStatus(%s)" % ", ".join(kwds)

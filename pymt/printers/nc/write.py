@@ -1,14 +1,26 @@
 #! /usr/bin/env python
 from warnings import warn
 
-from ...grids.assertions import (is_rectilinear, is_structured)
-from .ugrid import (NetcdfRectilinearField, NetcdfStructuredField,
-                    NetcdfUnstructuredField)
+from ...grids.assertions import is_rectilinear, is_structured
+from .ugrid import (
+    NetcdfRectilinearField,
+    NetcdfStructuredField,
+    NetcdfUnstructuredField,
+)
 
 
-def field_tofile(field, path, append=False, attrs=None, time=None,
-                 time_units=None, time_reference=None,
-                 long_name=None, fmt='NETCDF4', keep_open=False):
+def field_tofile(
+    field,
+    path,
+    append=False,
+    attrs=None,
+    time=None,
+    time_units=None,
+    time_reference=None,
+    long_name=None,
+    fmt="NETCDF4",
+    keep_open=False,
+):
     if time_units is not None:
         warn('ignoring keyword "time_units"', UserWarning)
     if time_reference is not None:

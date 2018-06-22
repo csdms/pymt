@@ -100,9 +100,9 @@ from .rectilinear import Rectilinear, RectilinearPoints
 
 class UniformRectilinearPoints(RectilinearPoints):
     def __init__(self, shape, spacing, origin, **kwds):
-        kwds.setdefault('indexing', 'xy')
-        kwds.setdefault('set_connectivity', False)
-        assert(len(shape) == len(spacing) == len(origin))
+        kwds.setdefault("indexing", "xy")
+        kwds.setdefault("set_connectivity", False)
+        assert len(shape) == len(spacing) == len(origin)
 
         xi = []
         for (nx, dx, x0) in zip(shape, spacing, origin):
@@ -138,11 +138,13 @@ Create a rectilinear grid with uniform spacing in the x and y directions.
 :returns: An instance of a UniformRectilinear grid.
 :rtype: UniformRectilinear
     """
-    def __init__(self, shape, spacing, origin, **kwds):
-        kwds['set_connectivity'] = False
-        super(UniformRectilinear, self).__init__(shape, spacing, origin,
-                                                 **kwds)
 
-if __name__ == '__main__':
+    def __init__(self, shape, spacing, origin, **kwds):
+        kwds["set_connectivity"] = False
+        super(UniformRectilinear, self).__init__(shape, spacing, origin, **kwds)
+
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

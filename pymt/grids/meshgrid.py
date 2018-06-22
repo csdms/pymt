@@ -92,27 +92,27 @@ def meshgrid(*xi, **kwargs):
 
     """
     if len(xi) < 2:
-        msg = 'meshgrid() takes 2 or more arguments (%d given)' % int(len(xi) > 0)
+        msg = "meshgrid() takes 2 or more arguments (%d given)" % int(len(xi) > 0)
         raise ValueError(msg)
 
     args = np.atleast_1d(*xi)
     ndim = len(args)
 
-    copy_ = kwargs.get('copy', True)
-    sparse = kwargs.get('sparse', False)
-    indexing = kwargs.get('indexing', 'xy')
-    if indexing not in ['xy', 'ij']:
+    copy_ = kwargs.get("copy", True)
+    sparse = kwargs.get("sparse", False)
+    indexing = kwargs.get("indexing", "xy")
+    if indexing not in ["xy", "ij"]:
         raise ValueError("Valid values for `indexing` are 'xy' and 'ij'.")
 
     s0 = (1,) * ndim
-    output = [x.reshape(s0[:i] + (-1,) + s0[i + 1::]) for i, x in enumerate(args)]
+    output = [x.reshape(s0[:i] + (-1,) + s0[i + 1 : :]) for i, x in enumerate(args)]
 
     shape = [x.size for x in output]
 
-    if indexing == 'xy':
+    if indexing == "xy":
         # switch first and second axis
-        output[0].shape = (1, -1) + (1,)*(ndim - 2)
-        output[1].shape = (-1, 1) + (1,)*(ndim - 2)
+        output[0].shape = (1, -1) + (1,) * (ndim - 2)
+        output[1].shape = (-1, 1) + (1,) * (ndim - 2)
         shape[0], shape[1] = shape[1], shape[0]
 
     if sparse:
@@ -129,8 +129,7 @@ def meshgrid(*xi, **kwargs):
             return np.broadcast_arrays(*output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
 
-
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -1,4 +1,3 @@
-
 class ChainEvent(object):
     def __init__(self, events):
         self._events = events

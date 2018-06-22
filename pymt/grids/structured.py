@@ -118,8 +118,7 @@ import numpy as np
 from .unstructured import Unstructured, UnstructuredPoints
 from pymt.grids.igrid import IField
 from pymt.grids.connectivity import get_connectivity
-from pymt.grids.utils import (get_default_coordinate_names,
-                              get_default_coordinate_units)
+from pymt.grids.utils import get_default_coordinate_names, get_default_coordinate_units
 
 
 class StructuredPoints(UnstructuredPoints):
@@ -128,25 +127,27 @@ class StructuredPoints(UnstructuredPoints):
         """
         (coordinates, shape) = (args[:-1], args[-1])
 
-        assert(len(coordinates) >= 1)
-        assert(len(coordinates) <= 3)
+        assert len(coordinates) >= 1
+        assert len(coordinates) <= 3
 
-        kwds.setdefault('set_connectivity', True)
-        indexing = kwds.pop('indexing', 'xy')
+        kwds.setdefault("set_connectivity", True)
+        indexing = kwds.pop("indexing", "xy")
 
-        if indexing != 'ij':
-            warnings.warn('only ij indexing is supported', RuntimeWarning)
-            indexing = 'ij'
+        if indexing != "ij":
+            warnings.warn("only ij indexing is supported", RuntimeWarning)
+            indexing = "ij"
 
         coordinate_names = kwds.pop(
-            'coordinate_names', get_default_coordinate_names(len(coordinates)))
+            "coordinate_names", get_default_coordinate_names(len(coordinates))
+        )
         coordinate_units = kwds.pop(
-            'units', get_default_coordinate_units(len(coordinates)))
+            "units", get_default_coordinate_units(len(coordinates))
+        )
 
         self._shape = np.array(shape, dtype=np.int64)
 
-        kwds['units'] = coordinate_units
-        kwds['coordinate_names'] = coordinate_names
+        kwds["units"] = coordinate_units
+        kwds["coordinate_names"] = coordinate_names
 
         super(StructuredPoints, self).__init__(*coordinates, **kwds)
 
@@ -193,24 +194,25 @@ Create a structured rectilinear grid.
 
 
     """
+
     def __init__(self, *args, **kwds):
-        kwds.setdefault('indexing', 'xy')
-        kwds.setdefault('set_connectivity', True)
-        ordering = kwds.pop('ordering', 'cw')
-        if ordering not in ['cw', 'ccw']:
+        kwds.setdefault("indexing", "xy")
+        kwds.setdefault("set_connectivity", True)
+        ordering = kwds.pop("ordering", "cw")
+        if ordering not in ["cw", "ccw"]:
             raise TypeError("ordering not understood (valid choices are 'cw' or 'ccw')")
 
         shape = args[-1]
 
-        if kwds['set_connectivity']:
-            (c, o) = get_connectivity(shape, ordering=ordering,
-                                      with_offsets=True)
+        if kwds["set_connectivity"]:
+            (c, o) = get_connectivity(shape, ordering=ordering, with_offsets=True)
             self._set_connectivity(c, o)
-            kwds['set_connectivity'] = False
+            kwds["set_connectivity"] = False
 
         super(Structured, self).__init__(*args, **kwds)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

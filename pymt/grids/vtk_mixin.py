@@ -6,11 +6,14 @@ import numpy as np
 try:
     from tvtk.api import tvtk
 except ImportError:
-    warnings.warn('vtk is not installed')
+    warnings.warn("vtk is not installed")
 
     class VtkGridMixIn(object):
         pass
+
+
 else:
+
     class VtkGridMixIn(object):
         _EDGE_COUNT_TO_TYPE = {
             1: tvtk.Vertex().cell_type,
@@ -49,8 +52,7 @@ else:
             return cell_types
 
         def vtk_connectivity(self):
-            cells = np.empty(self.get_vertex_count() + self.get_cell_count(),
-                             dtype=int)
+            cells = np.empty(self.get_vertex_count() + self.get_cell_count(), dtype=int)
 
             cell_nodes = self.get_connectivity()
 
@@ -62,7 +64,7 @@ else:
             offset = 1
             for cell in self.vtk_offsets():
                 n_nodes = cells[offset - 1]
-                cells[offset: offset + n_nodes] = cell_nodes[cell: cell + n_nodes]
+                cells[offset : offset + n_nodes] = cell_nodes[cell : cell + n_nodes]
 
                 offset += n_nodes + 1
 

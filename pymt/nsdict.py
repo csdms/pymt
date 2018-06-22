@@ -41,12 +41,13 @@ from collections import defaultdict
 def normpath(func):
     def _wrap(self, *args):
         return func(self, self._norm(args[0]), *(args[1:]))
+
     return _wrap
 
 
 class NamespaceDict(dict):
     def __init__(self, *args, **kwds):
-        self._sep = kwds.pop('sep', '/')
+        self._sep = kwds.pop("sep", "/")
         self._ref_count = defaultdict(int)
         self._ref_count[self._sep] = 1
 
@@ -83,7 +84,7 @@ class NamespaceDict(dict):
     @normpath
     def extract(self, base):
         if base == self._sep:
-            base = ''
+            base = ""
 
         new_dict = dict()
         for key in self._iter_sub_paths(base):
@@ -131,7 +132,7 @@ class NamespaceDict(dict):
         return name in self._ref_count
 
     def __repr__(self):
-        return 'NamespaceDict(%s)' % dict.__repr__(self)
+        return "NamespaceDict(%s)" % dict.__repr__(self)
 
     def __str__(self):
         return dict.__str__(self)
@@ -152,7 +153,7 @@ class NamespaceDict(dict):
     def _iter_paths(self, path):
         yield self._sep
         parts = self._split(path)
-        base = ''
+        base = ""
         for part in parts:
             base = self._join(base, part)
             yield base
@@ -164,13 +165,13 @@ class NamespaceDict(dict):
     @normpath
     def _iter_sub_paths(self, base):
         if base == self._sep:
-            base = ''
+            base = ""
         for key in self._ref_count.keys():
             if key.startswith(base):
                 try:
-                    yield key[len(base) + 1: ]
+                    yield key[len(base) + 1 :]
                 except IndexError:
-                    yield key[len(base): ]
+                    yield key[len(base) :]
         raise StopIteration
 
     def _sub_paths(self, base):
@@ -182,7 +183,7 @@ class NamespaceDict(dict):
 
     def _decrement_parent_path_references(self, name):
         for part in self._iter_paths(name):
-            assert(part in self._ref_count), (part, name)
+            assert part in self._ref_count, (part, name)
 
             self._ref_count[part] -= 1
             if self._ref_count[part] == 0:
@@ -194,6 +195,7 @@ class NamespaceDict(dict):
         return set(dict.keys(self))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

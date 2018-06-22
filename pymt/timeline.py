@@ -123,6 +123,7 @@ class Timeline(object):
     >>> hello
     ['hello', 'world', '!']
     """
+
     def __init__(self, events=None, start=0.):
         events = events or {}
 
@@ -167,7 +168,7 @@ class Timeline(object):
         try:
             return self._events[0]
         except IndexError:
-            raise IndexError('empty timeline')
+            raise IndexError("empty timeline")
 
     @property
     def time_of_next_event(self):
@@ -182,7 +183,7 @@ class Timeline(object):
         try:
             return self._times[0]
         except IndexError:
-            raise IndexError('empty timeline')
+            raise IndexError("empty timeline")
 
     @property
     def events(self):
@@ -308,11 +309,13 @@ class Timeline(object):
         'hello'
         """
         try:
-            (event, time, interval) = (self._events.pop(0),
-                                       self._times.pop(0),
-                                       self._intervals.pop(0))
+            (event, time, interval) = (
+                self._events.pop(0),
+                self._times.pop(0),
+                self._intervals.pop(0),
+            )
         except IndexError:
-            raise IndexError('pop from empty timeline')
+            raise IndexError("pop from empty timeline")
 
         try:
             self._insert_event(event, time + interval, interval)
@@ -339,9 +342,9 @@ class Timeline(object):
             The next event object as the timeline advances to *stop*.
         """
         try:
-            assert(stop >= self.time)
+            assert stop >= self.time
         except AssertionError:
-            raise ValueError('stop time is less than current time')
+            raise ValueError("stop time is less than current time")
 
         while self.time_of_next_event <= stop:
             yield self.pop()

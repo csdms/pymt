@@ -7,6 +7,7 @@ import numpy as np
 
 from ..grids import RasterField, StructuredField, UnstructuredField
 
+
 class Error(Exception):
     pass
 
@@ -25,7 +26,6 @@ class BadFileFormatError(Error):
 
     def __str__(self):
         return self._format
-
 
 
 def positive_dimensions(shape):
@@ -65,9 +65,9 @@ def find_unknown_dimension(shape):
     DimensionError
         There are multiple unknown dimensions.
     """
-    (unknown_dim, ) = np.where(np.array(shape) < 0)
+    (unknown_dim,) = np.where(np.array(shape) < 0)
     if len(unknown_dim) > 1:
-        raise DimensionError('more than one unknown dimension')
+        raise DimensionError("more than one unknown dimension")
     try:
         return unknown_dim[0]
     except IndexError:
@@ -102,12 +102,12 @@ def fix_unknown_shape(shape, size):
         new_shape = np.array(shape)
     else:
         if size != 0:
-            raise DimensionError('total size of new array must be unchanged')
-        return (0, )
+            raise DimensionError("total size of new array must be unchanged")
+        return (0,)
 
     known_element_count = np.prod(new_shape[new_shape > 0])
     if size % known_element_count != 0:
-        raise DimensionError('total size of new array must be unchanged')
+        raise DimensionError("total size of new array must be unchanged")
 
     unknown_dim = find_unknown_dimension(new_shape)
     if unknown_dim is not None:
@@ -117,7 +117,7 @@ def fix_unknown_shape(shape, size):
 
 
 def is_structured_port(port, grid_id):
-    if hasattr(port, 'get_grid_shape'):
+    if hasattr(port, "get_grid_shape"):
         shape = port.get_grid_shape(grid_id)
         if shape is None:
             return False
@@ -127,7 +127,7 @@ def is_structured_port(port, grid_id):
 
 
 def is_rectilinear_port(port, grid_id):
-    if is_structured_port(port, grid_id) and hasattr(port, 'get_grid_spacing'):
+    if is_structured_port(port, grid_id) and hasattr(port, "get_grid_spacing"):
         spacing = port.get_grid_spacing(grid_id)
         if spacing is None:
             return False
@@ -164,15 +164,15 @@ def _port_origin_as_array(port, grid_id):
             origin = port.get_grid_origin(grid_id)
         except AttributeError:
             origin = port.get_grid_lower_left(grid_id)
-            warnings.warn('get_grid_lower_left', DeprecationWarning)
+            warnings.warn("get_grid_lower_left", DeprecationWarning)
     return origin
 
 
 def _construct_port_as_rectilinear_field(port, grid_id, data_array):
     if len(data_array) == 1:
-        shape = np.array((1, ))
-        spacing = np.array((1., ))
-        origin = np.array((0., ))
+        shape = np.array((1,))
+        spacing = np.array((1.,))
+        origin = np.array((0.,))
     else:
         shape = _port_shape_as_array(port, grid_id)
         spacing = _port_spacing_as_array(port, grid_id)
@@ -180,7 +180,7 @@ def _construct_port_as_rectilinear_field(port, grid_id, data_array):
 
     shape = fix_unknown_shape(shape, data_array.size)
 
-    return RasterField(shape, spacing, origin, indexing='ij')
+    return RasterField(shape, spacing, origin, indexing="ij")
 
 
 def _construct_port_as_structured_field(port, grid_id, data_array):
@@ -223,26 +223,26 @@ def construct_port_as_field(port, var_name):
 
     grid_id = port.get_var_grid(var_name)
     if len(data_array) == 1 or is_rectilinear_port(port, grid_id):
-        field = _construct_port_as_rectilinear_field(port, grid_id,
-                                                     data_array)
+        field = _construct_port_as_rectilinear_field(port, grid_id, data_array)
     elif is_structured_port(port, grid_id):
         field = _construct_port_as_structured_field(port, grid_id, data_array)
     else:
         field = _construct_port_as_unstructured_field(port, grid_id)
 
-    field.add_field(var_name, data_array,
-                    centering=get_data_centering(field, data_array))
+    field.add_field(
+        var_name, data_array, centering=get_data_centering(field, data_array)
+    )
 
     return field
 
 
 def get_data_centering(field, data_array):
     if data_is_centered_on_points(field, data_array):
-        centering = 'point'
+        centering = "point"
     elif data_is_centered_on_cells(field, data_array):
-        centering = 'zonal'
+        centering = "zonal"
     else:
-        raise RuntimeError('statement should not be reached')
+        raise RuntimeError("statement should not be reached")
     return centering
 
 
@@ -258,7 +258,7 @@ def data_is_centered_on_cells(field, data):
     return data.size == field.get_cell_count()
 
 
-def reconstruct_port_as_field (port, field):
+def reconstruct_port_as_field(port, field):
     """Recreate a field object from a port.
 
     Add data from *port* to *field*. If the mesh of the port is no longer the
@@ -284,21 +284,18 @@ def reconstruct_port_as_field (port, field):
         if mesh_size_has_changed(field, data_array):
             field = construct_port_as_field(port, var_name)
         else:
-            field.add_field(var_name, data_array,
-                            centering=get_data_centering(field, data_array))
+            field.add_field(
+                var_name, data_array, centering=get_data_centering(field, data_array)
+            )
 
     return field
 
 
-_FORMAT_EXTENSION = {
-    'nc': '.nc',
-    'vtk': '.vtu',
-    'bov': '.bov'
-}
+_FORMAT_EXTENSION = {"nc": ".nc", "vtk": ".vtu", "bov": ".bov"}
 
 
 def normalize_format_name(fmt):
-    if fmt.startswith('.'):
+    if fmt.startswith("."):
         fmt = fmt[1:]
     return fmt.lower()
 
@@ -315,7 +312,7 @@ def _file_name_lacks_extension(file_name):
     return len(ext) <= 1
 
 
-def construct_file_name(var_name, template='${var}', fmt=None, prefix=''):
+def construct_file_name(var_name, template="${var}", fmt=None, prefix=""):
     file_template = string.Template(template)
     file_name = file_template.safe_substitute(var=var_name)
 
@@ -330,6 +327,6 @@ def next_unique_file_name(file_name):
     (base, ext) = os.path.splitext(file_name)
     count = 0
     while os.path.isfile(file_name):
-        file_name = base + '.%d' % count + ext
+        file_name = base + ".%d" % count + ext
         count += 1
     return file_name

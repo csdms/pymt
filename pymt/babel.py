@@ -44,18 +44,18 @@ def recursive_substitute(template, **kwds):
     return template
 
 
-def query_config_all(config='csdms-config'):
+def query_config_all(config="csdms-config"):
     try:
-        contents = subprocess.check_output([config, '--dump'])
+        contents = subprocess.check_output([config, "--dump"])
     except subprocess.CalledProcessError:
-        logging.info('Error running {prog}.'.format(prog=config))
+        logging.info("Error running {prog}.".format(prog=config))
     except OSError:
-        logging.info('Unable to run {prog} program.'.format(prog=config))
+        logging.info("Unable to run {prog} program.".format(prog=config))
 
     vars = {}
     for line in shlex.split(contents):
         try:
-            (key, var) = line.split('=', 1)
+            (key, var) = line.split("=", 1)
         except ValueError:
             pass
         else:
@@ -64,16 +64,16 @@ def query_config_all(config='csdms-config'):
     return vars
 
 
-def query_config_var(var, config='csdms-config', interpolate=True):
+def query_config_var(var, config="csdms-config", interpolate=True):
     """Get a configuration variable from a babel project."""
     value = None
 
     try:
-        value = subprocess.check_output([config, '--var', var]).strip()
+        value = subprocess.check_output([config, "--var", var]).strip()
     except subprocess.CalledProcessError:
-        logging.info('Error running {prog}.'.format(prog=config))
+        logging.info("Error running {prog}.".format(prog=config))
     except OSError:
-        logging.info('Unable to run {prog} program.'.format(prog=config))
+        logging.info("Unable to run {prog} program.".format(prog=config))
 
     if value is None:
         raise BabelConfigError(config)
@@ -88,12 +88,12 @@ def query_config_var(var, config='csdms-config', interpolate=True):
 def setup_babel_environ():
     """Set up environment variables to load babelized components."""
     try:
-        prefix = query_config_var('prefix', config='csdms-config')
-        ccaspec_babel_libs = query_config_var('CCASPEC_BABEL_LIBS',
-                                              config='cca-spec-babel-config')
+        prefix = query_config_var("prefix", config="csdms-config")
+        ccaspec_babel_libs = query_config_var(
+            "CCASPEC_BABEL_LIBS", config="cca-spec-babel-config"
+        )
     except BabelConfigError:
-        logging.info('Unable to configure for babel. Not loading components.')
+        logging.info("Unable to configure for babel. Not loading components.")
     else:
-        prepend_env_path('SIDL_DLL_PATH', os.path.join(prefix, 'share', 'cca'),
-                         sep=';')
-        prepend_env_path('LD_LIBRARY_PATH', ccaspec_babel_libs)
+        prepend_env_path("SIDL_DLL_PATH", os.path.join(prefix, "share", "cca"), sep=";")
+        prepend_env_path("LD_LIBRARY_PATH", ccaspec_babel_libs)

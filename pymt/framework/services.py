@@ -25,7 +25,7 @@ def register_component_classes(components, **kwds):
         register_component_class(name, **kwds)
 
 
-def register_component_class(name, if_exists='raise'):
+def register_component_class(name, if_exists="raise"):
     """Register a component with the framework.
 
     Add the component class, *name*, to the list of framework services. The
@@ -69,24 +69,25 @@ def register_component_class(name, if_exists='raise'):
     Traceback (most recent call last):
     ValueError: component class exists (AirPort)
     """
-    parts = name.split('.')
-    module_name, cls_name = ('.'.join(parts[:-1]), parts[-1])
+    parts = name.split(".")
+    module_name, cls_name = (".".join(parts[:-1]), parts[-1])
 
     if cls_name in _COMPONENT_CLASSES:
-        if if_exists == 'raise':
-            raise ValueError('component class exists (%s)' % cls_name)
-        elif if_exists == 'warn':
-            warnings.warn('component class exists (%s)' % cls_name)
+        if if_exists == "raise":
+            raise ValueError("component class exists (%s)" % cls_name)
+        elif if_exists == "warn":
+            warnings.warn("component class exists (%s)" % cls_name)
             return
-        elif if_exists == 'pass':
+        elif if_exists == "pass":
             return
 
     mod = __import__(module_name, fromlist=[cls_name])
     try:
         _COMPONENT_CLASSES[cls_name] = getattr(mod, cls_name)
     except (KeyError, AttributeError):
-        raise ImportError('cannot import component %s from %s' %
-                          (cls_name, module_name))
+        raise ImportError(
+            "cannot import component %s from %s" % (cls_name, module_name)
+        )
 
 
 def register_component_instance(name, instance):
@@ -114,7 +115,7 @@ def register_component_instance(name, instance):
     True
     """
     if name in _COMPONENT_INSTANCES:
-        raise ValueError('component instance exists (%s)' % name)
+        raise ValueError("component instance exists (%s)" % name)
     else:
         _COMPONENT_INSTANCES[name] = instance
 

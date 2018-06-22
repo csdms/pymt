@@ -89,10 +89,12 @@ class EventManager(object):
     >>> len(mngr)
     2
     """
+
     def __init__(self, *args):
         if len(args) > 1:
-            raise TypeError("__init__() takes 1 or 2 arguments (%d given)" %
-                            (len(args) + 1, ))
+            raise TypeError(
+                "__init__() takes 1 or 2 arguments (%d given)" % (len(args) + 1,)
+            )
 
         self._timeline = Timeline(*args)
         self._initializing = False
@@ -116,7 +118,7 @@ class EventManager(object):
                 try:
                     event.initialize()
                 except Exception:
-                    print('error initializing')
+                    print("error initializing")
                     print(event)
                     raise
             self._initialized = True
@@ -154,7 +156,7 @@ class EventManager(object):
         if self._initialized:
             if not self._finalizing:
                 self._finalizing = True
-                #for event in self._timeline.events:
+                # for event in self._timeline.events:
                 for (event, _) in self._order[::-1]:
                     event.finalize()
             self._initialized = False
@@ -182,7 +184,7 @@ class EventManager(object):
         return self._timeline.time
 
     @classmethod
-    def from_string(cls, source, prefix=''):
+    def from_string(cls, source, prefix=""):
         """Create an `EventManager` from a string.
 
         Parameters
@@ -206,7 +208,7 @@ class EventManager(object):
         return cls._from_config(config, prefix=prefix)
 
     @classmethod
-    def from_path(cls, path, prefix=''):
+    def from_path(cls, path, prefix=""):
         """Create an `EventManager` from a file.
 
         Parameters
@@ -230,11 +232,11 @@ class EventManager(object):
         return cls._from_config(config, prefix=prefix)
 
     @classmethod
-    def _from_config(cls, config, prefix=''):
+    def _from_config(cls, config, prefix=""):
         event_names = names_with_prefix(config.sections(), prefix)
         events = []
         for name in event_names:
-            events.append((name, config.get(name, 'interval')))
+            events.append((name, config.get(name, "interval")))
         return cls(events)
 
     def __enter__(self):

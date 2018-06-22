@@ -63,19 +63,22 @@ def load_plugin(entry_point, callback=None):
     object
         The plugin.
     """
-    module_name, cls_name = entry_point.split(':')
+    module_name, cls_name = entry_point.split(":")
 
     plugin = None
     try:
         module = importlib.import_module(module_name)
     except ImportError:
-        logging.info('Unable to import {module}.'.format(module=module_name))
+        logging.info("Unable to import {module}.".format(module=module_name))
     else:
         try:
             plugin = module.__dict__[cls_name]
         except KeyError:
-            logging.info('{plugin} not contained in {module}.'.format(
-                plugin=cls_name, module=module_name))
+            logging.info(
+                "{plugin} not contained in {module}.".format(
+                    plugin=cls_name, module=module_name
+                )
+            )
     if callback and plugin:
         plugin = callback(plugin)
 
@@ -98,7 +101,7 @@ def load_all_plugins(entry_points=[], callback=None):
         A list of loaded plugins.
     """
     try:
-        entry_points += os.environ['PYMT_PLUGINS'].split(';')
+        entry_points += os.environ["PYMT_PLUGINS"].split(";")
     except KeyError:
         pass
 
@@ -137,14 +140,14 @@ def discover_csdms_plugins():
     """
     entry_points = []
     try:
-        csdms_module = importlib.import_module('csdms')
+        csdms_module = importlib.import_module("csdms")
     except ImportError:
-        logging.info('Unable to import {module}.'.format(module='csdms'))
+        logging.info("Unable to import {module}.".format(module="csdms"))
     else:
-        files = glob(os.path.join(csdms_module.__path__[0], '*so'))
+        files = glob(os.path.join(csdms_module.__path__[0], "*so"))
         for path in files:
             name, ext = os.path.splitext(os.path.basename(path))
-            entry_points.append('csdms.{name}:{name}'.format(name=name))
+            entry_points.append("csdms.{name}:{name}".format(name=name))
 
     return entry_points
 
@@ -165,11 +168,12 @@ def load_csdms_plugins():
 def load_pymt_plugins(include_old_style=False):
     class Plugins(object):
         """PyMT BMI component plugins."""
+
         pass
 
     plugins = Plugins()
 
-    for entry_point in pkg_resources.iter_entry_points(group='pymt.plugins'):
+    for entry_point in pkg_resources.iter_entry_points(group="pymt.plugins"):
         try:
             plugin = entry_point.load()
         except Exception as err:

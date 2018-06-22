@@ -53,12 +53,18 @@ True
 from shapely.geometry import Point
 from shapely.geometry import asPoint, asLineString, asPolygon
 
-from pymt.grids import (UniformRectilinear, Rectilinear, Structured,
-                        Unstructured, UnstructuredPoints)
+from pymt.grids import (
+    UniformRectilinear,
+    Rectilinear,
+    Structured,
+    Unstructured,
+    UnstructuredPoints,
+)
 
 
 class UnstructuredMap(Unstructured):
-    name = 'Unstructured'
+    name = "Unstructured"
+
     def __init__(self, *args, **kwargs):
         super(UnstructuredMap, self).__init__(*args, **kwargs)
 
@@ -111,13 +117,13 @@ class UnstructuredMap(Unstructured):
         :returns: True if the point (x, y) is contained in the cell.
         :rtype: bool
         """
-        pt = Point((x,y))
-        return (self._polys[cell_id].contains(pt) or
-                self._polys[cell_id].touches(pt))
+        pt = Point((x, y))
+        return self._polys[cell_id].contains(pt) or self._polys[cell_id].touches(pt)
 
 
 class UnstructuredPointsMap(UnstructuredPoints):
-    name = 'UnstructuredPoints'
+    name = "UnstructuredPoints"
+
     def get_shared_cells(self, point_id):
         return []
 
@@ -126,17 +132,18 @@ class UnstructuredPointsMap(UnstructuredPoints):
 
 
 class StructuredMap(Structured, UnstructuredMap):
-    name = 'Structured'
+    name = "Structured"
 
 
 class RectilinearMap(Rectilinear, UnstructuredMap):
-    name = 'Rectilinear'
+    name = "Rectilinear"
 
 
 class UniformRectilinearMap(UniformRectilinear, UnstructuredMap):
-    name = 'UniformRectilinear'
+    name = "UniformRectilinear"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

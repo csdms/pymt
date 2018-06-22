@@ -21,8 +21,7 @@ class IDatabase(object):
 
 
 def field_changed_size(field, n_points, n_cells):
-    return (n_points != field.get_point_count() or
-            n_cells != field.get_cell_count())
+    return n_points != field.get_point_count() or n_cells != field.get_cell_count()
 
 
 class Database(IDatabase):
@@ -67,6 +66,7 @@ Elevation_time_series_0000.nc.
     >>> db.close()
 
     """
+
     def open(self, path, var_name, **kwds):
         self.close()
 
@@ -74,18 +74,17 @@ Elevation_time_series_0000.nc.
 
         self._var_name = var_name
         self._path = path
-        self._template = '%s_%%04d%s' % (root, ext)
+        self._template = "%s_%%04d%s" % (root, ext)
 
         self._point_count = None
         self._cell_count = None
 
     def write(self, field, **kwds):
-        kwds.setdefault('append', True)
+        kwds.setdefault("append", True)
 
-        if kwds['append']:
+        if kwds["append"]:
             if self._point_count is not None and self._cell_count is not None:
-                if field_changed_size(field, self._point_count,
-                                      self._cell_count):
+                if field_changed_size(field, self._point_count, self._cell_count):
                     self._path = self._next_file_name()
 
             self._point_count = field.get_point_count()
@@ -122,6 +121,7 @@ Elevation_time_series_0000.nc.
         return next_file_name
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

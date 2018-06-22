@@ -1,13 +1,21 @@
 #! /bin/env python
 from .vtktypes import VtkUniformRectilinear
-from .vtkxml import (VtkAppendedDataElement, VtkExtent, VtkOrigin, VtkSpacing,
-                     VtkRootElement, VtkGridElement, VtkPieceElement,
-                     VtkPointDataElement, VtkCellDataElement)
+from .vtkxml import (
+    VtkAppendedDataElement,
+    VtkExtent,
+    VtkOrigin,
+    VtkSpacing,
+    VtkRootElement,
+    VtkGridElement,
+    VtkPieceElement,
+    VtkPointDataElement,
+    VtkCellDataElement,
+)
 
 
-def get_elements(field, data_format='ascii', encoding='ascii'):
-    if data_format == 'appended':
-        data = VtkAppendedDataElement('', encoding=encoding)
+def get_elements(field, data_format="ascii", encoding="ascii"):
+    if data_format == "appended":
+        data = VtkAppendedDataElement("", encoding=encoding)
     else:
         data = None
 
@@ -16,17 +24,20 @@ def get_elements(field, data_format='ascii', encoding='ascii'):
     spacing = VtkSpacing(field.get_spacing()[::-1])
 
     element = {
-        'VTKFile': VtkRootElement(VtkUniformRectilinear),
-        'Grid': VtkGridElement(VtkUniformRectilinear, WholeExtent=extent,
-                               Origin=origin, Spacing=spacing),
-        'Piece': VtkPieceElement(Extent=extent),
-        'PointData': VtkPointDataElement(field.get_point_fields(),
-                                         append=data, encoding=encoding),
-        'CellData': VtkCellDataElement(field.get_cell_fields(), append=data,
-                                       encoding=encoding),
+        "VTKFile": VtkRootElement(VtkUniformRectilinear),
+        "Grid": VtkGridElement(
+            VtkUniformRectilinear, WholeExtent=extent, Origin=origin, Spacing=spacing
+        ),
+        "Piece": VtkPieceElement(Extent=extent),
+        "PointData": VtkPointDataElement(
+            field.get_point_fields(), append=data, encoding=encoding
+        ),
+        "CellData": VtkCellDataElement(
+            field.get_cell_fields(), append=data, encoding=encoding
+        ),
     }
 
     if data is not None:
-        element['AppendedData'] = data
+        element["AppendedData"] = data
 
     return element

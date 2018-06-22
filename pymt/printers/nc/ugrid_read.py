@@ -7,10 +7,10 @@ from ...grids import RectilinearField, StructuredField, UnstructuredField
 
 
 class NetcdfFieldReader(object):
-    def __init__(self, path, fmt='NETCDF4'):
+    def __init__(self, path, fmt="NETCDF4"):
         self._path = path
 
-        self._root = open_netcdf(path, mode='r', fmt=fmt)
+        self._root = open_netcdf(path, mode="r", fmt=fmt)
         self._topology = self._get_mesh_topology()
         self._field = None
         self._time = []
@@ -32,17 +32,19 @@ class NetcdfFieldReader(object):
         return self._time
 
     def _get_mesh_coordinate_data(self):
-        raise NotImplementedError('_get_mesh_coordinate_data')
+        raise NotImplementedError("_get_mesh_coordinate_data")
 
     def contains_time_dimension(self):
-        return 'time' in self._root.dimensions
+        return "time" in self._root.dimensions
 
     def is_variable_data(self, name):
         var = self._root.variables[name]
-        return (hasattr(var, 'standard_name') and
-                hasattr(var, 'units') and
-                hasattr(var, 'coordinates') and
-                hasattr(var, 'location'))
+        return (
+            hasattr(var, "standard_name")
+            and hasattr(var, "units")
+            and hasattr(var, "coordinates")
+            and hasattr(var, "location")
+        )
 
     def variable_data_names(self):
         names = []
@@ -55,10 +57,9 @@ class NetcdfFieldReader(object):
         return self._root.variables[name][:]
 
     def _get_mesh_topology(self):
-        topology = self._root.variables['mesh']
+        topology = self._root.variables["mesh"]
         try:
-            assert(topology.type in ['rectilinear', 'structured',
-                                     'unstructured'])
+            assert topology.type in ["rectilinear", "structured", "unstructured"]
         except AttributeError:
             pass
 
@@ -66,41 +67,44 @@ class NetcdfFieldReader(object):
 
     def _get_node_variable_data(self):
         for name in self.variable_data_names():
-            if self._root.variables[name].location == 'node':
+            if self._root.variables[name].location == "node":
                 data = self.variable_data(name)
                 if self.contains_time_dimension():
                     for time in xrange(len(self.time)):
-                        self._field.add_field(name + '@t=%d' % time,
-                                              data[time, :], centering='point')
-                    self._field.add_field(name, data[-1, :], centering='point')
+                        self._field.add_field(
+                            name + "@t=%d" % time, data[time, :], centering="point"
+                        )
+                    self._field.add_field(name, data[-1, :], centering="point")
                 else:
-                    self._field.add_field(name, data[:], centering='point')
+                    self._field.add_field(name, data[:], centering="point")
 
     def _get_face_variable_data(self):
         for name in self.variable_data_names():
-            if self._root.variables[name].location == 'face':
+            if self._root.variables[name].location == "face":
                 data = self.variable_data(name)
                 if self.contains_time_dimension():
                     for time in xrange(len(self.time)):
-                        self._field.add_field(name + '@t=%d' % time,
-                                              data[time, :], centering='cell')
-                    self._field.add_field(name, data[-1, :], centering='cell')
+                        self._field.add_field(
+                            name + "@t=%d" % time, data[time, :], centering="cell"
+                        )
+                    self._field.add_field(name, data[-1, :], centering="cell")
                 else:
-                    self._field.add_field(name, data[:], centering='cell')
+                    self._field.add_field(name, data[:], centering="cell")
 
     def _get_time_variable(self):
         if self.contains_time_dimension():
-            self._time = self.variable_data('time')
+            self._time = self.variable_data("time")
         else:
             self._time = []
 
     @property
     def time(self):
         if self.contains_time_dimension():
-            return self.variable_data('time')
+            return self.variable_data("time")
         else:
             return []
-        
+
+
 class NetcdfRectilinearFieldReader(NetcdfFieldReader):
     def _get_mesh_coordinate_data(self):
         coordinate_names = self._topology.node_coordinates.split()
@@ -140,8 +144,9 @@ class NetcdfUnstructuredFieldReader(NetcdfFieldReader):
             coordinates.append(self._root.variables[name])
 
         (connectivity, offset) = gutils.connectivity_matrix_as_array(
-            self.face_nodes_data(), self.face_nodes_fill_value)
+            self.face_nodes_data(), self.face_nodes_fill_value
+        )
         connectivity -= self.face_nodes_start_index()
-        self._field = UnstructuredField(*coordinates,
-                                        connectivity=connectivity,
-                                        offset=offset)
+        self._field = UnstructuredField(
+            *coordinates, connectivity=connectivity, offset=offset
+        )

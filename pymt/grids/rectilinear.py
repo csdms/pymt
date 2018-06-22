@@ -114,21 +114,22 @@ import numpy as np
 from pymt.grids.meshgrid import meshgrid
 from .structured import Structured, StructuredPoints
 
+
 class RectilinearPoints(StructuredPoints):
     def __init__(self, *args, **kwds):
-        kwds.setdefault('set_connectivity', False)
-        kwds.setdefault('indexing', 'xy')
+        kwds.setdefault("set_connectivity", False)
+        kwds.setdefault("indexing", "xy")
 
         n_dim = len(args)
-        assert(n_dim >= 1)
-        assert(n_dim <= 3)
+        assert n_dim >= 1
+        assert n_dim <= 3
 
         coords = []
         for arg in args:
             coords.append(np.array(arg, dtype=np.float64))
 
         if n_dim > 1:
-            XI = meshgrid(*coords, indexing='ij')
+            XI = meshgrid(*coords, indexing="ij")
         else:
             XI = [np.array(args[0], dtype=np.float64)]
 
@@ -173,19 +174,24 @@ class RectilinearPoints(StructuredPoints):
         return self._z_coordinates
 
     def get_xyz_coordinates(self):
-        return(self.get_x_coordinates(), self.get_y_coordinates(),
-               self.get_z_coordinates())
+        return (
+            self.get_x_coordinates(),
+            self.get_y_coordinates(),
+            self.get_z_coordinates(),
+        )
 
-    def get_axis_coordinates(self, axis=None, indexing='ij'):
-        assert(indexing == 'ij')
+    def get_axis_coordinates(self, axis=None, indexing="ij"):
+        assert indexing == "ij"
 
         if axis is None:
-            return [self.get_z_coordinates(),
-                    self.get_y_coordinates(),
-                    self.get_x_coordinates()]
+            return [
+                self.get_z_coordinates(),
+                self.get_y_coordinates(),
+                self.get_x_coordinates(),
+            ]
         else:
             n_dims = self.get_dim_count()
-            assert(axis < n_dims)
+            assert axis < n_dims
 
             axis = n_dims - axis - 1
 
@@ -214,11 +220,13 @@ Create a rectilinear grid.
 :returns: An instance of a Rectilinear grid.
 :rtype: Rectilinear
     """
+
     def __init__(self, *args, **kwds):
-        kwds['set_connectivity'] = True 
+        kwds["set_connectivity"] = True
         super(Rectilinear, self).__init__(*args, **kwds)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

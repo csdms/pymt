@@ -7,15 +7,15 @@ from six.moves import configparser
 
 
 _KEY_TYPES = {
-    'output_file_namespace': str,
-    'config_xml_file': str,
-    'initialize_arg': str,
-    'mappers': list,
-    'ports': list,
-    'optional_ports': list,
-    'init_ports': list,
-    'port_queue_dt': float,
-    'template_files': dict,
+    "output_file_namespace": str,
+    "config_xml_file": str,
+    "initialize_arg": str,
+    "mappers": list,
+    "ports": list,
+    "optional_ports": list,
+    "init_ports": list,
+    "port_queue_dt": float,
+    "template_files": dict,
 }
 _VALID_KEYS = set(_KEY_TYPES.keys())
 _KEYS_BY_TYPE = collections.defaultdict(set)
@@ -32,7 +32,7 @@ class InfoKeyError(Error):
         if isinstance(keys, six.string_types):
             self._keys = keys
         else:
-            self._keys = ', '.join(keys)
+            self._keys = ", ".join(keys)
 
     def __str__(self):
         return self._keys
@@ -67,15 +67,15 @@ def assert_no_unknown_keys(found_keys, known_keys):
 
 
 def prefix_is_empty(prefix):
-    return prefix is None or prefix == '.' or len(prefix) == 0
+    return prefix is None or prefix == "." or len(prefix) == 0
 
 
 def names_with_prefix(names, prefix):
     if prefix_is_empty(prefix):
         return set(names)
 
-    if not prefix.endswith('.'):
-        prefix = prefix + '.'
+    if not prefix.endswith("."):
+        prefix = prefix + "."
 
     matching_names = set()
     for name in names:
@@ -88,17 +88,17 @@ def strip_prefix(name, prefix):
     if prefix_is_empty(prefix):
         return name
 
-    if not prefix.endswith('.'):
-        prefix += '.'
+    if not prefix.endswith("."):
+        prefix += "."
 
     if name.startswith(prefix):
-        return name[len(prefix):]
+        return name[len(prefix) :]
     else:
-        raise ValueError('%s does not start with %s' % (name, prefix))
+        raise ValueError("%s does not start with %s" % (name, prefix))
 
 
 def config_value_to_list(config_value):
-    return [item.strip() for item in config_value.split(',') if len(item.strip()) > 0]
+    return [item.strip() for item in config_value.split(",") if len(item.strip()) > 0]
 
 
 def config_value_to_string(config_value):
@@ -112,14 +112,14 @@ def config_value_to_float(config_value):
 def config_value_to_mapping(config_value):
     mapping = {}
     if len(config_value.strip()) > 0:
-        for item in config_value.split(','):
-            (key, value) = item.split('->')
+        for item in config_value.split(","):
+            (key, value) = item.split("->")
             mapping[key.strip()] = value.strip()
     return mapping
 
 
 def list_to_config_value(names):
-    return ','.join(names)
+    return ",".join(names)
 
 
 def string_to_config_value(string):
@@ -132,21 +132,20 @@ def float_to_config_value(float_value):
 
 def mapping_to_config_value(mapping):
     if len(mapping) == 0:
-        return ''
+        return ""
 
     map_pairs = []
     for item in mapping.items():
-        map_pairs.append('->'.join(item))
-    return ','.join(map_pairs)
+        map_pairs.append("->".join(item))
+    return ",".join(map_pairs)
 
 
 class ComponentInfo(object):
     _keys = {
-        'str': set(['output_file_namespace', 'config_xml_file',
-                    'initialize_arg', ]),
-        'list': set([ 'mappers', 'ports', 'optional_ports', 'init_ports', ]),
-        'float': set(['port_queue_dt', ]),
-        'mapping': set(['template_files', ])
+        "str": set(["output_file_namespace", "config_xml_file", "initialize_arg"]),
+        "list": set(["mappers", "ports", "optional_ports", "init_ports"]),
+        "float": set(["port_queue_dt"]),
+        "mapping": set(["template_files"]),
     }
 
     def __init__(self, *args, **kwds):
@@ -161,7 +160,7 @@ class ComponentInfo(object):
         """
         params = dict(*args, **kwds)
 
-        #self._all_keys = self._get_all_keys(self._keys)
+        # self._all_keys = self._get_all_keys(self._keys)
         self._all_keys = _VALID_KEYS
 
         self.assert_no_missing_keys(params)
@@ -170,8 +169,8 @@ class ComponentInfo(object):
         self._params = dict()
         self._set_parameters(params)
 
-    #@staticmethod
-    #def _get_all_keys(key_types):
+    # @staticmethod
+    # def _get_all_keys(key_types):
     #    all_keys = set()
     #    for key_type in key_types.values():
     #        for key in key_type:
@@ -218,15 +217,15 @@ class ComponentInfo(object):
     def __getitem__(self, key):
         return self._params[key]
 
-    #def __setitem__(self, key, value):
+    # def __setitem__(self, key, value):
     #    self._params[key] = value
 
 
-#ALL_PARAMETER_NAMES = set()
-#ALL_PARAMETER_NAMES.update(*ComponentInfo._keys.values())
+# ALL_PARAMETER_NAMES = set()
+# ALL_PARAMETER_NAMES.update(*ComponentInfo._keys.values())
 
 
-def from_config_file(filenames, prefix='csdms.cmi.'):
+def from_config_file(filenames, prefix="csdms.cmi."):
     config = configparser.RawConfigParser()
     config.read(filenames)
 
@@ -254,11 +253,11 @@ def to_config_file(filename, section, params):
         elif key in _KEYS_BY_TYPE[dict]:
             config.set(section, key, mapping_to_config_value(all_params[key]))
 
-    with open(filename, 'w') as configfile:
+    with open(filename, "w") as configfile:
         config.write(configfile)
 
 
-def component_from_config_file(filenames, name, prefix='csdms.cmi.'):
+def component_from_config_file(filenames, name, prefix="csdms.cmi."):
     infos = from_config_file(filenames, prefix=prefix)
     try:
         return infos[name].dict

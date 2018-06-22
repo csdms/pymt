@@ -6,12 +6,14 @@ from collections import OrderedDict
 import six
 
 
-_TASK_STATUS_STRINGS = OrderedDict([
-    ('create', ('creating', 'created')),
-    ('initialize', ('initializing', 'initialized')),
-    ('update', ('updating', 'updated')),
-    ('finalize', ('finalizing', 'finalized')),
-])
+_TASK_STATUS_STRINGS = OrderedDict(
+    [
+        ("create", ("creating", "created")),
+        ("initialize", ("initializing", "initialized")),
+        ("update", ("updating", "updated")),
+        ("finalize", ("finalizing", "finalized")),
+    ]
+)
 _TASK_NAMES_IN_ORDER = _TASK_STATUS_STRINGS.keys()
 _TASK_COUNT = len(_TASK_NAMES_IN_ORDER)
 _TASK_NAME_TO_ID = dict(zip(_TASK_NAMES_IN_ORDER, range(_TASK_COUNT)))
@@ -33,7 +35,7 @@ def task_id_as_string(task):
 
 def task_status_as_string(task, status):
     if status == IDLE:
-        return 'idling'
+        return "idling"
     else:
         return _TASK_STATUS_STRINGS[task_id_as_string(task)][status]
 
@@ -60,13 +62,19 @@ def task_as_integer(task):
 
 
 class TaskStatus(object):
-    def __init__(self, name, started='started', completed='completed',
-                 idling='idling', status='idling'):
+    def __init__(
+        self,
+        name,
+        started="started",
+        completed="completed",
+        idling="idling",
+        status="idling",
+    ):
         self._name = name
         self._status_strings = {
-            'started': started,
-            'completed': completed,
-            'idling': idling,
+            "started": started,
+            "completed": completed,
+            "idling": idling,
         }
         self._status = getattr(self, self._normalize_status_string(status))
 
@@ -80,42 +88,42 @@ class TaskStatus(object):
 
     @property
     def started(self):
-        return self._status_strings['started']
+        return self._status_strings["started"]
 
     @property
     def completed(self):
-        return self._status_strings['completed']
+        return self._status_strings["completed"]
 
     @property
     def idling(self):
-        return self._status_strings['idling']
+        return self._status_strings["idling"]
 
     def start(self, allow_restart=False):
         if not allow_restart and self.is_completed():
-            raise ValueError('%s: Task has already completed' % self.name)
+            raise ValueError("%s: Task has already completed" % self.name)
         self._status = self.started
 
     def complete(self):
         if self.is_started() or self.is_completed():
             self._status = self.completed
         else:
-            raise ValueError('%s: Task not started' % self.name)
+            raise ValueError("%s: Task not started" % self.name)
 
     def idle(self):
         if self.is_started():
-            raise ValueError('%s: Task already started' % self.name)
+            raise ValueError("%s: Task already started" % self.name)
         elif self.is_completed():
-            raise ValueError('%s: Task already completed' % self.name)
+            raise ValueError("%s: Task already completed" % self.name)
         else:
             self._status = self.idling
 
     def update_to(self, status):
         status = self._normalize_status_string(status)
-        if status == 'idling':
+        if status == "idling":
             self.idle()
-        elif status == 'started':
+        elif status == "started":
             self.start()
-        elif status == 'completed':
+        elif status == "completed":
             self.start()
             self.complete()
         else:
@@ -136,16 +144,17 @@ class TaskStatus(object):
                     return norm_status
 
     def __str__(self):
-        return '%s: %s' % (self.name, self.status)
+        return "%s: %s" % (self.name, self.status)
 
     def __repr__(self):
         kwds = []
         for (key, value) in self._status_strings.items():
-            kwds.append('%s=%s' % (key, repr(value)))
-        kwds.append('status=%s' % repr(self._status))
-        return 'TaskStatus(%s, %s)' % (repr(self.name), ', '.join(kwds))
+            kwds.append("%s=%s" % (key, repr(value)))
+        kwds.append("status=%s" % repr(self._status))
+        return "TaskStatus(%s, %s)" % (repr(self.name), ", ".join(kwds))
 
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

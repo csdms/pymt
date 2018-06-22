@@ -7,6 +7,7 @@ import numpy as np
 class ConstantScalars(object):
     """Service component that returns scalars.
     """
+
     def initialize(self, filename):
         """Initialize the component from a file.
 
@@ -15,16 +16,16 @@ class ConstantScalars(object):
         filename : str
             Name of initialization file.
         """
-        with open(filename, 'r') as opened:
+        with open(filename, "r") as opened:
             scalar_vars = yaml.load(opened.read())
 
         self._vars = {}
         for (name, value) in scalar_vars.items():
             self._vars[name] = np.array(value, dtype=np.float)
 
-        self._shape = (1, )
-        self._spacing = (1., )
-        self._origin = (0., )
+        self._shape = (1,)
+        self._spacing = (1.,)
+        self._origin = (0.,)
 
         self._input_exchange_items = []
         self._output_exchange_items = list(self._vars.keys())

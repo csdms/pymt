@@ -28,8 +28,9 @@ class BmiError(Exception):
         self._status = status
 
     def __str__(self):
-        return 'Error calling BMI function: {fname} ({code})'.format(
-            fname=self._fname, code=self._status)
+        return "Error calling BMI function: {fname} ({code})".format(
+            fname=self._fname, code=self._status
+        )
 
 
 def val_or_raise(func, args):
@@ -41,8 +42,10 @@ def val_or_raise(func, args):
         status, val = rtn, None
 
     if status != 0:
-        raise RuntimeError('%s(%s) [Error code %d]' % (
-            func.__name__, ', '.join([repr(arg)for arg in args[1:]]), status))
+        raise RuntimeError(
+            "%s(%s) [Error code %d]"
+            % (func.__name__, ", ".join([repr(arg) for arg in args[1:]]), status)
+        )
     else:
         return val
 
@@ -54,8 +57,10 @@ def bmi_success_or_raise(bmi_status):
         status, val = bmi_status, None
 
     if status != 0:
-        raise RuntimeError('%s(%s) [Error code %d]' % (
-            func.__name__, ', '.join([repr(arg)for arg in args[1:]]), status))
+        raise RuntimeError(
+            "%s(%s) [Error code %d]"
+            % (func.__name__, ", ".join([repr(arg) for arg in args[1:]]), status)
+        )
     else:
         return val
 
@@ -89,8 +94,9 @@ def wrap_set_value(func):
         val : array_like
             Values to set.
         """
-        val = np.asarray(val).reshape((-1, ))
+        val = np.asarray(val).reshape((-1,))
         return val_or_raise(func, (self._base, name, val))
+
     wrap.__name__ = func.__name__
     return wrap
 
@@ -116,9 +122,9 @@ def wrap_get_value(func):
         if out is None:
             grid = self.get_var_grid(name)
             dtype = self.get_var_type(name)
-            if dtype == '':
+            if dtype == "":
                 print(self.get_output_var_names())
-                raise ValueError('{name} not understood'.format(name=name))
+                raise ValueError("{name} not understood".format(name=name))
             out = np.empty(self.get_grid_size(grid), dtype=dtype)
 
         val_or_raise(func, (self._base, name, out))
@@ -129,17 +135,17 @@ def wrap_get_value(func):
             except (AttributeError, NotImplementedError):
                 pass
             else:
-                Units.conform(out, Units(from_units), Units(units),
-                              inplace=True)
+                Units.conform(out, Units(from_units), Units(units), inplace=True)
 
         return out
+
     wrap.__name__ = func.__name__
     return wrap
 
 
 def wrap_get_time(func):
     def wrap(self, units=None):
-        time = val_or_raise(func, (self._base, ))
+        time = val_or_raise(func, (self._base,))
         if units is not None:
             try:
                 from_units = Units(self.get_time_units())
@@ -150,6 +156,7 @@ def wrap_get_time(func):
                 if not from_units.equals(to_units):
                     time = Units.conform(time, from_units, to_units)
         return time
+
     wrap.__name__ = func.__name__
     return wrap
 
@@ -157,10 +164,10 @@ def wrap_get_time(func):
 def wrap_get_grid_with_out_arg(func, dtype):
     def wrap(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_rank(grid),
-                           dtype=dtype)
+            out = np.empty(self.get_grid_rank(grid), dtype=dtype)
         val_or_raise(func, (self._base, grid, out))
         return out
+
     wrap.__name__ = func.__name__
     return wrap
 
@@ -174,7 +181,8 @@ def wrap_var_names(func):
         tuple of str
             Variable names as CSDMS Standard Names.
         """
-        return tuple(val_or_raise(func, (self._base, )))
+        return tuple(val_or_raise(func, (self._base,)))
+
     wrap.__name__ = func.__name__
     return wrap
 
@@ -182,22 +190,24 @@ def wrap_var_names(func):
 def wrap_initialize(func):
     def wrap(self, *args, **kwds):
         if len(args) == 0:
-            args = (self.setup(case=kwds.pop('case', 'default')), )
-        val_or_raise(func, (self._base, ) + args)
+            args = (self.setup(case=kwds.pop("case", "default")),)
+        val_or_raise(func, (self._base,) + args)
+
     wrap.__name__ = func.__name__
     return wrap
 
 
 def wrap_default(func):
     def wrap(self, *args):
-        return val_or_raise(func, (self._base, ) + args)
+        return val_or_raise(func, (self._base,) + args)
+
     wrap.__name__ = func.__name__
     return wrap
 
 
 def wrap_update_until(func):
     def wrap(self, then):
-        if hasattr(self._base, 'update_until'):
+        if hasattr(self._base, "update_until"):
             try:
                 self._base.update_until(then)
             except NotImplementedError:
@@ -211,8 +221,8 @@ def wrap_update_until(func):
 
 
 class TimeInterpolator(object):
-    def __init__(self, method='linear'):
-        self._method = method or 'linear'
+    def __init__(self, method="linear"):
+        self._method = method or "linear"
         self._data = []
         self._time = []
         self._ti = None
@@ -227,8 +237,13 @@ class TimeInterpolator(object):
 
     def interpolate(self, time):
         if self._func is None:
-            self._func = interp1d(self._time, self._data, axis=0,
-                                  kind=self._method, fill_value='extrapolate')
+            self._func = interp1d(
+                self._time,
+                self._data,
+                axis=0,
+                kind=self._method,
+                fill_value="extrapolate",
+            )
 
         return self._func(time)
 
@@ -236,14 +251,15 @@ class TimeInterpolator(object):
 class BmiTimeInterpolator(object):
     # def __init__(self, method='linear'):
     def __init__(self, *args, **kwds):
-        method = kwds.pop('method', 'linear')
+        method = kwds.pop("method", "linear")
         self._interpolators = dict(
-            [(name, None) for name in self.output_var_names if '__' in name])
+            [(name, None) for name in self.output_var_names if "__" in name]
+        )
         self.reset(method=method)
 
         super(BmiTimeInterpolator, self).__init__(*args, **kwds)
 
-    def reset(self, method='linear'):
+    def reset(self, method="linear"):
         for name in self._interpolators:
             self._interpolators[name] = TimeInterpolator(method=method)
 
@@ -255,7 +271,7 @@ class BmiTimeInterpolator(object):
                 self._interpolators[name].add_data(self.get_value(name), time)
             except BmiError:
                 self._interpolators.pop(name)
-                print('unable to get value for {name}. ignoring'.format(name=name))
+                print("unable to get value for {name}. ignoring".format(name=name))
 
     def interpolate(self, name, at):
         return self._interpolators[name].interpolate(at)
@@ -264,7 +280,7 @@ class BmiTimeInterpolator(object):
         with cd(self.initdir):
             then = self.time_from(then, units)
 
-            if hasattr(self.bmi, 'update_until'):
+            if hasattr(self.bmi, "update_until"):
                 try:
                     bmi_call(self.bmi.update_until, then)
                 except NotImplementedError:
@@ -282,7 +298,7 @@ class BmiTimeInterpolator(object):
 
 def transform_math_to_azimuth(angle, units):
     angle *= -1.
-    if units == Units('rad'):
+    if units == Units("rad"):
         angle += np.pi * .5
     else:
         angle += 90.
@@ -290,7 +306,7 @@ def transform_math_to_azimuth(angle, units):
 
 def transform_azimuth_to_math(angle, units):
     angle *= -1.
-    if units == Units('rad'):
+    if units == Units("rad"):
         angle -= np.pi * .5
     else:
         angle -= 90.
@@ -334,10 +350,10 @@ class DataValues(object):
         return self.values()
 
     def values(self, **kwds):
-        if 'out' in self.intent:
+        if "out" in self.intent:
             return self._bmi.get_value(self.name, **kwds)
         else:
-            raise ValueError('not an output var')
+            raise ValueError("not an output var")
 
     def __repr__(self):
         return str(self)
@@ -351,8 +367,14 @@ Attributes:
     grid: {grid}
     intent: {intent}
     location: {location}
-""".format(dtype=self.type, name=self.name, units=self.units,
-           grid=self.grid, intent=self.intent, location=self.location).strip()
+""".format(
+            dtype=self.type,
+            name=self.name,
+            units=self.units,
+            grid=self.grid,
+            intent=self.intent,
+            location=self.location,
+        ).strip()
 
 
 class _BmiCapV1(object):
@@ -373,21 +395,21 @@ class _BmiCapV1(object):
         else:
             return val
 
-    @deprecated(use='get_grid_number_of_vertices')
+    @deprecated(use="get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_vertex_count, grid)
 
-    @deprecated(use='get_grid_number_of_faces')
+    @deprecated(use="get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_face_count, grid)
 
-    @deprecated(use='get_grid_face_node_connectivity')
+    @deprecated(use="get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_vertex_count(grid), dtype=np.int32)
         return _BmiCapV1._bmi_call(self.bmi.get_grid_connectivity, grid, out)
 
-    @deprecated(use='get_grid_face_node_offset')
+    @deprecated(use="get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_face_count(grid), dtype=np.int32)
@@ -395,20 +417,19 @@ class _BmiCapV1(object):
 
 
 class _BmiCapV2(object):
-
-    @deprecated(use='get_grid_number_of_vertices')
+    @deprecated(use="get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return self.get_grid_number_of_vertices(grid)
 
-    @deprecated(use='get_grid_number_of_faces')
+    @deprecated(use="get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
         return self.get_grid_number_of_faces(grid)
 
-    @deprecated(use='get_grid_face_node_connectivity')
+    @deprecated(use="get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         return self.get_grid_face_node_connectivity(grid, out=out)
 
-    @deprecated(use='get_grid_face_node_offset')
+    @deprecated(use="get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         return self.get_grid_face_node_offset(grid, out=out)
 
@@ -452,7 +473,7 @@ class _BmiCap(object):
     def get_component_name(self):
         return bmi_call(self.bmi.get_component_name)
 
-    def initialize(self, fname=None, dir='.'):
+    def initialize(self, fname=None, dir="."):
         """Initialize the model.
 
         Parameters
@@ -464,7 +485,7 @@ class _BmiCap(object):
         """
         self._initdir = os.path.abspath(dir)
         with cd(self.initdir, create=False):
-            if bmi_call(self.bmi.initialize, fname or '') == 0:
+            if bmi_call(self.bmi.initialize, fname or "") == 0:
                 self._initialized = True
 
         for grid_id in self._grid_ids():
@@ -482,16 +503,15 @@ class _BmiCap(object):
             return bmi_call(self.bmi.finalize)
 
     def set_value(self, name, val):
-        val = np.asarray(val).reshape((-1, ))
+        val = np.asarray(val).reshape((-1,))
         return bmi_call(self.bmi.set_value, name, val)
 
-    def get_value(self, name, out=None, units=None, angle=None, at=None,
-                  method=None):
+    def get_value(self, name, out=None, units=None, angle=None, at=None, method=None):
         if out is None:
             grid = self.get_var_grid(name)
             dtype = self.get_var_type(name)
-            if dtype == '':
-                raise ValueError('{name} not understood'.format(name=name))
+            if dtype == "":
+                raise ValueError("{name} not understood".format(name=name))
             loc = self.get_var_grid_loc(name)
             out = np.empty(self.get_grid_dim(grid, loc), dtype=dtype)
 
@@ -518,12 +538,12 @@ class _BmiCap(object):
         #         Units.conform(out, Units(from_units), Units(units),
         #                       inplace=True)
 
-        if angle not in ('azimuth', 'math', None):
-            raise ValueError('angle not understood')
+        if angle not in ("azimuth", "math", None):
+            raise ValueError("angle not understood")
 
-        if angle == 'azimuth' and 'azimuth' not in name:
+        if angle == "azimuth" and "azimuth" not in name:
             transform_math_to_azimuth(out, to_units)
-        elif angle == 'math' and 'azimuth' in name:
+        elif angle == "math" and "azimuth" in name:
             transform_azimuth_to_math(out, to_units)
 
         return out
@@ -531,7 +551,7 @@ class _BmiCap(object):
     def get_value_ptr(self, name):
         return bmi_call(self.bmi.get_value_ptr, name)
 
-    @deprecated(use='get_grid_ndim')
+    @deprecated(use="get_grid_ndim")
     def get_grid_rank(self, grid):
         return self.get_grid_ndim(grid)
 
@@ -539,16 +559,16 @@ class _BmiCap(object):
         return bmi_call(self.bmi.get_grid_rank, grid)
 
     NUMBER_OF_ELEMENTS = {
-        'node': 'get_grid_number_of_nodes',
-        'edge': 'get_grid_number_of_edges',
-        'face': 'get_grid_number_of_faces',
-        'vertex': 'get_grid_number_of_vertices',
+        "node": "get_grid_number_of_nodes",
+        "edge": "get_grid_number_of_edges",
+        "face": "get_grid_number_of_faces",
+        "vertex": "get_grid_number_of_vertices",
     }
 
     def get_grid_dim(self, grid, dim):
         return getattr(self, self.NUMBER_OF_ELEMENTS[dim])(grid)
 
-    @deprecated(use='get_grid_number_of_nodes')
+    @deprecated(use="get_grid_number_of_nodes")
     def get_grid_size(self, grid):
         return self.get_grid_number_of_nodes(grid)
 
@@ -557,7 +577,7 @@ class _BmiCap(object):
 
     def get_grid_shape(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_ndim(grid), dtype='int32')
+            out = np.empty(self.get_grid_ndim(grid), dtype="int32")
         bmi_call(self.bmi.get_grid_shape, grid, out)
         return out
 
@@ -584,15 +604,13 @@ class _BmiCap(object):
 
     def get_grid_face_node_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_vertices(grid),
-                           dtype=np.int32)
+            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=np.int32)
         bmi_call(self.bmi.get_grid_face_nodes, grid, out)
         return out
 
     def get_grid_face_nodes(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_vertices(grid),
-                           dtype=np.int32)
+            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=np.int32)
         bmi_call(self.bmi.get_grid_face_nodes, grid, out)
         return out
 
@@ -708,11 +726,11 @@ class _BmiCap(object):
         return time
 
     def get_var_intent(self, name):
-        intent = ''
+        intent = ""
         if name in self.input_var_names:
-            intent += 'in'
+            intent += "in"
         if name in self.output_var_names:
-            intent += 'out'
+            intent += "out"
         return intent
 
     def get_var_location(self, name):
@@ -722,7 +740,7 @@ class _BmiCap(object):
         try:
             self.bmi.get_var_location
         except AttributeError:
-            return 'node'
+            return "node"
         else:
             return bmi_call(self.bmi.get_var_location, name)
 
@@ -740,8 +758,8 @@ class _BmiCap(object):
 
     def get_var_units(self, name):
         units = bmi_call(self.bmi.get_var_units, name)
-        if units == '-':
-            return ''
+        if units == "-":
+            return ""
         else:
             return units
 
@@ -751,30 +769,30 @@ class _BmiCap(object):
         for var in set(self.input_var_names + self.output_var_names):
             var_desc = {
                 # 'name': var,
-                'intent': '',
-                'units': self.get_var_units(var),
-                'dtype': self.get_var_type(var),
-                'itemsize': self.get_var_itemsize(var),
-                'nbytes': self.get_var_nbytes(var),
-                'grid': self.get_var_grid(var),
+                "intent": "",
+                "units": self.get_var_units(var),
+                "dtype": self.get_var_type(var),
+                "itemsize": self.get_var_itemsize(var),
+                "nbytes": self.get_var_nbytes(var),
+                "grid": self.get_var_grid(var),
             }
             vars[var] = var_desc
 
             if var in self.input_var_names:
-                var_desc['intent'] += 'in'
+                var_desc["intent"] += "in"
             if var in self.output_var_names:
-                var_desc['intent'] += 'out'
+                var_desc["intent"] += "out"
             # vars.append(var_desc)
-            grid_ids.add(var_desc['grid'])
+            grid_ids.add(var_desc["grid"])
         # vars.sort(cmp=lambda a, b: cmp(a['name'], b['name']))
 
         grids = {}
         for grid_id in grid_ids:
             grid_desc = {
                 # 'id': grid_id,
-                'rank': self.get_grid_ndim(grid_id),
-                'size': self.get_grid_size(grid_id),
-                'type': self.get_grid_type(grid_id),
+                "rank": self.get_grid_ndim(grid_id),
+                "size": self.get_grid_size(grid_id),
+                "type": self.get_grid_type(grid_id),
             }
             grids[grid_id] = grid_desc
             # grids.append(grid_desc)
@@ -786,19 +804,19 @@ class _BmiCap(object):
         out_vars.sort()
 
         times = {
-            'start': self.get_start_time(),
-            'end': self.get_end_time(),
-            'current': self.get_current_time(),
+            "start": self.get_start_time(),
+            "end": self.get_end_time(),
+            "current": self.get_current_time(),
             # 'time_step': self.get_time_step(),
-            'units': self.get_time_units(),
+            "units": self.get_time_units(),
         }
         return {
-            'name': self.name,
-            'input_var_names': in_vars,
-            'output_var_names': out_vars,
-            'vars': vars,
-            'grids': grids,
-            'times': times,
+            "name": self.name,
+            "input_var_names": in_vars,
+            "output_var_names": out_vars,
+            "vars": vars,
+            "grids": grids,
+            "times": times,
         }
 
     def as_yaml(self):
@@ -811,11 +829,14 @@ class _BmiCap(object):
         return quick_plot(self, name, **kwds)
 
     def __str__(self):
-        return yaml.dump({
-            'name': self.name,
-            'input_var_names': list(self.input_var_names),
-            'output_var_names': list(self.output_var_names),
-        }, default_flow_style=False)
+        return yaml.dump(
+            {
+                "name": self.name,
+                "input_var_names": list(self.input_var_names),
+                "output_var_names": list(self.output_var_names),
+            },
+            default_flow_style=False,
+        )
 
 
 class BmiCap(GridMapperMixIn, _BmiCap, BmiTimeInterpolator, SetupMixIn):

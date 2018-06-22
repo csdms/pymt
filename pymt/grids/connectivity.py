@@ -41,7 +41,7 @@ array([27, 26, 30, 31, 43, 42, 46, 47])
 import numpy as np
 
 
-def _get_interior_ids (shape, dtype='int64'):
+def _get_interior_ids(shape, dtype="int64"):
     """
     Get indices to the interior nodes of a structured grid. These are
     essentially the upper-left corners of cells formed by the points.
@@ -58,15 +58,15 @@ def _get_interior_ids (shape, dtype='int64'):
     >>> _get_interior_ids((3, 3, 4))
     array([ 0,  1,  2,  4,  5,  6, 12, 13, 14, 16, 17, 18])
     """
-    i = np.arange (np.prod (shape), dtype=dtype)
+    i = np.arange(np.prod(shape), dtype=dtype)
     i.shape = shape
     obj = []
     for d in shape:
-        obj.append (slice (0, d-1))
-    return i[obj].flatten ()
+        obj.append(slice(0, d - 1))
+    return i[obj].flatten()
 
 
-def _get_offsets (shape, ordering='cw', dtype='int64'):
+def _get_offsets(shape, ordering="cw", dtype="int64"):
     """
     >>> _get_offsets((16, ))
     array([0, 1])
@@ -83,30 +83,32 @@ def _get_offsets (shape, ordering='cw', dtype='int64'):
     array([ 1,  0,  4,  5, 17, 16, 20, 21])
     """
 
-    if ordering not in ['cw', 'ccw', 'none']:
-        raise TypeError ("Ordering value not understood (known values are 'cw', 'ccw' and 'none')")
-    if ordering == 'none':
+    if ordering not in ["cw", "ccw", "none"]:
+        raise TypeError(
+            "Ordering value not understood (known values are 'cw', 'ccw' and 'none')"
+        )
+    if ordering == "none":
         ordered = False
     else:
         ordered = True
 
-    if ordering == 'ccw':
-        offsets = np.array ([1, 0], dtype=dtype)
+    if ordering == "ccw":
+        offsets = np.array([1, 0], dtype=dtype)
     else:
-        offsets = np.array ([0, 1], dtype=dtype)
+        offsets = np.array([0, 1], dtype=dtype)
 
-    strides = np.cumprod (list (shape[-1:0:-1]))
-    for (dim, stride) in enumerate (strides):
+    strides = np.cumprod(list(shape[-1:0:-1]))
+    for (dim, stride) in enumerate(strides):
         new_offsets = offsets + stride
-        if ordered and dim%2==0:
-            offsets = np.append (offsets, new_offsets[::-1])
+        if ordered and dim % 2 == 0:
+            offsets = np.append(offsets, new_offsets[::-1])
         else:
-            offsets = np.append (offsets, new_offsets)
+            offsets = np.append(offsets, new_offsets)
 
     return offsets
 
 
-def get_connectivity (shape, **kwds):
+def get_connectivity(shape, **kwds):
     """
 Get the connectivity (and, optionally, offset) array for an ND structured
 grid. Elements will consist of two points for 1D grids, four points for
@@ -194,38 +196,38 @@ a list of connectivity arrays for each cell.
      array([ 5,  6, 10,  9]),
      array([ 6,  7, 11, 10])]
     """
-    kwds.setdefault ('dtype', 'int64')
-    kwds.setdefault ('ordering', 'cw')
-    with_offsets = kwds.pop ('with_offsets', False)
-    as_cell_list = kwds.pop ('as_cell_list', False)
+    kwds.setdefault("dtype", "int64")
+    kwds.setdefault("ordering", "cw")
+    with_offsets = kwds.pop("with_offsets", False)
+    as_cell_list = kwds.pop("as_cell_list", False)
 
     if with_offsets:
-        assert (not as_cell_list)
+        assert not as_cell_list
 
-    c0 = _get_interior_ids (shape, dtype=kwds['dtype'])
-    offsets = _get_offsets (shape, **kwds)
-    points_per_cell = len (offsets)
+    c0 = _get_interior_ids(shape, dtype=kwds["dtype"])
+    offsets = _get_offsets(shape, **kwds)
+    points_per_cell = len(offsets)
 
     if as_cell_list:
         l = []
         for offset in offsets:
-            l.append (c0 + offset)
+            l.append(c0 + offset)
         c = []
-        for cell in zip (*l):
-            c.append (np.array (cell, dtype=kwds['dtype']))
+        for cell in zip(*l):
+            c.append(np.array(cell, dtype=kwds["dtype"]))
     else:
-        c = np.empty ((c0.size * points_per_cell, ), dtype=kwds['dtype'])
-        for (i, offset) in enumerate (offsets):
+        c = np.empty((c0.size * points_per_cell,), dtype=kwds["dtype"])
+        for (i, offset) in enumerate(offsets):
             c[i::points_per_cell] = c0 + offset
 
     if with_offsets:
-        o = np.arange (points_per_cell, len (c) + 1, points_per_cell, dtype=kwds['dtype'])
+        o = np.arange(points_per_cell, len(c) + 1, points_per_cell, dtype=kwds["dtype"])
         return (c, o)
     else:
         return c
 
 
-def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
+def get_connectivity_2d(shape, ordering="cw", dtype="int64"):
     """
     This is a little slower than the above and less general.
 
@@ -233,20 +235,20 @@ def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
     array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
             6, 10,  9,  6,  7, 11, 10])
     """
-    assert (len (shape)==2)
+    assert len(shape) == 2
 
-    point_count = shape[0]*shape[1]
+    point_count = shape[0] * shape[1]
 
-    point_ids = np.arange (point_count, dtype=dtype)
+    point_ids = np.arange(point_count, dtype=dtype)
     point_ids.shape = shape
 
-    c_ul = point_ids[:-1,:-1].flatten ()
-    c_ur = point_ids[:-1,1:].flatten ()
-    c_lr = point_ids[1:,1:].flatten ()
-    c_ll = point_ids[1:,:-1].flatten ()
+    c_ul = point_ids[:-1, :-1].flatten()
+    c_ur = point_ids[:-1, 1:].flatten()
+    c_lr = point_ids[1:, 1:].flatten()
+    c_ll = point_ids[1:, :-1].flatten()
 
-    c = np.empty ((4*c_ul.size, ), dtype=c_ul.dtype)
-    if ordering=='cw':
+    c = np.empty((4 * c_ul.size,), dtype=c_ul.dtype)
+    if ordering == "cw":
         c[::4] = c_ul
         c[1::4] = c_ur
         c[2::4] = c_lr
@@ -260,18 +262,18 @@ def get_connectivity_2d (shape, ordering='cw', dtype='int64'):
     return c
 
 
-def get_connectivity_1d (shape, ordering='cw', dtype='int64'):
-    assert (len (shape)==1)
+def get_connectivity_1d(shape, ordering="cw", dtype="int64"):
+    assert len(shape) == 1
 
     point_count = shape[0]
 
-    point_ids = np.arange (point_count, dtype=dtype)
+    point_ids = np.arange(point_count, dtype=dtype)
 
     c_left = point_ids[:-1]
     c_right = point_ids[1:]
 
-    c = np.empty ((4*c_left.size, ), dtype=c_left.dtype)
-    if ordering=='cw':
+    c = np.empty((4 * c_left.size,), dtype=c_left.dtype)
+    if ordering == "cw":
         c[::2] = c_left
         c[1::2] = c_right
     else:
@@ -280,7 +282,8 @@ def get_connectivity_1d (shape, ordering='cw', dtype='int64'):
 
     return c
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod (optionflags=doctest.NORMALIZE_WHITESPACE)
 
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
