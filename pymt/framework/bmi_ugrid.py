@@ -26,6 +26,8 @@ def dataset_from_bmi_grid(bmi, grid_id):
         grid = dataset_from_bmi_scalar(bmi, grid_id)
     elif grid_type.startswith("unstructured"):
         grid = dataset_from_bmi_unstructured(bmi, grid_id)
+    elif grid_type == 'vector':
+        grid = dataset_from_bmi_vector(bmi, grid_id)
     else:
         raise ValueError("grid type not understood ({gtype})".format(gtype=grid_type))
 
@@ -44,6 +46,24 @@ def dataset_from_bmi_scalar(bmi, grid_id):
             ("long_name", "scalar value"),
             ("topology_dimension", rank),
             ("type", "scalar"),
+        ]
+    )
+
+    return xr.Dataset({"mesh": xr.DataArray(data=grid_id, attrs=attrs)})
+
+
+def dataset_from_bmi_vector(bmi, grid_id):
+    rank = bmi.get_grid_ndim(grid_id)
+
+    if rank != 1:
+        raise ValueError("scalar must be rank 1")
+
+    attrs = OrderedDict(
+        [
+            ("cf_role", "grid_topology"),
+            ("long_name", "vector value"),
+            ("topology_dimension", rank),
+            ("type", "vector"),
         ]
     )
 
