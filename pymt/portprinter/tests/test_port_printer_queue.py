@@ -7,7 +7,7 @@ from pymt.portprinter.port_printer import PortPrinter
 from pymt.testing.assertions import assert_isfile_and_remove
 
 
-def test_one_printer(setup):
+def test_one_printer(with_two_components):
     queue = PortPrinter.from_string(
         """
 [print.air__density]
@@ -23,7 +23,7 @@ port=air_port
     assert_isfile_and_remove("air__density_0000.vtu")
 
 
-def test_multiple_printers(setup):
+def test_multiple_printers(with_two_components):
     queue = PortPrinter.from_string(
         """
 [print.air__density]
