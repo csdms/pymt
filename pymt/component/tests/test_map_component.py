@@ -5,7 +5,7 @@ from pymt.component.component import Component
 from pymt.testing.assertions import assert_isfile_and_remove
 
 
-def test_print_events(setup):
+def test_print_events(with_no_components):
     air = Component.load(
         """
 name: air_port
