@@ -55,6 +55,12 @@ def register_component_class(name, if_exists="raise"):
 
     Examples
     --------
+    >>> from pymt.framework.services import (
+    ...     del_services,
+    ...     register_component_class,
+    ...     get_component_class
+    ... )
+
     >>> del_services()
     >>> register_component_class('pymt.testing.services.AirPort')
     >>> get_component_class('AirPort')
@@ -107,6 +113,12 @@ def register_component_instance(name, instance):
 
     Examples
     --------
+    >>> from pymt.framework.services import (
+    ...     del_services,
+    ...     register_component_class,
+    ...     get_component_instance
+    ... )
+
     >>> del_services()
     >>> from pymt.testing.services import AirPort
     >>> air_port = AirPort()
@@ -165,6 +177,13 @@ def instantiate_component(cls_name, instance_name):
 
     Examples
     --------
+    >>> from pymt.framework.services import (
+    ...     del_services,
+    ...     register_component_class,
+    ...     instantiate_component,
+    ...     get_component_instance
+    ... )
+
     >>> del_services()
     >>> register_component_class('pymt.testing.services.AirPort')
     >>> air_port = instantiate_component('AirPort', 'air_port')
