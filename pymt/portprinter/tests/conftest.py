@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture(scope="session")
-def setup():
+def with_two_components():
     from pymt.framework.services import (
         register_component_classes,
         instantiate_component,

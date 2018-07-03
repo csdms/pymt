@@ -26,7 +26,7 @@ def dataset_from_bmi_grid(bmi, grid_id):
         grid = dataset_from_bmi_scalar(bmi, grid_id)
     elif grid_type.startswith("unstructured"):
         grid = dataset_from_bmi_unstructured(bmi, grid_id)
-    elif grid_type == 'vector':
+    elif grid_type == "vector":
         grid = dataset_from_bmi_vector(bmi, grid_id)
     else:
         raise ValueError("grid type not understood ({gtype})".format(gtype=grid_type))
