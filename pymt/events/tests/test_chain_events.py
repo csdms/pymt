@@ -1,27 +1,26 @@
-from numpy.testing import assert_array_equal
-from nose.tools import assert_equal
+from pytest import approx
 
+from pymt.events.chain import ChainEvent
 from pymt.events.manager import EventManager
 from pymt.events.port import PortEvent
-from pymt.events.chain import ChainEvent
 from pymt.framework.services import get_component_instance
 
 
 def assert_port_value_equal(port, name, value):
-    assert_array_equal(port.get_value(name), value)
+    assert port.get_value(name) == approx(value)
 
 
 def test_length_zero():
     foo = ChainEvent([])
 
     with EventManager(((foo, 1.),)) as mngr:
-        assert_equal(mngr.time, 0.)
+        assert mngr.time == approx(0.)
 
         mngr.run(2.)
-        assert_equal(mngr.time, 2.)
+        assert mngr.time == approx(2.)
 
 
-def test_length_one():
+def test_length_one(with_earth_and_air):
     air = get_component_instance("air_port")
     foo = ChainEvent([PortEvent(port=air)])
 
@@ -33,7 +32,7 @@ def test_length_one():
     assert_port_value_equal(air, "air__density", 0.)
 
 
-def test_length_two():
+def test_length_two(with_earth_and_air):
     air = get_component_instance("air_port")
     earth = get_component_instance("earth_port")
 
@@ -52,7 +51,7 @@ def test_length_two():
         assert_port_value_equal(air, "air__density", 1.2)
 
 
-def test_repeated_events():
+def test_repeated_events(with_earth_and_air):
     air = get_component_instance("air_port")
     earth = get_component_instance("earth_port")
 

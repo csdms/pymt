@@ -1,9 +1,8 @@
 from numpy.testing import assert_array_equal
 
-from pymt.events.manager import EventManager
-from pymt.events.port import PortMapEvent, PortEvent
 from pymt.events.chain import ChainEvent
-
+from pymt.events.manager import EventManager
+from pymt.events.port import PortEvent, PortMapEvent
 from pymt.framework.services import get_component_instance
 
 
@@ -11,7 +10,7 @@ def assert_port_value_equal(port, name, value):
     assert_array_equal(port.get_value(name), value)
 
 
-def test_one_event():
+def test_one_event(with_earth_and_air):
     foo = PortMapEvent(
         src_port="air_port",
         dst_port="earth_port",
@@ -26,7 +25,7 @@ def test_one_event():
         assert_port_value_equal(foo._dst, "earth_surface__temperature", 0.)
 
 
-def test_chain():
+def test_chain(with_earth_and_air):
     air = get_component_instance("air_port")
     earth = get_component_instance("earth_port")
 

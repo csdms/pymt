@@ -1,5 +1,3 @@
-from nose.tools import assert_equal
-
 from pymt.framework.bmi_docstring import bmi_docstring
 
 DOCSTRING = u"""Basic Model Interface for Model.
@@ -27,7 +25,7 @@ Examples
 
 def test_empty_docstring():
     docstring = bmi_docstring("Model")
-    assert_equal(docstring, DOCSTRING)
+    assert docstring == DOCSTRING
 
 
 def test_full_docstring():
@@ -40,9 +38,9 @@ def test_full_docstring():
         doi="1977.12.23",
         url="welldoyapunk.org",
     )
-    assert_equal(
-        docstring,
-        """
+    assert (
+        docstring
+        == """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -80,9 +78,9 @@ def test_cite_as():
         cite_as=["ref1", "ref2"],
     )
 
-    assert_equal(
-        docstring,
-        """
+    assert (
+        docstring
+        == """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly

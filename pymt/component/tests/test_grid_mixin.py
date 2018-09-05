@@ -1,8 +1,8 @@
 import os
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal
-from nose.tools import assert_equal, assert_list_equal, assert_raises
+import pytest
+from pytest import approx
 
 from pymt.component.grid import GridMixIn
 
@@ -36,8 +36,8 @@ def test_exchange_items():
             super(Component, self).__init__()
 
     c = Component()
-    assert_list_equal(c.input_items, ["invar"])
-    assert_list_equal(c.output_items, ["outvar"])
+    assert c.input_items == ["invar"]
+    assert c.output_items == ["outvar"]
 
 
 def test_no_exchange_items():
@@ -47,8 +47,8 @@ def test_no_exchange_items():
             super(Component, self).__init__()
 
     c = Component()
-    assert_list_equal(c.input_items, [])
-    assert_list_equal(c.output_items, [])
+    assert c.input_items == []
+    assert c.output_items == []
 
 
 def test_raster_1d():
@@ -68,7 +68,7 @@ def test_raster_1d():
             super(Component, self).__init__()
 
     c = Component()
-    assert_array_almost_equal(c.get_x("invar"), np.array([3., 5., 7.]))
+    assert c.get_x("invar") == approx(np.array([3., 5., 7.]))
 
 
 def test_raster_2d():
@@ -88,12 +88,12 @@ def test_raster_2d():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.name, "test-2d")
-    assert_equal(c.get_grid_type(0), "RASTER")
-    assert_array_almost_equal(c.get_x(0), np.array([[0., 1., 2.], [0., 1., 2.]]))
-    assert_array_almost_equal(c.get_y(0), np.array([[0., 0., 0.], [2., 2., 2.]]))
-    assert_array_almost_equal(c.get_connectivity(0), np.array([0, 1, 4, 3, 1, 2, 5, 4]))
-    assert_array_almost_equal(c.get_offset(0), np.array([4, 8]))
+    assert c.name == "test-2d"
+    assert c.get_grid_type(0) == "RASTER"
+    assert c.get_x(0) == approx(np.array([[0., 1., 2.], [0., 1., 2.]]))
+    assert c.get_y(0) == approx(np.array([[0., 0., 0.], [2., 2., 2.]]))
+    assert np.all(c.get_connectivity(0) == np.array([0, 1, 4, 3, 1, 2, 5, 4]))
+    assert np.all(c.get_offset(0) == np.array([4, 8]))
 
 
 def test_raster_3d():
@@ -113,17 +113,14 @@ def test_raster_3d():
             super(Component, self).__init__()
 
     c = Component()
-    assert_array_almost_equal(
-        c.get_x(0),
-        np.array([[[0., 1., 2.], [0., 1., 2.]], [[0., 1., 2.], [0., 1., 2.]]]),
+    assert c.get_x(0) == approx(
+        np.array([[[0., 1., 2.], [0., 1., 2.]], [[0., 1., 2.], [0., 1., 2.]]])
     )
-    assert_array_almost_equal(
-        c.get_y(0),
-        np.array([[[0., 0., 0.], [2., 2., 2.]], [[0., 0., 0.], [2., 2., 2.]]]),
+    assert c.get_y(0) == approx(
+        np.array([[[0., 0., 0.], [2., 2., 2.]], [[0., 0., 0.], [2., 2., 2.]]])
     )
-    assert_array_almost_equal(
-        c.get_z(0),
-        np.array([[[0., 0., 0.], [0., 0., 0.]], [[1., 1., 1.], [1., 1., 1.]]]),
+    assert c.get_z(0) == approx(
+        np.array([[[0., 0., 0.], [0., 0., 0.]], [[1., 1., 1.], [1., 1., 1.]]])
     )
 
 
@@ -144,9 +141,9 @@ def test_rectilinear():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.get_grid_type(0), "RECTILINEAR")
-    assert_array_almost_equal(c.get_x(0), np.array([[0., 3., 4.], [0., 3., 4.]]))
-    assert_array_almost_equal(c.get_y(0), np.array([[2., 2., 2.], [7., 7., 7.]]))
+    assert c.get_grid_type(0) == "RECTILINEAR"
+    assert c.get_x(0) == approx(np.array([[0., 3., 4.], [0., 3., 4.]]))
+    assert c.get_y(0) == approx(np.array([[2., 2., 2.], [7., 7., 7.]]))
 
 
 def test_structured():
@@ -166,9 +163,9 @@ def test_structured():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.get_grid_type(0), "STRUCTURED")
-    assert_array_almost_equal(c.get_x(0), np.array([0., 1., 2., 0., 1., 2.]))
-    assert_array_almost_equal(c.get_y(0), np.array([0., 1., 2., 1., 2., 3.]))
+    assert c.get_grid_type(0) == "STRUCTURED"
+    assert c.get_x(0) == approx(np.array([0., 1., 2., 0., 1., 2.]))
+    assert c.get_y(0) == approx(np.array([0., 1., 2., 1., 2., 3.]))
 
 
 def test_unstructured():
@@ -191,9 +188,9 @@ def test_unstructured():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.get_grid_type(0), "UNSTRUCTURED")
-    assert_array_almost_equal(c.get_x(0), np.array([0., 1., 0., 1., 2.]))
-    assert_array_almost_equal(c.get_y(0), np.array([0., 0., 1., 1., 0.]))
+    assert c.get_grid_type(0) == "UNSTRUCTURED"
+    assert c.get_x(0) == approx(np.array([0., 1., 0., 1., 2.]))
+    assert c.get_y(0) == approx(np.array([0., 0., 1., 1., 0.]))
 
 
 def test_get_grid_shape_is_none():
@@ -210,7 +207,7 @@ def test_get_grid_shape_is_none():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.get_grid_type(0), "UNSTRUCTURED")
+    assert c.get_grid_type(0) == "UNSTRUCTURED"
 
 
 def test_get_grid_shape_raises():
@@ -227,7 +224,7 @@ def test_get_grid_shape_raises():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.get_grid_type(0), "UNSTRUCTURED")
+    assert c.get_grid_type(0) == "UNSTRUCTURED"
 
 
 def test_structured_1d():
@@ -250,6 +247,6 @@ def test_structured_1d():
             super(Component, self).__init__()
 
     c = Component()
-    assert_equal(c.get_grid_type(0), "RECTILINEAR")
-    with assert_raises(IndexError):
+    assert c.get_grid_type(0) == "RECTILINEAR"
+    with pytest.raises(IndexError):
         c.get_z(0)

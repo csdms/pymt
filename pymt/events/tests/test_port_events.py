@@ -1,16 +1,16 @@
 import numpy as np
 from numpy.testing import assert_array_equal
-from nose.tools import assert_almost_equal
+from pytest import approx
 
 from pymt.events.manager import EventManager
 from pymt.events.port import PortEvent
 
 
 def assert_port_value_equal(port, name, value):
-    assert_array_equal(port.get_value(name), value)
+    assert port.get_value(name) == approx(value)
 
 
-def test_one_event():
+def test_one_event(with_earth_and_air):
     foo = PortEvent(port="air_port")
 
     with EventManager(((foo, 1.),)) as mngr:
@@ -31,13 +31,13 @@ def test_one_event():
 
         for time in np.arange(2., 5., .1):
             mngr.run(time)
-        assert_almost_equal(mngr.time, 4.9)
+        assert mngr.time == approx(4.9)
         assert_port_value_equal(foo._port, "air__density", 4.)
 
     assert_port_value_equal(foo._port, "air__density", 0.)
 
 
-def test_two_events():
+def test_two_events(with_earth_and_air):
     foo = PortEvent(port="air_port")
     bar = PortEvent(port="earth_port")
 
@@ -63,7 +63,7 @@ def test_two_events():
 
         for time in np.arange(2., 5., .1):
             mngr.run(time)
-        assert_almost_equal(mngr.time, 4.9)
+        assert mngr.time == approx(4.9)
         assert_port_value_equal(foo._port, "air__density", 4.)
         assert_port_value_equal(bar._port, "earth_surface__temperature", 4.8)
 

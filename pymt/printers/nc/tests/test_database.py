@@ -1,13 +1,11 @@
 #! /usr/bin/env python
-
 import os
+
 import numpy as np
-from numpy.testing import assert_array_equal
-from nose.tools import assert_true, assert_equal, assert_list_equal, assert_tuple_equal
+from pytest import approx
 
 from pymt.grids import RasterField
 from pymt.printers.nc.database import Database
-
 
 _TMP_DIR = "tmp"
 
@@ -49,7 +47,7 @@ def test_2d_constant_shape():
     db.open(nc_file, "Elevation")
     db.write(field)
 
-    assert_true(os.path.isfile(nc_file))
+    assert os.path.isfile(nc_file)
 
     # Append data to the NetCDF file.
     data *= 2.
@@ -62,25 +60,25 @@ def test_2d_constant_shape():
     except Exception:
         raise AssertionError("%s: Could not open" % nc_file)
     else:
-        assert_list_equal(["y", "x", "time"], list(root.dimensions.keys()))
-        assert_list_equal(["mesh", "y", "x", "Elevation", "time"], list(root.variables))
+        assert ["y", "x", "time"] == list(root.dimensions.keys())
+        assert ["mesh", "y", "x", "Elevation", "time"] == list(root.variables)
 
-        assert_equal(3, len(root.dimensions["x"]))
-        assert_equal(2, len(root.dimensions["y"]))
-        assert_equal(2, len(root.dimensions["time"]))
+        assert len(root.dimensions["x"]) == 3
+        assert len(root.dimensions["y"]) == 2
+        assert len(root.dimensions["time"]) == 2
 
-        assert_tuple_equal((2, 2, 3), root.variables["Elevation"].shape)
+        assert root.variables["Elevation"].shape == (2, 2, 3)
 
-        assert_array_equal(np.arange(6.).reshape(2, 3), root.variables["Elevation"][0])
-        assert_array_equal(
-            np.arange(6.).reshape((2, 3)) * 2., root.variables["Elevation"][1]
+        assert root.variables["Elevation"][0] == approx(np.arange(6.).reshape(2, 3))
+        assert root.variables["Elevation"][1] == approx(
+            np.arange(6.).reshape((2, 3)) * 2.
         )
 
-        assert_array_equal([0., 1.], root.variables["y"])
-        assert_array_equal([0., 1., 2.], root.variables["x"])
+        assert root.variables["y"] == approx([0., 1.])
+        assert root.variables["x"] == approx([0., 1., 2.])
 
-        assert_equal("Elevation", root.variables["Elevation"].long_name)
-        assert_equal("-", root.variables["Elevation"].units)
+        assert root.variables["Elevation"].long_name == "Elevation"
+        assert root.variables["Elevation"].units == "-"
 
         root.close()
 
@@ -100,7 +98,7 @@ def test_2d_changing_shape():
     db.open(nc_file, "Temperature")
     db.write(field)
 
-    assert_true(os.path.isfile(nc_file))
+    assert os.path.isfile(nc_file)
 
     # Create a new field and write the data to the database. Since
     # the size of the field has changed, the data will be written
@@ -111,9 +109,7 @@ def test_2d_changing_shape():
     field.add_field("Temperature", data, centering="point")
 
     db.write(field)
-    assert_true(
-        os.path.isfile(os.path.join(_TMP_DIR, "Temperature_time_series_0000.nc"))
-    )
+    assert os.path.isfile(os.path.join(_TMP_DIR, "Temperature_time_series_0000.nc"))
 
     db.close()
 
@@ -123,25 +119,21 @@ def test_2d_changing_shape():
     except Exception:
         raise AssertionError("%s: Could not open" % nc_file)
     else:
-        assert_list_equal(["y", "x", "time"], list(root.dimensions.keys()))
-        assert_list_equal(
-            ["mesh", "y", "x", "Temperature", "time"], list(root.variables)
-        )
+        assert ["y", "x", "time"] == list(root.dimensions.keys())
+        assert ["mesh", "y", "x", "Temperature", "time"] == list(root.variables)
 
-        assert_equal(3, len(root.dimensions["x"]))
-        assert_equal(3, len(root.dimensions["y"]))
-        assert_equal(1, len(root.dimensions["time"]))
+        assert len(root.dimensions["x"]) == 3
+        assert len(root.dimensions["y"]) == 3
+        assert len(root.dimensions["time"]) == 1
 
-        assert_tuple_equal((1, 3, 3), root.variables["Temperature"].shape)
+        assert root.variables["Temperature"].shape == (1, 3, 3)
 
-        assert_array_equal(
-            np.arange(9.).reshape((3, 3)), root.variables["Temperature"][0]
-        )
+        assert root.variables["Temperature"][0] == approx(np.arange(9.).reshape((3, 3)))
 
-        assert_array_equal([0., 1., 2.], root.variables["x"])
-        assert_array_equal([0., 1., 2.], root.variables["y"])
+        assert root.variables["x"] == approx([0., 1., 2.])
+        assert root.variables["y"] == approx([0., 1., 2.])
 
-        assert_equal("Temperature", root.variables["Temperature"].long_name)
-        assert_equal("-", root.variables["Temperature"].units)
+        assert root.variables["Temperature"].long_name == "Temperature"
+        assert root.variables["Temperature"].units == "-"
 
         root.close()

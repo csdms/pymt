@@ -1,23 +1,21 @@
 import os
 
-from nose.tools import assert_is_none, assert_is_instance, assert_true, assert_equal
-
 from pymt.utils.which import which
 
 
 def test_not_in_path():
-    assert_is_none(which("does-not-exist"))
+    assert which("does-not-exist") is None
 
 
 def test_path_is_dir():
-    assert_is_none(which(os.getcwd()))
+    assert which(os.getcwd()) is None
 
 
 def test_relative_path_is_executable():
-    assert_is_instance(which("python"), str)
-    assert_true(os.path.isabs(which("python")))
+    assert isinstance(which("python"), str)
+    assert os.path.isabs(which("python"))
 
 
 def test_abs_path_is_executable():
     python = which("python")
-    assert_equal(python, which(python))
+    assert python == which(python)
