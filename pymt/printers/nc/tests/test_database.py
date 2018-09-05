@@ -69,9 +69,11 @@ def test_2d_constant_shape():
 
         assert root.variables["Elevation"].shape == (2, 2, 3)
 
-        assert root.variables["Elevation"][0] == approx(np.arange(6.).reshape(2, 3))
-        assert root.variables["Elevation"][1] == approx(
-            np.arange(6.).reshape((2, 3)) * 2.
+        assert np.all(
+            root.variables["Elevation"][0] == approx(np.arange(6.).reshape(2, 3))
+        )
+        assert np.all(
+            root.variables["Elevation"][1] == approx(np.arange(6.).reshape((2, 3)) * 2.)
         )
 
         assert root.variables["y"] == approx([0., 1.])
@@ -128,7 +130,9 @@ def test_2d_changing_shape():
 
         assert root.variables["Temperature"].shape == (1, 3, 3)
 
-        assert root.variables["Temperature"][0] == approx(np.arange(9.).reshape((3, 3)))
+        assert np.all(
+            root.variables["Temperature"][0] == approx(np.arange(9.).reshape((3, 3)))
+        )
 
         assert root.variables["x"] == approx([0., 1., 2.])
         assert root.variables["y"] == approx([0., 1., 2.])
