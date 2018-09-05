@@ -38,9 +38,7 @@ def test_full_docstring():
         doi="1977.12.23",
         url="welldoyapunk.org",
     )
-    assert (
-        docstring
-        == """
+    assert docstring == """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -62,8 +60,7 @@ Examples
 >>> for _ in xrange(10):
 ...     model.update()
 >>> model.finalize()
-""".strip(),
-    )
+""".strip()
 
 
 def test_cite_as():
@@ -78,9 +75,7 @@ def test_cite_as():
         cite_as=["ref1", "ref2"],
     )
 
-    assert (
-        docstring
-        == """
+    assert docstring == """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -107,5 +102,4 @@ Examples
 >>> for _ in xrange(10):
 ...     model.update()
 >>> model.finalize()
-""".strip(),
-    )
+""".strip()
