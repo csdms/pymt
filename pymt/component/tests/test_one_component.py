@@ -1,8 +1,8 @@
+import os
+
 from six.moves import xrange
-from nose.tools import assert_equal
 
 from pymt.component.component import Component
-from pymt.testing.assertions import assert_isfile_and_remove
 from pymt.framework.services import del_component_instances
 
 
@@ -11,7 +11,7 @@ def test_no_events(with_no_components):
 
     comp = Component("AirPort", uses=[], provides=[], events=[])
     comp.go()
-    assert_equal(comp._port.current_time, 100.)
+    assert comp._port.current_time == 100.
 
 
 def test_from_string(with_no_components):
@@ -23,10 +23,10 @@ class: AirPort
     """
     comp = Component.from_string(contents)
     comp.go()
-    assert_equal(comp._port.current_time, 100.)
+    assert comp._port.current_time == 100.
 
 
-def test_print_events(with_no_components):
+def test_print_events(tmpdir, with_no_components):
     del_component_instances(["earth_port"])
 
     contents = """
@@ -43,14 +43,15 @@ print:
   interval: 0.3
   format: nc
     """
-    comp = Component.from_string(contents)
-    comp.go()
+    with tmpdir.as_cwd():
+        comp = Component.from_string(contents)
+        comp.go()
 
-    assert_equal(comp._port.current_time, 100.)
-    assert_isfile_and_remove("earth_surface__temperature.nc")
-    assert_isfile_and_remove("glacier_top_surface__slope.nc")
-    for i in xrange(5):
-        assert_isfile_and_remove("earth_surface__density_%04d.vtu" % i)
+        assert comp._port.current_time == 100.
+        assert os.path.isfile("earth_surface__temperature.nc")
+        assert os.path.isfile("glacier_top_surface__slope.nc")
+        for i in xrange(5):
+            assert os.path.isfile("earth_surface__density_%04d.vtu" % i)
 
 
 def test_rerun(with_no_components):
@@ -58,13 +59,13 @@ def test_rerun(with_no_components):
 
     comp = Component("AirPort", uses=[], provides=[], events=[])
     comp.go()
-    assert_equal(comp._port.current_time, 100.)
+    assert comp._port.current_time == 100.
 
     comp.go()
-    assert_equal(comp._port.current_time, 100.)
+    assert comp._port.current_time == 100.
 
 
-def test_rerun_with_print(with_no_components):
+def test_rerun_with_print(tmpdir, with_no_components):
     del_component_instances(["earth_port"])
 
     contents = """
@@ -76,18 +77,20 @@ print:
   interval: 20
   format: vtk
     """
-    comp = Component.from_string(contents)
-    comp.go()
+    with tmpdir.as_cwd():
+        comp = Component.from_string(contents)
+        comp.go()
 
-    assert_equal(comp._port.current_time, 100.)
-    for i in xrange(5):
-        assert_isfile_and_remove("earth_surface__temperature_%04d.vtu" % i)
+        assert comp._port.current_time == 100.
+        for i in xrange(5):
+            assert os.path.isfile("earth_surface__temperature_%04d.vtu" % i)
+            os.remove("earth_surface__temperature_%04d.vtu" % i)
 
-    del_component_instances(["earth_port"])
+        del_component_instances(["earth_port"])
 
-    comp = Component.from_string(contents)
-    comp.go()
+        comp = Component.from_string(contents)
+        comp.go()
 
-    assert_equal(comp._port.current_time, 100.)
-    for i in xrange(5):
-        assert_isfile_and_remove("earth_surface__temperature_%04d.vtu" % i)
+        assert comp._port.current_time == 100.
+        for i in xrange(5):
+            assert os.path.isfile("earth_surface__temperature_%04d.vtu" % i)

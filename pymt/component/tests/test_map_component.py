@@ -1,11 +1,11 @@
+import os
+
 from six.moves import xrange
-from nose.tools import assert_equal
 
 from pymt.component.component import Component
-from pymt.testing.assertions import assert_isfile_and_remove
 
 
-def test_print_events(with_no_components):
+def test_print_events(tmpdir, with_no_components):
     air = Component.load(
         """
 name: air_port
@@ -26,17 +26,18 @@ print:
   format: vtk
 """
     )
-    earth.connect(
-        "air_port",
-        air,
-        vars_to_map=[
-            ("glacier_top_surface__slope", "air__temperature"),
-            ("earth_surface__temperature", "air__temperature"),
-        ],
-    )
-    earth.go()
+    with tmpdir.as_cwd():
+        earth.connect(
+            "air_port",
+            air,
+            vars_to_map=[
+                ("glacier_top_surface__slope", "air__temperature"),
+                ("earth_surface__temperature", "air__temperature"),
+            ],
+        )
+        earth.go()
 
-    for i in xrange(5):
-        assert_isfile_and_remove("glacier_top_surface__slope_%04d.vtu" % i)
-    for i in xrange(4):
-        assert_isfile_and_remove("air__temperature_%04d.vtu" % i)
+        for i in xrange(5):
+            assert os.path.isfile("glacier_top_surface__slope_%04d.vtu" % i)
+        for i in xrange(4):
+            assert os.path.isfile("air__temperature_%04d.vtu" % i)

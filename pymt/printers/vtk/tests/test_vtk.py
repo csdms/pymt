@@ -2,10 +2,24 @@
 
 import os
 import unittest
+
 import numpy as np
 
 from pymt.grids import RasterField, RectilinearField, StructuredField, UnstructuredField
+from pymt.grids.field import GridField
 from pymt.printers.vtk.vtu import tofile as field_tofile
+
+
+def test_tri_example(tmpdir):
+    g = GridField([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6])
+    g.add_field("Elevation", [1., 2., 3, 4], centering="point")
+    g.add_field("Temperature", [10., 20., 30., 40.], centering="point")
+    g.add_field("Cell Elevation", [1., 2.], centering="zonal")
+    g.add_field("Cell Temperature", [10., 20.], centering="zonal")
+
+    with tmpdir.as_cwd():
+        field_tofile(g, "tri.vtu", format="appended", encoding="base64")
+        assert os.path.isfile("tri.vtu")
 
 
 class TestVtk(unittest.TestCase):

@@ -1,31 +1,32 @@
 #! /usr/bin/env python
+import os
+
 from six.moves import xrange
 
-from nose.tools import assert_is_instance
-
 from pymt.portprinter.port_printer import PortPrinter
-from pymt.testing.assertions import assert_isfile_and_remove
 
 
-def test_one_printer(with_two_components):
-    queue = PortPrinter.from_string(
-        """
+def test_one_printer(tmpdir, with_two_components):
+    with tmpdir.as_cwd():
+        queue = PortPrinter.from_string(
+            """
 [print.air__density]
 format=vtk
 port=air_port
 """
-    )
-    assert_is_instance(queue, PortPrinter)
+        )
+        assert isinstance(queue, PortPrinter)
 
-    queue.open()
-    queue.write()
+        queue.open()
+        queue.write()
 
-    assert_isfile_and_remove("air__density_0000.vtu")
+        assert os.path.isfile("air__density_0000.vtu")
 
 
-def test_multiple_printers(with_two_components):
-    queue = PortPrinter.from_string(
-        """
+def test_multiple_printers(tmpdir, with_two_components):
+    with tmpdir.as_cwd():
+        queue = PortPrinter.from_string(
+            """
 [print.air__density]
 format=vtk
 port=air_port
@@ -34,20 +35,20 @@ port=air_port
 format=nc
 port=earth_port
 """
-    )
+        )
 
-    assert_is_instance(queue, list)
+        assert isinstance(queue, list)
 
-    for printer in queue:
-        printer.open()
-
-    for _ in xrange(5):
         for printer in queue:
-            printer.write()
+            printer.open()
 
-    assert_isfile_and_remove("air__density_0000.vtu")
-    assert_isfile_and_remove("air__density_0001.vtu")
-    assert_isfile_and_remove("air__density_0002.vtu")
-    assert_isfile_and_remove("air__density_0003.vtu")
-    assert_isfile_and_remove("air__density_0004.vtu")
-    assert_isfile_and_remove("glacier_top_surface__slope.nc")
+        for _ in xrange(5):
+            for printer in queue:
+                printer.write()
+
+        assert os.path.isfile("air__density_0000.vtu")
+        assert os.path.isfile("air__density_0001.vtu")
+        assert os.path.isfile("air__density_0002.vtu")
+        assert os.path.isfile("air__density_0003.vtu")
+        assert os.path.isfile("air__density_0004.vtu")
+        assert os.path.isfile("glacier_top_surface__slope.nc")

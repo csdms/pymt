@@ -20,37 +20,6 @@ class IDatabase(object):
 
 
 class Database(IDatabase):
-    """
-    >>> import numpy as np
-    >>> from pymt.grids import RasterField
-
-    >>> data = np.arange (6.)
-
-    >>> field = RasterField ((3,2), (1.,1.), (0.,0.))
-    >>> field.add_field ('Elevation', data, centering='point')
-
-    >>> db = Database ()
-    >>> db.open ('Bov_database.bov', 'Elevation')
-
-Write the field to the database. Since BOV files only store one variable,
-append the variable name to the file name.
-
-    >>> db.write (field)
-    >>> os.path.isfile ('Bov_database_0000.bov')
-    True
-
-    >>> data *= 2.
-    >>> db.write (field)
-    >>> os.path.isfile ('Bov_database_0001.bov')
-    True
-
-    >>> data *= 2.
-    >>> db.write (field)
-    >>> os.path.isfile ('Bov_database_0002.bov')
-    True
-
-    >>> db.close ()
-    """
 
     def __init__(self):
         super(Database, self).__init__()

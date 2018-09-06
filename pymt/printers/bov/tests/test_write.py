@@ -2,14 +2,12 @@
 import os
 import sys
 
-import yaml
 import numpy as np
-from numpy.testing import assert_array_equal
-
-from nose.tools import assert_true, assert_dict_equal, assert_raises
+import pytest
+import yaml
 
 from pymt.grids import RasterField, RectilinearField
-from pymt.printers.bov.bov_io import tofile, FileExists
+from pymt.printers.bov.bov_io import FileExists, tofile
 from pymt.utils.run_dir import cd_temp
 
 
@@ -21,27 +19,24 @@ def test_1d():
     with cd_temp() as _:
         tofile("test-1d", grid)
 
-        assert_true(os.path.isfile("test-1d.bov"))
-        assert_true(os.path.isfile("test-1d.dat"))
+        assert os.path.isfile("test-1d.bov")
+        assert os.path.isfile("test-1d.dat")
 
         data = np.fromfile("test-1d.dat", dtype=int)
-        assert_array_equal(point_data, data)
+        assert np.all(point_data == data)
 
         with open("test-1d.bov", "r") as fp:
             header = yaml.load(fp)
 
-    assert_dict_equal(
-        header,
-        {
-            "VARIABLE": "var_0",
-            "BRICK_SIZE": "12.0 1.0 1.0",
-            "DATA_FILE": "test-1d.dat",
-            "DATA_SIZE": "12 1 1",
-            "BRICK_ORIGIN": "0.0 1.0 1.0",
-            "DATA_FORMAT": "INT",
-            "DATA_ENDIAN": sys.byteorder.upper(),
-        },
-    )
+    assert header == {
+        "VARIABLE": "var_0",
+        "BRICK_SIZE": "12.0 1.0 1.0",
+        "DATA_FILE": "test-1d.dat",
+        "DATA_SIZE": "12 1 1",
+        "BRICK_ORIGIN": "0.0 1.0 1.0",
+        "DATA_FORMAT": "INT",
+        "DATA_ENDIAN": sys.byteorder.upper(),
+    }
 
 
 def test_2d():
@@ -52,27 +47,24 @@ def test_2d():
     with cd_temp() as _:
         tofile("test-2d", grid)
 
-        assert_true(os.path.isfile("test-2d.bov"))
-        assert_true(os.path.isfile("test-2d.dat"))
+        assert os.path.isfile("test-2d.bov")
+        assert os.path.isfile("test-2d.dat")
 
         data = np.fromfile("test-2d.dat", dtype=int)
-        assert_array_equal(point_data, data)
+        assert np.all(point_data == data)
 
         with open("test-2d.bov", "r") as fp:
             header = yaml.load(fp)
 
-    assert_dict_equal(
-        header,
-        {
-            "VARIABLE": "var_0",
-            "BRICK_SIZE": "3.0 4.0 1.0",
-            "DATA_FILE": "test-2d.dat",
-            "DATA_SIZE": "3 4 1",
-            "BRICK_ORIGIN": "0.0 0.0 1.0",
-            "DATA_FORMAT": "INT",
-            "DATA_ENDIAN": sys.byteorder.upper(),
-        },
-    )
+    assert header == {
+        "VARIABLE": "var_0",
+        "BRICK_SIZE": "3.0 4.0 1.0",
+        "DATA_FILE": "test-2d.dat",
+        "DATA_SIZE": "3 4 1",
+        "BRICK_ORIGIN": "0.0 0.0 1.0",
+        "DATA_FORMAT": "INT",
+        "DATA_ENDIAN": sys.byteorder.upper(),
+    }
 
 
 def test_3d():
@@ -83,27 +75,24 @@ def test_3d():
     with cd_temp() as _:
         tofile("test-3d", grid)
 
-        assert_true(os.path.isfile("test-3d.bov"))
-        assert_true(os.path.isfile("test-3d.dat"))
+        assert os.path.isfile("test-3d.bov")
+        assert os.path.isfile("test-3d.dat")
 
         data = np.fromfile("test-3d.dat", dtype=int)
-        assert_array_equal(point_data, data)
+        assert np.all(point_data == data)
 
         with open("test-3d.bov", "r") as fp:
             header = yaml.load(fp)
 
-    assert_dict_equal(
-        header,
-        {
-            "VARIABLE": "var_0",
-            "BRICK_SIZE": "2.0 3.0 4.0",
-            "DATA_FILE": "test-3d.dat",
-            "DATA_SIZE": "2 3 4",
-            "BRICK_ORIGIN": "0.0 0.0 0.0",
-            "DATA_FORMAT": "INT",
-            "DATA_ENDIAN": sys.byteorder.upper(),
-        },
-    )
+    assert header == {
+        "VARIABLE": "var_0",
+        "BRICK_SIZE": "2.0 3.0 4.0",
+        "DATA_FILE": "test-3d.dat",
+        "DATA_SIZE": "2 3 4",
+        "BRICK_ORIGIN": "0.0 0.0 0.0",
+        "DATA_FORMAT": "INT",
+        "DATA_ENDIAN": sys.byteorder.upper(),
+    }
 
 
 def test_all_fields():
@@ -116,15 +105,15 @@ def test_all_fields():
     with cd_temp() as _:
         tofile("test-1d", grid)
 
-        assert_true(os.path.isfile("test-1d_var_0.bov"))
-        assert_true(os.path.isfile("test-1d_var_0.dat"))
-        assert_true(os.path.isfile("test-1d_var_1.bov"))
-        assert_true(os.path.isfile("test-1d_var_1.dat"))
+        assert os.path.isfile("test-1d_var_0.bov")
+        assert os.path.isfile("test-1d_var_0.dat")
+        assert os.path.isfile("test-1d_var_1.bov")
+        assert os.path.isfile("test-1d_var_1.dat")
 
         data = np.fromfile("test-1d_var_0.dat", dtype=int)
-        assert_array_equal(var_0_data, data)
+        assert np.all(var_0_data == data)
         data = np.fromfile("test-1d_var_1.dat", dtype=int)
-        assert_array_equal(var_1_data, data)
+        assert np.all(var_1_data == data)
 
 
 def test_clobber():
@@ -136,7 +125,7 @@ def test_clobber():
         with cd_temp() as _:
             with open(fname, "w") as fp:
                 fp.write("empty_file")
-            with assert_raises(FileExists):
+            with pytest.raises(FileExists):
                 tofile("test-1d", grid, no_clobber=True)
             tofile("test-1d", grid)
 
@@ -152,19 +141,16 @@ def test_options():
         with open("test-1d.bov", "r") as fp:
             header = yaml.load(fp)
 
-    assert_dict_equal(
-        header,
-        {
-            "VARIABLE": "var_0",
-            "BRICK_SIZE": "12.0 1.0 1.0",
-            "DATA_FILE": "test-1d.dat",
-            "DATA_SIZE": "12 1 1",
-            "BRICK_ORIGIN": "0.0 1.0 1.0",
-            "DATA_FORMAT": "INT",
-            "DATA_ENDIAN": sys.byteorder.upper(),
-            "foo": "bar",
-        },
-    )
+    assert header == {
+        "VARIABLE": "var_0",
+        "BRICK_SIZE": "12.0 1.0 1.0",
+        "DATA_FILE": "test-1d.dat",
+        "DATA_SIZE": "12 1 1",
+        "BRICK_ORIGIN": "0.0 1.0 1.0",
+        "DATA_FORMAT": "INT",
+        "DATA_ENDIAN": sys.byteorder.upper(),
+        "foo": "bar",
+    }
 
 
 def test_bad_grid():
@@ -173,5 +159,5 @@ def test_bad_grid():
     grid.add_field("var_0", var_0_data, centering="point")
 
     with cd_temp() as _:
-        with assert_raises(TypeError):
+        with pytest.raises(TypeError):
             tofile("test-1d", grid)
