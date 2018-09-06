@@ -307,8 +307,8 @@ class Component(GridMixIn):
 
         Create a component from a string.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         source : str
             Contents of a yaml file.
 
@@ -326,8 +326,8 @@ class Component(GridMixIn):
         This is an alternate constructor that create a component using values
         from a yaml-formatted string.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         source : str
             Yaml-formatted string.
 
@@ -345,8 +345,8 @@ class Component(GridMixIn):
         This is an alternate constructor that creates a series of components
         using values from a yaml-formatted string.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         source : str
             Yaml-formatted string.
 

@@ -273,7 +273,7 @@ def fromfile(source):
     """
     Parameters
     ----------
-    source : str or file-like
+    source: str or file-like
         Name of file or file object containing XML data.
 
     Returns

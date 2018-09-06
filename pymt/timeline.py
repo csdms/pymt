@@ -331,8 +331,8 @@ class Timeline(object):
 
         Iterate the timeline until *stop*, popping events along the way.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         stop : float
             Time to iterate until.
 
@@ -358,8 +358,8 @@ class Timeline(object):
         list of the event objects that were popped to advance the timeline to
         *stop*.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         stop : float
             Time to iterate until.
 

@@ -117,7 +117,7 @@ def get_connectivity(shape, **kwds):
 
     The nodes of an element can be ordered either clockwise or counter-clockwise.
 
-    Paramaters
+    Parameters
     ----------
     shape: tuple of int
         The shape of the grid.
