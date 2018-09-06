@@ -35,15 +35,12 @@ install:
 - source activate _testing
 - conda install -q conda-build anaconda-client sphinx pytest pytest-cov coveralls
 script:
-- conda build ./conda-recipe --no-test --old-build-string -c csdms-stack -c conda-forge
-- conda install pymt --use-local -c csdms-stack -c conda-forge
-- conda install --file=requirements.txt -c csdms-stack -c conda-forge
+- conda build ./conda-recipe --no-test --old-build-string -c conda-forge
+- conda install pymt --use-local -c conda-forge
+- conda install --file=requirements.txt -c conda-forge
 - pytest --cov=pymt --cov-report= --cov-report=xml
-# - nosetests --detailed-errors --exclude=examples --with-doctest --with-coverage --cover-package=pymt --verbosity=2 pymt
 after_success:
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     coveralls --verbose
   fi
-# - curl https://raw.githubusercontent.com/csdms/ci-tools/master/anaconda_upload.py > $HOME/anaconda_upload.py
-# - echo $ANACONDA_TOKEN | python $HOME/anaconda_upload.py ./conda-recipe --old-build-string --channel=main --org=csdms --token=-
