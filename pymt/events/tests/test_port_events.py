@@ -10,62 +10,64 @@ def assert_port_value_equal(port, name, value):
     assert port.get_value(name) == approx(value)
 
 
-def test_one_event(with_earth_and_air):
-    foo = PortEvent(port="air_port")
+def test_one_event(tmpdir, with_earth_and_air):
+    with tmpdir.as_cwd():
+        foo = PortEvent(port="air_port")
 
-    with EventManager(((foo, 1.),)) as mngr:
+        with EventManager(((foo, 1.),)) as mngr:
+            assert_port_value_equal(foo._port, "air__density", 0.)
+
+            mngr.run(1.)
+            assert_port_value_equal(foo._port, "air__density", 1.)
+
+            mngr.run(1.)
+            assert_port_value_equal(foo._port, "air__density", 1.)
+
+            for time in np.arange(1., 2., .1):
+                mngr.run(time)
+            assert_port_value_equal(foo._port, "air__density", 1.)
+
+            mngr.run(2.)
+            assert_port_value_equal(foo._port, "air__density", 2.)
+
+            for time in np.arange(2., 5., .1):
+                mngr.run(time)
+            assert mngr.time == approx(4.9)
+            assert_port_value_equal(foo._port, "air__density", 4.)
+
         assert_port_value_equal(foo._port, "air__density", 0.)
 
-        mngr.run(1.)
-        assert_port_value_equal(foo._port, "air__density", 1.)
 
-        mngr.run(1.)
-        assert_port_value_equal(foo._port, "air__density", 1.)
+def test_two_events(tmpdir, with_earth_and_air):
+    with tmpdir.as_cwd():
+        foo = PortEvent(port="air_port")
+        bar = PortEvent(port="earth_port")
 
-        for time in np.arange(1., 2., .1):
-            mngr.run(time)
-        assert_port_value_equal(foo._port, "air__density", 1.)
+        with EventManager(((foo, 1.), (bar, 1.2))) as mngr:
+            assert_port_value_equal(foo._port, "air__density", 0.)
+            assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)
 
-        mngr.run(2.)
-        assert_port_value_equal(foo._port, "air__density", 2.)
+            mngr.run(1.)
+            assert_port_value_equal(foo._port, "air__density", 1.)
+            assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)
 
-        for time in np.arange(2., 5., .1):
-            mngr.run(time)
-        assert mngr.time == approx(4.9)
-        assert_port_value_equal(foo._port, "air__density", 4.)
+            mngr.run(1.)
+            assert_port_value_equal(foo._port, "air__density", 1.)
+            assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)
 
-    assert_port_value_equal(foo._port, "air__density", 0.)
+            mngr.run(1.3)
+            assert_port_value_equal(foo._port, "air__density", 1.)
+            assert_port_value_equal(bar._port, "earth_surface__temperature", 1.2)
 
+            mngr.run(2.)
+            assert_port_value_equal(foo._port, "air__density", 2.)
+            assert_port_value_equal(bar._port, "earth_surface__temperature", 1.2)
 
-def test_two_events(with_earth_and_air):
-    foo = PortEvent(port="air_port")
-    bar = PortEvent(port="earth_port")
+            for time in np.arange(2., 5., .1):
+                mngr.run(time)
+            assert mngr.time == approx(4.9)
+            assert_port_value_equal(foo._port, "air__density", 4.)
+            assert_port_value_equal(bar._port, "earth_surface__temperature", 4.8)
 
-    with EventManager(((foo, 1.), (bar, 1.2))) as mngr:
         assert_port_value_equal(foo._port, "air__density", 0.)
         assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)
-
-        mngr.run(1.)
-        assert_port_value_equal(foo._port, "air__density", 1.)
-        assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)
-
-        mngr.run(1.)
-        assert_port_value_equal(foo._port, "air__density", 1.)
-        assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)
-
-        mngr.run(1.3)
-        assert_port_value_equal(foo._port, "air__density", 1.)
-        assert_port_value_equal(bar._port, "earth_surface__temperature", 1.2)
-
-        mngr.run(2.)
-        assert_port_value_equal(foo._port, "air__density", 2.)
-        assert_port_value_equal(bar._port, "earth_surface__temperature", 1.2)
-
-        for time in np.arange(2., 5., .1):
-            mngr.run(time)
-        assert mngr.time == approx(4.9)
-        assert_port_value_equal(foo._port, "air__density", 4.)
-        assert_port_value_equal(bar._port, "earth_surface__temperature", 4.8)
-
-    assert_port_value_equal(foo._port, "air__density", 0.)
-    assert_port_value_equal(bar._port, "earth_surface__temperature", 0.)

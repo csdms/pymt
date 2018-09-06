@@ -20,51 +20,54 @@ def test_length_zero():
         assert mngr.time == approx(2.)
 
 
-def test_length_one(with_earth_and_air):
-    air = get_component_instance("air_port")
-    foo = ChainEvent([PortEvent(port=air)])
+def test_length_one(tmpdir, with_earth_and_air):
+    with tmpdir.as_cwd():
+        air = get_component_instance("air_port")
+        foo = ChainEvent([PortEvent(port=air)])
 
-    with EventManager(((foo, 1.),)) as mngr:
-        assert_port_value_equal(air, "air__density", 0.)
-        mngr.run(2.)
-        assert_port_value_equal(air, "air__density", 2.)
+        with EventManager(((foo, 1.),)) as mngr:
+            assert_port_value_equal(air, "air__density", 0.)
+            mngr.run(2.)
+            assert_port_value_equal(air, "air__density", 2.)
 
-    assert_port_value_equal(air, "air__density", 0.)
-
-
-def test_length_two(with_earth_and_air):
-    air = get_component_instance("air_port")
-    earth = get_component_instance("earth_port")
-
-    foo = ChainEvent([PortEvent(port=air), PortEvent(port=earth)])
-
-    with EventManager([(foo, 1.2)]) as mngr:
-        assert_port_value_equal(earth, "earth_surface__temperature", 0.)
         assert_port_value_equal(air, "air__density", 0.)
 
-        mngr.run(1.)
-        assert_port_value_equal(earth, "earth_surface__temperature", 0.)
-        assert_port_value_equal(air, "air__density", 0.)
 
-        mngr.run(2.)
-        assert_port_value_equal(earth, "earth_surface__temperature", 1.2)
-        assert_port_value_equal(air, "air__density", 1.2)
+def test_length_two(tmpdir, with_earth_and_air):
+    with tmpdir.as_cwd():
+        air = get_component_instance("air_port")
+        earth = get_component_instance("earth_port")
+
+        foo = ChainEvent([PortEvent(port=air), PortEvent(port=earth)])
+
+        with EventManager([(foo, 1.2)]) as mngr:
+            assert_port_value_equal(earth, "earth_surface__temperature", 0.)
+            assert_port_value_equal(air, "air__density", 0.)
+
+            mngr.run(1.)
+            assert_port_value_equal(earth, "earth_surface__temperature", 0.)
+            assert_port_value_equal(air, "air__density", 0.)
+
+            mngr.run(2.)
+            assert_port_value_equal(earth, "earth_surface__temperature", 1.2)
+            assert_port_value_equal(air, "air__density", 1.2)
 
 
-def test_repeated_events(with_earth_and_air):
-    air = get_component_instance("air_port")
-    earth = get_component_instance("earth_port")
+def test_repeated_events(tmpdir, with_earth_and_air):
+    with tmpdir.as_cwd():
+        air = get_component_instance("air_port")
+        earth = get_component_instance("earth_port")
 
-    foo = ChainEvent([PortEvent(port=air), PortEvent(port=earth), PortEvent(port=air)])
+        foo = ChainEvent([PortEvent(port=air), PortEvent(port=earth), PortEvent(port=air)])
 
-    with EventManager([(foo, 1.2)]) as mngr:
-        assert_port_value_equal(earth, "earth_surface__temperature", 0.)
-        assert_port_value_equal(air, "air__density", 0.)
+        with EventManager([(foo, 1.2)]) as mngr:
+            assert_port_value_equal(earth, "earth_surface__temperature", 0.)
+            assert_port_value_equal(air, "air__density", 0.)
 
-        mngr.run(1.)
-        assert_port_value_equal(earth, "earth_surface__temperature", 0.)
-        assert_port_value_equal(air, "air__density", 0.)
+            mngr.run(1.)
+            assert_port_value_equal(earth, "earth_surface__temperature", 0.)
+            assert_port_value_equal(air, "air__density", 0.)
 
-        mngr.run(2.)
-        assert_port_value_equal(earth, "earth_surface__temperature", 1.2)
-        assert_port_value_equal(air, "air__density", 1.2)
+            mngr.run(2.)
+            assert_port_value_equal(earth, "earth_surface__temperature", 1.2)
+            assert_port_value_equal(air, "air__density", 1.2)
