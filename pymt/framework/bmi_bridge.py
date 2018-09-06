@@ -1,25 +1,23 @@
 """Bridge between BMI and a PyMT component."""
 from __future__ import print_function
 
+import json
 import os
 from pprint import pformat
 
 import numpy as np
-from scipy.interpolate import interp1d
-import xarray as xr
-import json
 import yaml
-
 from cfunits import Units
+from scipy.interpolate import interp1d
 
 from scripting.contexts import cd
 
-from .bmi_setup import SetupMixIn
-from .bmi_mapper import GridMapperMixIn
+from ..utils.decorators import deprecated
 from .bmi_docstring import bmi_docstring
-from .bmi_ugrid import dataset_from_bmi_grid
+from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
-from ..utils.decorators import deprecated, cache_result_in_object
+from .bmi_setup import SetupMixIn
+from .bmi_ugrid import dataset_from_bmi_grid
 
 
 class BmiError(Exception):

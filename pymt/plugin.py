@@ -29,20 +29,19 @@ dynamically loaded the the pymt `load_plugin` function.
 """
 from __future__ import print_function
 
-__all__ = []
-
-import os
-import sys
-import logging
 import importlib
+import logging
+import os
 from glob import glob
 
 import pkg_resources
 
-from scripting import success, error
+from scripting import error, success
 
-from .framework.bmi_bridge import bmi_factory
 from .babel import setup_babel_environ
+from .framework.bmi_bridge import bmi_factory
+
+__all__ = []
 
 
 def load_plugin(entry_point, callback=None):
