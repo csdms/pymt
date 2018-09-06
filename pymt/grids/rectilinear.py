@@ -1,112 +1,109 @@
 #! /bin/env python
 
 """
---------
 Examples
 --------
+
 Create a grid of length 2 in the x direction, and 3 in the y direction.
 
-    >>> g = Rectilinear([1., 2., 3.], [1., 2., 4., 8.])
-    >>> g.get_point_count()
-    12
-    >>> g.get_cell_count()
-    6
-    >>> g.get_x()
-    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
-    >>> g.get_y()
-    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
-    >>> g.get_shape()
-    array([3, 4])
+>>> g = Rectilinear([1., 2., 3.], [1., 2., 4., 8.])
+>>> g.get_point_count()
+12
+>>> g.get_cell_count()
+6
+>>> g.get_x()
+array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+>>> g.get_y()
+array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+>>> g.get_shape()
+array([3, 4])
 
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
-    >>> g = Rectilinear([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
-    >>> g.get_x()
-    array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
-    >>> g.get_y()
-    array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
-    >>> g.get_shape()
-    array([4, 3])
+>>> g = Rectilinear([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
+>>> g.get_x()
+array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
+>>> g.get_y()
+array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
+>>> g.get_shape()
+array([4, 3])
 
-    >>> g.get_offset()
-    array([ 4,  8, 12, 16, 20, 24], dtype=int32)
-    >>> g.get_connectivity()
-    array([ 0,  1,  4,  3,  1,  2,  5,  4,  3,  4,  7,  6,  4,  5,  8,  7,  6,
-            7, 10,  9,  7,  8, 11, 10], dtype=int32)
+>>> g.get_offset()
+array([ 4,  8, 12, 16, 20, 24], dtype=int32)
+>>> g.get_connectivity()
+array([ 0,  1,  4,  3,  1,  2,  5,  4,  3,  4,  7,  6,  4,  5,  8,  7,  6,
+        7, 10,  9,  7,  8, 11, 10], dtype=int32)
 
-Rectilinear grid of points
---------------------------
+**Rectilinear grid of points**
 
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
-    >>> g = RectilinearPoints ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij', set_connectivity=True)
-    >>> g.get_x()
-    array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
-    >>> g.get_y()
-    array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
-    >>> g.get_shape ()
-    array([4, 3])
-    >>> g.get_point_count()
-    12
-    >>> g.get_cell_count()
-    0
+>>> g = RectilinearPoints ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij', set_connectivity=True)
+>>> g.get_x()
+array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
+>>> g.get_y()
+array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
+>>> g.get_shape ()
+array([4, 3])
+>>> g.get_point_count()
+12
+>>> g.get_cell_count()
+0
 
 The offset runs from 1 up to (and including) the number of points.
 
-    >>> all (g.get_offset ()==np.arange (1, g.get_point_count ()+1))
-    True
+>>> all (g.get_offset ()==np.arange (1, g.get_point_count ()+1))
+True
 
 The connectivity runs from 0 to one less than the number of points.
 
-    >>> all (g.get_connectivity ()==np.arange (g.get_point_count ()))
-    True
+>>> all (g.get_connectivity ()==np.arange (g.get_point_count ()))
+True
 
 
-1D Rectilinear grid
--------------------
+**1D Rectilinear grid**
 
-    >>> g = Rectilinear([1,3,4,5,6], set_connectivity=True)
-    >>> g.get_x()
-    array([ 1.,  3.,  4.,  5.,  6.])
-    >>> g.get_point_count()
-    5
-    >>> g.get_cell_count()
-    4
-    >>> g.get_connectivity()
-    array([0, 1, 1, 2, 2, 3, 3, 4], dtype=int32)
-    >>> g.get_offset()
-    array([2, 4, 6, 8], dtype=int32)
+>>> g = Rectilinear([1,3,4,5,6], set_connectivity=True)
+>>> g.get_x()
+array([ 1.,  3.,  4.,  5.,  6.])
+>>> g.get_point_count()
+5
+>>> g.get_cell_count()
+4
+>>> g.get_connectivity()
+array([0, 1, 1, 2, 2, 3, 3, 4], dtype=int32)
+>>> g.get_offset()
+array([2, 4, 6, 8], dtype=int32)
 
 
-3D Rectilinear grid
--------------------
-    >>> g = Rectilinear ([0, 1], [2, 3], set_connectivity=True, indexing='ij')
-    >>> g.get_x()
-    array([ 2.,  3.,  2.,  3.])
-    >>> g.get_y()
-    array([ 0.,  0.,  1.,  1.])
+**3D Rectilinear grid**
 
-    >>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
-    >>> g.get_x()
-    array([ 4.,  5.,  4.,  5.,  4.,  5.,  4.,  5.])
-    >>> g.get_y()
-    array([ 2.,  2.,  3.,  3.,  2.,  2.,  3.,  3.])
-    >>> g.get_z()
-    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
-    >>> g.get_point_count()
-    8
-    >>> g.get_cell_count()
-    1
+>>> g = Rectilinear ([0, 1], [2, 3], set_connectivity=True, indexing='ij')
+>>> g.get_x()
+array([ 2.,  3.,  2.,  3.])
+>>> g.get_y()
+array([ 0.,  0.,  1.,  1.])
 
-    >>> g = Rectilinear([0, 1, 2, 3], [4, 5, 6], [7, 8], set_connectivity=True, indexing='ij')
-    >>> g.get_x()
-    array([ 7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,
-            8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.])
-    >>> g.get_shape()
-    array([4, 3, 2])
-    >>> x = g.get_x()
-    >>> x.shape = g.get_shape()
+>>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
+>>> g.get_x()
+array([ 4.,  5.,  4.,  5.,  4.,  5.,  4.,  5.])
+>>> g.get_y()
+array([ 2.,  2.,  3.,  3.,  2.,  2.,  3.,  3.])
+>>> g.get_z()
+array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
+>>> g.get_point_count()
+8
+>>> g.get_cell_count()
+1
 
+>>> g = Rectilinear([0, 1, 2, 3], [4, 5, 6], [7, 8], set_connectivity=True, indexing='ij')
+>>> g.get_x()
+array([ 7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,
+        8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.])
+>>> g.get_shape()
+array([4, 3, 2])
+>>> x = g.get_x()
+>>> x.shape = g.get_shape()
 """
 
 import numpy as np
@@ -151,6 +148,10 @@ class RectilinearPoints(StructuredPoints):
 
     def get_x_coordinates(self):
         """
+
+        Examples
+        --------
+
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
         >>> g.get_x_coordinates()
         array([ 4.,  5.])
@@ -159,6 +160,9 @@ class RectilinearPoints(StructuredPoints):
 
     def get_y_coordinates(self):
         """
+        Examples
+        --------
+
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
         >>> g.get_y_coordinates()
         array([ 2.,  3.])
@@ -167,6 +171,9 @@ class RectilinearPoints(StructuredPoints):
 
     def get_z_coordinates(self):
         """
+        Examples
+        --------
+
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
         >>> g.get_z_coordinates()
         array([ 0.,  1.])
@@ -204,21 +211,23 @@ class RectilinearPoints(StructuredPoints):
 
 
 class Rectilinear(RectilinearPoints, Structured):
-    """
-Create a rectilinear grid.
+    """Create a rectilinear grid.
 
-:param x: 1-D array of x-coordinates of nodes.
-:type x: array_like
-:param y: 1-D array of y-coordinates of nodes.
-:type y: array_like
-:param shape: Grid shape measured in number of nodes
-:type shape: iterable
+    Parameters
+    ----------
+    x: ndarray
+        1-D array of x-coordinates of nodes.
+    y: ndarray
+        1-D array of y-coordinates of nodes.
+    shape: tuple of int
+        Grid shape measured in number of nodes
+    indexing: {'xy', 'ij'}, optional
+        Cartesian ('xy', default) or matrix ('ij') indexing of output.
 
-:keyword indexing: Cartesian ('xy', default) or matrix ('ij') indexing of output.
-:type indexing:  string [xy|ij]
-
-:returns: An instance of a Rectilinear grid.
-:rtype: Rectilinear
+    Returns
+    -------
+    Rectilinear
+        An instance of a Rectilinear grid.
     """
 
     def __init__(self, *args, **kwds):

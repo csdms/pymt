@@ -110,49 +110,54 @@ def _get_offsets(shape, ordering="cw", dtype="int64"):
 
 def get_connectivity(shape, **kwds):
     """
-Get the connectivity (and, optionally, offset) array for an ND structured
-grid. Elements will consist of two points for 1D grids, four points for
-2D grids, eight points for 3D grids, etc. For a uniform rectilinear grid
-this would be lines, squares, and cubes.
+    Get the connectivity (and, optionally, offset) array for an ND structured
+    grid. Elements will consist of two points for 1D grids, four points for
+    2D grids, eight points for 3D grids, etc. For a uniform rectilinear grid
+    this would be lines, squares, and cubes.
 
-The nodes of an element can be ordered either clockwise or counter-clockwise.
+    The nodes of an element can be ordered either clockwise or counter-clockwise.
 
-:param shape: The shape of the grid
-:type shape: array_like
+    Paramaters
+    ----------
+    shape: tuple of int
+        The shape of the grid.
+    ordering: {'cw', 'ccw', 'none'}, optional
+        Node ordering.  One of 'cw' (clockwise), 'ccw' (counter-clockwise),
+        or 'none' (ordering not guaranteed).
+    dtype: str or numpy.dtype
+        The desired data type of the returned arrays.
+    with_offsets: bool
+        Return offset array along with connectivity
 
-:keyword ordering: Node ordering. One of 'cw' (clockwise), 'ccw' (counter-clockwise),
-                   or 'none' (ordering not guaranteed)
-:type ordering: string [cw|ccw|none]
-:keyword dtype: The desired data type of the returned arrays.
-:type dtype: numpy data type (or string)
-:keyword with_offsets: Return offset array along with connectivity
-:type with_offsets: boolean
-
-:returns: Array of connectivities. If with_offsets keyword is True, return a
-          tuple of (connectivity, offset).
-:rtype: numpy array, or tuple of two numpy arrays.
+    Returns
+    -------
+    ndarray of int
+        Array of connectivities. If with_offsets keyword is True, return a
+        tuple of (connectivity, offset).
 
 
-A 1D grid with three points has 2 elements.
+    Examples
+    --------
+
+    A 1D grid with three points has 2 elements.
 
     >>> get_connectivity ((3, ))
     array([0, 1, 1, 2])
-
     >>> get_connectivity ((3, ), ordering='ccw')
     array([1, 0, 2, 1])
 
 
-A 2D grid with 3 rows and 4 columns of nodes::
+    A 2D grid with 3 rows and 4 columns of nodes::
 
-    ( 0 ) --- ( 1 ) --- ( 2 ) --- ( 3 )
-      |         |         |         |
-      |    0    |    1    |    2    |
-      |         |         |         |
-    ( 4 ) --- ( 5 ) --- ( 6 ) --- ( 7 )
-      |         |         |         |
-      |    3    |    4    |    5    |
-      |         |         |         |
-    ( 8 ) --- ( 9 ) --- ( 10) --- ( 11)
+        ( 0 ) --- ( 1 ) --- ( 2 ) --- ( 3 )
+          |         |         |         |
+          |    0    |    1    |    2    |
+          |         |         |         |
+        ( 4 ) --- ( 5 ) --- ( 6 ) --- ( 7 )
+          |         |         |         |
+          |    3    |    4    |    5    |
+          |         |         |         |
+        ( 8 ) --- ( 9 ) --- ( 10) --- ( 11)
 
     >>> get_connectivity((3, 4))
     array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
@@ -162,7 +167,7 @@ A 2D grid with 3 rows and 4 columns of nodes::
     array([ 1,  0,  4,  5,  2,  1,  5,  6,  3,  2,  6,  7,  5,  4,  8,  9,  6,
             5,  9, 10,  7,  6, 10, 11])
 
-If ordering doesn't matter, set ordering to 'none' as this could be slightly faster.
+    If ordering doesn't matter, set ordering to 'none' as this could be slightly faster.
 
     >>> (ids, offsets) = get_connectivity((3, 4), ordering='none', with_offsets=True)
     >>> offsets
@@ -171,18 +176,18 @@ If ordering doesn't matter, set ordering to 'none' as this could be slightly fas
     array([ 0,  1,  4,  5,  1,  2,  5,  6,  2,  3,  6,  7,  4,  5,  8,  9,  5,
             6,  9, 10,  6,  7, 10, 11])
 
-Nodes connected to the first cell,
+    Nodes connected to the first cell,
 
     >>> ids[:offsets[0]]
     array([0, 1, 4, 5])
 
-Nodes connected to the second cell,
+    Nodes connected to the second cell,
 
     >>> ids[offsets[0]:offsets[1]]
     array([1, 2, 5, 6])
 
-Instead of using an offset array to indicate the end of each cell, you can return
-a list of connectivity arrays for each cell.
+    Instead of using an offset array to indicate the end of each cell,
+    you can return a list of connectivity arrays for each cell.
 
     >>> shape = np.array((3, 4))
     >>> ids = get_connectivity(shape, ordering='cw', as_cell_list=True)
@@ -228,9 +233,10 @@ a list of connectivity arrays for each cell.
 
 
 def get_connectivity_2d(shape, ordering="cw", dtype="int64"):
-    """
-    This is a little slower than the above and less general.
+    """This is a little slower than the above and less general.
 
+    Examples
+    --------
     >>> get_connectivity_2d((3, 4))
     array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
             6, 10,  9,  6,  7, 11, 10])

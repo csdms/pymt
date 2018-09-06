@@ -2,115 +2,111 @@
 
 """
 Examples
-========
+--------
 
 Create a grid of length 2 in the x direction, and 3 in the y direction.
 
-    >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
-    >>> g = Structured(y.flatten(), x.flatten(), [3, 4])
-    >>> g.get_point_count()
-    12
-    >>> g.get_cell_count()
-    6
-    >>> g.get_x()
-    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
-    >>> g.get_y()
-    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
-    >>> g.get_shape()
-    array([3, 4])
+>>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
+>>> g = Structured(y.flatten(), x.flatten(), [3, 4])
+>>> g.get_point_count()
+12
+>>> g.get_cell_count()
+6
+>>> g.get_x()
+array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+>>> g.get_y()
+array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+>>> g.get_shape()
+array([3, 4])
 
 Create a grid of length 2 in the i direction, and 3 in the j direction.
 
-    >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
-    >>> g = Structured (y.flatten (), x.flatten (), (3, 4), indexing='ij')
-    >>> g.get_x()
-    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
-    >>> g.get_y()
-    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
-    >>> g.get_shape()
-    array([3, 4])
+>>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
+>>> g = Structured (y.flatten (), x.flatten (), (3, 4), indexing='ij')
+>>> g.get_x()
+array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+>>> g.get_y()
+array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+>>> g.get_shape()
+array([3, 4])
 
-    >>> g.get_offset()
-    array([ 4,  8, 12, 16, 20, 24], dtype=int32)
-    >>> g.get_connectivity()
-    array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
-            6, 10,  9,  6,  7, 11, 10], dtype=int32)
+>>> g.get_offset()
+array([ 4,  8, 12, 16, 20, 24], dtype=int32)
+>>> g.get_connectivity()
+array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
+        6, 10,  9,  6,  7, 11, 10], dtype=int32)
 
-Structured grid of points
--------------------------
+**Structured grid of points**
 
 The same grid as the previous example but without any cells - just points.
 
-    >>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
-    >>> g = StructuredPoints (y.flatten (), x.flatten (), (3, 4), indexing='ij', set_connectivity=True)
-    >>> g.get_x()
-    array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
-    >>> g.get_y()
-    array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
-    >>> g.get_shape()
-    array([3, 4])
+>>> (x, y) = np.meshgrid ([1., 2., 4., 8.], [1., 2., 3.])
+>>> g = StructuredPoints (y.flatten (), x.flatten (), (3, 4), indexing='ij', set_connectivity=True)
+>>> g.get_x()
+array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+>>> g.get_y()
+array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+>>> g.get_shape()
+array([3, 4])
 
 The number of points are the same, but the number of cells is now 0.
 
-    >>> g.get_point_count()
-    12
-    >>> g.get_cell_count()
-    0
+>>> g.get_point_count()
+12
+>>> g.get_cell_count()
+0
 
 The offset runs from 1 up to (and including) the number of points.
 
-    >>> all (g.get_offset ()==np.arange (1, g.get_point_count ()+1))
-    True
+>>> all (g.get_offset ()==np.arange (1, g.get_point_count ()+1))
+True
 
 The connectivity runs from 0 to one less than the number of points.
 
-    >>> all (g.get_connectivity ()==np.arange (g.get_point_count ()))
-    True
+>>> all (g.get_connectivity ()==np.arange (g.get_point_count ()))
+True
 
-1D Grid of line segments
-------------------------
+**1D Grid of line segments**
 
-    >>> g = Structured([-1, 2, 3, 6], (4, ))
-    >>> g.get_x()
-    array([-1.,  2.,  3.,  6.])
-    >>> g.get_y()
-    Traceback (most recent call last):
-            ...
-    IndexError: Dimension out of bounds
-    >>> g.get_shape()
-    array([4])
+>>> g = Structured([-1, 2, 3, 6], (4, ))
+>>> g.get_x()
+array([-1.,  2.,  3.,  6.])
+>>> g.get_y()
+Traceback (most recent call last):
+        ...
+IndexError: Dimension out of bounds
+>>> g.get_shape()
+array([4])
 
-    >>> g.get_offset()
-    array([2, 4, 6], dtype=int32)
-    >>> g.get_connectivity()
-    array([0, 1, 1, 2, 2, 3], dtype=int32)
+>>> g.get_offset()
+array([2, 4, 6], dtype=int32)
+>>> g.get_connectivity()
+array([0, 1, 1, 2, 2, 3], dtype=int32)
 
 
-3D Grid of cubes
-----------------
+**3D Grid of cubes**
 
-    >>> x = [0, 1, 0, 1, 0, 1, 0, 1]
-    >>> y = [0, 0, 1, 1, 0, 0, 1, 1]
-    >>> z = [0, 0, 0, 0, 1, 1, 1, 1]
+>>> x = [0, 1, 0, 1, 0, 1, 0, 1]
+>>> y = [0, 0, 1, 1, 0, 0, 1, 1]
+>>> z = [0, 0, 0, 0, 1, 1, 1, 1]
 
-    >>> g = Structured(z, y, x, (2, 2, 2))
+>>> g = Structured(z, y, x, (2, 2, 2))
 
-    >>> g.get_x()
-    array([ 0.,  1.,  0.,  1.,  0.,  1.,  0.,  1.])
-    >>> g.get_y()
-    array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
-    >>> g.get_z()
-    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
+>>> g.get_x()
+array([ 0.,  1.,  0.,  1.,  0.,  1.,  0.,  1.])
+>>> g.get_y()
+array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
+>>> g.get_z()
+array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
 
-    >>> g.get_connectivity()
-    array([0, 1, 3, 2, 4, 5, 7, 6], dtype=int32)
-    >>> g.get_offset()
-    array([8], dtype=int32)
+>>> g.get_connectivity()
+array([0, 1, 3, 2, 4, 5, 7, 6], dtype=int32)
+>>> g.get_offset()
+array([8], dtype=int32)
 
-    >>> g = Structured(x, y, z, (2, 2, 2), ordering='ccw')
-    >>> g.get_connectivity()
-    array([1, 0, 2, 3, 5, 4, 6, 7], dtype=int32)
-
+>>> g = Structured(x, y, z, (2, 2, 2), ordering='ccw')
+>>> g.get_connectivity()
+array([1, 0, 2, 3, 5, 4, 6, 7], dtype=int32)
 """
 import warnings
 import numpy as np
@@ -176,23 +172,23 @@ class StructuredPoints(UnstructuredPoints):
 
 
 class Structured(StructuredPoints, Unstructured):
-    """
-Create a structured rectilinear grid.
+    """Create a structured rectilinear grid.
 
-:param x: 1-D array of x-coordinates of nodes.
-:type x: array_like
-:param y: 1-D array of y-coordinates of nodes.
-:type y: array_like
-:param shape: 1-D array of y-coordinates of nodes.
+    Parameters
+    ----------
+    x: ndarray
+        1-D array of x-coordinates of nodes.
+    y: ndarray
+        1-D array of y-coordinates of nodes.
+    shape: tuple of int
+        Shape of the grid.
+    indexing: {'xy', 'ij'}, optional
+        Cartesian('xy', default) or matrix('ij') indexing of output.
 
-:keyword indexing: Cartesian('xy', default) or matrix('ij') indexing of output.
-:type indexing:  string [xy|ij]
-
-:returns: An instance of a Structured grid.
-:rtype: Structured
-    shape : array_like
-
-
+    Returns
+    -------
+    Structured
+        An instance of a Structured grid.
     """
 
     def __init__(self, *args, **kwds):
