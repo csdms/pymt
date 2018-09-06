@@ -2,13 +2,13 @@ numpy
 scipy
 matplotlib
 xarray
-nose
 shapely
 netcdf4
 pyyaml
 esmpy
-cfunits-python
+cfunits
 jinja2
 scripting
 model_metadata
 six
+landlab
