@@ -214,7 +214,7 @@ def test_values_on_cells():
     (x, y) = np.meshgrid(np.arange(0.5, 299.5, .5), np.arange(0.5, 299.5, .5))
     exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
     residual = np.abs(exact.flat - f.data) / (n_rows * n_cols * 4.)
-    assert residual == approx(np.zeros_like(residual))
+    assert residual == approx(0., abs=1e-7)
 
 
 def test_values_on_points():
@@ -237,4 +237,4 @@ def test_values_on_points():
     (x, y) = np.meshgrid(np.arange(0.5, 300., .5), np.arange(0.5, 300., .5))
     exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
     residual = np.abs(exact.flat - f.data) / (n_rows * n_cols * 4.)
-    assert residual == approx(np.zeros_like(residual))
+    assert residual == approx(0., abs=1e-7)
