@@ -150,7 +150,7 @@ class StructuredPoints(UnstructuredPoints):
 
     def get_shape(self, remove_singleton=False):
         """The shape of the structured grid with the given indexing.
-        
+
         Use remove_singleton=False to include singleton dimensions.
         """
         shape = self._shape.copy()

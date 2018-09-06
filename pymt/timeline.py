@@ -202,7 +202,7 @@ class Timeline(object):
 
     def add_recurring_events(self, events):
         """Add a series of recurring events to the timeline.
-        
+
         Adds recurring events to the timeline. *events* is a list where
         each element is tuple that gives the event object followed by the
         event recurrence interval.
