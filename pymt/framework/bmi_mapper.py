@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 import warnings
 
-import numpy as np
-
 import ESMF
+import numpy as np
 
 
 def ravel_jaggedarray(array):
@@ -219,7 +218,7 @@ class GridMapperMixIn(object):
         destination = kwds.pop("destination", self)
         at = kwds.pop("at", name)
         data = self.regrid(name, to=destination, to_name=at, **kwds)
-        dst.set_value(at, data)
+        destination.set_value(at, data)
 
     def set_value(self, name, *args, **kwds):
         """Set values for a variable.
