@@ -214,11 +214,11 @@ def get_connectivity(shape, **kwds):
     points_per_cell = len(offsets)
 
     if as_cell_list:
-        l = []
+        offset_list = []
         for offset in offsets:
-            l.append(c0 + offset)
+            offset_list.append(c0 + offset)
         c = []
-        for cell in zip(*l):
+        for cell in zip(*offset_list):
             c.append(np.array(cell, dtype=kwds["dtype"]))
     else:
         c = np.empty((c0.size * points_per_cell,), dtype=kwds["dtype"])
