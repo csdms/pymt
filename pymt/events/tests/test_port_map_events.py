@@ -21,7 +21,7 @@ def test_one_event(tmpdir, with_earth_and_air):
         foo._src.initialize()
         foo._dst.initialize()
 
-        with EventManager(((foo, 1.),)) as mngr:
+        with EventManager(((foo, 1.),)):
             assert_port_value_equal(foo._src, "air__density", 0.)
             assert_port_value_equal(foo._dst, "earth_surface__temperature", 0.)
 

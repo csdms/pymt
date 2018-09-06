@@ -75,7 +75,7 @@ class FieldMixIn(object):
     def new_structured(self, **kwds):
         ndims = kwds.pop("ndims", 1)
         shape = np.random.random_integers(2, 101, ndims)
-        node_count = np.prod(shape)
+        np.prod(shape)
 
         coords = []
         for size in shape:
@@ -96,7 +96,7 @@ class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count())
         field.add_field("air_temperature", data, centering="point", units="F")
 
-        nc = NetcdfRectilinearField(
+        NetcdfRectilinearField(
             self.unique_name(prefix="rectilinear.1d.", suffix=".nc"), field
         )
 
@@ -105,7 +105,7 @@ class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field("air__temperature", data, centering="point", units="F")
 
-        nc = NetcdfRectilinearField(
+        NetcdfRectilinearField(
             self.unique_name(prefix="rectilinear.2d.", suffix=".nc"), field
         )
 
@@ -118,7 +118,7 @@ class TestRectilinearUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field("air__temperature", data, centering="point", units="F")
 
-        nc = NetcdfRectilinearField(
+        NetcdfRectilinearField(
             self.unique_name(prefix="rectilinear.3d.", suffix=".nc"), field
         )
 
@@ -129,7 +129,7 @@ class TestStructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count())
         field.add_field("air_temperature", data, centering="point", units="F")
 
-        nc = NetcdfStructuredField(
+        NetcdfStructuredField(
             self.unique_name(prefix="structured.1d.", suffix=".nc"), field
         )
 
@@ -138,7 +138,7 @@ class TestStructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field("air__temperature", data, centering="point", units="F")
 
-        nc = NetcdfStructuredField(
+        NetcdfStructuredField(
             self.unique_name(prefix="structured.2d.", suffix=".nc"), field
         )
 
@@ -151,7 +151,7 @@ class TestStructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field("air__temperature", data, centering="point", units="F")
 
-        nc = NetcdfStructuredField(
+        NetcdfStructuredField(
             self.unique_name(prefix="structured.3d.", suffix=".nc"), field
         )
 
@@ -162,7 +162,7 @@ class TestUnstructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count())
         field.add_field("air_temperature", data, centering="point", units="F")
 
-        nc = NetcdfUnstructuredField(
+        NetcdfUnstructuredField(
             self.unique_name(prefix="unstructured.1d.", suffix=".nc"), field
         )
 
@@ -171,7 +171,7 @@ class TestUnstructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field("air__temperature", data, centering="point", units="F")
 
-        nc = NetcdfUnstructuredField(
+        NetcdfUnstructuredField(
             self.unique_name(prefix="unstructured.2d.", suffix=".nc"), field
         )
 
@@ -184,6 +184,6 @@ class TestUnstructuredUgrid(UniqueNameMixIn, unittest.TestCase, FieldMixIn):
         data = np.arange(field.get_point_count(), dtype=float)
         field.add_field("air__temperature", data, centering="point", units="F")
 
-        nc = NetcdfUnstructuredField(
+        NetcdfUnstructuredField(
             self.unique_name(prefix="unstructured.3d.", suffix=".nc"), field
         )

@@ -57,4 +57,4 @@ def test_from_string():
 format=bov
 port=air_port
     """
-    printer = PortPrinter.from_string(ini_string, "print.air__temperature")
+    PortPrinter.from_string(ini_string, "print.air__temperature")
