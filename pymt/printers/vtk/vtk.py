@@ -21,7 +21,8 @@ Create the grid,
 >>> g.add_field ('Temperature',  [10., 20., 30., 40.], centering='point')
 >>> g.add_field ('Cell Elevation', [1., 2.], centering='zonal')
 >>> g.add_field ('Cell Temperature', [10., 20.], centering='zonal')
->>> tofile (g, 'tri.vtu', format='appended', encoding='base64')
+
+>>> tofile (g, 'tri.vtu', format='appended', encoding='base64') # doctest: +SKIP
 """
 import os
 import xml.dom.minidom
