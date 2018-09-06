@@ -109,12 +109,13 @@ array([8], dtype=int32)
 array([1, 0, 2, 3, 5, 4, 6, 7], dtype=int32)
 """
 import warnings
+
 import numpy as np
 
-from .unstructured import Unstructured, UnstructuredPoints
-from pymt.grids.igrid import IField
 from pymt.grids.connectivity import get_connectivity
 from pymt.grids.utils import get_default_coordinate_names, get_default_coordinate_units
+
+from .unstructured import Unstructured, UnstructuredPoints
 
 
 class StructuredPoints(UnstructuredPoints):

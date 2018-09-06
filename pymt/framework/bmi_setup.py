@@ -1,18 +1,16 @@
 #! /usr/bin/env python
 import os
-import errno
+import tempfile
 import urllib
 import zipfile
-import tempfile
-import shutil
-import string
 
 import yaml
 
-from .bmi_metadata import PluginMetadata
-from model_metadata.model_setup import FileSystemLoader
 from model_metadata.model_data_files import FileTemplate
+from model_metadata.model_setup import FileSystemLoader
 from scripting.contexts import cd
+
+from .bmi_metadata import PluginMetadata
 
 
 class SetupMixIn(object):

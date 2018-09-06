@@ -25,19 +25,13 @@ into PyMT.  This ensures that:
 
 import os
 import sys
-import warnings
-import re
-import fnmatch
-from collections import namedtuple
-import types
-import pkg_resources
 
+import pkg_resources
 import six
-import yaml
 
 from model_metadata import ModelMetadata
 
-from ..babel import query_config_var, BabelConfigError
+from ..babel import BabelConfigError, query_config_var
 
 
 class MetadataNotFoundError(Exception):

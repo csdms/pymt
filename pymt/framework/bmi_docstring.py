@@ -1,16 +1,10 @@
 #! /usr/bin/env python
-import os
-import textwrap
-import types
-
 import jinja2
 import six
 
 from model_metadata import MetadataNotFoundError
 
 from .bmi_metadata import PluginMetadata
-from ..babel import BabelConfigError
-
 
 _DOCSTRING = u"""
 Basic Model Interface for {{ name }}.

@@ -1,13 +1,15 @@
 #! /usr/bin/env python
 
 import unittest
-import numpy as np
 
-from pymt.grids import UniformRectilinear, Rectilinear, Structured, Unstructured
 from pymt.grids import (
-    is_uniform_rectilinear,
+    Rectilinear,
+    Structured,
+    UniformRectilinear,
+    Unstructured,
     is_rectilinear,
     is_structured,
+    is_uniform_rectilinear,
     is_unstructured,
 )
 

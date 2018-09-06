@@ -4,7 +4,6 @@ import unittest
 
 import numpy as np
 
-from pymt.grids import RasterField, RectilinearField, StructuredField, UnstructuredField
 from pymt.printers.nc.ugrid import (
     NetcdfRectilinearField,
     NetcdfStructuredField,
@@ -14,7 +13,8 @@ from pymt.printers.nc.ugrid import (
 
 class UniqueNameMixIn(object):
     def unique_name(self, **kwds):
-        import tempfile, os
+        import tempfile
+        import os
 
         if "dir" not in kwds:
             kwds["dir"] = os.getcwd()
@@ -29,7 +29,7 @@ class UniqueNameMixIn(object):
 
     def open_unique(self, **kwds):
         import netCDF4 as nc4
-        import tempfile, os
+        import tempfile
 
         (handle, name) = tempfile.mkstemp(**kwds)
         handle.close()
@@ -54,7 +54,7 @@ class UniqueNameMixIn(object):
 
 class FieldMixIn(object):
     def new_raster(self, **kwds):
-        import random
+        from pymt.grids import RasterField
 
         ndims = kwds.pop("ndims", 1)
         shape = np.random.random_integers(2, 101, ndims)
@@ -64,6 +64,8 @@ class FieldMixIn(object):
         return RasterField(shape, spacing, origin, **kwds)
 
     def new_rectilinear(self, **kwds):
+        from pymt.grids import RectilinearField
+
         ndims = kwds.pop("ndims", 1)
         shape = np.random.random_integers(2, 101, ndims)
         args = []
@@ -73,6 +75,8 @@ class FieldMixIn(object):
         return RectilinearField(*args, **kwds)
 
     def new_structured(self, **kwds):
+        from pymt.grids import StructuredField
+
         ndims = kwds.pop("ndims", 1)
         shape = np.random.random_integers(2, 101, ndims)
         np.prod(shape)

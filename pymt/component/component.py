@@ -55,19 +55,17 @@ ValueError: AirPort
 100.0
 >>> comp.finalize()
 """
-import types
 import warnings
 
-import yaml
 import six
+import yaml
 
+from ..events.chain import ChainEvent
 from ..events.manager import EventManager
 from ..events.port import PortEvent, PortMapEvent
 from ..events.printer import PrintEvent
-from ..events.chain import ChainEvent
-from .grid import GridMixIn
-
 from ..framework import services
+from .grid import GridMixIn
 
 
 def clip_stop_time(stop, stop_min, stop_max):

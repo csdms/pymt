@@ -1,10 +1,8 @@
 #! /usr/bin/env python
-import types
 import collections
 
 import six
 from six.moves import configparser
-
 
 _KEY_TYPES = {
     "output_file_namespace": str,

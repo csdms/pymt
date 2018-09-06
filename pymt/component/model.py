@@ -1,8 +1,7 @@
-import types
 import os
 
-import yaml
 import six
+import yaml
 
 from .component import Component
 

@@ -1,14 +1,12 @@
 from __future__ import print_function
 
-import os
-import sys
-import types
 import importlib
+import os
 import socket
+import sys
 
-import json
-import yaml
 import six
+import yaml
 
 from model_metadata.metadata import find_model_data_files
 

@@ -23,9 +23,8 @@ initialized
 
 """
 
-import types
-
 import six
+
 from pymt.task_status import TaskStatus
 
 
