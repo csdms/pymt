@@ -1,47 +1,45 @@
-{% set name = "pymt" %}
 {% set data = load_setup_py_data() %}
 
 
 package:
-  name: {{ name }}
+  name: pymt
   version: {{ data.get('version') }}
 
 source:
   path: ..
 
+build:
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record record.txt
+
 requirements:
   build:
     - python
-    - setuptools
+    - pip
 
   run:
     - python
-    - setuptools
     - numpy
-    - scipy >=0.17.0
+    - scipy
     - matplotlib
     - xarray
-    - nose
     - shapely
     - netcdf4
     - pyyaml
     - esmpy
-    - cfunits-python
+    - cfunits
     - jinja2
-    - scripting
     - model_metadata
+    - scripting
+    - landlab
 
 test:
   requires:
-    - nose
-    - coverage [linux]
+    - pytest
+  imports:
+    - pymt
   commands:
-    - nosetests --with-doctest --with-coverage --cover-package=pymt pymt [linux]
-    - nosetests --with-doctest pymt [not linux]
-
-build:
-  number: 0
-  script: python setup.py install --single-version-externally-managed --record record.txt
+    - pytest --pyargs pymt --doctest-modules -o doctest_optionflags="NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ALLOW_UNICODE"
 
 about:
   home: http://github.com/csdms/pymt
