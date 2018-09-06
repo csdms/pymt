@@ -8,15 +8,14 @@ import yaml
 
 from pymt.grids import RasterField, RectilinearField
 from pymt.printers.bov.bov_io import FileExists, tofile
-from pymt.utils.run_dir import cd_temp
 
 
-def test_1d():
+def test_1d(tmpdir):
     grid = RasterField((12,), (1.,), (0.,))
     point_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", point_data, centering="point")
 
-    with cd_temp() as _:
+    with tmpdir.as_cwd():
         tofile("test-1d", grid)
 
         assert os.path.isfile("test-1d.bov")
@@ -39,12 +38,12 @@ def test_1d():
     }
 
 
-def test_2d():
+def test_2d(tmpdir):
     grid = RasterField((3, 4), (1., 1.), (0., 0.))
     point_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", point_data, centering="point")
 
-    with cd_temp() as _:
+    with tmpdir.as_cwd():
         tofile("test-2d", grid)
 
         assert os.path.isfile("test-2d.bov")
@@ -67,12 +66,12 @@ def test_2d():
     }
 
 
-def test_3d():
+def test_3d(tmpdir):
     grid = RasterField((2, 3, 4), (1., 1., 1.), (0., 0., 0.))
     point_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", point_data, centering="point")
 
-    with cd_temp() as _:
+    with tmpdir.as_cwd():
         tofile("test-3d", grid)
 
         assert os.path.isfile("test-3d.bov")
@@ -95,14 +94,14 @@ def test_3d():
     }
 
 
-def test_all_fields():
+def test_all_fields(tmpdir):
     grid = RasterField((12,), (1.,), (0.,))
     var_0_data = np.arange(grid.get_point_count())
     var_1_data = np.arange(grid.get_point_count()) * 10
     grid.add_field("var_0", var_0_data, centering="point")
     grid.add_field("var_1", var_1_data, centering="point")
 
-    with cd_temp() as _:
+    with tmpdir.as_cwd():
         tofile("test-1d", grid)
 
         assert os.path.isfile("test-1d_var_0.bov")
@@ -116,13 +115,13 @@ def test_all_fields():
         assert np.all(var_1_data == data)
 
 
-def test_clobber():
+def test_clobber(tmpdir):
     grid = RasterField((12,), (1.,), (0.,))
     var_0_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", var_0_data, centering="point")
 
     for fname in ["test-1d.bov", "test-1d.dat"]:
-        with cd_temp() as _:
+        with tmpdir.as_cwd():
             with open(fname, "w") as fp:
                 fp.write("empty_file")
             with pytest.raises(FileExists):
@@ -130,12 +129,12 @@ def test_clobber():
             tofile("test-1d", grid)
 
 
-def test_options():
+def test_options(tmpdir):
     grid = RasterField((12,), (1.,), (0.,))
     var_0_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", var_0_data, centering="point")
 
-    with cd_temp() as _:
+    with tmpdir.as_cwd():
         tofile("test-1d", grid, options={"foo": "bar"})
 
         with open("test-1d.bov", "r") as fp:
@@ -153,11 +152,11 @@ def test_options():
     }
 
 
-def test_bad_grid():
+def test_bad_grid(tmpdir):
     grid = RectilinearField((np.arange(12),))
     var_0_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", var_0_data, centering="point")
 
-    with cd_temp() as _:
+    with tmpdir.as_cwd():
         with pytest.raises(TypeError):
             tofile("test-1d", grid)
