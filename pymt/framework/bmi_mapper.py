@@ -108,14 +108,12 @@ UNMAPPED_ACTIONS = {
 
 
 def run_regridding(srcfield, dstfield, method="nearest", unmapped="pass"):
-    """
-    run_regridding(source_field, destination_field,
-                   method=ESMP_REGRIDMETHOD_CONSERVE,
-                   unmapped=ESMP_UNMAPPEDACTION_ERROR)
+    """run_regridding(source_field, destination_field, method=ESMP_REGRIDMETHOD_CONSERVE, unmapped=ESMP_UNMAPPEDACTION_ERROR)
 
-    PRECONDITIONS: Two ESMP_Fields have been created and a regridding operation 
-                   is desired from 'srcfield' to 'dstfield'.
-    POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
+    **PRECONDITIONS:**
+        Two ESMP_Fields have been created and a regridding operation is desired from 'srcfield' to 'dstfield'.
+    **POSTCONDITIONS:**
+        An ESMP regridding operation has set the data on 'dstfield'.
     """
     # method = kwds.get('method', ESMF.RegridMethod.NEAREST_STOD)
     # method = kwds.get('method', ESMF.RegridMethod.BILINEAR)
