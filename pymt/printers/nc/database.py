@@ -2,8 +2,8 @@
 
 import os
 
-from .write import field_tofile
 from .ugrid import close as ugrid_close
+from .write import field_tofile
 
 
 class IDatabase(object):
@@ -25,48 +25,6 @@ def field_changed_size(field, n_points, n_cells):
 
 
 class Database(IDatabase):
-    """
-    >>> from pymt.grids import RasterField
-    >>> import numpy as np
-
-Create field and add some data to it that we will write to a NetCDF file
-database.
-
-    >>> data = np.arange(6.)
-
-    >>> field = RasterField((3,2), (1.,1.), (0.,0.))
-    >>> field.add_field('Elevation', data, centering='point')
-
-Create database of 'Elevation' values. Data are written to the NetCDF file
-Elevation_time_series.nc.
-
-    >>> db = Database()
-    >>> db.open('Elevation_time_series.nc', 'Elevation')
-    >>> db.write(field)
-    >>> os.path.isfile('./Elevation_time_series.nc')
-    True
-
-Append data to the NetCDF file.
-
-    >>> data *= 2.
-    >>> db.write(field)
-
-Create a new field and write the data to the database. Since the size of the 
-field has changed, the data will be written to a new file,
-Elevation_time_series_0000.nc.
-
-    >>> field = RasterField((3,3), (1.,1.), (0.,0.))
-    >>> data = np.arange(9.)
-    >>> field.add_field('Elevation', data, centering='point')
-
-    >>> db.write(field)
-    >>> os.path.isfile('./Elevation_time_series_0000.nc')
-    True
-
-    >>> db.close()
-
-    """
-
     def open(self, path, var_name, **kwds):
         self.close()
 
