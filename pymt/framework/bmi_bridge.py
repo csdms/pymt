@@ -48,21 +48,6 @@ def val_or_raise(func, args):
         return val
 
 
-def bmi_success_or_raise(bmi_status):
-    try:
-        status, val = bmi_status
-    except TypeError:
-        status, val = bmi_status, None
-
-    if status != 0:
-        raise RuntimeError(
-            "%s(%s) [Error code %d]"
-            % (func.__name__, ", ".join([repr(arg) for arg in args[1:]]), status)
-        )
-    else:
-        return val
-
-
 def bmi_call(func, *args):
     rtn = func(*args)
 
