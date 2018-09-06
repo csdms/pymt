@@ -2,6 +2,7 @@
 import os
 import warnings
 
+from scipy.io import netcdf as nc3
 
 _VALID_NETCDF_FORMATS = set(["NETCDF3_CLASSIC", "NETCDF3_64BIT"])
 
@@ -18,7 +19,6 @@ _NP_TO_NC_TYPE = {
     "uint64": "u8",
 }
 
-from scipy.io import netcdf as nc3
 
 try:
     import netCDF4 as nc4
