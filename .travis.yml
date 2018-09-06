@@ -35,9 +35,8 @@ install:
 - source activate _testing
 - conda install -q conda-build anaconda-client sphinx pytest pytest-cov coveralls
 script:
-- conda build ./conda-recipe --no-test --old-build-string -c conda-forge
-- conda install pymt --use-local -c conda-forge
 - conda install --file=requirements.txt -c conda-forge
+- python setup.py develop
 - pytest --cov=pymt --cov-report= --cov-report=xml
 after_success:
 - |
