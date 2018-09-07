@@ -10,4 +10,4 @@ Development Lead
 Contributors
 ------------
 
-* Mark Piper <mcflugen@gmail.com>
+* Mark Piper <mark.piper@colorado.edu>
