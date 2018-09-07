@@ -21,6 +21,9 @@
    <a href="https://github.com/csdms/pymt"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
    </p>
 
+====
+pymt
+====
 
 PyMT is an Open Source Python package, developed by the Community
 Surface Dynamics Modeling System, that provides the necessary tools
