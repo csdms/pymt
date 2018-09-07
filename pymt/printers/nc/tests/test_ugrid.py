@@ -57,7 +57,7 @@ class FieldMixIn(object):
         from pymt.grids import RasterField
 
         ndims = kwds.pop("ndims", 1)
-        shape = np.random.random_integers(2, 101, ndims)
+        shape = np.random.random_integers(3, 101, ndims)
         spacing = (1. - np.random.random(ndims)) * 100.
         origin = (np.random.random(ndims) - .5) * 100.
 
