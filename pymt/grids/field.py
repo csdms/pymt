@@ -1,10 +1,8 @@
 #! /bin/env python
-import types
-
 import numpy as np
 import six
 
-from .igrid import IField, DimensionError, CenteringValueError, CENTERING_CHOICES
+from .igrid import CENTERING_CHOICES, CenteringValueError, DimensionError, IField
 from .raster import UniformRectilinear
 from .rectilinear import Rectilinear
 from .structured import Structured

@@ -1,10 +1,8 @@
 #! /bin/env python
 
-import types
 from collections import OrderedDict
 
 import six
-
 
 _TASK_STATUS_STRINGS = OrderedDict(
     [

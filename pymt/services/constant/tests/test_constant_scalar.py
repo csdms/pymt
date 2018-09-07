@@ -1,16 +1,13 @@
-import os
-
 import numpy as np
 import pytest
 import yaml
 from pytest import approx
 
 from pymt.services.constant.constant import ConstantScalars
-from pymt.utils.run_dir import cd_temp
 
 
-def test_initialize():
-    with cd_temp() as _:
+def test_initialize(tmpdir):
+    with tmpdir.as_cwd():
         with open("params.yml", "w") as fp:
             yaml.dump({"foo": 2, "bar": 3.}, fp)
         c = ConstantScalars()
@@ -27,8 +24,8 @@ def test_initialize():
         c.get_value("baz")
 
 
-def test_time_funcs():
-    with cd_temp() as _:
+def test_time_funcs(tmpdir):
+    with tmpdir.as_cwd():
         with open("params.yml", "w") as fp:
             yaml.dump({"foo": 2, "bar": 3.}, fp)
         c = ConstantScalars()
@@ -41,8 +38,8 @@ def test_time_funcs():
     assert c.get_current_time() == approx(12.5)
 
 
-def test_grid_funcs():
-    with cd_temp() as _:
+def test_grid_funcs(tmpdir):
+    with tmpdir.as_cwd():
         with open("params.yml", "w") as fp:
             yaml.dump({"foo": 2, "bar": 3.}, fp)
         c = ConstantScalars()

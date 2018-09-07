@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 import warnings
 
-import numpy as np
-
 import ESMF
+import numpy as np
 
 
 def ravel_jaggedarray(array):
@@ -108,14 +107,12 @@ UNMAPPED_ACTIONS = {
 
 
 def run_regridding(srcfield, dstfield, method="nearest", unmapped="pass"):
-    """
-    run_regridding(source_field, destination_field,
-                   method=ESMP_REGRIDMETHOD_CONSERVE,
-                   unmapped=ESMP_UNMAPPEDACTION_ERROR)
+    """run_regridding(source_field, destination_field, method=ESMP_REGRIDMETHOD_CONSERVE, unmapped=ESMP_UNMAPPEDACTION_ERROR)
 
-    PRECONDITIONS: Two ESMP_Fields have been created and a regridding operation 
-                   is desired from 'srcfield' to 'dstfield'.
-    POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
+    **PRECONDITIONS:**
+        Two ESMP_Fields have been created and a regridding operation is desired from 'srcfield' to 'dstfield'.
+    **POSTCONDITIONS:**
+        An ESMP regridding operation has set the data on 'dstfield'.
     """
     # method = kwds.get('method', ESMF.RegridMethod.NEAREST_STOD)
     # method = kwds.get('method', ESMF.RegridMethod.BILINEAR)
@@ -221,7 +218,7 @@ class GridMapperMixIn(object):
         destination = kwds.pop("destination", self)
         at = kwds.pop("at", name)
         data = self.regrid(name, to=destination, to_name=at, **kwds)
-        dst.set_value(at, data)
+        destination.set_value(at, data)
 
     def set_value(self, name, *args, **kwds):
         """Set values for a variable.

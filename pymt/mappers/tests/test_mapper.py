@@ -40,7 +40,7 @@ def test_cell_to_point():
     src_vals = np.arange(src.get_cell_count(), dtype=np.float)
     src_vals[0] = -9999
     dst_vals = np.zeros(dst.get_point_count()) + 100
-    _ = mapper.run(src_vals, dst_vals)
+    mapper.run(src_vals, dst_vals)
 
     assert_array_equal(dst_vals, [100., 2., -999.])
 
@@ -67,7 +67,7 @@ def test_point_to_cell():
 
     src_vals[0] = -9999
     dst_vals = np.zeros(dst.get_cell_count()) - 1
-    _ = mapper.run(src_vals, dst_vals)
+    mapper.run(src_vals, dst_vals)
     assert_array_equal(dst_vals, [-1., 4., 1.])
 
 
@@ -81,7 +81,7 @@ def test_point_to_cell_on_edges():
 
     src_vals = np.arange(src.get_point_count(), dtype=np.float)
     dst_vals = np.zeros(dst.get_cell_count()) - 1
-    dummy = mapper.run(src_vals, dst_vals)
+    mapper.run(src_vals, dst_vals)
     assert_array_equal(dst_vals, [1., 0.5, 3.])
 
 
@@ -96,5 +96,5 @@ def test_point_to_cell_big():
 
     src_vals = np.arange(src.get_point_count(), dtype=np.float)
     dst_vals = np.zeros(dst.get_cell_count(), dtype=np.float) - 1
-    dummy = mapper.run(src_vals, dst_vals)
+    mapper.run(src_vals, dst_vals)
     assert_array_equal(dst_vals, src_vals)

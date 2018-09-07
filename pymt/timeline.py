@@ -202,7 +202,7 @@ class Timeline(object):
 
     def add_recurring_events(self, events):
         """Add a series of recurring events to the timeline.
-        
+
         Adds recurring events to the timeline. *events* is a list where
         each element is tuple that gives the event object followed by the
         event recurrence interval.
@@ -331,8 +331,8 @@ class Timeline(object):
 
         Iterate the timeline until *stop*, popping events along the way.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         stop : float
             Time to iterate until.
 
@@ -358,8 +358,8 @@ class Timeline(object):
         list of the event objects that were popped to advance the timeline to
         *stop*.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         stop : float
             Time to iterate until.
 

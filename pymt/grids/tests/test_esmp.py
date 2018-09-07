@@ -13,7 +13,6 @@ else:
     from pymt.grids.esmp import (
         EsmpRasterField,
         EsmpRectilinear,
-        EsmpStructured,
         EsmpUnstructured,
         EsmpUniformRectilinear,
         EsmpRectilinearField,

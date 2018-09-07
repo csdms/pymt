@@ -3,12 +3,9 @@
 Examples
 ========
 
-Rectilinear
------------
+**Rectilinear**
 
-Create a rectilinear grid that is 2x3,
-
-::
+Create a rectilinear grid that is 2x3::
 
     (0) --- (1) --- (2)
      |       |       |
@@ -97,25 +94,34 @@ class UnstructuredMap(Unstructured):
 
     def get_shared_cells(self, point_id):
         """
-        :param point_id: ID of a point in the grid.
-        :type point_id: int
+        Parameters
+        ----------
+        point_id: int
+            ID of a point in the grid.
 
-        :returns: Indices to cells that share a given node.
-        :rtype: ndarray.int32
+        Returns
+        -------
+        ndarray of int
+            Indices to cells that share a given node.
         """
         return self._point[point_id]
 
     def is_in_cell(self, x, y, cell_id):
-        """
-        Check if a point is in a cell.
+        """ Check if a point is in a cell.
 
-        :param x: x-coordinate of point to check
-        :param y: y-coordinate of point to check
-        :param cell_id: ID of the cell in the grid
-        :type cell_id: int
+        Parameters
+        ----------
+        x: float
+            x-coordinate of point to check.
+        y: float
+            y-coordinate of point to check.
+        cell_id: int
+            ID of the cell in the grid.
 
-        :returns: True if the point (x, y) is contained in the cell.
-        :rtype: bool
+        Returns
+        -------
+        bool
+            True if the point (x, y) is contained in the cell.
         """
         pt = Point((x, y))
         return self._polys[cell_id].contains(pt) or self._polys[cell_id].touches(pt)

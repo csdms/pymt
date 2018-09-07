@@ -1,10 +1,10 @@
 import unittest
-import sys
 
 import numpy as np
 import six
 
 from pymt.grids import Unstructured
+
 from .test_utils import NumpyArrayMixIn
 
 

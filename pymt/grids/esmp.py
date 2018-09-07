@@ -365,14 +365,13 @@ class EsmpRasterField(EsmpUniformRectilinear, EsmpRectilinearField):
 
 
 def run_regridding(srcfield, dstfield, **kwds):
-    """
-    run_regridding(source_field, destination_field,
-                   method=ESMP_REGRIDMETHOD_CONSERVE,
-                   unmapped=ESMP_UNMAPPEDACTION_ERROR)
+    """run_regridding(source_field, destination_field, method=ESMP_REGRIDMETHOD_CONSERVE, unmapped=ESMP_UNMAPPEDACTION_ERROR)
 
-    PRECONDITIONS: Two ESMP_Fields have been created and a regridding operation 
-                   is desired from 'srcfield' to 'dstfield'.
-    POSTCONDITIONS: An ESMP regridding operation has set the data on 'dstfield'.
+    **PRECONDITIONS:**
+        Two ESMP_Fields have been created and a regridding operation is desired from 'srcfield' to 'dstfield'.
+
+    **POSTCONDITIONS:**
+        An ESMP regridding operation has set the data on 'dstfield'.
     """
     method = kwds.get("method", ESMF.RegridMethod.CONSERVE)
     unmapped = kwds.get("unmapped", ESMF.UnmappedAction.ERROR)

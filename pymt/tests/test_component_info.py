@@ -108,13 +108,13 @@ class TestComponentInfo(unittest.TestCase):
             params = _VALID_PARAMS.copy()
             params.pop(key)
             with self.assertRaises(MissingKeyError):
-                info = ComponentInfo(params)
+                ComponentInfo(params)
 
     def test_unknown_key(self):
         params = _VALID_PARAMS.copy()
         params["unknown_key"] = "unexpected key"
         with self.assertRaises(UnknownKeyError):
-            info = ComponentInfo(params)
+            ComponentInfo(params)
 
 
 class TestConfigFile(unittest.TestCase):
@@ -225,7 +225,7 @@ class TestComponentFromConfigFile(TestConfigFile):
     def test_missing_component(self):
         name = self.make_temp_file({"csdms.cmi.another_component": _VALID_PARAMS})
         with self.assertRaises(KeyError):
-            info = component_from_config_file(name, "component_name")
+            component_from_config_file(name, "component_name")
 
     def test_two_components(self):
         name = self.make_temp_file(
@@ -384,7 +384,3 @@ class TestNamesWithPrefix(unittest.TestCase):
         names = ["base1.name1", "base2.name2"]
         self.assertSetEqual(set(["base1.name1"]), names_with_prefix(names, "base1"))
         self.assertSetEqual(set(["base2.name2"]), names_with_prefix(names, "base2"))
-
-
-if __name__ == "__main__":
-    unittest.main()

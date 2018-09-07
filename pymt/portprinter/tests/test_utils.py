@@ -63,9 +63,9 @@ class TestFindUnknownDimension(unittest.TestCase):
 
     def test_multiple_unknown_dimensions(self):
         with self.assertRaises(pp.DimensionError):
-            dimen = pp.find_unknown_dimension((-1, -1))
+            pp.find_unknown_dimension((-1, -1))
         with self.assertRaises(pp.DimensionError):
-            dimen = pp.find_unknown_dimension((-1, 4, -1))
+            pp.find_unknown_dimension((-1, 4, -1))
 
     def test_shape_as_int_array(self):
         dimen = pp.find_unknown_dimension(np.array((4, -1, 5), dtype=np.int64))

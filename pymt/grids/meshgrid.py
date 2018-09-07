@@ -29,66 +29,70 @@ index_tricks.ogrid : Construct an open multi-dimensional "meshgrid"
                      using indexing notation.
 
 Examples
-========
-    >>> nx, ny = (3, 2)
-    >>> x = np.linspace(0, 1, nx)
-    >>> y = np.linspace(0, 1, ny)
-    >>> xv, yv = meshgrid(x, y)
-    >>> xv
-    array([[ 0. ,  0.5,  1. ],
-           [ 0. ,  0.5,  1. ]])
-    >>> yv
-    array([[ 0.,  0.,  0.],
-           [ 1.,  1.,  1.]])
-    >>> xv, yv = meshgrid(x, y, sparse=True)  # make sparse output arrays
-    >>> xv
-    array([[ 0. ,  0.5,  1. ]])
-    >>> yv
-    array([[ 0.],
-           [ 1.]])
+--------
+
+>>> nx, ny = (3, 2)
+>>> x = np.linspace(0, 1, nx)
+>>> y = np.linspace(0, 1, ny)
+>>> xv, yv = meshgrid(x, y)
+>>> xv
+array([[ 0. ,  0.5,  1. ],
+       [ 0. ,  0.5,  1. ]])
+>>> yv
+array([[ 0.,  0.,  0.],
+       [ 1.,  1.,  1.]])
+>>> xv, yv = meshgrid(x, y, sparse=True)  # make sparse output arrays
+>>> xv
+array([[ 0. ,  0.5,  1. ]])
+>>> yv
+array([[ 0.],
+       [ 1.]])
 
 `meshgrid` is very useful to evaluate functions on a grid.
 
-    >>> x = np.arange(-5, 5, 0.1)
-    >>> y = np.arange(-5, 5, 0.1)
-    >>> xx, yy = meshgrid(x, y, sparse=True)
-    >>> z = np.sin(xx**2 + yy**2) / (xx**2 + yy**2)
+>>> x = np.arange(-5, 5, 0.1)
+>>> y = np.arange(-5, 5, 0.1)
+>>> xx, yy = meshgrid(x, y, sparse=True)
+>>> z = np.sin(xx**2 + yy**2) / (xx**2 + yy**2)
 """
 
 import numpy as np
 
+
 # Based on scitools meshgrid
 def meshgrid(*xi, **kwargs):
-    """
-    Return coordinate matrices from two or more coordinate vectors.
+    """Coordinate matrices from two or more coordinate vectors.
 
     Make N-D coordinate arrays for vectorized evaluations of
     N-D scalar/vector fields over N-D grids, given
     one-dimensional coordinate arrays x1, x2,..., xn.
 
-    :param xi: 1-D arrays representing the coordinates of a grid.
-    :type xi: array_like
-    :keyword indexing: Cartesian ('xy', default) or matrix ('ij') indexing of output.
-                       See Notes for more details.
-    :type indexing: string [xy|ij]
-    :keyword sparse: If True a sparse grid is returned in order to conserve memory.  Default is False.
-    :type sparse: bool
-    :keyword copy:
+    Parameters
+    ----------
+    xi: array_like
+            1-D arrays representing the coordinates of a grid.
+    indexing: {'xy', 'ij'}, optional
+        Cartesian ('xy', default) or matrix ('ij') indexing of output.
+        See Notes for more details.
+    sparse: bool, optional
+        If True a sparse grid is returned in order to conserve memory.
+        Default is False.
+    copy: bool, optional
         If False, a view into the original arrays are returned in
         order to conserve memory.  Default is True.  Please note that
         ``sparse=False, copy=False`` will likely return non-contiguous arrays.
         Furthermore, more than one element of a broadcast array may refer to
         a single memory location.  If you need to write to the arrays, make
         copies first.
-    :type copy: bool
 
-    :returns:
+    Returns
+    -------
+    ndarray
         For vectors `x1`, `x2`,..., 'xn' with lengths ``Ni=len(xi)`` ,
         return ``(N1, N2, N3,...Nn)`` shaped arrays if indexing='ij'
         or ``(N2, N1, N3,...Nn)`` shaped arrays if indexing='xy'
         with the elements of `xi` repeated to fill the matrix along
         the first dimension for `x1`, the second for `x2` and so on.
-    :rtype: ndarray
 
     """
     if len(xi) < 2:

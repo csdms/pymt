@@ -2,8 +2,9 @@ from collections import OrderedDict
 
 
 def prefix_is_empty(prefix):
-    """Check if a namespace prefix is empty. A prefix is empty if it's None,
-    just a '.' or an empty string.
+    """Check if a namespace prefix is empty.
+
+    A prefix is empty if it is ``None``, just a "." or an empty string.
 
     Return ``True`` if empty, otherwise ``False``.
     """
@@ -37,7 +38,7 @@ def names_with_prefix(names, prefix):
 
 
 def strip_prefix(name, prefix):
-    """Remove a prefix from a name, including any leading ``.``s.
+    """Remove a prefix from a name, including any leading "."s.
 
     >>> strip_prefix('foo.bar', 'foo')
     'bar'

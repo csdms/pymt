@@ -2,6 +2,7 @@
 
 import os
 import unittest
+
 import numpy as np
 from numpy.testing import assert_array_equal
 
@@ -19,15 +20,13 @@ class NumpyArrayMixIn(object):
 
 class AssertIsFileMixIn(object):
     def assertIsFile(self, file):
-        import os
-
         if not os.path.isfile(file):
             self.fail("%s is not a regular file" % file)
 
 
 class TempFileMixIn(object):
     def temp_file_name(self, **kwds):
-        import tempfile, os
+        import tempfile
 
         if "dir" not in kwds:
             kwds["dir"] = os.getcwd()

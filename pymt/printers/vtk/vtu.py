@@ -1,16 +1,31 @@
 #! /bin/env python
 import os
+import xml.dom.minidom
 from collections import namedtuple
 from xml.etree.ElementTree import ElementTree
+
+import numpy as np
 from six.moves import xrange
 
 from ...grids import UnstructuredField
-
-from .vtktypes import edge_count_to_type, VtkPolygon, vtk_to_np_type
-from .vtkxml import *
-from .vtk import InvalidFormatError, InvalidEncodingError
-from .vtk import assemble_vtk_elements
-from .vtk import valid_formats, valid_encodings
+from .vtk import (
+    InvalidEncodingError,
+    InvalidFormatError,
+    assemble_vtk_elements,
+    valid_encodings,
+    valid_formats,
+)
+from .vtktypes import VtkPolygon, edge_count_to_type, vtk_to_np_type
+from .vtkxml import (
+    VtkAppendedDataElement,
+    VtkCellDataElement,
+    VtkCellsElement,
+    VtkGridElement,
+    VtkPieceElement,
+    VtkPointDataElement,
+    VtkPointsElement,
+    VtkRootElement,
+)
 
 
 class Error(Exception):
@@ -273,7 +288,7 @@ def fromfile(source):
     """
     Parameters
     ----------
-    source : str or file-like
+    source: str or file-like
         Name of file or file object containing XML data.
 
     Returns

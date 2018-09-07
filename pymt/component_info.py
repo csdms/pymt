@@ -1,10 +1,8 @@
 #! /usr/bin/env python
-import types
 import collections
 
 import six
 from six.moves import configparser
-
 
 _KEY_TYPES = {
     "output_file_namespace": str,
@@ -149,15 +147,6 @@ class ComponentInfo(object):
     }
 
     def __init__(self, *args, **kwds):
-        """ ComponentInfo(name, mapping) -> new object initialized from a
-                mapping object's (key, value) pairs
-            ComponentInfo(name, iterable) -> new object initialized as if via:
-                d = {}
-                for k, v in iterable:
-                    d[k] = v
-            ComponentInfo(name, **kwds) -> new object initialized with the
-                name=value pairs in the keyword argument list.
-        """
         params = dict(*args, **kwds)
 
         # self._all_keys = self._get_all_keys(self._keys)

@@ -201,7 +201,7 @@ class EventManager(object):
 
         See Also
         --------
-        :method:`from_path` : Alternate constructor that uses a path name.
+        :meth:`from_path` : Alternate constructor that uses a path name.
         """
         config = ConfigParser()
         config.readfp(StringIO(source))
@@ -225,7 +225,7 @@ class EventManager(object):
 
         See Also
         --------
-        :method:`from_string` : Alternate constructor that uses a string.
+        :meth:`from_string` : Alternate constructor that uses a string.
         """
         config = ConfigParser()
         config.read(path)

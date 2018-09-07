@@ -4,15 +4,14 @@ from __future__ import print_function
 
 import os
 import sys
-import types
 
-import yaml
 import six
+import yaml
 
-from ..mappers import NearestVal
 from ..component.grid import GridMixIn
-from ..utils.run_dir import open_run_dir
 from ..framework import services
+from ..mappers import NearestVal
+from ..utils.run_dir import open_run_dir
 
 
 class PortEvent(GridMixIn):

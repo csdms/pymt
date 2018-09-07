@@ -1,22 +1,18 @@
 #! /usr/bin/env python
 
-import types
-
 import six
 from six.moves.configparser import ConfigParser
 
 from ..framework import services
 from ..printers.bov.database import Database as BovDatabase
-from ..printers.vtk.vtu import Database as VtkDatabase
 from ..printers.nc.database import Database as NcDatabase
-from ..utils.prefix import strip_prefix, names_with_prefix
-
-
+from ..printers.vtk.vtu import Database as VtkDatabase
+from ..utils.prefix import names_with_prefix, strip_prefix
 from .utils import (
-    construct_port_as_field,
-    reconstruct_port_as_field,
     construct_file_name,
+    construct_port_as_field,
     next_unique_file_name,
+    reconstruct_port_as_field,
 )
 
 

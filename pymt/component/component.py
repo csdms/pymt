@@ -1,7 +1,8 @@
 """
 Examples
 --------
-Create an instance of the *AirPort* component and run it. The `go` method will initialize the component, run it for
+Create an instance of the *AirPort* component and run it. The `go`
+method will initialize the component, run it for
 its duration, and finalize it.
 
 >>> from pymt.framework.services import register_component_classes
@@ -20,8 +21,9 @@ its duration, and finalize it.
 >>> comp.current_time
 100.0
 
-If you try to create a new component with the same name, it will raise an exception. To create a new instance of the
-component, you have to give it a new name.
+If you try to create a new component with the same name, it will raise
+an exception. To create a new instance of the component, you have to
+give it a new name.
 
 >>> comp = Component('AirPort') # doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
@@ -30,7 +32,8 @@ ValueError: AirPort
 >>> comp.current_time
 0.0
 
-You can gain finer control over component execution with the `initialize`, `run`, and `finalize` methods.
+You can gain finer control over component execution with the
+`initialize`, `run`, and `finalize` methods.
 
 >>> comp.initialize()
 >>> comp.run(10.) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
@@ -52,19 +55,17 @@ ValueError: AirPort
 100.0
 >>> comp.finalize()
 """
-import types
 import warnings
 
-import yaml
 import six
+import yaml
 
+from ..events.chain import ChainEvent
 from ..events.manager import EventManager
 from ..events.port import PortEvent, PortMapEvent
 from ..events.printer import PrintEvent
-from ..events.chain import ChainEvent
-from .grid import GridMixIn
-
 from ..framework import services
+from .grid import GridMixIn
 
 
 def clip_stop_time(stop, stop_min, stop_max):
@@ -307,8 +308,8 @@ class Component(GridMixIn):
 
         Create a component from a string.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         source : str
             Contents of a yaml file.
 
@@ -326,8 +327,8 @@ class Component(GridMixIn):
         This is an alternate constructor that create a component using values
         from a yaml-formatted string.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         source : str
             Yaml-formatted string.
 
@@ -345,8 +346,8 @@ class Component(GridMixIn):
         This is an alternate constructor that creates a series of components
         using values from a yaml-formatted string.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         source : str
             Yaml-formatted string.
 
@@ -366,11 +367,11 @@ class Component(GridMixIn):
 
         Use configuration paramters from a dict-like object to create a new
         Component. The dictionary must contain the following keys:
-            - `name`
-            - `class`
-            - `initialize_args`
-            - `time_step`
-            - `run_dir`
+        * `name`
+        * `class`
+        * `initialize_args`
+        * `time_step`
+        * `run_dir`
 
         Parameters
         ----------

@@ -35,7 +35,7 @@ def test_unsplit_str_time_stamp():
 
 def test_unsplit_float_time_stamp():
     with pytest.raises(tsn.TimeStampError):
-        name = tsn.unsplit("ice_surface__temperature", "1.2")
+        tsn.unsplit("ice_surface__temperature", "1.2")
 
 
 def test_get_time_series_names():
