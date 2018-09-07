@@ -36,7 +36,7 @@ import pymt
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinx.ext.todo', 'sphinx.ext.coverage',
               'sphinx.ext.mathjax', 'sphinx.ext.ifconfig',
-              'sphinx.ext.viewcode', 'numpydoc', 'sphinx.ext.autosummary']
+              'sphinx.ext.viewcode', 'sphinx.ext.napoleon', 'sphinx.ext.autosummary']
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -162,4 +162,8 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-numpydoc_show_class_members = False
+napoleon_numpy_docstring = True
+napoleon_google_docstring = False
+napoleon_include_init_with_doc = True
+napoleon_include_special_with_doc = True
+
