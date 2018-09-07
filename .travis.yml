@@ -37,7 +37,7 @@ install:
 script:
 - conda install --file=requirements.txt -c conda-forge
 - python setup.py develop
-- pytest --cov=pymt --cov-report= --cov-report=xml
+- pytest --cov=pymt --cov-report= --cov-report=html --cov-config=setup.cfg
 after_success:
 - |
   if [[ $TRAVIS_OS_NAME == "linux" ]]; then
