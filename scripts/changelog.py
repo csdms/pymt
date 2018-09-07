@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 from collections import OrderedDict, defaultdict
+from pkg_resources import parse_version
 
 import click
 import jinja2
@@ -152,17 +153,20 @@ def group_changes(changes):
 
 def render_changelog(format="rst"):
     tags = releases(ascending=False)
-    changelog = OrderedDict()
+
+    changes_by_version = defaultdict(list)
     release_date = dict()
     for start, stop in zip(tags[1:], tags[:-1]):
-        changes = brief(start=start, stop=stop)
-        if changes:
-            if stop.startswith("v"):
-                version = stop[1:]
-            else:
-                version = stop
-            changelog[version] = group_changes(changes)
-            release_date[version] = git_tag_date(stop)
+        if stop.startswith("v"):
+            version = ".".join(parse_version(stop[1:]).base_version.split(".")[:2])
+        else:
+            version = stop
+        changes_by_version[version] += brief(start=start, stop=stop)
+        release_date[version] = git_tag_date(stop)
+
+    changelog = OrderedDict()
+    for version, changes in changes_by_version.items():
+        changelog[version] = group_changes(changes)
 
     env = jinja2.Environment(loader=jinja2.DictLoader({"changelog": CHANGELOG}))
     contents = env.get_template("changelog").render(
