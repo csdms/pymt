@@ -23,7 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 This file was auto-generated using `scripts/make_changelog.py`.
 
 {% for tag, sections in releases.items() %}
-## [{{ tag }}] {{ release_date[tag] }}
+## Version {{ tag }}
+*(released on {{ release_date[tag] }})*
+
 {% for section, changes in sections.items() %}
 ### {{section}}
 {% for change in changes -%}
@@ -45,7 +47,8 @@ def git_log(start=None, stop="HEAD"):
         "--merges",
         "--topo-order",
         # '--pretty=message: %s+author:%an+body: %b'],
-        "--pretty=%s [%an]",
+        # "--pretty=%s [%an]",
+        "--pretty=%s",
         # '--oneline',
     ]
     if start:
@@ -147,6 +150,29 @@ def group_changes(changes):
     return groups
 
 
+def render_changelog(format="rst"):
+    tags = releases(ascending=False)
+    changelog = OrderedDict()
+    release_date = dict()
+    for start, stop in zip(tags[1:], tags[:-1]):
+        changes = brief(start=start, stop=stop)
+        if changes:
+            if stop.startswith("v"):
+                version = stop[1:]
+            else:
+                version = stop
+            changelog[version] = group_changes(changes)
+            release_date[version] = git_tag_date(stop)
+
+    env = jinja2.Environment(loader=jinja2.DictLoader({"changelog": CHANGELOG}))
+    contents = env.get_template("changelog").render(
+        releases=changelog, release_date=release_date
+    )
+    if format == "rst":
+        contents = m2r.convert(contents)
+    return contents
+
+
 @click.command()
 @click.argument("output", type=click.File("w"), default="-")
 @click.option(
@@ -180,24 +206,17 @@ def group_changes(changes):
     default="rst",
     help="Format to use for the CHANGELOG.",
 )
-def changelog(output, quiet, verbose, format, force):
-    tags = releases(ascending=False)
-    changelog = OrderedDict()
-    release_date = dict()
-    for start, stop in zip(tags[1:], tags[:-1]):
-        changes = brief(start=start, stop=stop)
-        if changes:
-            changelog[stop] = group_changes(changes)
-            release_date[stop] = git_tag_date(stop)
+@click.option(
+    "--batch",
+    is_flag=True,
+    help="Run in batch mode.",
+)
+def main(output, quiet, verbose, format, force, batch):
 
-    env = jinja2.Environment(loader=jinja2.DictLoader({"changelog": CHANGELOG}))
-    contents = env.get_template("changelog").render(
-        releases=changelog, release_date=release_date
-    )
-    if format == "rst":
-        contents = m2r.convert(contents)
-    # output.write(contents)
-    click.echo_via_pager(contents)
+    contents = render_changelog(format=format)
+
+    if not batch:
+        click.echo_via_pager(contents)
     path_to_changelog = os.path.join(git_top_level(), "CHANGELOG." + format)
     if os.path.isfile(path_to_changelog) and not force:
         click.secho(
@@ -206,10 +225,11 @@ def changelog(output, quiet, verbose, format, force):
             err=True,
         )
         sys.exit(1)
+
     with open(path_to_changelog, "w") as fp:
         fp.write(contents)
-    click.secho("Writing to {0}".format(path_to_changelog), bold=True, err=True)
+    click.secho("Fresh change log at {0}".format(path_to_changelog), bold=True, err=True)
 
 
 if __name__ == "__main__":
-    changelog(auto_envvar_prefix="CHANGELOG")
+    main(auto_envvar_prefix="CHANGELOG")
