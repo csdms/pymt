@@ -38,3 +38,7 @@ _build
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Auto-generated API docs
+docs/pymt.*rst
+docs/modules.rst
