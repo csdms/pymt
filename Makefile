@@ -60,7 +60,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	pytest --cov=pymt --cov-report= --cov-report=html
+	pytest --cov=pymt --cov-report= --cov-report=html --cov-config=setup.cfg
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs

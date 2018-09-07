@@ -384,7 +384,3 @@ class TestNamesWithPrefix(unittest.TestCase):
         names = ["base1.name1", "base2.name2"]
         self.assertSetEqual(set(["base1.name1"]), names_with_prefix(names, "base1"))
         self.assertSetEqual(set(["base2.name2"]), names_with_prefix(names, "base2"))
-
-
-if __name__ == "__main__":
-    unittest.main()
