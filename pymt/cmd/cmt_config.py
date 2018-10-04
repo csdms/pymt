@@ -8,7 +8,7 @@ import sys
 import six
 import yaml
 
-from model_metadata.metadata import find_model_data_files
+from model_metadata.find import find_model_data_files
 
 
 class redirect(object):
