@@ -1,9 +1,8 @@
 import os
 
-from six.moves import xrange
-
 from pymt.component.component import Component
 from pymt.framework.services import del_component_instances
+from six.moves import xrange
 
 
 def test_no_events(with_no_components):
@@ -17,8 +16,8 @@ def test_no_events(with_no_components):
     air.connect("earth_port", earth)
     earth.go()
 
-    assert air._port.current_time == 100.
-    assert earth._port.current_time == 100.
+    assert air._port.current_time == 100.0
+    assert earth._port.current_time == 100.0
 
 
 def test_print_events(tmpdir, with_no_components):

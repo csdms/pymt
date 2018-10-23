@@ -44,7 +44,7 @@ def get_exchange_item_mapping(items):
 
 
 class Model(object):
-    def __init__(self, components, driver=None, duration=0.):
+    def __init__(self, components, driver=None, duration=0.0):
         self._components = dict(components)
         self._driver = driver
         self._duration = duration

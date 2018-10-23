@@ -1,8 +1,7 @@
 import os
 
-from six.moves import xrange
-
 from pymt.component.component import Component
+from six.moves import xrange
 
 
 def test_print_events(tmpdir, with_no_components):
