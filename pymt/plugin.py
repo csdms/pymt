@@ -32,11 +32,11 @@ from __future__ import print_function
 import importlib
 import logging
 import os
+from collections import OrderedDict, namedtuple
 from glob import glob
 
 import pkg_resources
-
-from scripting import error, success
+from scripting import error, status
 
 from .babel import setup_babel_environ
 from .framework.bmi_bridge import bmi_factory
@@ -165,27 +165,29 @@ def load_csdms_plugins():
 
 
 def load_pymt_plugins(include_old_style=False):
-    class Plugins(object):
-        """PyMT BMI component plugins."""
-
-        pass
-
-    plugins = Plugins()
-
-    for entry_point in pkg_resources.iter_entry_points(group="pymt.plugins"):
-        try:
-            plugin = entry_point.load()
-        except Exception as err:
-            error(entry_point.name)
-        else:
-            success(entry_point.name)
-            plugin = bmi_factory(plugin)
-            setattr(plugins, entry_point.name, plugin)
+    plugins = OrderedDict()
 
     if include_old_style:
         for plugin in load_csdms_plugins():
             if not hasattr(plugins, plugin.__name__):
-                success(plugin.__name__)
-                setattr(plugins, plugin.__name__, plugin)
+                plugins[plugin.__name__] = plugin
 
-    return plugins
+    failed = []
+    for entry_point in pkg_resources.iter_entry_points(group="pymt.plugins"):
+        try:
+            plugin = entry_point.load()
+        except Exception as err:
+            failed.append(entry_point.name)
+        else:
+            plugin = bmi_factory(plugin)
+            plugins[entry_point.name] = plugin
+
+    if len(plugins) > 0:
+        status("plugins: {0}".format(", ".join(plugins.keys())))
+    else:
+        status("plugins: (none)")
+    if failed:
+        error("failed to load the following plugins: {0}".format(", ".join(failed)))
+
+    Plugins = namedtuple("Plugins", plugins.keys())
+    return Plugins(*plugins.values())
