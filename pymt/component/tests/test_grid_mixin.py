@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
-from pytest import approx
-
 from pymt.component.grid import GridMixIn
+from pytest import approx
 
 
 class Port(object):
@@ -55,10 +54,10 @@ def test_raster_1d():
             return (3,)
 
         def get_grid_spacing(self, grid_id):
-            return (2.,)
+            return (2.0,)
 
         def get_grid_origin(self, grid_id):
-            return (3.,)
+            return (3.0,)
 
     class Component(GridMixIn):
         def __init__(self):
@@ -66,7 +65,7 @@ def test_raster_1d():
             super(Component, self).__init__()
 
     c = Component()
-    assert c.get_x("invar") == approx(np.array([3., 5., 7.]))
+    assert c.get_x("invar") == approx(np.array([3.0, 5.0, 7.0]))
 
 
 def test_raster_2d():
@@ -75,10 +74,10 @@ def test_raster_2d():
             return (2, 3)
 
         def get_grid_spacing(self, grid_id):
-            return (2., 1.)
+            return (2.0, 1.0)
 
         def get_grid_origin(self, grid_id):
-            return (0., 0.)
+            return (0.0, 0.0)
 
     class Component(GridMixIn):
         def __init__(self):
@@ -88,8 +87,8 @@ def test_raster_2d():
     c = Component()
     assert c.name == "test-2d"
     assert c.get_grid_type(0) == "RASTER"
-    assert c.get_x(0) == approx(np.array([[0., 1., 2.], [0., 1., 2.]]))
-    assert c.get_y(0) == approx(np.array([[0., 0., 0.], [2., 2., 2.]]))
+    assert c.get_x(0) == approx(np.array([[0.0, 1.0, 2.0], [0.0, 1.0, 2.0]]))
+    assert c.get_y(0) == approx(np.array([[0.0, 0.0, 0.0], [2.0, 2.0, 2.0]]))
     assert np.all(c.get_connectivity(0) == np.array([0, 1, 4, 3, 1, 2, 5, 4]))
     assert np.all(c.get_offset(0) == np.array([4, 8]))
 
@@ -100,10 +99,10 @@ def test_raster_3d():
             return (2, 2, 3)
 
         def get_grid_spacing(self, grid_id):
-            return (1., 2., 1.)
+            return (1.0, 2.0, 1.0)
 
         def get_grid_origin(self, grid_id):
-            return (0., 0., 0.)
+            return (0.0, 0.0, 0.0)
 
     class Component(GridMixIn):
         def __init__(self):
@@ -112,13 +111,19 @@ def test_raster_3d():
 
     c = Component()
     assert c.get_x(0) == approx(
-        np.array([[[0., 1., 2.], [0., 1., 2.]], [[0., 1., 2.], [0., 1., 2.]]])
+        np.array(
+            [[[0.0, 1.0, 2.0], [0.0, 1.0, 2.0]], [[0.0, 1.0, 2.0], [0.0, 1.0, 2.0]]]
+        )
     )
     assert c.get_y(0) == approx(
-        np.array([[[0., 0., 0.], [2., 2., 2.]], [[0., 0., 0.], [2., 2., 2.]]])
+        np.array(
+            [[[0.0, 0.0, 0.0], [2.0, 2.0, 2.0]], [[0.0, 0.0, 0.0], [2.0, 2.0, 2.0]]]
+        )
     )
     assert c.get_z(0) == approx(
-        np.array([[[0., 0., 0.], [0., 0., 0.]], [[1., 1., 1.], [1., 1., 1.]]])
+        np.array(
+            [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]]
+        )
     )
 
 
@@ -128,10 +133,10 @@ def test_rectilinear():
             return (2, 3)
 
         def get_grid_x(self, grid_id):
-            return (0., 3., 4)
+            return (0.0, 3.0, 4)
 
         def get_grid_y(self, grid_id):
-            return (2., 7.)
+            return (2.0, 7.0)
 
     class Component(GridMixIn):
         def __init__(self):
@@ -140,8 +145,8 @@ def test_rectilinear():
 
     c = Component()
     assert c.get_grid_type(0) == "RECTILINEAR"
-    assert c.get_x(0) == approx(np.array([[0., 3., 4.], [0., 3., 4.]]))
-    assert c.get_y(0) == approx(np.array([[2., 2., 2.], [7., 7., 7.]]))
+    assert c.get_x(0) == approx(np.array([[0.0, 3.0, 4.0], [0.0, 3.0, 4.0]]))
+    assert c.get_y(0) == approx(np.array([[2.0, 2.0, 2.0], [7.0, 7.0, 7.0]]))
 
 
 def test_structured():
@@ -150,10 +155,10 @@ def test_structured():
             return (2, 3)
 
         def get_grid_x(self, grid_id):
-            return np.array([0., 1., 2., 0., 1., 2.])
+            return np.array([0.0, 1.0, 2.0, 0.0, 1.0, 2.0])
 
         def get_grid_y(self, grid_id):
-            return np.array([0., 1., 2., 1., 2., 3.])
+            return np.array([0.0, 1.0, 2.0, 1.0, 2.0, 3.0])
 
     class Component(GridMixIn):
         def __init__(self):
@@ -162,17 +167,17 @@ def test_structured():
 
     c = Component()
     assert c.get_grid_type(0) == "STRUCTURED"
-    assert c.get_x(0) == approx(np.array([0., 1., 2., 0., 1., 2.]))
-    assert c.get_y(0) == approx(np.array([0., 1., 2., 1., 2., 3.]))
+    assert c.get_x(0) == approx(np.array([0.0, 1.0, 2.0, 0.0, 1.0, 2.0]))
+    assert c.get_y(0) == approx(np.array([0.0, 1.0, 2.0, 1.0, 2.0, 3.0]))
 
 
 def test_unstructured():
     class UnstructuredPort(Port):
         def get_grid_x(self, grid_id):
-            return np.array([0., 1., 0., 1., 2.])
+            return np.array([0.0, 1.0, 0.0, 1.0, 2.0])
 
         def get_grid_y(self, grid_id):
-            return np.array([0., 0., 1., 1., 0.])
+            return np.array([0.0, 0.0, 1.0, 1.0, 0.0])
 
         def get_grid_connectivity(self, grid_id):
             return np.array([0, 1, 3, 2, 4, 3, 1])
@@ -187,8 +192,8 @@ def test_unstructured():
 
     c = Component()
     assert c.get_grid_type(0) == "UNSTRUCTURED"
-    assert c.get_x(0) == approx(np.array([0., 1., 0., 1., 2.]))
-    assert c.get_y(0) == approx(np.array([0., 0., 1., 1., 0.]))
+    assert c.get_x(0) == approx(np.array([0.0, 1.0, 0.0, 1.0, 2.0]))
+    assert c.get_y(0) == approx(np.array([0.0, 0.0, 1.0, 1.0, 0.0]))
 
 
 def test_get_grid_shape_is_none():
@@ -197,7 +202,7 @@ def test_get_grid_shape_is_none():
             return None
 
         def get_grid_x(self, grid_id):
-            return np.array([0., 1., 2.])
+            return np.array([0.0, 1.0, 2.0])
 
     class Component(GridMixIn):
         def __init__(self):
@@ -214,7 +219,7 @@ def test_get_grid_shape_raises():
             raise NotImplementedError("get_grid_shape")
 
         def get_grid_x(self, grid_id):
-            return np.array([0., 1., 2.])
+            return np.array([0.0, 1.0, 2.0])
 
     class Component(GridMixIn):
         def __init__(self):
@@ -231,7 +236,7 @@ def test_structured_1d():
             return (2, 3)
 
         def get_grid_x(self, grid_id):
-            return np.array([0., 1., 2.])
+            return np.array([0.0, 1.0, 2.0])
 
         def get_grid_y(self, grid_id):
             raise NotImplementedError("get_grid_y")

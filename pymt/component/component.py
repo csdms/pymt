@@ -137,7 +137,7 @@ class Component(GridMixIn):
         provides=None,
         events=(),
         argv=(),
-        time_step=1.,
+        time_step=1.0,
         run_dir=".",
         name=None,
     ):
@@ -390,7 +390,7 @@ class Component(GridMixIn):
             argv = d["initialize_args"]
         except KeyError:
             argv = d.get("argv", [])
-        time_step = float(d.get("time_step", 1.))
+        time_step = float(d.get("time_step", 1.0))
         run_dir = d.get("run_dir", ".")
 
         events = []
