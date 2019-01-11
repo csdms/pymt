@@ -5,6 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = pymt
+SPHINXAPIDOC  = sphinx-apidoc
 SOURCEDIR     = .
 BUILDDIR      = _build
 
@@ -17,4 +18,5 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
+	@$(SPHINXAPIDOC) --force -o . ../pymt *tests
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
