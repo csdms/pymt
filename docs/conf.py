@@ -49,6 +49,7 @@ MOCK_MODULES = [
     "scipy.spatial",
     "scipy.io",
     "scipy.interpolate",
+    "scripting",
     "scripting.contexts",
     "shapely",
     "shapely.geometry",
