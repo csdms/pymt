@@ -32,18 +32,28 @@ class Mock(MagicMock):
 
 
 MOCK_MODULES = [
-    "numpy",
-    "scipy",
-    "matplotlib",
-    "xarray",
-    "shapely",
-    "netcdf4",
-    "yaml",
-    "esmpy",
     "cfunits",
-    "model_metadata",
-    "scripting",
+    "ESMF",
     "landlab",
+    "landlab.graph",
+    "matplotlib",
+    "matplotlib.pyplot",
+    "model_metadata",
+    "model_metadata.find",
+    "model_metadata.model_data_files",
+    "model_metadata.model_setup",
+    "netCDF4",
+    "numpy",
+    "numpy.testing",
+    "scipy",
+    "scipy.spatial",
+    "scipy.io",
+    "scipy.interpolate",
+    "scripting.contexts",
+    "shapely",
+    "shapely.geometry",
+    "xarray",
+    "yaml",
 ]
 
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
