@@ -42,10 +42,30 @@ What does it look like?  Here is an example of a simple PyMT program:
    readme
    installation
    usage
+
+
+API Reference
+-------------
+
+If you are looking for information on a specific function, class, or
+method, this part of the documentation is for you.
+
+.. toctree::
+   :maxdepth: 2
+
    modules
+
+
+Miscellaneous Pages
+-------------------
+
+.. toctree::
+   :maxdepth: 2
+
    contributing
    authors
    history
+   license
 
 Indices and tables
 ==================
