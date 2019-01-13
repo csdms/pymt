@@ -38,8 +38,8 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-pymt could always use more documentation, whether as part of the
-official pymt docs, in docstrings, or even on the web in blog posts,
+*pymt* could always use more documentation, whether as part of the
+official *pymt* docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
@@ -57,17 +57,21 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `pymt` for local development.
+Ready to contribute? Here's how to set up *pymt* for local development.
 
-1. Fork the `pymt` repo on GitHub.
+1. Fork the *pymt* repo on GitHub.
 2. Clone your fork locally::
 
     $ git clone git@github.com:your_name_here/pymt.git
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
+3. Install your local copy into a conda environment. Assuming you have conda
+   installed, this is how you set up your fork for local development::
 
-    $ conda create -n pymt
+    $ conda create -n pymt python=3.7
+    $ conda activate pymt
     $ cd pymt/
+    $ conda install --file=requirements.txt
+
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -101,7 +105,7 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 2.7, 3.4, 3.5 and 3.6, and for PyPy. Check
+3. The pull request should work for Python 2.7, 3.6 and 3.7. Check
    https://travis-ci.org/csdms/pymt/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
@@ -116,4 +120,4 @@ $ git tag v<major>.<minor>.<patch>
 $ git push
 $ git push --tags
 
-Travis will then deploy to PyPI if tests pass.
+This will alert the *pymt* feedstock on *conda-forge* that there is a new release.

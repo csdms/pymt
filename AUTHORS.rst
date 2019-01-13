@@ -2,12 +2,13 @@
 Credits
 =======
 
-Development Lead
-----------------
+Development Leads
+-----------------
 
 * Eric Hutton <mcflugen@gmail.com>
+* Mark Piper <mark.piper@colorado.edu>
 
 Contributors
 ------------
 
-* Mark Piper <mark.piper@colorado.edu>
+Your name here!

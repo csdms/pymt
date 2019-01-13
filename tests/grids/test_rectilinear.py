@@ -4,7 +4,7 @@ import unittest
 from pymt.grids import Rectilinear, RectilinearPoints
 import numpy as np
 
-from pymt.grids.tests.test_utils import NumpyArrayMixIn
+from ..grids.test_utils import NumpyArrayMixIn
 
 
 class TestRectilinearGrid(unittest.TestCase):
