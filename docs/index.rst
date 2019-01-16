@@ -39,9 +39,11 @@ What does it look like?  Here is an example of a simple PyMT program:
    :maxdepth: 2
    :caption: Contents:
 
+   quickstart
+   examples
+   usage
    readme
    installation
-   usage
 
 
 API Reference
