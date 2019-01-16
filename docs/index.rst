@@ -52,12 +52,10 @@ API Reference
 If you are looking for information on a specific function, class, or
 method, this part of the documentation is for you.
 
-Coming Soon!
-
 .. toctree::
    :maxdepth: 2
 
-   modules
+   api/index
 
 
 Miscellaneous Pages

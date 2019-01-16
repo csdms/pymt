@@ -64,15 +64,15 @@ coverage: ## check code coverage quickly with the default Python
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/pymt.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc --force -o docs/ pymt *tests
+	rm -f docs/api/pymt.rst
+	rm -f docs/api/modules.rst
+	sphinx-apidoc --force -o docs/api pymt *tests
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
 
 changelog:
-	./scripts/changelog.py --force --batch
+	changelog --force --batch
 
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
