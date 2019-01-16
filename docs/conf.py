@@ -64,7 +64,7 @@ if os.environ.get('READTHEDOCS', ''):
     # RTD doesn't use the repo's Makefile to build docs.
     import subprocess
 
-    subprocess.run(["sphinx-apidoc", "--force", "-o", ".", "../pymt", "*tests"])
+    subprocess.run(["sphinx-apidoc", "--force", "-o", "./api", "../pymt", "*tests"])
 
 
 import pymt
@@ -130,7 +130,9 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "*tests*"]
+exclude_patterns = [
+    "_build", "Thumbs.db", ".DS_Store", "*tests*", ".ipynb_checkpoints"
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
