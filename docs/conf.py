@@ -60,6 +60,13 @@ MOCK_MODULES = [
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
+if os.environ.get('READTHEDOCS', ''):
+    # RTD doesn't use the repo's Makefile to build docs.
+    import subprocess
+
+    subprocess.run(["sphinx-apidoc", "--force", "-o", ".", "../pymt", "*tests"])
+
+
 import pymt
 
 # -- General configuration ---------------------------------------------
@@ -81,6 +88,10 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosummary",
+    "nbsphinx",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "sphinxcontrib_github_alt",
+
 ]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -89,7 +100,8 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+# source_suffix = ".rst"
+source_suffix = ['.rst', '.ipynb']
 
 # The master toctree document.
 master_doc = "index"
