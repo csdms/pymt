@@ -1,4 +1,4 @@
-.. image:: _static/pymt-logo-header.png
+.. image:: _static/pymt-logo-header-text.png
     :align: center
     :scale: 50%
     :alt: Python Modeling Tool
