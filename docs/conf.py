@@ -60,6 +60,13 @@ MOCK_MODULES = [
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
+if os.environ.get('READTHEDOCS', ''):
+    # RTD doesn't use the repo's Makefile to build docs.
+    import subprocess
+
+    subprocess.run(["sphinx-apidoc", "--force", "-o", "./api", "../pymt", "*tests"])
+
+
 import pymt
 
 # -- General configuration ---------------------------------------------
@@ -81,6 +88,10 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosummary",
+    "nbsphinx",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "sphinxcontrib_github_alt",
+
 ]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -89,7 +100,8 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+# source_suffix = ".rst"
+source_suffix = ['.rst', '.ipynb']
 
 # The master toctree document.
 master_doc = "index"
@@ -118,7 +130,9 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "*tests*"]
+exclude_patterns = [
+    "_build", "Thumbs.db", ".DS_Store", "*tests*", ".ipynb_checkpoints"
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -205,3 +219,22 @@ napoleon_numpy_docstring = True
 napoleon_google_docstring = False
 napoleon_include_init_with_doc = True
 napoleon_include_special_with_doc = True
+
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = "_static/powered-by-logo-header.png"
+
+html_sidebars = {
+    "index": [
+        "sidebarintro.html",
+        "links.html",
+        "sourcelink.html",
+        "searchbox.html",
+    ],
+    "**": [
+        "sidebarintro.html",
+        "links.html",
+        "sourcelink.html",
+        "searchbox.html",
+    ]
+}

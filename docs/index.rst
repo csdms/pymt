@@ -1,4 +1,4 @@
-.. image:: _static/pymt-logo-header.png
+.. image:: _static/pymt-logo-header-text.png
     :align: center
     :scale: 50%
     :alt: Python Modeling Tool
@@ -39,9 +39,11 @@ What does it look like?  Here is an example of a simple PyMT program:
    :maxdepth: 2
    :caption: Contents:
 
+   quickstart
+   examples
+   usage
    readme
    installation
-   usage
 
 
 API Reference
@@ -50,12 +52,10 @@ API Reference
 If you are looking for information on a specific function, class, or
 method, this part of the documentation is for you.
 
-Coming Soon!
-
 .. toctree::
    :maxdepth: 2
 
-   modules
+   api/index
 
 
 Miscellaneous Pages

@@ -40,5 +40,5 @@ _build
 .pydevproject
 
 # Auto-generated API docs
-docs/pymt.*rst
-docs/modules.rst
+docs/api/pymt.*rst
+docs/api/modules.rst
