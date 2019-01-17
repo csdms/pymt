@@ -1,16 +1,25 @@
 Examples
 ========
 
+Single Models
+-------------
+
 .. toctree::
-   :maxdepth: 1
-   :caption: Contents:
+   :titlesonly:
 
    demos/frost_number
    demos/ku
    demos/cem
-   demos/cem_and_waves
    demos/child
    demos/hydrotrend
    demos/sedflux3d
    demos/subside
+
+Coupled Models
+--------------
+
+.. toctree::
+   :titlesonly:
+
+   demos/cem_and_waves
    demos/sedflux3d_and_child
