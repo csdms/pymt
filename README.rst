@@ -14,11 +14,20 @@
 .. raw:: html
 
    <p align="center">
-   <a href="https://travis-ci.org/csdms/pymt"><img alt="Build Status" src="https://travis-ci.org/csdms/pymt.svg?branch=master"></a>
-   <a href="https://coveralls.io/github/csdms/pymt?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master"></a>
-   <a href="https://landscape.io/github/csdms/pymt/master"><img alt="Code Health" src="https://landscape.io/github/csdms/pymt/master/landscape.svg"></a>
-   <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
-   <a href="https://github.com/csdms/pymt"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
+   <a href='https://pymt.readthedocs.io/en/latest/?badge=latest'>
+     <img src='https://readthedocs.org/projects/pymt/badge/?version=latest' alt='Documentation Status' /></a>
+   <a href="https://travis-ci.org/csdms/pymt">
+     <img alt="Build Status" src="https://travis-ci.org/csdms/pymt.svg?branch=master"></a>
+   <a href="https://coveralls.io/github/csdms/pymt?branch=master">
+     <img alt="Coverage Status" src="https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master"></a>
+   <a href="https://landscape.io/github/csdms/pymt/master">
+     <img alt="Code Health" src="https://landscape.io/github/csdms/pymt/master/landscape.svg"></a>
+   <a href="https://opensource.org/licenses/MIT">
+     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+   <a href="https://github.com/csdms/pymt">
+     <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
    </p>
 
 ====
