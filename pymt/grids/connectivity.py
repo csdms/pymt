@@ -63,7 +63,7 @@ def _get_interior_ids(shape, dtype="int64"):
     obj = []
     for d in shape:
         obj.append(slice(0, d - 1))
-    return i[obj].flatten()
+    return i[tuple(obj)].flatten()
 
 
 def _get_offsets(shape, ordering="cw", dtype="int64"):
