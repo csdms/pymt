@@ -21,6 +21,9 @@ else:
     from pymt.grids.esmp import run_regridding
 
 
+esmf = pytest.importorskip("ESMF")
+
+
 def setup():
     ESMF.Manager()
 

@@ -1,8 +1,18 @@
 #! /usr/bin/env python
 import warnings
 
-import ESMF
 import numpy as np
+
+try:
+    import ESMF
+except ImportError:
+
+    class GridMapperMixIn(object):
+        pass
+
+    WITH_ESMF = False
+else:
+    WITH_ESMF = True
 
 
 def ravel_jaggedarray(array):
@@ -95,189 +105,190 @@ def graph_as_esmf(graph, field_name, data=None, at="node"):
     return field
 
 
-REGRID_METHODS = {
-    "bilinear": ESMF.RegridMethod.BILINEAR,
-    "nearest": ESMF.RegridMethod.NEAREST_STOD,
-    "conserve": ESMF.RegridMethod.CONSERVE,
-}
-UNMAPPED_ACTIONS = {
-    "pass": ESMF.UnmappedAction.IGNORE,
-    "raise": ESMF.UnmappedAction.ERROR,
-}
+if WITH_ESMF:
+    REGRID_METHODS = {
+        "bilinear": ESMF.RegridMethod.BILINEAR,
+        "nearest": ESMF.RegridMethod.NEAREST_STOD,
+        "conserve": ESMF.RegridMethod.CONSERVE,
+    }
+    UNMAPPED_ACTIONS = {
+        "pass": ESMF.UnmappedAction.IGNORE,
+        "raise": ESMF.UnmappedAction.ERROR,
+    }
 
+    def run_regridding(srcfield, dstfield, method="nearest", unmapped="pass"):
+        """run_regridding(source_field, destination_field, method=ESMP_REGRIDMETHOD_CONSERVE, unmapped=ESMP_UNMAPPEDACTION_ERROR)
 
-def run_regridding(srcfield, dstfield, method="nearest", unmapped="pass"):
-    """run_regridding(source_field, destination_field, method=ESMP_REGRIDMETHOD_CONSERVE, unmapped=ESMP_UNMAPPEDACTION_ERROR)
-
-    **PRECONDITIONS:**
-        Two ESMP_Fields have been created and a regridding operation is desired from 'srcfield' to 'dstfield'.
-    **POSTCONDITIONS:**
-        An ESMP regridding operation has set the data on 'dstfield'.
-    """
-    # method = kwds.get('method', ESMF.RegridMethod.NEAREST_STOD)
-    # method = kwds.get('method', ESMF.RegridMethod.BILINEAR)
-    # unmapped = kwds.get('unmapped', ESMF.UnmappedAction.IGNORE)
-    # method = kwds.get('method', ESMF.RegridMethod.CONSERVE)
-    # unmapped = kwds.get('unmapped', ESMF.UnmappedAction.ERROR)
-
-    try:
-        method = REGRID_METHODS[method]
-    except KeyError:
-        raise ValueError("regrid method not understood")
-    try:
-        unmapped = UNMAPPED_ACTIONS[unmapped]
-    except KeyError:
-        raise ValueError("unmapped action not understood")
-
-    # call the regridding functions
-    masked_values = np.array([-9999.])
-    regridder = ESMF.Regrid(
-        srcfield,
-        dstfield,
-        regrid_method=method,
-        unmapped_action=unmapped,
-        src_mask_values=masked_values,
-        dst_mask_values=masked_values,
-    )
-    dstfield = regridder(srcfield, dstfield)
-
-    return dstfield
-
-
-class GridMapperMixIn(object):
-    def esmf_mesh(self, gid):
-        try:
-            self._esmf_mesh
-        except AttributeError:
-            self._esmf_mesh = dict()
+        **PRECONDITIONS:**
+            Two ESMP_Fields have been created and a regridding operation is desired from 'srcfield' to 'dstfield'.
+        **POSTCONDITIONS:**
+            An ESMP regridding operation has set the data on 'dstfield'.
+        """
+        # method = kwds.get('method', ESMF.RegridMethod.NEAREST_STOD)
+        # method = kwds.get('method', ESMF.RegridMethod.BILINEAR)
+        # unmapped = kwds.get('unmapped', ESMF.UnmappedAction.IGNORE)
+        # method = kwds.get('method', ESMF.RegridMethod.CONSERVE)
+        # unmapped = kwds.get('unmapped', ESMF.UnmappedAction.ERROR)
 
         try:
-            self._esmf_mesh[gid]
+            method = REGRID_METHODS[method]
         except KeyError:
-            self._esmf_mesh[gid] = bmi_as_esmf_mesh(self.grid[gid])
-
-        return self._esmf_mesh[gid]
-
-    def esmf_field(self, gid, name=None, at="node"):
-        name = name or "generic"
-
+            raise ValueError("regrid method not understood")
         try:
-            self._esmf_field
-        except AttributeError:
-            self._esmf_field = dict()
-
-        _id = "{gid}.{name}@{at}".format(gid=gid, name=name, at=at)
-
-        try:
-            self._esmf_field[_id]
+            unmapped = UNMAPPED_ACTIONS[unmapped]
         except KeyError:
-            self._esmf_field[_id] = as_esmf_field(self.esmf_mesh(gid), name, at=at)
+            raise ValueError("unmapped action not understood")
 
-        return self._esmf_field[_id]
+        # call the regridding functions
+        masked_values = np.array([-9999.0])
+        regridder = ESMF.Regrid(
+            srcfield,
+            dstfield,
+            regrid_method=method,
+            unmapped_action=unmapped,
+            src_mask_values=masked_values,
+            dst_mask_values=masked_values,
+        )
+        dstfield = regridder(srcfield, dstfield)
 
-    def regrid(self, name, **kwds):
-        """Regrid values from one grid to another.
+        return dstfield
 
-        Parameters
-        ----------
-        name : str
-            Name of the values to regrid.
-        to : bmi_like, optional
-            BMI object onto which to map values. If not provided, map
-            values onto one of the object's own grids.
-        to_name : str, optional
-            Name of the value to map onto. If not provided, use *name*.
+    class GridMapperMixIn(object):
+        def _esmf_mesh_by_id(self, gid):
+            try:
+                self._esmf_mesh
+            except AttributeError:
+                self._esmf_mesh = dict()
 
-        Returns
-        -------
-        ndarray
-            The regridded values.
-        """
-        dst = kwds.pop("to", self)
-        dst_name = kwds.pop("to_name", name)
+            try:
+                self._esmf_mesh[gid]
+            except KeyError:
+                self._esmf_mesh[gid] = bmi_as_esmf_mesh(self.grid[gid])
 
-        data = self.get_value(name, **kwds)
+            return self._esmf_mesh[gid]
 
-        src_field = self.esmf_field(self.var[name].grid, at="node")
-        dst_field = dst.esmf_field(dst.var[dst_name].grid, at="node")
+        def _esmf_field_by_id(self, gid, name=None, at="node"):
+            name = name or "generic"
 
-        np.copyto(src_field.data, data.reshape(src_field.data.shape))
+            try:
+                self._esmf_field
+            except AttributeError:
+                self._esmf_field = dict()
 
-        run_regridding(src_field, dst_field)
+            _id = "{gid}.{name}@{at}".format(gid=gid, name=name, at=at)
 
-        return dst_field.data
+            try:
+                self._esmf_field[_id]
+            except KeyError:
+                self._esmf_field[_id] = as_esmf_field(
+                    self._esmf_mesh_by_id(gid), name, at=at
+                )
 
-    def map_to(self, name, **kwds):
-        """Map values to another grid.
+            return self._esmf_field[_id]
 
-        Parameters
-        ----------
-        name : str
-            Name of values to push.
-        """
-        destination = kwds.pop("destination", self)
-        at = kwds.pop("at", name)
-        data = self.regrid(name, to=destination, to_name=at, **kwds)
-        destination.set_value(at, data)
+        def regrid(self, name, **kwds):
+            """Regrid values from one grid to another.
 
-    def set_value(self, name, *args, **kwds):
-        """Set values for a variable.
-        set_value(name, value)
-        set_value(name, mapfrom=self, nomap=None)
+            Parameters
+            ----------
+            name : str
+                Name of the values to regrid.
+            to : bmi_like, optional
+                BMI object onto which to map values. If not provided, map
+                values onto one of the object's own grids.
+            to_name : str, optional
+                Name of the value to map onto. If not provided, use *name*.
 
-        Parameters
-        ----------
-        name : str
-            Name of the destination values.
-        """
-        if len(args) == 1:
-            return super(GridMapperMixIn, self).set_value(name, *args)
+            Returns
+            -------
+            ndarray
+                The regridded values.
+            """
+            dst = kwds.pop("to", self)
+            dst_name = kwds.pop("to_name", name)
 
-        mapfrom = kwds.pop("mapfrom", self)
-        nomap = kwds.pop("nomap", None)
-        try:
-            value, source = mapfrom
-        except TypeError:
-            value, source = name, mapfrom
+            data = self.get_value(name, **kwds)
 
-        if nomap is not None:
-            orig = self.get_value(name)
+            src_field = self._esmf_field_by_id(self.var[name].grid, at="node")
+            dst_field = dst._esmf_field_by_id(dst.var[dst_name].grid, at="node")
 
-        data = source.regrid(value, to=self, to_name=name, **kwds)
+            np.copyto(src_field.data, data.reshape(src_field.data.shape))
 
-        if nomap is not None:
-            data[nomap] = orig[nomap]
+            run_regridding(src_field, dst_field)
 
-        super(GridMapperMixIn, self).set_value(name, data)
+            return dst_field.data
 
-    def map_value(self, name, **kwds):
-        """Map values from another grid.
+        def map_to(self, name, **kwds):
+            """Map values to another grid.
 
-        Parameters
-        ----------
-        name : str
-            Name of values to map to.
-        mapfrom : tuple or bmi_like, optional
-            BMI object from which values are mapped from. This can also be
-            a tuple of *(name, bmi)*, where *name* is the variable of the
-            source grid and *bmi* is the bmi-like source. If not provided,
-            use *self*.
-        nomap : narray of bool, optional
-            Values in the destination grid to not map.
-        """
-        mapfrom = kwds.pop("mapfrom", self)
-        nomap = kwds.pop("nomap", None)
-        try:
-            value, source = mapfrom
-        except TypeError:
-            value, source = name, mapfrom
+            Parameters
+            ----------
+            name : str
+                Name of values to push.
+            """
+            destination = kwds.pop("destination", self)
+            at = kwds.pop("at", name)
+            data = self.regrid(name, to=destination, to_name=at, **kwds)
+            destination.set_value(at, data)
 
-        if nomap is not None:
-            orig = self.get_value(name)
+        def set_value(self, name, *args, **kwds):
+            """Set values for a variable.
+            set_value(name, value)
+            set_value(name, mapfrom=self, nomap=None)
 
-        data = source.regrid(value, to=self, to_name=name, **kwds)
+            Parameters
+            ----------
+            name : str
+                Name of the destination values.
+            """
+            if len(args) == 1:
+                return super(GridMapperMixIn, self).set_value(name, *args)
 
-        if nomap is not None:
-            data[nomap] = orig[nomap]
+            mapfrom = kwds.pop("mapfrom", self)
+            nomap = kwds.pop("nomap", None)
+            try:
+                value, source = mapfrom
+            except TypeError:
+                value, source = name, mapfrom
 
-        self.set_value(name, data)
+            if nomap is not None:
+                orig = self.get_value(name)
+
+            data = source.regrid(value, to=self, to_name=name, **kwds)
+
+            if nomap is not None:
+                data[nomap] = orig[nomap]
+
+            super(GridMapperMixIn, self).set_value(name, data)
+
+        def map_value(self, name, **kwds):
+            """Map values from another grid.
+
+            Parameters
+            ----------
+            name : str
+                Name of values to map to.
+            mapfrom : tuple or bmi_like, optional
+                BMI object from which values are mapped from. This can also be
+                a tuple of *(name, bmi)*, where *name* is the variable of the
+                source grid and *bmi* is the bmi-like source. If not provided,
+                use *self*.
+            nomap : narray of bool, optional
+                Values in the destination grid to not map.
+            """
+            mapfrom = kwds.pop("mapfrom", self)
+            nomap = kwds.pop("nomap", None)
+            try:
+                value, source = mapfrom
+            except TypeError:
+                value, source = name, mapfrom
+
+            if nomap is not None:
+                orig = self.get_value(name)
+
+            data = source.regrid(value, to=self, to_name=name, **kwds)
+
+            if nomap is not None:
+                data[nomap] = orig[nomap]
+
+            self.set_value(name, data)

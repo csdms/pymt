@@ -241,8 +241,8 @@ else:
     _WITH_ESMF = True
 
 
-# if not _WITH_ESMF:
-#     __doc__ = "This module is not available (no ESMF installation was found)"
+if not _WITH_ESMF:
+    __doc__ = "This module is not available (no ESMF installation was found)"
 
 
 class EsmpGrid(IGrid):

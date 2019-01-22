@@ -57,7 +57,7 @@ class FieldMixIn(object):
         from pymt.grids import RasterField
 
         ndims = kwds.pop("ndims", 1)
-        shape = np.random.random_integers(3, 101, ndims)
+        shape = np.random.randint(3, 101 + 1, ndims)
         spacing = (1. - np.random.random(ndims)) * 100.
         origin = (np.random.random(ndims) - .5) * 100.
 
@@ -67,7 +67,7 @@ class FieldMixIn(object):
         from pymt.grids import RectilinearField
 
         ndims = kwds.pop("ndims", 1)
-        shape = np.random.random_integers(2, 101, ndims)
+        shape = np.random.randint(2, 101 + 1, ndims)
         args = []
         for size in shape:
             args.append(np.cumsum((1. - np.random.random(size))))
@@ -78,7 +78,7 @@ class FieldMixIn(object):
         from pymt.grids import StructuredField
 
         ndims = kwds.pop("ndims", 1)
-        shape = np.random.random_integers(2, 101, ndims)
+        shape = np.random.randint(2, 101 + 1, ndims)
         np.prod(shape)
 
         coords = []
