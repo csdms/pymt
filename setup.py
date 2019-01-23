@@ -26,7 +26,7 @@ setup(name='PyMT',
       author_email='huttone@colorado.edu',
       url='http://csdms.colorado.edu',
       setup_requires=['setuptools', ],
-      packages=find_packages(),
+      packages=find_packages(exclude=("tests*", "cmt")),
       entry_points={
           'console_scripts': [
               'cmt-config=cmt.cmd.cmt_config:main',
