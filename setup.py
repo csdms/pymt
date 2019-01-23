@@ -32,12 +32,4 @@ setup(name='PyMT',
               'cmt-config=cmt.cmd.cmt_config:main',
           ],
       },
-      scripts=[
-          'scripts/scrape_html_block',
-          'scripts/vtu2ncu.py',
-          'scripts/quickstart.py',
-          'scripts/prmscan.py',
-          'scripts/prm2template.py',
-          'scripts/prm2input.py',
-      ],
 )
