@@ -1,6 +1,6 @@
 .. image:: _static/pymt-logo-header-text.png
     :align: center
-    :scale: 50%
+    :scale: 100%
     :alt: Python Modeling Tool
     :target: https://pymt.readthedocs.org/
 
