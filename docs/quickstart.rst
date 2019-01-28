@@ -9,6 +9,7 @@ You can get *pymt* directly from *conda-forge*,
 
 Installing into a *conda* environment is heavily recommended.
 
+.. _conda-env:
 
 Conda environments
 ------------------
