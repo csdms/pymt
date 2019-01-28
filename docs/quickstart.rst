@@ -68,6 +68,8 @@ following,
 Basic Concepts
 --------------
 
+.. _installing-a-model:
+
 Installing a model into pymt
 ++++++++++++++++++++++++++++
 

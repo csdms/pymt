@@ -50,9 +50,9 @@ and importing *pymt*:
     >>> import pymt
     => plugins: (none)
 
-By default, no model components are installed with *pymt*.
-Instructions for installing model components into *pymt*
-are given in *TODO*.
+By default, no models are installed with *pymt*.
+Instructions for installing models into *pymt*
+are given in :ref:`installing-a-model`.
 
 From sources
 ------------
