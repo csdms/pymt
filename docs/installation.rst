@@ -4,36 +4,55 @@
 Installation
 ============
 
+We strongly recommend using `conda`_ to install and run *pymt*. If
+you don't have it installed, the `Anaconda installation guide`_
+can help you through the process.
+
+.. _conda: https://conda.io/docs/
+.. _Anaconda installation guide: http://docs.anaconda.com/anaconda/install/
 
 Stable release
 --------------
 
-Installing *pymt* from the *conda-forge* channel can be achieved
-by adding *conda-forge* to your channels with:
+If you haven't already done so,
+add the *conda-forge* channel
+to the list of enabled conda channels on your machine:
 
 .. code-block:: console
 
     $ conda config --add channels conda-forge
 
-Once the *conda-forge* channel has been enabled, *pymt* can be
-installed with:
+We advise installing *pymt* into a conda environment.
+Environments in conda can easily be set up and town down.
+Create an environment and install *pymt* in it with:
 
 .. code-block:: console
 
-    $ conda install pymt
+    $ conda create -n pymt python=3.7 pymt
 
-It is possible to list all of the versions of *pymt* available
-on your platform with:
+Note that that *pymt* is built on several open source software
+libraries, so it may take a few minutes for conda to locate,
+download, and install them.
+
+Once the conda environment has been installed, activate it with:
 
 .. code-block:: console
 
-    $ conda search pymt --channel conda-forge
+    $ source activate pymt
 
-If you don't have `conda`_ installed, the `Anaconda installation guide`_ can
-help you through the process.
 
-.. _conda: https://conda.io/docs/
-.. _Anaconda installation guide: http://docs.anaconda.com/anaconda/install/
+You're now ready to start using *pymt*.
+Check the installation by starting a Python session
+and importing *pymt*:
+
+.. code-block:: python
+
+    >>> import pymt
+    => plugins: (none)
+
+By default, no model components are installed with *pymt*.
+Instructions for installing model components into *pym*
+are given in *TODO*.
 
 From sources
 ------------
