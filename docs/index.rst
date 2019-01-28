@@ -37,15 +37,17 @@ What does it look like?  Here is an example of a simple PyMT program:
         cem.update()
 
 
+User Guide
+----------
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   quickstart
-   examples
-   usage
-   readme
+   Executive summary <readme>
    installation
+   quickstart
+   usage
+   examples
 
 
 API Reference
