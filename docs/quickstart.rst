@@ -68,6 +68,14 @@ following,
 Basic Concepts
 --------------
 
+Installing a model into pymt
+++++++++++++++++++++++++++++
+
+.. todo::
+
+   Fill out this section with an example of installing a model. Maybe
+   link to the list of available models.
+
 Loading a model
 +++++++++++++++
 
