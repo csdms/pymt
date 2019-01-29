@@ -4,21 +4,20 @@
     :alt: Python Modeling Tool
     :target: https://pymt.readthedocs.org/
 
-PyMT is the "Python Modeling Toolkit". It is an Open Source Python
-package, developed by the
+*pymt* is the *Python Modeling Toolkit*.
+It is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
-(CSDMS), that provides the necessary tools used for the coupling of models
-that expose the
+(CSDMS), that provides the tools needed for coupling models that expose the
 `Basic Model Interface <https://bmi-spec.readthedocs.io>`_ (BMI).
 
-PyMT in three points:
+*pymt* in three points:
 
 * Tools for coupling models of disparate time and space scales
 * A collection of Earth-surface models
 * Extensible plug-in framework for adding new models
 
 
-What does it look like?  Here is an example of a simple PyMT program:
+What does it look like?  Here is an example of a simple *pymt* program:
 
 .. code-block:: python
 
