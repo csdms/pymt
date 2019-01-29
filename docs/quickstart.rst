@@ -9,6 +9,7 @@ You can get *pymt* directly from *conda-forge*,
 
 Installing into a *conda* environment is heavily recommended.
 
+.. _conda-env:
 
 Conda environments
 ------------------
@@ -66,6 +67,16 @@ following,
 
 Basic Concepts
 --------------
+
+.. _installing-a-model:
+
+Installing a model into pymt
+++++++++++++++++++++++++++++
+
+.. todo::
+
+   Fill out this section with an example of installing a model. Maybe
+   link to the list of available models.
 
 Loading a model
 +++++++++++++++

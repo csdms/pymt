@@ -176,18 +176,34 @@ def load_pymt_plugins(include_old_style=False):
     for entry_point in pkg_resources.iter_entry_points(group="pymt.plugins"):
         try:
             plugin = entry_point.load()
-        except Exception as err:
+        except Exception:
             failed.append(entry_point.name)
         else:
             plugin = bmi_factory(plugin)
             plugins[entry_point.name] = plugin
 
     if len(plugins) > 0:
-        status("plugins: {0}".format(", ".join(plugins.keys())))
+        status("models: {0}".format(", ".join(plugins.keys())))
     else:
-        status("plugins: (none)")
+        status("models: (none)")
     if failed:
-        error("failed to load the following plugins: {0}".format(", ".join(failed)))
+        error("failed to load the following models: {0}".format(", ".join(failed)))
 
     Plugins = namedtuple("Plugins", plugins.keys())
     return Plugins(*plugins.values())
+
+
+# builtin_extensions = (
+#     "pymt.ext.mappers.esmf",
+#     "pymt.ext.models.heat",
+#     "pymt.ext.printers.vtk",
+#     "pymt.ext.printers.ugrid",
+#     "pymt.ext.printers.bov",
+# )
+
+
+# def load_extension(extname):
+#     try:
+#         mod = __import__(extname, None, None, ['setup'])
+#     except ImportError as err:
+#         pass
