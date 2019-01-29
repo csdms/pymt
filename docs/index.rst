@@ -21,7 +21,7 @@ What does it look like?  Here is an example of a simple *pymt* program:
 
 .. code-block:: python
 
-    from pymt.components import Cem, Waves
+    from pymt.models import Cem, Waves
 
     waves = Waves()
     cem = Cem()
