@@ -40,6 +40,9 @@ What does it look like?  Here is an example of a simple PyMT program:
 User Guide
 ----------
 
+If you are looking for information on using *pymt* to run and couple models,
+this part of the documentation is for you.
+
 .. toctree::
    :maxdepth: 2
 
