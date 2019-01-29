@@ -57,3 +57,10 @@ that expose the
   all usable from within the Python programming language
 * A plug-in framework for adding additional BMI-enabled models to
   the framework
+
+This project is supported by award number `1831623`_,
+"Community Facility Support:
+The Community Surface Dynamics Modeling System (CSDMS)",
+from the U.S. National Science Foundation.
+
+.. _1831623: https://nsf.gov/awardsearch/showAward?AWD_ID=1831623
