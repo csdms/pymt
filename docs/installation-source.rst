@@ -1,12 +1,12 @@
 .. highlight:: shell
 
-==========================
-Installation: From sources
-==========================
+=========================
+Installation: From source
+=========================
 
 .. include:: installation-environment.rst
 
-The sources for *pymt* can be downloaded from the `Github repo`_.
+The source code for *pymt* can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
