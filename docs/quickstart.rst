@@ -70,15 +70,36 @@ following,
 Basic Concepts
 --------------
 
+This section gives a brief demonstration
+of how to install and run a model in *pymt*.
+Be sure to :doc:`install <installation>` *pymt*
+before trying the examples below.
+
 .. _installing-a-model:
 
 Installing a model into pymt
 ++++++++++++++++++++++++++++
 
-.. todo::
+`Hydrotrend`_ is a hydrological water balance and transport model
+that simulates water discharge and sediment load at a river outlet.
+It's also one of the models available in *pymt*.
+Install Hydrotrend into *pymt* with:
 
-   Fill out this section with an example of installing a model. Maybe
-   link to the list of available models.
+.. code-block:: console
+
+    $ conda install pymt_hydrotrend
+
+Check that the model has been installed by starting a Python
+session and importing *pymt*:
+
+.. code-block:: python
+
+    >>> import pymt
+    => models: Hydrotrend
+
+
+.. _Hydrotrend: https://csdms.colorado.edu/wiki/Model:HydroTrend
+
 
 Configuring a model run
 +++++++++++++++++++++++
