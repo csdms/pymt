@@ -65,6 +65,8 @@ following,
   $ conda install pymt -c conda-forge
 
 
+.. _basic-concepts:
+
 Basic Concepts
 --------------
 
@@ -78,32 +80,21 @@ Installing a model into pymt
    Fill out this section with an example of installing a model. Maybe
    link to the list of available models.
 
-Loading a model
-+++++++++++++++
+Configuring a model run
++++++++++++++++++++++++
 
-.. code-block:: python
-
-  >>> from pymt.models import Waves
-  >>> waves = Waves()
-  >>> help(Waves)
-
-Model setup
-+++++++++++
-
-.. code-block:: python
-
-  >>> from pymt.models import Waves
-  >>> waves = Waves()
-  >>> waves.setup()
-
-  >>> waves.setup(mean_wave_height=2.)
-
-Model initialization
+Initializing a model
 ++++++++++++++++++++
 
-.. code-block:: python
+Getting and setting model variables
++++++++++++++++++++++++++++++++++++
 
-  >>> from pymt.models import Waves
-  >>> waves = Waves()
-  >>> config_file, config_dir = waves.setup()
-  >>> waves.initialize(config_file, dir=config_dir)
+Advancing the model
++++++++++++++++++++
+
+Viewing model variables
++++++++++++++++++++++++
+
+Wrapping up
++++++++++++
+
