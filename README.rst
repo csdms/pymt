@@ -2,7 +2,11 @@
    :format: html
 
 
-:raw-html-m2r:`<h1 align="center">PyMT</h1>`
+.. image:: https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png
+    :align: center
+    :scale: 75%
+    :alt: Python Modeling Toolkit
+    :target: https://pymt.readthedocs.org/
 
 
 .. raw:: html
@@ -30,15 +34,15 @@
 
    </p>
 
-====
-pymt
-====
+Summary
+=======
 
-PyMT is an Open Source Python package, developed by the Community
-Surface Dynamics Modeling System, that provides the necessary tools
-used for the coupling of models that expose the Basic Modeling
-Interface (BMI). It contains:
-
+PyMT is an Open Source Python package, developed by the
+`Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
+(CSDMS), that provides the necessary tools used for the coupling of models
+that expose the
+`Basic Model Interface <https://bmi-spec.readthedocs.io>`_
+(BMI). It contains:
 
 * Tools necessary for coupling models of disparate time and space
   scales (including grid mappers)

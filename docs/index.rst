@@ -1,13 +1,15 @@
 .. image:: _static/pymt-logo-header-text.png
     :align: center
-    :scale: 100%
+    :scale: 75%
     :alt: Python Modeling Tool
     :target: https://pymt.readthedocs.org/
 
 PyMT is the "Python Modeling Toolkit". It is an Open Source Python
-package, developed by the Community Surface Dynamics Modeling System,
-that provides the necessary tools used for the coupling of models
-that expose the Basic Modeling Interface (BMI).
+package, developed by the
+`Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
+(CSDMS), that provides the necessary tools used for the coupling of models
+that expose the
+`Basic Model Interface <https://bmi-spec.readthedocs.io>`_ (BMI).
 
 PyMT in three points:
 
@@ -35,15 +37,17 @@ What does it look like?  Here is an example of a simple PyMT program:
         cem.update()
 
 
+User Guide
+----------
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   quickstart
-   examples
-   usage
-   readme
+   Executive summary <readme>
    installation
+   quickstart
+   usage
+   examples
 
 
 API Reference
