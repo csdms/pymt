@@ -134,7 +134,7 @@ array([ 0.,  1.,  2.,  0.,  1.,  2.,  0.,  1.,  2.])
 >>> src.get_y()
 array([ 0.,  0.,  0.,  1.,  1.,  1.,  2.,  2.,  2.])
 >>> src.get_connectivity() + 1
-array([1, 2, 5, 4, 2, 3, 6, 5, 4, 5, 8, 7, 5, 6, 9, 8], dtype=int32)
+array([1, 2, 5, 4, 2, 3, 6, 5, 4, 5, 8, 7, 5, 6, 9, 8])
 
 >>> dst = EsmpRectilinearField([0., .5, 1.5, 2.], [0., .5, 1.5, 2.])
 >>> data = np.empty(dst.get_cell_count(), dtype=np.float64)
@@ -152,7 +152,7 @@ array([ 0. ,  0. ,  0. ,  0. ,  0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,
 >>> dst.get_connectivity() + 1
 array([ 1,  2,  6,  5,  2,  3,  7,  6,  3,  4,  8,  7,  5,  6, 10,  9,  6,
         7, 11, 10,  7,  8, 12, 11,  9, 10, 14, 13, 10, 11, 15, 14, 11, 12,
-       16, 15], dtype=int32)
+       16, 15])
 
 >>> src_field = src.as_esmp('srcfield')
 >>> dst_field = dst.as_esmp('dstfield')
@@ -255,22 +255,22 @@ class EsmpGrid(IGrid):
         return self._mesh
 
     def _mesh_add_nodes(self):
-        node_ids = np.arange(1, self.get_point_count() + 1, dtype=np.int32)
+        node_ids = np.arange(1, self.get_point_count() + 1, dtype=int)
         (x, y) = (self.get_x(), self.get_y())
 
         node_coords = np.empty(x.size + y.size, dtype=np.float64)
         (node_coords[0::2], node_coords[1::2]) = (x, y)
 
-        node_owner = np.zeros(self.get_point_count(), dtype=np.int32)
+        node_owner = np.zeros(self.get_point_count(), dtype=int)
 
         self._mesh.add_nodes(self.get_point_count(), node_ids, node_coords, node_owner)
 
     def _mesh_add_elements(self):
-        cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=np.int32)
-        cell_types = np.empty(self.get_cell_count(), dtype=np.int32)
+        cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=int)
+        cell_types = np.empty(self.get_cell_count(), dtype=int)
         cell_types.fill(esmf.MeshElemType.QUAD)
 
-        cell_conn = np.array(self.get_connectivity(), dtype=np.int32)  # + 1
+        cell_conn = np.array(self.get_connectivity(), dtype=int)  # + 1
 
         self._mesh.add_elements(self.get_cell_count(), cell_ids, cell_types, cell_conn)
 

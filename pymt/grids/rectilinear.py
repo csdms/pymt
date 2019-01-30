@@ -29,10 +29,10 @@ array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
 array([4, 3])
 
 >>> g.get_offset()
-array([ 4,  8, 12, 16, 20, 24], dtype=int32)
+array([ 4,  8, 12, 16, 20, 24])
 >>> g.get_connectivity()
 array([ 0,  1,  4,  3,  1,  2,  5,  4,  3,  4,  7,  6,  4,  5,  8,  7,  6,
-        7, 10,  9,  7,  8, 11, 10], dtype=int32)
+        7, 10,  9,  7,  8, 11, 10])
 
 **Rectilinear grid of points**
 
@@ -71,9 +71,9 @@ array([ 1.,  3.,  4.,  5.,  6.])
 >>> g.get_cell_count()
 4
 >>> g.get_connectivity()
-array([0, 1, 1, 2, 2, 3, 3, 4], dtype=int32)
+array([0, 1, 1, 2, 2, 3, 3, 4])
 >>> g.get_offset()
-array([2, 4, 6, 8], dtype=int32)
+array([2, 4, 6, 8])
 
 
 **3D Rectilinear grid**

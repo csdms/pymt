@@ -393,13 +393,13 @@ class _BmiCapV1(object):
     @deprecated(use="get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_vertex_count(grid), dtype=np.int32)
+            out = np.empty(self.get_grid_vertex_count(grid), dtype=int)
         return _BmiCapV1._bmi_call(self.bmi.get_grid_connectivity, grid, out)
 
     @deprecated(use="get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_face_count(grid), dtype=np.int32)
+            out = np.empty(self.get_grid_face_count(grid), dtype=int)
         return _BmiCapV1._bmi_call(self.bmi.get_grid_offset, grid, out)
 
 
@@ -565,7 +565,7 @@ class _BmiCap(object):
 
     def get_grid_shape(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_ndim(grid), dtype="int32")
+            out = np.empty(self.get_grid_ndim(grid), dtype=int)
         bmi_call(self.bmi.get_grid_shape, grid, out)
         return out
 
@@ -592,13 +592,13 @@ class _BmiCap(object):
 
     def get_grid_face_node_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=np.int32)
+            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=int)
         bmi_call(self.bmi.get_grid_face_nodes, grid, out)
         return out
 
     def get_grid_face_nodes(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=np.int32)
+            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=int)
         bmi_call(self.bmi.get_grid_face_nodes, grid, out)
         return out
 
@@ -608,7 +608,7 @@ class _BmiCap(object):
 
     def get_grid_nodes_per_face(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_faces(grid), dtype=np.int32)
+            out = np.empty(self.get_grid_number_of_faces(grid), dtype=int)
         bmi_call(self.bmi.get_grid_nodes_per_face, grid, out)
         return out
 

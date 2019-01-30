@@ -38,7 +38,7 @@ class UnstructuredPoints(IGrid):
         self._coordinate_name = np.array(coordinate_names)
 
         if set_connectivity:
-            self._connectivity = np.arange(self._point_count, dtype=np.int32)
+            self._connectivity = np.arange(self._point_count, dtype=int)
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
@@ -218,10 +218,10 @@ class Unstructured(UnstructuredPoints):
     array([ 0.,  0.,  1.,  1.])
 
     >>> g.get_connectivity()
-    array([0, 2, 1, 2, 3, 1], dtype=int32)
+    array([0, 2, 1, 2, 3, 1])
 
     >>> g.get_offset()
-    array([3, 6], dtype=int32)
+    array([3, 6])
 
 
     Define a grid that consists of points in a line::
@@ -270,8 +270,8 @@ class Unstructured(UnstructuredPoints):
         super(Unstructured, self).__init__(*args, **kwds)
 
     def _set_connectivity(self, connectivity, offset):
-        self._connectivity = np.array(connectivity, dtype=np.int32)
-        self._offset = np.array(offset, dtype=np.int32)
+        self._connectivity = np.array(connectivity, dtype=int)
+        self._offset = np.array(offset, dtype=int)
         self._connectivity.shape = self._connectivity.size
         self._offset.shape = self._offset.size
         self._cell_count = self._offset.size
