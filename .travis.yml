@@ -2,13 +2,10 @@ language: generic
 os:
 - linux
 - osx
-matrix:
-  fast_finish: true
-  include:
-  - env: CONDA_ENV=py36
-  - env: CONDA_ENV=py37
-
 env:
+  matrix:
+  - CONDA_ENV=py36
+  - CONDA_ENV=py37
   global:
   - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 sudo: false
