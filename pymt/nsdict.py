@@ -157,7 +157,6 @@ class NamespaceDict(dict):
         for part in parts:
             base = self._join(base, part)
             yield base
-        raise StopIteration
 
     def _paths(self, path):
         return set(self._iter_paths(path))
@@ -172,7 +171,6 @@ class NamespaceDict(dict):
                     yield key[len(base) + 1 :]
                 except IndexError:
                     yield key[len(base) :]
-        raise StopIteration
 
     def _sub_paths(self, base):
         return [name for name in self._iter_sub_paths(base)]
