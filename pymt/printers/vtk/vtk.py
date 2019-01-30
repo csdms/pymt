@@ -1,5 +1,5 @@
 #! /bin/env python
-"""
+r"""
 Examples
 ========
 

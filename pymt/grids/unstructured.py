@@ -193,16 +193,14 @@ class UnstructuredPoints(IGrid):
 
 
 class Unstructured(UnstructuredPoints):
-    """
-Define a grid that consists of two trianges that share two points.
+    r"""
+    Define a grid that consists of two trianges that share two points::
 
-::
+           (2) - (3)
+          /   \  /
+        (0) - (1)
 
-       (2) - (3)
-      /   \  /
-    (0) - (1)
-
-Create the grid,
+    Create the grid,
 
     >>> g = Unstructured([0, 0, 1, 1], [0, 2, 1, 3],
     ...                  connectivity=[0, 2, 1, 2, 3, 1], offset=[3, 6])
@@ -226,13 +224,11 @@ Create the grid,
     array([3, 6], dtype=int32)
 
 
-Define a grid that consists of points in a line.
+    Define a grid that consists of points in a line::
 
-::
+        (0) ----- (1) -- (2) - (3)
 
-    (0) ----- (1) -- (2) - (3)
-
-Create the grid,
+    Create the grid,
 
     >>> g = Unstructured ([0., 6., 9., 11.], connectivity=[0, 1, 2, 3], offset=[1, 2, 3, 4])
     >>> g.get_point_count ()
@@ -240,8 +236,7 @@ Create the grid,
     >>> g.get_cell_count ()
     4
 
-
-Eight point that form a unit cube.
+    Eight point that form a unit cube.
 
     >>> x = [0, 1, 0, 1, 0, 1, 0, 1]
     >>> y = [0, 0, 1, 1, 0, 0, 1, 1]
@@ -257,8 +252,6 @@ Eight point that form a unit cube.
     array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
     >>> g.get_z()
     array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
-
-
     """
 
     def __init__(self, *args, **kwds):
