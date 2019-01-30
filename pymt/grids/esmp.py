@@ -230,24 +230,15 @@ from pymt.grids.igrid import (
 )
 
 try:
-    import ESMF
-# except (ImportError, ValueError):
-except Exception:
-    import warnings
-
-    warnings.warn("unable to import ESMF", ImportWarning)
-    _WITH_ESMF = False
-else:
-    _WITH_ESMF = True
-
-
-if not _WITH_ESMF:
+    import ESMF as esmf
+except ImportError:
+    esmf = None
     __doc__ = "This module is not available (no ESMF installation was found)"
 
 
 class EsmpGrid(IGrid):
     def __init__(self):
-        self._mesh = ESMF.Mesh(parametric_dim=2, spatial_dim=2)
+        self._mesh = esmf.Mesh(parametric_dim=2, spatial_dim=2)
 
         self._mesh_add_nodes()
         self._mesh_add_elements()
@@ -277,7 +268,7 @@ class EsmpGrid(IGrid):
     def _mesh_add_elements(self):
         cell_ids = np.arange(1, self.get_cell_count() + 1, dtype=np.int32)
         cell_types = np.empty(self.get_cell_count(), dtype=np.int32)
-        cell_types.fill(ESMF.MeshElemType.QUAD)
+        cell_types.fill(esmf.MeshElemType.QUAD)
 
         cell_conn = np.array(self.get_connectivity(), dtype=np.int32)  # + 1
 
@@ -321,11 +312,11 @@ class EsmpField(IField):
             raise DimensionError(val.size, self.get_point_count())
 
         if centering == "zonal":
-            meshloc = ESMF.MeshLoc.ELEMENT
+            meshloc = esmf.MeshLoc.ELEMENT
         else:
-            meshloc = ESMF.MeshLoc.NODE
+            meshloc = esmf.MeshLoc.NODE
 
-        field = ESMF.Field(self._mesh, field_name, meshloc=meshloc)
+        field = esmf.Field(self._mesh, field_name, meshloc=meshloc)
         np.copyto(field.data, val.view().reshape(field.data.shape))
         self._fields[field_name] = field
 
@@ -373,11 +364,11 @@ def run_regridding(srcfield, dstfield, **kwds):
     **POSTCONDITIONS:**
         An ESMP regridding operation has set the data on 'dstfield'.
     """
-    method = kwds.get("method", ESMF.RegridMethod.CONSERVE)
-    unmapped = kwds.get("unmapped", ESMF.UnmappedAction.ERROR)
+    method = kwds.get("method", esmf.RegridMethod.CONSERVE)
+    unmapped = kwds.get("unmapped", esmf.UnmappedAction.ERROR)
 
     # call the regridding functions
-    regridder = ESMF.Regrid(
+    regridder = esmf.Regrid(
         srcfield, dstfield, regrid_method=method, unmapped_action=unmapped
     )
     dstfield = regridder(srcfield, dstfield)
