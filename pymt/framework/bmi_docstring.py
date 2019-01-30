@@ -38,7 +38,7 @@ Parameters
 
 Examples
 --------
->>> from pymt.components import {{name}}
+>>> from pymt.models import {{name}}
 >>> model = {{name}}()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)

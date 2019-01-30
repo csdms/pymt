@@ -13,7 +13,7 @@ URL: None
 
 Examples
 --------
->>> from pymt.components import Model
+>>> from pymt.models import Model
 >>> model = Model()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
@@ -53,7 +53,7 @@ URL: welldoyapunk.org
 
 Examples
 --------
->>> from pymt.components import DirtyHarry
+>>> from pymt.models import DirtyHarry
 >>> model = DirtyHarry()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
@@ -95,7 +95,7 @@ Cite as:
 
 Examples
 --------
->>> from pymt.components import DirtyHarry
+>>> from pymt.models import DirtyHarry
 >>> model = DirtyHarry()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
