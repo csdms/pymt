@@ -26,7 +26,7 @@ install:
   else
     curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh > miniconda.sh
   fi
-- bash $HOME/minconda.sh -b -p $HOME/anaconda
+- bash $HOME/miniconda.sh -b -p $HOME/anaconda
 - export PATH="$HOME/anaconda/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
