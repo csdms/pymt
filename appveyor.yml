@@ -27,8 +27,6 @@ install:
   - cmd: conda config --append channels conda-forge
   - cmd: conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
   - cmd: conda activate test_env
-  - cmd: conda info -a
-  - cmd: conda list
   - cmd: python setup.py install
 
 
