@@ -4,28 +4,22 @@ import numpy as np
 import pytest
 from pytest import approx
 
-try:
-    import ESMF
-except ImportError:
-    _WITH_ESMF = False
-else:
-    _WITH_ESMF = True
-    from pymt.grids.esmp import (
-        EsmpRasterField,
-        EsmpRectilinear,
-        EsmpUnstructured,
-        EsmpUniformRectilinear,
-        EsmpRectilinearField,
-        DimensionError,
-    )
-    from pymt.grids.esmp import run_regridding
+from pymt.grids.esmp import (
+    EsmpRasterField,
+    EsmpRectilinear,
+    EsmpUnstructured,
+    EsmpUniformRectilinear,
+    EsmpRectilinearField,
+    DimensionError,
+)
+from pymt.grids.esmp import run_regridding
 
 
 esmf = pytest.importorskip("ESMF")
 
 
 def setup():
-    ESMF.Manager()
+    esmf.Manager()
 
 
 def test_2d_unstructured():
@@ -234,7 +228,7 @@ def test_values_on_points():
     src_field = src.as_esmp("srcfield_at_points")
     dst_field = dst.as_esmp("dstfield_at_points")
 
-    f = run_regridding(src_field, dst_field, method=ESMF.RegridMethod.BILINEAR)
+    f = run_regridding(src_field, dst_field, method=esmf.RegridMethod.BILINEAR)
 
     (x, y) = np.meshgrid(np.arange(0.5, 300., .5), np.arange(0.5, 300., .5))
     exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
