@@ -141,7 +141,7 @@ class StructuredPoints(UnstructuredPoints):
             "units", get_default_coordinate_units(len(coordinates))
         )
 
-        self._shape = np.array(shape, dtype=np.int64)
+        self._shape = np.array(shape, dtype=np.int)
 
         kwds["units"] = coordinate_units
         kwds["coordinate_names"] = coordinate_names
