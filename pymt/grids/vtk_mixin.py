@@ -44,11 +44,11 @@ else:
 
         def vtk_cell_types(self):
             cell_types = np.empty(self.get_cell_count(), dtype=int)
-            for (id, n_nodes) in enumerate(self.nodes_per_cell()):
+            for (id_, n_nodes) in enumerate(self.nodes_per_cell()):
                 try:
-                    cell_types[id] = self._EDGE_COUNT_TO_TYPE[n_nodes]
+                    cell_types[id_] = self._EDGE_COUNT_TO_TYPE[n_nodes]
                 except KeyError:
-                    cell_types[id] = tvtk.Polygon().cell_type
+                    cell_types[id_] = tvtk.Polygon().cell_type
             return cell_types
 
         def vtk_connectivity(self):
