@@ -4,8 +4,8 @@ import warnings
 import yaml
 
 from ...printers.nc.read import field_fromfile
-from .time_series_names import get_time_series_names
 from .interpolate import create_interpolators
+from .time_series_names import get_time_series_names
 
 
 class TimeInterpolator(object):
@@ -15,9 +15,9 @@ class TimeInterpolator(object):
         self._origin = ()
         self._input_exchange_items = set()
         self._output_exchange_items = set()
-        self._start_time = 0.
-        self._end_time = 0.
-        self._time = 0.
+        self._start_time = 0.0
+        self._end_time = 0.0
+        self._time = 0.0
         self._interpolators = {}
 
     def initialize(self, source):

@@ -1,9 +1,10 @@
 #! /bin/env python
 
 import numpy as np
+
+from ..grids.esmp import EsmpUnstructuredField
 from .imapper import IGridMapper
 from .mapper import IncompatibleGridError
-from ..grids.esmp import EsmpUnstructuredField
 
 try:
     import ESMF as esmf
@@ -24,11 +25,7 @@ class EsmpMapper(IGridMapper):
         raise NotImplementedError("init_fields")
 
     def initialize(
-        self,
-        dest_grid,
-        src_grid,
-        method=REGRID_METHOD,
-        unmapped=UNMAPPED_ACTION,
+        self, dest_grid, src_grid, method=REGRID_METHOD, unmapped=UNMAPPED_ACTION
     ):
         if not self.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
@@ -66,7 +63,7 @@ class EsmpMapper(IGridMapper):
             dst_ptr[:] = dest_values
             # dst_ptr.data = dest_values
         else:
-            dst_ptr.fill(0.)
+            dst_ptr.fill(0.0)
 
         # ESMP.ESMP_FieldRegrid(self.get_source_field(), self.get_dest_field(),
         #                      self._routehandle)

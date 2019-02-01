@@ -36,6 +36,7 @@ from collections import OrderedDict, namedtuple
 from glob import glob
 
 import pkg_resources
+
 from scripting import error, status
 
 from .babel import setup_babel_environ

@@ -124,7 +124,7 @@ class Timeline(object):
     ['hello', 'world', '!']
     """
 
-    def __init__(self, events=None, start=0.):
+    def __init__(self, events=None, start=0.0):
         events = events or {}
 
         self._time = float(start)

@@ -12,10 +12,10 @@ from pymt.printers.vtk.vtu import tofile as field_tofile
 
 def test_tri_example(tmpdir):
     g = GridField([0, 2, 1, 3], [0, 0, 1, 1], [0, 2, 1, 2, 3, 1], [3, 6])
-    g.add_field("Elevation", [1., 2., 3, 4], centering="point")
-    g.add_field("Temperature", [10., 20., 30., 40.], centering="point")
-    g.add_field("Cell Elevation", [1., 2.], centering="zonal")
-    g.add_field("Cell Temperature", [10., 20.], centering="zonal")
+    g.add_field("Elevation", [1.0, 2.0, 3, 4], centering="point")
+    g.add_field("Temperature", [10.0, 20.0, 30.0, 40.0], centering="point")
+    g.add_field("Cell Elevation", [1.0, 2.0], centering="zonal")
+    g.add_field("Cell Temperature", [10.0, 20.0], centering="zonal")
 
     with tmpdir.as_cwd():
         field_tofile(g, "tri.vtu", format="appended", encoding="base64")
@@ -55,16 +55,18 @@ class TestUniformRectilinearVtk(TestVtk):
 
         attrs = dict(description="Example 0D nc file", author="Eric")
         for i in range(10):
-            field.add_field("Elevation", i * 10., centering="point")
+            field.add_field("Elevation", i * 10.0, centering="point")
             field_tofile(field, vtk_file, attrs=attrs, append=True)
 
         self.assertTrue(os.path.isfile(vtk_file))
 
     def test_2d(self):
         vtk_file = self.vtk_files["test_2d"]
-        field = RasterField((3, 2), (2., 1), (0, 0.5), indexing="ij", units=("m", "km"))
+        field = RasterField(
+            (3, 2), (2.0, 1), (0, 0.5), indexing="ij", units=("m", "km")
+        )
 
-        data = np.arange(6.)
+        data = np.arange(6.0)
 
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
@@ -83,7 +85,7 @@ class TestUniformRectilinearVtk(TestVtk):
             (2, 3, 4), (1, 2, 3), (-1, 0, 1), indexing="ij", units=("mm", "m", "km")
         )
 
-        data = np.arange(24.)
+        data = np.arange(24.0)
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
         field.add_field("Velocity", data * 100, centering="point", units="m/s")
@@ -97,7 +99,7 @@ class TestUniformRectilinearVtk(TestVtk):
     def test_1d(self):
         vtk_file = self.vtk_files["test_1d"]
         field = RasterField((12,), (1,), (-1,), indexing="ij", units=("m",))
-        data = np.arange(12.)
+        data = np.arange(12.0)
         field.add_field("Elevation", data, centering="point")
 
         attrs = dict(description="Example 1D nc file", author="Eric")
@@ -118,7 +120,7 @@ class TestRectilinearVtk(TestVtk):
         vtk_file = self.vtk_files["test_1d"]
 
         field = RectilinearField((1, 2, 4, 5), indexing="ij", units=("m",))
-        data = np.arange(4.)
+        data = np.arange(4.0)
         field.add_field("Elevation", data, centering="point")
 
         attrs = dict(description="Example 1D nc file", author="Eric")
@@ -137,7 +139,7 @@ class TestRectilinearVtk(TestVtk):
             coordinate_names=["latitude", "longitude"],
         )
 
-        data = np.arange(6.)
+        data = np.arange(6.0)
 
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
@@ -162,7 +164,7 @@ class TestStructuredVtk(TestVtk):
         vtk_file = self.vtk_files["test_1d"]
 
         field = StructuredField((1, 2, 4, 5), (4,), indexing="ij", units=("m",))
-        data = np.arange(4.)
+        data = np.arange(4.0)
         field.add_field("Elevation", data, centering="point")
 
         attrs = dict(description="Example 1D nc file", author="Eric")
@@ -181,7 +183,7 @@ class TestStructuredVtk(TestVtk):
             units=("m", "km"),
         )
 
-        data = np.arange(6.)
+        data = np.arange(6.0)
 
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
@@ -210,7 +212,7 @@ class TestUnstructuredVtk(TestVtk):
         )
 
         field.add_field("point_field", np.arange(4), centering="point", units="C")
-        field.add_field("cell_field", np.arange(3) * 10., centering="zonal", units="F")
+        field.add_field("cell_field", np.arange(3) * 10.0, centering="zonal", units="F")
 
         field_tofile(field, vtk_file, append=False)
 

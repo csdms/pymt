@@ -7,6 +7,7 @@ import sys
 
 import six
 import yaml
+
 from scripting import cd
 
 from ..component.grid import GridMixIn
@@ -52,7 +53,7 @@ class PortEvent(GridMixIn):
         the initialize method as arguments.
         """
         with cd(self._run_dir):
-            status = {"name": self.name, "time": 0., "status": "initializing"}
+            status = {"name": self.name, "time": 0.0, "status": "initializing"}
             self._status_fp.write(yaml.dump(status))
             try:
                 self._port.initialize(*self._init_args)

@@ -3,7 +3,6 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
-
 COORDINATE_NAMES = ["z", "y", "x"]
 INDEX_NAMES = ["k", "j", "i"]
 

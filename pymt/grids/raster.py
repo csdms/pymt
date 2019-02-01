@@ -90,6 +90,7 @@ array([-1., -1., -1., -1., -1., -1.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,
 """
 
 import numpy as np
+
 from .rectilinear import Rectilinear, RectilinearPoints
 
 

@@ -2,13 +2,13 @@
 from .vtktypes import VtkRectilinear
 from .vtkxml import (
     VtkAppendedDataElement,
+    VtkCellDataElement,
+    VtkCoordinatesElement,
     VtkExtent,
-    VtkRootElement,
     VtkGridElement,
     VtkPieceElement,
-    VtkCoordinatesElement,
     VtkPointDataElement,
-    VtkCellDataElement,
+    VtkRootElement,
 )
 
 

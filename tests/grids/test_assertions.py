@@ -20,13 +20,13 @@ class TestUniformRectilinearAssertions(unittest.TestCase):
         self.assertTrue(is_uniform_rectilinear(grid))
 
     def test_is_not_uniform_rectilinear(self):
-        grid = Rectilinear([1., 2., 4., 8.], [1., 2., 3.])
+        grid = Rectilinear([1.0, 2.0, 4.0, 8.0], [1.0, 2.0, 3.0])
         self.assertFalse(is_uniform_rectilinear(grid))
 
 
 class TestRectilinearAssertions(unittest.TestCase):
     def test_is_rectilinear(self):
-        grid = Rectilinear([1., 2., 4., 8.], [1., 2., 3.])
+        grid = Rectilinear([1.0, 2.0, 4.0, 8.0], [1.0, 2.0, 3.0])
         self.assertTrue(is_rectilinear(grid))
 
     def test_is_not_rectilinear(self):

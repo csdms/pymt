@@ -2,14 +2,14 @@
 from .vtktypes import VtkUniformRectilinear
 from .vtkxml import (
     VtkAppendedDataElement,
+    VtkCellDataElement,
     VtkExtent,
-    VtkOrigin,
-    VtkSpacing,
-    VtkRootElement,
     VtkGridElement,
+    VtkOrigin,
     VtkPieceElement,
     VtkPointDataElement,
-    VtkCellDataElement,
+    VtkRootElement,
+    VtkSpacing,
 )
 
 

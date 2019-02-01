@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 
 from pymt.grids import Structured, StructuredPoints
+
 from .test_utils import NumpyArrayMixIn
 
 
@@ -11,7 +12,7 @@ class TestStructuredGrid(unittest.TestCase, NumpyArrayMixIn):
         grid = Structured([-1, 2, 3, 6], (4,))
         self.assertEqual(grid.get_point_count(), 4)
         self.assertEqual(grid.get_cell_count(), 3)
-        self.assertArrayEqual(grid.get_x(), np.array([-1., 2., 3., 6.]))
+        self.assertArrayEqual(grid.get_x(), np.array([-1.0, 2.0, 3.0, 6.0]))
         with self.assertRaises(IndexError):
             grid.get_y()
         self.assertArrayEqual(grid.get_shape(), (4,))
@@ -19,16 +20,18 @@ class TestStructuredGrid(unittest.TestCase, NumpyArrayMixIn):
         self.assertArrayEqual(grid.get_connectivity(), np.array([0, 1, 1, 2, 2, 3]))
 
     def test_2d_points(self):
-        (x, y) = np.meshgrid([1., 2., 4., 8.], [1., 2., 3.])
+        (x, y) = np.meshgrid([1.0, 2.0, 4.0, 8.0], [1.0, 2.0, 3.0])
         grid = StructuredPoints(y.flatten(), x.flatten(), (3, 4), set_connectivity=True)
         self.assertEqual(grid.get_point_count(), 12)
         self.assertEqual(grid.get_cell_count(), 0)
 
         self.assertArrayEqual(
-            grid.get_x(), np.array([1., 2., 4., 8., 1., 2., 4., 8., 1., 2., 4., 8.])
+            grid.get_x(),
+            np.array([1.0, 2.0, 4.0, 8.0, 1.0, 2.0, 4.0, 8.0, 1.0, 2.0, 4.0, 8.0]),
         )
         self.assertArrayEqual(
-            grid.get_y(), np.array([1., 1., 1., 1., 2., 2., 2., 2., 3., 3., 3., 3.])
+            grid.get_y(),
+            np.array([1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0]),
         )
         self.assertArrayEqual(grid.get_shape(), (3, 4))
 
@@ -40,15 +43,17 @@ class TestStructuredGrid(unittest.TestCase, NumpyArrayMixIn):
         )
 
     def test_2d(self):
-        (x, y) = np.meshgrid([1., 2., 4., 8.], [1., 2., 3.])
+        (x, y) = np.meshgrid([1.0, 2.0, 4.0, 8.0], [1.0, 2.0, 3.0])
         grid = Structured(y.flatten(), x.flatten(), [3, 4])
         self.assertEqual(grid.get_point_count(), 12)
         self.assertEqual(grid.get_cell_count(), 6)
         self.assertArrayEqual(
-            grid.get_x(), np.array([1., 2., 4., 8., 1., 2., 4., 8., 1., 2., 4., 8.])
+            grid.get_x(),
+            np.array([1.0, 2.0, 4.0, 8.0, 1.0, 2.0, 4.0, 8.0, 1.0, 2.0, 4.0, 8.0]),
         )
         self.assertArrayEqual(
-            grid.get_y(), np.array([1., 1., 1., 1., 2., 2., 2., 2., 3., 3., 3., 3.])
+            grid.get_y(),
+            np.array([1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0]),
         )
         self.assertArrayEqual(grid.get_shape(), [3, 4])
         self.assertArrayEqual(grid.get_offset(), np.array([4, 8, 12, 16, 20, 24]))
@@ -91,9 +96,15 @@ class TestStructuredGrid(unittest.TestCase, NumpyArrayMixIn):
 
         grid = Structured(z, y, x, (2, 2, 2))
 
-        self.assertArrayEqual(grid.get_x(), np.array([0., 1., 0., 1., 0., 1., 0., 1.]))
-        self.assertArrayEqual(grid.get_y(), np.array([0., 0., 1., 1., 0., 0., 1., 1.]))
-        self.assertArrayEqual(grid.get_z(), np.array([0., 0., 0., 0., 1., 1., 1., 1.]))
+        self.assertArrayEqual(
+            grid.get_x(), np.array([0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0])
+        )
+        self.assertArrayEqual(
+            grid.get_y(), np.array([0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0])
+        )
+        self.assertArrayEqual(
+            grid.get_z(), np.array([0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0])
+        )
         self.assertArrayEqual(grid.get_offset(), np.array([8]))
         self.assertArrayEqual(
             grid.get_connectivity(), np.array([0, 1, 3, 2, 4, 5, 7, 6])
@@ -110,8 +121,8 @@ class TestStructuredGrid(unittest.TestCase, NumpyArrayMixIn):
         )
 
         self.assertArrayEqual(
-            grid.get_axis_coordinates(0), np.array([1., 1., 4., 4., 5., 5.])
+            grid.get_axis_coordinates(0), np.array([1.0, 1.0, 4.0, 4.0, 5.0, 5.0])
         )
         self.assertArrayEqual(
-            grid.get_axis_coordinates(1), np.array([2., 3., 2., 3., 2., 3.])
+            grid.get_axis_coordinates(1), np.array([2.0, 3.0, 2.0, 3.0, 2.0, 3.0])
         )

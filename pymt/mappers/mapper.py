@@ -151,11 +151,10 @@ A big mapper
 >>> assert_array_equal(dst_vals, src_vals)
 """
 
-from .pointtopoint import NearestVal
 from .celltopoint import CellToPoint
-from .pointtocell import PointToCell
 from .imapper import IncompatibleGridError
-
+from .pointtocell import PointToCell
+from .pointtopoint import NearestVal
 
 _MAPPERS = [NearestVal, CellToPoint, PointToCell]
 

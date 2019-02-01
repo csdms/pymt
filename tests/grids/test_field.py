@@ -1,8 +1,10 @@
 #! /usr/bin/env python
 
 import unittest
-from pymt.grids import RasterField, DimensionError
+
 import numpy as np
+
+from pymt.grids import DimensionError, RasterField
 
 
 class TestRasterField(unittest.TestCase):
@@ -99,7 +101,7 @@ class TestRasterField(unittest.TestCase):
 
         data = np.arange(2)
         g.add_field("var1", data, centering="zonal")
-        self.assert_field_values(g, "var1", [0., 1.])
+        self.assert_field_values(g, "var1", [0.0, 1.0])
 
         # DimensionError: (2, 1) != (1, 2)
         with self.assertRaises(DimensionError):
@@ -121,27 +123,27 @@ class TestRasterField(unittest.TestCase):
         self.assert_point_count(g, 6)
         self.assert_cell_count(g, 5)
 
-        point_data = np.arange(6.)
+        point_data = np.arange(6.0)
         g.add_field("Point Data", point_data, centering="point")
 
-        cell_data = np.arange(5.) * 10.
+        cell_data = np.arange(5.0) * 10.0
         g.add_field("Cell Data", cell_data, centering="zonal")
 
-        self.assert_field_values(g, "Cell Data", [0., 10., 20., 30., 40.])
-        self.assert_field_values(g, "Point Data", [0., 1., 2., 3., 4., 5.])
+        self.assert_field_values(g, "Cell Data", [0.0, 10.0, 20.0, 30.0, 40.0])
+        self.assert_field_values(g, "Point Data", [0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
 
     def test_raster_field_3d(self):
-        g = RasterField((4, 3, 2), (1.5, 1., 3), (0.5, 0, -.5), indexing="ij")
+        g = RasterField((4, 3, 2), (1.5, 1.0, 3), (0.5, 0, -0.5), indexing="ij")
         self.assert_point_count(g, 24)
         self.assert_cell_count(g, 6)
 
         g.add_field("Point Data", g.get_x(), centering="point")
 
-        cell_data = np.arange(6.) * 10.
+        cell_data = np.arange(6.0) * 10.0
         g.add_field("Cell Data", cell_data, centering="zonal")
 
         g.get_field("Cell Data")
-        self.assert_field_values(g, "Cell Data", [0., 10., 20., 30., 40., 50.])
+        self.assert_field_values(g, "Cell Data", [0.0, 10.0, 20.0, 30.0, 40.0, 50.0])
 
         self.assert_field_values(
             g,

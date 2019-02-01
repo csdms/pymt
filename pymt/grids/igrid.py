@@ -1,5 +1,3 @@
-
-
 CENTERING_CHOICES = ["zonal", "point"]
 
 

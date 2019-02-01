@@ -1,9 +1,10 @@
 import unittest
+
 import numpy as np
 from numpy.testing import assert_array_equal
 
 import pymt.grids.utils as utils
-from pymt.grids import UniformRectilinear, Structured, UnstructuredPoints
+from pymt.grids import Structured, UniformRectilinear, UnstructuredPoints
 
 
 class NumpyArrayMixIn(object):
@@ -102,185 +103,185 @@ class TestArgsAsNumpyArrays(unittest.TestCase, NumpyArrayMixIn):
 
 class TestCoordinatesAsNumpyMatrix(unittest.TestCase, NumpyArrayMixIn):
     def test_one_numpy_array(self):
-        matrix = utils.coordinates_to_numpy_matrix(np.array([0., 1., 2.]))
-        self.assertArrayEqual(matrix, np.array([[0., 1., 2.]]))
+        matrix = utils.coordinates_to_numpy_matrix(np.array([0.0, 1.0, 2.0]))
+        self.assertArrayEqual(matrix, np.array([[0.0, 1.0, 2.0]]))
 
     def test_arrays_are_always_float(self):
         matrix = utils.coordinates_to_numpy_matrix(np.array([0, 1, 2]))
-        self.assertArrayEqual(matrix, np.array([[0., 1., 2.]]))
+        self.assertArrayEqual(matrix, np.array([[0.0, 1.0, 2.0]]))
 
     def test_one_list(self):
         matrix = utils.coordinates_to_numpy_matrix([0, 1, 2])
-        self.assertArrayEqual(matrix, np.array([[0., 1., 2.]]))
+        self.assertArrayEqual(matrix, np.array([[0.0, 1.0, 2.0]]))
 
     def test_one_tuple(self):
         matrix = utils.coordinates_to_numpy_matrix((0, 1, 2))
-        self.assertArrayEqual(matrix, np.array([[0., 1., 2.]]))
+        self.assertArrayEqual(matrix, np.array([[0.0, 1.0, 2.0]]))
 
     def test_three_arrays(self):
         matrix = utils.coordinates_to_numpy_matrix(
             np.array([0, 1, 2]), np.array([3, 4, 5]), np.array([6, 7, 8])
         )
         self.assertArrayEqual(
-            matrix, np.array([[0., 1., 2.], [3., 4., 5.], [6., 7., 8.]])
+            matrix, np.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
         )
 
     def test_ndarrays(self):
         matrix = utils.coordinates_to_numpy_matrix(np.array([[0, 1, 2], [3, 4, 5]]))
-        self.assertArrayEqual(matrix, np.array([[0., 1., 2., 3., 4., 5.]]))
+        self.assertArrayEqual(matrix, np.array([[0.0, 1.0, 2.0, 3.0, 4.0, 5.0]]))
 
 
 class TestsNonSingletonAxes(unittest.TestCase, NumpyArrayMixIn):
     def test_without_singletons(self):
-        grid = UniformRectilinear((4, 5), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 5), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((0, 1)))
 
-        grid = UniformRectilinear((5,), (1.,), (0.,))
+        grid = UniformRectilinear((5,), (1.0,), (0.0,))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((0,)))
 
-        grid = UniformRectilinear((4, 5, 6), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 5, 6), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((0, 1, 2)))
 
     def test_with_singletons(self):
-        grid = UniformRectilinear((4, 1), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 1), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((0,)))
 
-        grid = UniformRectilinear((1, 4), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((1, 4), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((1,)))
 
-        grid = UniformRectilinear((4, 1, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 1, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((0,)))
 
-        grid = UniformRectilinear((1, 4, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((1,)))
 
-        grid = UniformRectilinear((1, 4, 5), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 5), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_axes(grid), np.array((1, 2)))
 
 
 class TestsNonSingletonShape(unittest.TestCase, NumpyArrayMixIn):
     def test_without_singletons(self):
-        grid = UniformRectilinear((4, 5), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 5), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4, 5)))
 
-        grid = UniformRectilinear((5,), (1.,), (0.,))
+        grid = UniformRectilinear((5,), (1.0,), (0.0,))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((5,)))
 
-        grid = UniformRectilinear((4, 5, 6), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 5, 6), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4, 5, 6)))
 
     def test_with_singletons(self):
-        grid = UniformRectilinear((4, 1), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 1), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4,)))
 
-        grid = UniformRectilinear((1, 4), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((1, 4), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4,)))
 
-        grid = UniformRectilinear((4, 1, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 1, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4,)))
 
-        grid = UniformRectilinear((1, 4, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4,)))
 
-        grid = UniformRectilinear((1, 4, 5), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 5), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_shape(grid), np.array((4, 5)))
 
 
 class TestsNonSingletonCoordinateNames(unittest.TestCase, NumpyArrayMixIn):
     def test_without_singletons(self):
-        grid = UniformRectilinear((4, 5), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 5), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("y", "x"))
 
-        grid = UniformRectilinear((5,), (1.,), (0.,))
+        grid = UniformRectilinear((5,), (1.0,), (0.0,))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("x",))
 
-        grid = UniformRectilinear((4, 5, 6), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 5, 6), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(
             utils.non_singleton_coordinate_names(grid), ("z", "y", "x")
         )
 
     def test_with_singletons(self):
-        grid = UniformRectilinear((4, 1), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 1), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("y",))
 
-        grid = UniformRectilinear((1, 4), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((1, 4), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("x",))
 
-        grid = UniformRectilinear((4, 1, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 1, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("z",))
 
-        grid = UniformRectilinear((1, 4, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("y",))
 
-        grid = UniformRectilinear((1, 4, 5), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 5), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_coordinate_names(grid), ("y", "x"))
 
 
 class TestsNonSingletonDimensionNames(unittest.TestCase, NumpyArrayMixIn):
     def test_without_singletons(self):
-        grid = UniformRectilinear((4, 5), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 5), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(
             utils.non_singleton_dimension_names(grid), np.array(["y", "x"])
         )
 
-        grid = UniformRectilinear((5,), (1.,), (0.,))
+        grid = UniformRectilinear((5,), (1.0,), (0.0,))
         self.assertArrayEqual(
             utils.non_singleton_dimension_names(grid), np.array(["x"])
         )
 
-        grid = UniformRectilinear((4, 5, 6), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 5, 6), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(
             utils.non_singleton_dimension_names(grid), ("z", "y", "x")
         )
 
     def test_with_singletons(self):
-        grid = UniformRectilinear((4, 1), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 1), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_names(grid), ("y",))
 
-        grid = UniformRectilinear((1, 4), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((1, 4), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_names(grid), ("x",))
 
-        grid = UniformRectilinear((4, 1, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 1, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_names(grid), ("z",))
 
-        grid = UniformRectilinear((1, 4, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_names(grid), ("y",))
 
-        grid = UniformRectilinear((1, 4, 5), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 5), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_names(grid), ("y", "x"))
 
 
 class TestsNonSingletonDimensionShape(unittest.TestCase, NumpyArrayMixIn):
     def test_without_singletons(self):
-        grid = UniformRectilinear((4, 5), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 5), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(
             utils.non_singleton_dimension_shape(grid), np.array([["y"], ["x"]])
         )
 
-        grid = UniformRectilinear((5,), (1.,), (0.,))
+        grid = UniformRectilinear((5,), (1.0,), (0.0,))
         self.assertArrayEqual(
             utils.non_singleton_dimension_shape(grid), np.array([["x"]])
         )
 
-        grid = UniformRectilinear((4, 5, 6), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 5, 6), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(
             utils.non_singleton_dimension_shape(grid), np.array([["z"], ["y"], ["x"]])
         )
 
     def test_with_singletons(self):
-        grid = UniformRectilinear((4, 1), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((4, 1), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_shape(grid), (("y",),))
 
-        grid = UniformRectilinear((1, 4), (1., 1.), (0., 0.))
+        grid = UniformRectilinear((1, 4), (1.0, 1.0), (0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_shape(grid), (("x",),))
 
-        grid = UniformRectilinear((4, 1, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((4, 1, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_shape(grid), (("z",),))
 
-        grid = UniformRectilinear((1, 4, 1), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 1), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(utils.non_singleton_dimension_shape(grid), (("y",),))
 
-        grid = UniformRectilinear((1, 4, 5), (1., 1., 1.), (0., 0., 0.))
+        grid = UniformRectilinear((1, 4, 5), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
         self.assertArrayEqual(
             utils.non_singleton_dimension_shape(grid), (("y",), ("x",))
         )
@@ -298,7 +299,7 @@ class TestsNonSingletonDimensionShape(unittest.TestCase, NumpyArrayMixIn):
         )
 
         grid = Structured(
-            [0.] * 6 + [1.] * 6,
+            [0.0] * 6 + [1.0] * 6,
             [0, 0, 0, 1, 1, 1] * 2,
             [1, 2, 3, 1, 2, 3] * 2,
             (2, 3, 2),
@@ -348,7 +349,7 @@ class TestsNonSingletonDimensionShape(unittest.TestCase, NumpyArrayMixIn):
         )
 
         grid = UnstructuredPoints(
-            [0.] * 6 + [1.] * 6, [0, 0, 0, 1, 1, 1] * 2, [1, 2, 3, 1, 2, 3] * 2
+            [0.0] * 6 + [1.0] * 6, [0, 0, 0, 1, 1, 1] * 2, [1, 2, 3, 1, 2, 3] * 2
         )
         self.assertArrayEqual(
             utils.non_singleton_dimension_shape(grid),

@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 """Utility functions for working with babel projects."""
+import logging
 import os
+import shlex
 import subprocess
 from string import Template
-import shlex
-import logging
 
 
 class BabelConfigError(Exception):

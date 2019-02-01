@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def quick_plot(bmi, name, **kwds):

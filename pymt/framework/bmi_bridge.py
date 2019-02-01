@@ -7,9 +7,9 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-from cfunits import Units
 from scipy.interpolate import interp1d
 
+from cfunits import Units
 from scripting.contexts import cd
 
 from ..utils.decorators import deprecated
@@ -280,19 +280,19 @@ class BmiTimeInterpolator(object):
 
 
 def transform_math_to_azimuth(angle, units):
-    angle *= -1.
+    angle *= -1.0
     if units == Units("rad"):
-        angle += np.pi * .5
+        angle += np.pi * 0.5
     else:
-        angle += 90.
+        angle += 90.0
 
 
 def transform_azimuth_to_math(angle, units):
-    angle *= -1.
+    angle *= -1.0
     if units == Units("rad"):
-        angle -= np.pi * .5
+        angle -= np.pi * 0.5
     else:
-        angle -= 90.
+        angle -= 90.0
 
 
 class DataValues(object):

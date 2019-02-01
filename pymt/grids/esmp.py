@@ -220,13 +220,13 @@ True
 
 import numpy as np
 
-from pymt.grids import UniformRectilinear, Rectilinear, Structured, Unstructured
+from pymt.grids import Rectilinear, Structured, UniformRectilinear, Unstructured
 from pymt.grids.igrid import (
-    IGrid,
-    IField,
-    DimensionError,
-    CenteringValueError,
     CENTERING_CHOICES,
+    CenteringValueError,
+    DimensionError,
+    IField,
+    IGrid,
 )
 
 try:

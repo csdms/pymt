@@ -27,7 +27,6 @@ Create the grid,
 import os
 import xml.dom.minidom
 
-
 valid_encodings = ["ascii", "base64", "raw"]
 valid_formats = ["ascii", "base64", "raw", "appended"]
 

@@ -8,9 +8,9 @@ from ...grids import RectilinearField
 from .write import field_tofile
 
 
-def sample_surface(x, y, alpha, eta=1., purity=1.):
+def sample_surface(x, y, alpha, eta=1.0, purity=1.0):
     return (
-        1.
+        1.0
         + eta
         * (
             np.exp(-x ** 2 - (y - alpha) ** 2)
@@ -18,14 +18,14 @@ def sample_surface(x, y, alpha, eta=1., purity=1.):
             + 2 * purity * np.exp(-x ** 2 - y ** 2) * np.cos(2 * alpha * x)
         )
         / (2 * (1 + np.exp(-alpha ** 2)))
-    ) / 2.
+    ) / 2.0
 
 
 def sample_field():
-    x = np.arange(100.)
-    y = np.arange(100.)
+    x = np.arange(100.0)
+    y = np.arange(100.0)
     field = RectilinearField(y, x)
-    field.add_field("probability", sample_surface(x, y, 1.))
+    field.add_field("probability", sample_surface(x, y, 1.0))
     return field
 
 

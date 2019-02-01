@@ -11,23 +11,23 @@ def test_one_event(tmpdir, with_earth_and_air):
     with tmpdir.as_cwd():
         foo = PrintEvent(port="air_port", name="air__density", format="vtk")
 
-        with EventManager(((foo, 1.),)) as mngr:
-            assert mngr.time == approx(0.)
+        with EventManager(((foo, 1.0),)) as mngr:
+            assert mngr.time == approx(0.0)
 
-            mngr.run(1.)
-            assert mngr.time == approx(1.)
+            mngr.run(1.0)
+            assert mngr.time == approx(1.0)
 
-            mngr.run(1.)
-            assert mngr.time == approx(1.)
+            mngr.run(1.0)
+            assert mngr.time == approx(1.0)
 
-            for time in np.arange(1., 2., .1):
+            for time in np.arange(1.0, 2.0, 0.1):
                 mngr.run(time)
                 assert mngr.time == approx(time)
 
-            mngr.run(2.)
-            assert mngr.time == approx(2.)
+            mngr.run(2.0)
+            assert mngr.time == approx(2.0)
 
-            for time in np.arange(2., 5., .1):
+            for time in np.arange(2.0, 5.0, 0.1):
                 mngr.run(time)
                 assert mngr.time == approx(time)
 
@@ -42,18 +42,18 @@ def test_two_events(tmpdir, with_earth_and_air):
         foo = PrintEvent(port="air_port", name="air__density", format="vtk")
         bar = PrintEvent(port="air_port", name="air__temperature", format="vtk")
 
-        with EventManager(((foo, 1.), (bar, 1.2))) as mngr:
-            mngr.run(1.)
+        with EventManager(((foo, 1.0), (bar, 1.2))) as mngr:
+            mngr.run(1.0)
             assert os.path.isfile("air__density_0000.vtu")
             os.remove("air__density_0000.vtu")
 
-            mngr.run(2.)
+            mngr.run(2.0)
             assert os.path.isfile("air__density_0001.vtu")
             assert os.path.isfile("air__temperature_0000.vtu")
-            assert mngr.time == approx(2.)
+            assert mngr.time == approx(2.0)
 
-            mngr.run(5.)
-            assert mngr.time == approx(5.)
+            mngr.run(5.0)
+            assert mngr.time == approx(5.0)
 
         assert os.path.isfile("air__density_0002.vtu")
         assert os.path.isfile("air__density_0003.vtu")

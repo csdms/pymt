@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
+
 from pymt.grids import UniformRectilinearPoints
 
 
@@ -28,7 +29,7 @@ class EmptyPort(UniformRectilinearPoints):
     _name = None
 
     def __init__(self):
-        UniformRectilinearPoints.__init__(self, (4, 5), (1., 2.), (0., 1.))
+        UniformRectilinearPoints.__init__(self, (4, 5), (1.0, 2.0), (0.0, 1.0))
         # self._shape = (4, 5)
         # self._spacing = (1., 2.)
         # self._origin = (0., 1.)
@@ -40,7 +41,7 @@ class EmptyPort(UniformRectilinearPoints):
 
     def initialize(self):
         for array in self._values.values():
-            array.fill(0.)
+            array.fill(0.0)
 
     def run(self, time):
         self._time = time
@@ -49,7 +50,7 @@ class EmptyPort(UniformRectilinearPoints):
 
     def finalize(self):
         for array in self._values.values():
-            array.fill(0.)
+            array.fill(0.0)
 
     def get_var_grid(self, var_name):
         if var_name in self._values:
@@ -97,7 +98,7 @@ class EmptyPort(UniformRectilinearPoints):
 
     @property
     def start_time(self):
-        return 0.
+        return 0.0
 
     @property
     def current_time(self):
@@ -105,11 +106,11 @@ class EmptyPort(UniformRectilinearPoints):
 
     @property
     def end_time(self):
-        return 100.
+        return 100.0
 
     @property
     def time_step(self):
-        return 1.
+        return 1.0
 
 
 class WaterPort(EmptyPort):

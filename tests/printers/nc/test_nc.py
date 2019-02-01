@@ -78,7 +78,7 @@ class TestUniformRectilinear(NetcdfMixIn):
 
         attrs = dict(description="Example 0D nc file", author="Eric")
         for i in range(10):
-            field.add_field("Elevation", i * 10., centering="point")
+            field.add_field("Elevation", i * 10.0, centering="point")
             field_tofile(field, nc_file, attrs=attrs, append=True)
 
         self.assertIsFile(nc_file)
@@ -91,16 +91,16 @@ class TestUniformRectilinear(NetcdfMixIn):
         self.assertDataVariableLongNameEqual(root, "Elevation", "Elevation")
         self.assertDataVariableUnitsEqual(root, "Elevation", "-")
 
-        self.assertDataVariableArrayEqual(root, "Elevation", 10. * np.arange(10))
+        self.assertDataVariableArrayEqual(root, "Elevation", 10.0 * np.arange(10))
         self.assertDataVariableArrayEqual(root, "time", range(10))
 
         root.close()
 
     def test_2d(self):
         nc_file = self.temp_file_name(prefix="raster.2d.", suffix=".nc")
-        field = RasterField((3, 2), (2., 1), (0, 0.5), units=("m", "km"))
+        field = RasterField((3, 2), (2.0, 1), (0, 0.5), units=("m", "km"))
 
-        data = np.arange(6.)
+        data = np.arange(6.0)
 
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
@@ -118,8 +118,8 @@ class TestUniformRectilinear(NetcdfMixIn):
             ["mesh", "Temperature", "Elevation", "Velocity", "Temp", "x", "y", "time"],
         )
         self.assertDimensionsEqual(root, ["x", "y", "time"])
-        self.assertDataVariableArrayEqual(root, "x", [.5, 1.5])
-        self.assertDataVariableArrayEqual(root, "y", [0., 2., 4.])
+        self.assertDataVariableArrayEqual(root, "x", [0.5, 1.5])
+        self.assertDataVariableArrayEqual(root, "y", [0.0, 2.0, 4.0])
 
         for name in ["Temperature", "Elevation", "Velocity", "Temp"]:
             self.assertDataVariableLongNameEqual(root, name, name)
@@ -141,7 +141,7 @@ class TestUniformRectilinear(NetcdfMixIn):
             (2, 3, 4), (1, 2, 3), (-1, 0, 1), indexing="ij", units=("mm", "m", "km")
         )
 
-        data = np.arange(24.)
+        data = np.arange(24.0)
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
         field.add_field("Velocity", data * 100, centering="point", units="m/s")
@@ -155,7 +155,7 @@ class TestUniformRectilinear(NetcdfMixIn):
     def test_1d(self):
         nc_file = self.temp_file_name(prefix="raster.1d.", suffix=".nc")
         field = RasterField((12,), (1,), (-1,), units=("m",))
-        data = np.arange(12.)
+        data = np.arange(12.0)
         field.add_field("Elevation", data, centering="point")
 
         attrs = dict(description="Example 1D nc file", author="Eric")
@@ -166,7 +166,7 @@ class TestUniformRectilinear(NetcdfMixIn):
         root = self.open_as_netcdf(nc_file)
         self.assertDataVariableNames(root, ["mesh", "Elevation", "x", "time"])
         self.assertDimensionsEqual(root, ["x", "time"])
-        self.assertDataVariableArrayEqual(root, "x", np.arange(12.) - 1.)
+        self.assertDataVariableArrayEqual(root, "x", np.arange(12.0) - 1.0)
 
         self.assertDataVariableLongNameEqual(root, "Elevation", "Elevation")
         self.assertDataVariableUnitsEqual(root, "Elevation", "-")
@@ -180,7 +180,7 @@ class TestRectilinear(NetcdfMixIn):
         nc_file = self.temp_file_name(prefix="rectilinear.1d.", suffix=".nc")
 
         field = RectilinearField((1, 2, 4, 5), units=("m",))
-        data = np.arange(4.)
+        data = np.arange(4.0)
         field.add_field("Elevation", data, centering="point")
 
         attrs = dict(description="Example 1D nc file", author="Eric")
@@ -209,7 +209,7 @@ class TestRectilinear(NetcdfMixIn):
             coordinate_names=["latitude", "longitude"],
         )
 
-        data = np.arange(6.)
+        data = np.arange(6.0)
 
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
@@ -236,8 +236,8 @@ class TestRectilinear(NetcdfMixIn):
             ],
         )
         self.assertDimensionsEqual(root, ["longitude", "latitude", "time"])
-        self.assertDataVariableArrayEqual(root, "longitude", [2., 3.])
-        self.assertDataVariableArrayEqual(root, "latitude", [1., 4., 5.])
+        self.assertDataVariableArrayEqual(root, "longitude", [2.0, 3.0])
+        self.assertDataVariableArrayEqual(root, "latitude", [1.0, 4.0, 5.0])
         self.assertDataVariableLongNameEqual(root, "longitude", "longitude")
         self.assertDataVariableLongNameEqual(root, "latitude", "latitude")
         self.assertDataVariableUnitsEqual(root, "longitude", "degrees_east")
@@ -257,7 +257,7 @@ class TestStructured(NetcdfMixIn):
         nc_file = self.temp_file_name(prefix="structured.1d.", suffix=".nc")
 
         field = StructuredField((1, 2, 4, 5), (4,), indexing="ij", units=("m",))
-        data = np.arange(4.)
+        data = np.arange(4.0)
         field.add_field("Elevation", data, centering="point")
 
         attrs = dict(description="Example 1D nc file", author="Eric")
@@ -292,7 +292,7 @@ class TestStructured(NetcdfMixIn):
             units=("m", "km"),
         )
 
-        data = np.arange(6.)
+        data = np.arange(6.0)
 
         field.add_field("Temperature", data * 10, centering="point", units="C")
         field.add_field("Elevation", data, centering="point", units="meters")
@@ -324,10 +324,10 @@ class TestStructured(NetcdfMixIn):
             )
             self.assertDimensionsEqual(root, ["x", "y", "time"])
             self.assertDataVariableArrayEqual(
-                root, "x", np.array([[2., 3.], [2., 3.], [2., 3.]])
+                root, "x", np.array([[2.0, 3.0], [2.0, 3.0], [2.0, 3.0]])
             )
             self.assertDataVariableArrayEqual(
-                root, "y", np.array([[1., 1.], [4., 4.], [5., 5.]])
+                root, "y", np.array([[1.0, 1.0], [4.0, 4.0], [5.0, 5.0]])
             )
 
             for name in ["Temperature", "Elevation", "Velocity", "Temp"]:
@@ -349,7 +349,7 @@ class TestUnstructured(NetcdfMixIn):
         )
 
         field.add_field("point_field", np.arange(4), centering="point", units="C")
-        field.add_field("cell_field", np.arange(3) * 10., centering="zonal", units="F")
+        field.add_field("cell_field", np.arange(3) * 10.0, centering="zonal", units="F")
 
         field_tofile(field, nc_file, append=False)
 
@@ -389,8 +389,8 @@ class TestUnstructured(NetcdfMixIn):
         self.assertDimensionsEqual(
             root, ["n_face", "n_node", "n_vertex", "n_max_face_nodes", "time"]
         )
-        self.assertDataVariableArrayEqual(root, "node_x", [0., 2., 1., 3.])
-        self.assertDataVariableArrayEqual(root, "node_y", [0., 0., 1., 1.])
+        self.assertDataVariableArrayEqual(root, "node_x", [0.0, 2.0, 1.0, 3.0])
+        self.assertDataVariableArrayEqual(root, "node_y", [0.0, 0.0, 1.0, 1.0])
         self.assertDataVariableArrayEqual(root, "face_nodes_offset", [3, 6])
         self.assertDataVariableArrayEqual(
             root, "face_nodes", np.array([[0, 2, 1], [2, 3, 1]])

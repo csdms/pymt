@@ -1,17 +1,17 @@
 #! /usr/bin/env python
 
-from .constants import open_netcdf
-from .ugrid_read import (
-    NetcdfRectilinearFieldReader,
-    NetcdfStructuredFieldReader,
-    NetcdfUnstructuredFieldReader,
-)
 from pymt.grids.grid_type import (
     GridTypeRectilinear,
     GridTypeStructured,
     GridTypeUnstructured,
 )
 
+from .constants import open_netcdf
+from .ugrid_read import (
+    NetcdfRectilinearFieldReader,
+    NetcdfStructuredFieldReader,
+    NetcdfUnstructuredFieldReader,
+)
 
 _NETCDF_MESH_TYPE = {
     "rectilinear": GridTypeRectilinear(),

@@ -1,15 +1,14 @@
 #! /bin/env python
 
 import numpy as np
-
 from six import MAXSIZE
 
 from .igrid import IGrid
 from .utils import (
-    get_default_coordinate_units,
-    get_default_coordinate_names,
-    coordinates_to_numpy_matrix,
     args_as_numpy_arrays,
+    coordinates_to_numpy_matrix,
+    get_default_coordinate_names,
+    get_default_coordinate_units,
 )
 
 

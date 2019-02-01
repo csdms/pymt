@@ -1,12 +1,12 @@
 #! /bin/env python
 import sys
+import xml.dom.minidom
 
 import numpy as np
 from six.moves import xrange
-import xml.dom.minidom
 
 from .encoders import encode
-from .vtktypes import sys_to_vtk_endian, np_to_vtk_type
+from .vtktypes import np_to_vtk_type, sys_to_vtk_endian
 
 
 class VtkExtent(object):
@@ -37,10 +37,10 @@ class VtkOrigin(object):
 
         self._cell_origin = []
         for (dx, x0) in zip(spacing, origin):
-            self._cell_origin.append(x0 - dx * .5)
+            self._cell_origin.append(x0 - dx * 0.5)
 
         for _ in xrange(3 - len(origin)):
-            self._cell_origin.append(0.)
+            self._cell_origin.append(0.0)
 
         self._origin_str = " ".join(["%f" % x for x in self._cell_origin])
 
@@ -58,7 +58,7 @@ class VtkSpacing(object):
         for dx in spacing:
             self._padded_spacing.append(dx)
         for _ in xrange(3 - len(spacing)):
-            self._padded_spacing.append(0.)
+            self._padded_spacing.append(0.0)
 
         self._spacing_str = " ".join(["%f" % x for x in self._padded_spacing])
 
@@ -188,7 +188,7 @@ class VtkCoordinatesElement(VtkDataElement):
                 )
             except IndexError:
                 self.addData(
-                    np.array(xyz[0]) * 0.,
+                    np.array(xyz[0]) * 0.0,
                     label + "_coordinates",
                     NumberOfComponents=1,
                     **kwargs

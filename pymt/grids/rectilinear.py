@@ -109,6 +109,7 @@ array([4, 3, 2])
 import numpy as np
 
 from pymt.grids.meshgrid import meshgrid
+
 from .structured import Structured, StructuredPoints
 
 

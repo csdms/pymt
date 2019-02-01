@@ -1,8 +1,9 @@
 import os
 
+from six.moves import xrange
+
 from pymt.component.component import Component
 from pymt.framework.services import del_component_instances
-from six.moves import xrange
 
 
 def test_no_events(with_no_components):
