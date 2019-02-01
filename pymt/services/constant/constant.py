@@ -1,7 +1,6 @@
 #! /bin/env python
-import yaml
-
 import numpy as np
+import yaml
 
 
 class ConstantScalars(object):
@@ -24,15 +23,15 @@ class ConstantScalars(object):
             self._vars[name] = np.array(value, dtype=np.float)
 
         self._shape = (1,)
-        self._spacing = (1.,)
-        self._origin = (0.,)
+        self._spacing = (1.0,)
+        self._origin = (0.0,)
 
         self._input_exchange_items = []
         self._output_exchange_items = list(self._vars.keys())
 
-        self._start_time = 0.
+        self._start_time = 0.0
         self._end_time = np.inf
-        self._time = 0.
+        self._time = 0.0
 
     def update(self, time):
         """Update one time step.

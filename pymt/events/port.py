@@ -8,10 +8,11 @@ import sys
 import six
 import yaml
 
+from scripting import cd
+
 from ..component.grid import GridMixIn
 from ..framework import services
 from ..mappers import NearestVal
-from ..utils.run_dir import open_run_dir
 
 
 class PortEvent(GridMixIn):
@@ -51,8 +52,8 @@ class PortEvent(GridMixIn):
         Run the underlying port's initialization method in its *run_dir*. The event's *init_args* are passed to
         the initialize method as arguments.
         """
-        with open_run_dir(self._run_dir):
-            status = {"name": self.name, "time": 0., "status": "initializing"}
+        with cd(self._run_dir):
+            status = {"name": self.name, "time": 0.0, "status": "initializing"}
             self._status_fp.write(yaml.dump(status))
             try:
                 self._port.initialize(*self._init_args)
@@ -69,7 +70,7 @@ class PortEvent(GridMixIn):
         time : float
             Time to run the event to.
         """
-        with open_run_dir(self._run_dir):
+        with cd(self._run_dir):
             status = {"name": self.name, "time": time, "status": "running"}
             print(yaml.dump(status), file=self._status_fp)
             self._status_fp.flush()
@@ -83,7 +84,7 @@ class PortEvent(GridMixIn):
             sys.stderr.flush()
 
     def update(self, time):
-        with open_run_dir(self._run_dir):
+        with cd(self._run_dir):
             self._port.update_until(time)
 
     def finalize(self):
@@ -91,7 +92,7 @@ class PortEvent(GridMixIn):
 
         Run the `finalize` method of the underlying port.
         """
-        with open_run_dir(self._run_dir):
+        with cd(self._run_dir):
             status = {"name": self.name, "time": None, "status": "finishing"}
             self._status_fp.write(yaml.dump(status))
             self._port.finalize()

@@ -9,7 +9,7 @@ from pymt.utils.run_dir import open_run_dir
 def test_run_dir():
     init_dir = os.getcwd()
     with open_run_dir("/"):
-        assert os.getcwd() == "/"
+        assert os.getcwd() == os.path.normpath("/")
     assert os.getcwd() == init_dir
 
 
@@ -23,20 +23,20 @@ def test_relative_dir():
 def test_nested_dirs():
     init_dir = os.getcwd()
     with open_run_dir("/"):
-        assert os.getcwd() == "/"
+        assert os.getcwd() == os.path.normpath("/")
         with open_run_dir("/bin"):
-            assert os.getcwd() == "/bin"
-        assert os.getcwd() == "/"
+            assert os.getcwd() == os.path.normpath("/bin")
+        assert os.getcwd() == os.path.normpath("/")
     assert os.getcwd() == init_dir
 
 
 def test_nested_relative_dirs():
     init_dir = os.getcwd()
     with open_run_dir("/usr/bin"):
-        assert os.getcwd() == "/usr/bin"
+        assert os.getcwd() == os.path.normpath("/usr/bin")
         with open_run_dir(".."):
-            assert os.getcwd() == "/usr"
-        assert os.getcwd() == "/usr/bin"
+            assert os.getcwd() == os.path.normpath("/usr")
+        assert os.getcwd() == os.path.normpath("/usr/bin")
     assert os.getcwd() == init_dir
 
 
@@ -79,7 +79,7 @@ def test_missing_dir():
 def test_create_missing_dir():
     init_dir = os.getcwd()
     with open_run_dir("./not/a/dir", create=True):
-        assert os.getcwd() == os.path.join(init_dir, "not/a/dir")
+        assert os.getcwd() == os.path.normpath(os.path.join(init_dir, "not/a/dir"))
     assert os.getcwd() == init_dir
-    assert os.path.isdir(os.path.join(init_dir, "not/a/dir"))
+    assert os.path.isdir(os.path.normpath(os.path.join(init_dir, "not/a/dir")))
     shutil.rmtree("./not")

@@ -124,7 +124,7 @@ class Timeline(object):
     ['hello', 'world', '!']
     """
 
-    def __init__(self, events=None, start=0.):
+    def __init__(self, events=None, start=0.0):
         events = events or {}
 
         self._time = float(start)
@@ -349,7 +349,6 @@ class Timeline(object):
         while self.time_of_next_event <= stop:
             yield self.pop()
         self._time = stop
-        raise StopIteration
 
     def pop_until(self, stop):
         """Advance the timeline, popping events along the way.

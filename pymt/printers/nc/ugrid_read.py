@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 from six.moves import xrange
 
-from .constants import open_netcdf
-from ...grids import utils as gutils
 from ...grids import RectilinearField, StructuredField, UnstructuredField
+from ...grids import utils as gutils
+from .constants import open_netcdf
 
 
 class NetcdfFieldReader(object):

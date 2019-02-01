@@ -13,7 +13,7 @@ URL: None
 
 Examples
 --------
->>> from pymt.components import Model
+>>> from pymt.models import Model
 >>> model = Model()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
@@ -38,7 +38,9 @@ def test_full_docstring():
         doi="1977.12.23",
         url="welldoyapunk.org",
     )
-    assert docstring == """
+    assert (
+        docstring
+        == """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -53,7 +55,7 @@ URL: welldoyapunk.org
 
 Examples
 --------
->>> from pymt.components import DirtyHarry
+>>> from pymt.models import DirtyHarry
 >>> model = DirtyHarry()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
@@ -61,6 +63,7 @@ Examples
 ...     model.update()
 >>> model.finalize()
 """.strip()
+    )
 
 
 def test_cite_as():
@@ -75,7 +78,9 @@ def test_cite_as():
         cite_as=["ref1", "ref2"],
     )
 
-    assert docstring == """
+    assert (
+        docstring
+        == """
 Basic Model Interface for DirtyHarry.
 
 The Good, The Bad, and the Ugly
@@ -95,7 +100,7 @@ Cite as:
 
 Examples
 --------
->>> from pymt.components import DirtyHarry
+>>> from pymt.models import DirtyHarry
 >>> model = DirtyHarry()
 >>> (fname, initdir) = model.setup()
 >>> model.initialize(fname, dir=initdir)
@@ -103,3 +108,4 @@ Examples
 ...     model.update()
 >>> model.finalize()
 """.strip()
+    )

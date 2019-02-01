@@ -53,6 +53,11 @@ clean-test: ## remove test and coverage artifacts
 lint: ## check style with flake8
 	flake8 pymt tests
 
+pretty: ## reformat files to make them look pretty
+	find pymt -name '*.py' | xargs isort
+	find tests -name '*.py' | xargs isort
+	black setup.py pymt tests
+
 test: ## run tests quickly with the default Python
 	py.test
 

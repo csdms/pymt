@@ -48,8 +48,8 @@ hello from finalize
 """
 from __future__ import print_function
 
-from six.moves.configparser import ConfigParser
 from six import StringIO
+from six.moves.configparser import ConfigParser
 
 from ..timeline import Timeline
 from ..utils.prefix import names_with_prefix

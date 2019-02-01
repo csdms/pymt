@@ -4,7 +4,6 @@ import warnings
 
 import numpy as np
 
-
 from ..grids import RasterField, StructuredField, UnstructuredField
 
 
@@ -150,7 +149,7 @@ def _port_shape_as_array(port, grid_id):
 
 def _port_spacing_as_array(port, grid_id):
     if port_is_one_point(port, grid_id):
-        spacing = np.array([1.])
+        spacing = np.array([1.0])
     else:
         spacing = port.get_grid_spacing(grid_id)
     return spacing
@@ -158,7 +157,7 @@ def _port_spacing_as_array(port, grid_id):
 
 def _port_origin_as_array(port, grid_id):
     if port_is_one_point(port, grid_id):
-        origin = np.array([0.])
+        origin = np.array([0.0])
     else:
         try:
             origin = port.get_grid_origin(grid_id)
@@ -171,8 +170,8 @@ def _port_origin_as_array(port, grid_id):
 def _construct_port_as_rectilinear_field(port, grid_id, data_array):
     if len(data_array) == 1:
         shape = np.array((1,))
-        spacing = np.array((1.,))
-        origin = np.array((0.,))
+        spacing = np.array((1.0,))
+        origin = np.array((0.0,))
     else:
         shape = _port_shape_as_array(port, grid_id)
         spacing = _port_spacing_as_array(port, grid_id)

@@ -41,7 +41,7 @@ array([27, 26, 30, 31, 43, 42, 46, 47])
 import numpy as np
 
 
-def _get_interior_ids(shape, dtype="int64"):
+def _get_interior_ids(shape, dtype=int):
     """
     Get indices to the interior nodes of a structured grid. These are
     essentially the upper-left corners of cells formed by the points.
@@ -66,7 +66,7 @@ def _get_interior_ids(shape, dtype="int64"):
     return i[tuple(obj)].flatten()
 
 
-def _get_offsets(shape, ordering="cw", dtype="int64"):
+def _get_offsets(shape, ordering="cw", dtype=int):
     """
     >>> _get_offsets((16, ))
     array([0, 1])
@@ -201,7 +201,7 @@ def get_connectivity(shape, **kwds):
      array([ 5,  6, 10,  9]),
      array([ 6,  7, 11, 10])]
     """
-    kwds.setdefault("dtype", "int64")
+    kwds.setdefault("dtype", int)
     kwds.setdefault("ordering", "cw")
     with_offsets = kwds.pop("with_offsets", False)
     as_cell_list = kwds.pop("as_cell_list", False)
@@ -232,7 +232,7 @@ def get_connectivity(shape, **kwds):
         return c
 
 
-def get_connectivity_2d(shape, ordering="cw", dtype="int64"):
+def get_connectivity_2d(shape, ordering="cw", dtype=int):
     """This is a little slower than the above and less general.
 
     Examples
@@ -268,7 +268,7 @@ def get_connectivity_2d(shape, ordering="cw", dtype="int64"):
     return c
 
 
-def get_connectivity_1d(shape, ordering="cw", dtype="int64"):
+def get_connectivity_1d(shape, ordering="cw", dtype=int):
     assert len(shape) == 1
 
     point_count = shape[0]

@@ -38,7 +38,7 @@ class CellToPoint(IGridMapper):
         )
         self._bad = self._map == -1
 
-    def run(self, src_values, dst_vals=None, bad_val=-999.):
+    def run(self, src_values, dst_vals=None, bad_val=-999.0):
         if dst_vals is None:
             dst_vals = np.zeros(len(self._map)) + bad_val
 

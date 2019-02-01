@@ -31,10 +31,10 @@ array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
 array([3, 4])
 
 >>> g.get_offset()
-array([ 4,  8, 12, 16, 20, 24], dtype=int32)
+array([ 4,  8, 12, 16, 20, 24])
 >>> g.get_connectivity()
 array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
-        6, 10,  9,  6,  7, 11, 10], dtype=int32)
+        6, 10,  9,  6,  7, 11, 10])
 
 **Structured grid of points**
 
@@ -79,9 +79,9 @@ IndexError: Dimension out of bounds
 array([4])
 
 >>> g.get_offset()
-array([2, 4, 6], dtype=int32)
+array([2, 4, 6])
 >>> g.get_connectivity()
-array([0, 1, 1, 2, 2, 3], dtype=int32)
+array([0, 1, 1, 2, 2, 3])
 
 
 **3D Grid of cubes**
@@ -100,13 +100,13 @@ array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
 array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
 
 >>> g.get_connectivity()
-array([0, 1, 3, 2, 4, 5, 7, 6], dtype=int32)
+array([0, 1, 3, 2, 4, 5, 7, 6])
 >>> g.get_offset()
-array([8], dtype=int32)
+array([8])
 
 >>> g = Structured(x, y, z, (2, 2, 2), ordering='ccw')
 >>> g.get_connectivity()
-array([1, 0, 2, 3, 5, 4, 6, 7], dtype=int32)
+array([1, 0, 2, 3, 5, 4, 6, 7])
 """
 import warnings
 
@@ -141,7 +141,7 @@ class StructuredPoints(UnstructuredPoints):
             "units", get_default_coordinate_units(len(coordinates))
         )
 
-        self._shape = np.array(shape, dtype=np.int64)
+        self._shape = np.array(shape, dtype=np.int)
 
         kwds["units"] = coordinate_units
         kwds["coordinate_names"] = coordinate_names

@@ -4,7 +4,6 @@ import six
 from six.moves.configparser import ConfigParser
 
 from ..framework import services
-from ..printers.bov.database import Database as BovDatabase
 from ..printers.nc.database import Database as NcDatabase
 from ..printers.vtk.vtu import Database as VtkDatabase
 from ..utils.prefix import names_with_prefix, strip_prefix
@@ -110,14 +109,8 @@ class NcPortPrinter(PortPrinter):
     _printer_class = NcDatabase
 
 
-class BovPortPrinter(PortPrinter):
-    _format = "bov"
-    _printer_class = BovDatabase
-
-
 _FORMAT_TO_PRINTER = {
     "vtk": VtkPortPrinter,
     "nc": NcPortPrinter,
     "netcdf": NcPortPrinter,
-    "bov": BovPortPrinter,
 }

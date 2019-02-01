@@ -2,6 +2,7 @@
 
 import numpy as np
 from scipy.spatial import KDTree
+
 from .imapper import IGridMapper, IncompatibleGridError
 
 # from .mapper import IncompatibleGridError

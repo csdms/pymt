@@ -8,7 +8,7 @@ class SimpleTimeBmi:
         return "h"
 
     def get_start_time(self):
-        return 1.
+        return 1.0
 
     def get_current_time(self):
         return 10.5
@@ -29,10 +29,10 @@ def test_time_wrap():
     bmi = Bmi()
 
     assert bmi.get_time_units() == "h"
-    assert bmi.get_start_time() == approx(1.)
+    assert bmi.get_start_time() == approx(1.0)
     assert bmi.get_current_time() == approx(10.5)
-    assert bmi.get_end_time() == approx(72.)
-    assert bmi.get_time_step() == approx(.25)
+    assert bmi.get_end_time() == approx(72.0)
+    assert bmi.get_time_step() == approx(0.25)
     assert bmi.time_units == "h"
 
 
@@ -40,10 +40,10 @@ def test_time_conversion():
     """Test unit conversion through units keyword."""
     bmi = Bmi()
 
-    assert bmi.get_start_time(units="h") == approx(1.)
+    assert bmi.get_start_time(units="h") == approx(1.0)
 
-    assert bmi.get_start_time(units="min") == approx(60.)
-    assert bmi.get_current_time(units="min") == approx(630.)
+    assert bmi.get_start_time(units="min") == approx(60.0)
+    assert bmi.get_current_time(units="min") == approx(630.0)
     assert bmi.get_end_time(units="d") == approx(3)
 
 
@@ -55,10 +55,10 @@ def test_change_time_units():
     bmi.time_units = "min"
     assert bmi.time_units == "min"
 
-    assert bmi.get_start_time() == approx(60.)
-    assert bmi.get_current_time() == approx(630.)
+    assert bmi.get_start_time() == approx(60.0)
+    assert bmi.get_current_time() == approx(630.0)
     assert bmi.get_end_time() == approx(72 * 60)
 
-    assert bmi.get_start_time(units="h") == approx(1.)
+    assert bmi.get_start_time(units="h") == approx(1.0)
     assert bmi.get_current_time(units="h") == approx(10.5)
     assert bmi.get_end_time(units="h") == approx(72)

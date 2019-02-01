@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
-from pymt.component.grid import GridMixIn
 from pytest import approx
+
+from pymt.component.grid import GridMixIn
 
 
 class Port(object):

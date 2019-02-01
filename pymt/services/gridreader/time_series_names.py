@@ -3,7 +3,7 @@ import re
 
 import six
 
-_TIME_SERIES_NAME_RE_PATTERN = "(?P<name>[a-zA-Z_]+)@t=(?P<time_stamp>\d+)$"
+_TIME_SERIES_NAME_RE_PATTERN = r"(?P<name>[a-zA-Z_]+)@t=(?P<time_stamp>\d+)$"
 _TIME_SERIES_NAME_RE = re.compile(_TIME_SERIES_NAME_RE_PATTERN)
 
 

@@ -47,16 +47,14 @@ True
 
 """
 
-from shapely.geometry import Point
-from shapely.geometry import asPoint, asLineString, asPolygon
-
 from pymt.grids import (
-    UniformRectilinear,
     Rectilinear,
     Structured,
+    UniformRectilinear,
     Unstructured,
     UnstructuredPoints,
 )
+from shapely.geometry import Point, asLineString, asPoint, asPolygon
 
 
 class UnstructuredMap(Unstructured):

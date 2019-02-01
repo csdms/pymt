@@ -1,6 +1,5 @@
 import numpy as np
 
-
 from pymt.grids.assertions import is_rectilinear, is_structured, is_unstructured
 
 

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import os
-import warnings
 import textwrap
+import warnings
 from functools import wraps
 
 

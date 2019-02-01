@@ -1,8 +1,10 @@
 #! /usr/bin/env python
 
 import unittest
-from pymt.grids import UniformRectilinear, UniformRectilinearPoints
+
 import numpy as np
+
+from pymt.grids import UniformRectilinear, UniformRectilinearPoints
 
 
 class TestRasterGrid(unittest.TestCase):
@@ -38,49 +40,49 @@ class TestRasterGrid(unittest.TestCase):
 
     @unittest.skip("xy indexing is deprecated")
     def test_xy_indexing(self):
-        grid = UniformRectilinear((2, 3), (1, 2), (.5, 0))
+        grid = UniformRectilinear((2, 3), (1, 2), (0.5, 0))
         self.assert_point_count(grid, 6)
         self.assert_cell_count(grid, 2)
         self.assert_shape(grid, (3, 2))
-        self.assert_spacing(grid, (2., 1.))
-        self.assert_origin(grid, (0., .5))
+        self.assert_spacing(grid, (2.0, 1.0))
+        self.assert_origin(grid, (0.0, 0.5))
         self.assert_x(grid, [0.5, 1.5, 0.5, 1.5, 0.5, 1.5])
-        self.assert_y(grid, [0., 0., 2., 2., 4., 4.])
+        self.assert_y(grid, [0.0, 0.0, 2.0, 2.0, 4.0, 4.0])
 
     def test_ij_indexing(self):
         grid = UniformRectilinear(
-            (2, 3), (1, 2), (.5, 0), indexing="ij", units=("m", "km")
+            (2, 3), (1, 2), (0.5, 0), indexing="ij", units=("m", "km")
         )
         self.assert_point_count(grid, 6)
         self.assert_cell_count(grid, 2)
         self.assert_shape(grid, (2, 3))
-        self.assert_spacing(grid, (1., 2.))
-        self.assert_origin(grid, (0.5, .0))
-        self.assert_x(grid, [0., 2., 4., 0., 2., 4.])
+        self.assert_spacing(grid, (1.0, 2.0))
+        self.assert_origin(grid, (0.5, 0.0))
+        self.assert_x(grid, [0.0, 2.0, 4.0, 0.0, 2.0, 4.0])
         self.assert_y(grid, [0.5, 0.5, 0.5, 1.5, 1.5, 1.5])
 
     def test_grid_of_points(self):
         grid = UniformRectilinearPoints(
-            (2, 3), (1, 2), (.5, 0), indexing="ij", set_connectivity=True
+            (2, 3), (1, 2), (0.5, 0), indexing="ij", set_connectivity=True
         )
         self.assert_point_count(grid, 6)
         self.assert_cell_count(grid, 0)
         self.assert_shape(grid, (2, 3))
-        self.assert_spacing(grid, (1., 2.))
-        self.assert_origin(grid, (0.5, .0))
-        self.assert_x(grid, [0., 2., 4., 0., 2., 4.])
+        self.assert_spacing(grid, (1.0, 2.0))
+        self.assert_origin(grid, (0.5, 0.0))
+        self.assert_x(grid, [0.0, 2.0, 4.0, 0.0, 2.0, 4.0])
         self.assert_y(grid, [0.5, 0.5, 0.5, 1.5, 1.5, 1.5])
         self.assert_connectivity(grid, np.arange(grid.get_point_count()))
         self.assert_offset(grid, np.arange(1, grid.get_point_count() + 1))
 
     def test_1d_grid_of_points(self):
         grid = UniformRectilinearPoints(
-            (5,), (1.,), (.5,), indexing="ij", set_connectivity=True
+            (5,), (1.0,), (0.5,), indexing="ij", set_connectivity=True
         )
         self.assert_point_count(grid, 5)
         self.assert_cell_count(grid, 0)
         self.assert_shape(grid, (5,))
-        self.assert_spacing(grid, (1.,))
+        self.assert_spacing(grid, (1.0,))
         self.assert_origin(grid, (0.5,))
         self.assert_x(grid, [0.5, 1.5, 2.5, 3.5, 4.5])
         self.assert_connectivity(grid, np.arange(grid.get_point_count()))
@@ -92,96 +94,96 @@ class TestRasterGrid(unittest.TestCase):
         self.assert_point_count(grid, 24)
         self.assert_cell_count(grid, 6)
         self.assert_shape(grid, (2, 3, 4))
-        self.assert_spacing(grid, (3., 2., 1.))
-        self.assert_origin(grid, (1., 0., -1.))
+        self.assert_spacing(grid, (3.0, 2.0, 1.0))
+        self.assert_origin(grid, (1.0, 0.0, -1.0))
         self.assert_x(
             grid,
             [
-                -1.,
-                0.,
-                1.,
-                2.,
-                -1.,
-                0.,
-                1.,
-                2.,
-                -1.,
-                0.,
-                1.,
-                2.,
-                -1.,
-                0.,
-                1.,
-                2.,
-                -1.,
-                0.,
-                1.,
-                2.,
-                -1.,
-                0.,
-                1.,
-                2.,
+                -1.0,
+                0.0,
+                1.0,
+                2.0,
+                -1.0,
+                0.0,
+                1.0,
+                2.0,
+                -1.0,
+                0.0,
+                1.0,
+                2.0,
+                -1.0,
+                0.0,
+                1.0,
+                2.0,
+                -1.0,
+                0.0,
+                1.0,
+                2.0,
+                -1.0,
+                0.0,
+                1.0,
+                2.0,
             ],
         )
         self.assert_y(
             grid,
             [
-                0.,
-                0.,
-                0.,
-                0.,
-                2.,
-                2.,
-                2.,
-                2.,
-                4.,
-                4.,
-                4.,
-                4.,
-                0.,
-                0.,
-                0.,
-                0.,
-                2.,
-                2.,
-                2.,
-                2.,
-                4.,
-                4.,
-                4.,
-                4.,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                2.0,
+                2.0,
+                2.0,
+                2.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                2.0,
+                2.0,
+                2.0,
+                2.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
             ],
         )
         self.assert_z(
             grid,
             [
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
-                4.,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
+                4.0,
             ],
         )
-        self.assert_offset(grid, 8. * np.arange(1, grid.get_cell_count() + 1))
+        self.assert_offset(grid, 8.0 * np.arange(1, grid.get_cell_count() + 1))
 
     def test_3d_grid_ij_indexing(self):
         grid = UniformRectilinear((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing="ij")
@@ -189,96 +191,96 @@ class TestRasterGrid(unittest.TestCase):
         self.assert_point_count(grid, 24)
         self.assert_cell_count(grid, 6)
         self.assert_shape(grid, (4, 3, 2))
-        self.assert_spacing(grid, (1., 2., 3.))
-        self.assert_origin(grid, (-1., 0., 1.))
+        self.assert_spacing(grid, (1.0, 2.0, 3.0))
+        self.assert_origin(grid, (-1.0, 0.0, 1.0))
         self.assert_x(
             grid,
             [
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
-                1.,
-                4.,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
+                1.0,
+                4.0,
             ],
         )
         self.assert_y(
             grid,
             [
-                0.,
-                0.,
-                2.,
-                2.,
-                4.,
-                4.,
-                0.,
-                0.,
-                2.,
-                2.,
-                4.,
-                4.,
-                0.,
-                0.,
-                2.,
-                2.,
-                4.,
-                4.,
-                0.,
-                0.,
-                2.,
-                2.,
-                4.,
-                4.,
+                0.0,
+                0.0,
+                2.0,
+                2.0,
+                4.0,
+                4.0,
+                0.0,
+                0.0,
+                2.0,
+                2.0,
+                4.0,
+                4.0,
+                0.0,
+                0.0,
+                2.0,
+                2.0,
+                4.0,
+                4.0,
+                0.0,
+                0.0,
+                2.0,
+                2.0,
+                4.0,
+                4.0,
             ],
         )
         self.assert_z(
             grid,
             [
-                -1.,
-                -1.,
-                -1.,
-                -1.,
-                -1.,
-                -1.,
-                0.,
-                0.,
-                0.,
-                0.,
-                0.,
-                0.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                1.,
-                2.,
-                2.,
-                2.,
-                2.,
-                2.,
-                2.,
+                -1.0,
+                -1.0,
+                -1.0,
+                -1.0,
+                -1.0,
+                -1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                2.0,
+                2.0,
+                2.0,
+                2.0,
+                2.0,
+                2.0,
             ],
         )
-        self.assert_offset(grid, 8. * np.arange(1, grid.get_cell_count() + 1))
+        self.assert_offset(grid, 8.0 * np.arange(1, grid.get_cell_count() + 1))
 
 
 def suite():

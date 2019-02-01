@@ -2,13 +2,13 @@
 from .vtktypes import VtkStructured
 from .vtkxml import (
     VtkAppendedDataElement,
+    VtkCellDataElement,
     VtkExtent,
-    VtkRootElement,
     VtkGridElement,
     VtkPieceElement,
-    VtkPointsElement,
     VtkPointDataElement,
-    VtkCellDataElement,
+    VtkPointsElement,
+    VtkRootElement,
 )
 
 

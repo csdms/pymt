@@ -40,7 +40,7 @@ class redirect(object):
 
 
 def read_component_configuration(names, vars=None):
-    module = importlib.import_module(".".join(["pymt", "components"]))
+    module = importlib.import_module(".".join(["pymt", "models"]))
 
     names = names or module.__all__
     vars = vars or ("uses", "provides", "info", "parameters", "files", "api")
@@ -48,23 +48,23 @@ def read_component_configuration(names, vars=None):
     configs = {}
 
     for name in names:
-        component = module.__dict__[name]()
+        model = module.__dict__[name]()
 
         config = {}
         if "uses" in vars:
-            config["uses"] = list(component.get_input_var_names())
+            config["uses"] = list(model.get_input_var_names())
         if "provides" in vars:
-            config["provides"] = list(component.get_output_var_names())
+            config["provides"] = list(model.get_output_var_names())
         if "info" in vars:
-            with open(os.path.join(component.datadir, "info.yaml")) as fp:
+            with open(os.path.join(model.datadir, "info.yaml")) as fp:
                 config["info"] = yaml.load(fp)
         if "parameters" in vars:
-            with open(os.path.join(component.datadir, "parameters.yaml")) as fp:
+            with open(os.path.join(model.datadir, "parameters.yaml")) as fp:
                 config["parameters"] = yaml.load(fp)
         if "files" in vars:
-            config["files"] = find_model_data_files(component.datadir)
+            config["files"] = find_model_data_files(model.datadir)
         if "api" in vars:
-            with open(os.path.join(component.datadir, "api.yaml")) as fp:
+            with open(os.path.join(model.datadir, "api.yaml")) as fp:
                 api = yaml.load(fp)
             config["api"] = {
                 "module": module.__name__,
@@ -80,7 +80,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("name", nargs="*", help="Name of component")
+    parser.add_argument("name", nargs="*", help="Name of model")
     parser.add_argument("--vars", default=None, help="List of variables to get")
     parser.add_argument("--output", type=argparse.FileType("w"), help="Output file")
 

@@ -3,9 +3,8 @@ from __future__ import print_function
 
 from six.moves import xrange
 
-from .constants import open_netcdf, _NP_TO_NC_TYPE
 from ...grids import utils as gutils
-
+from .constants import _NP_TO_NC_TYPE, open_netcdf
 
 _OPENED_FILES = {}
 

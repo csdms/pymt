@@ -1,6 +1,6 @@
 #! /bin/env python
 
-from .encoders import ASCIIEncoder, RawEncoder, Base64Encoder
+from .encoders import ASCIIEncoder, Base64Encoder, RawEncoder
 
 
 class VtkEndian(object):

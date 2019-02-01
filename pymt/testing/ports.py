@@ -4,8 +4,8 @@ import numpy as np
 class UniformRectilinearGridPort(object):
     def __init__(self):
         self._shape = (4, 5)
-        self._spacing = (1., 2.)
-        self._origin = (0., 1.)
+        self._spacing = (1.0, 2.0)
+        self._origin = (0.0, 1.0)
         self._values = {
             "landscape_surface__elevation": np.ones(self._shape),
             "sea_surface__temperature": np.zeros(self._shape),

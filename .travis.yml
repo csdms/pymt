@@ -4,12 +4,9 @@ os:
 - osx
 env:
   matrix:
-  - TRAVIS_PYTHON_VERSION="2.7"
-  - TRAVIS_PYTHON_VERSION="3.5"
-  - TRAVIS_PYTHON_VERSION="3.6"
+  - CONDA_ENV=py36
+  - CONDA_ENV=py37
   global:
-  - CONDA_PREFIX=$HOME/miniconda
-  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
   - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 sudo: false
 before_install:
@@ -22,24 +19,19 @@ before_install:
 install:
 - |
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    OS="MacOSX-x86_64"
+    curl https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > $HOME/miniconda.sh
   else
-    OS="Linux-x86_64"
+    curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh > $HOME/miniconda.sh
   fi
-- curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
-- bash $HOME/minconda.sh -b -p $CONDA_PREFIX
-- export PATH="$CONDA_PREFIX/bin:$PATH"
+- bash $HOME/miniconda.sh -b -p $HOME/anaconda
+- export PATH="$HOME/anaconda/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
-- conda create -n _testing python=$TRAVIS_PYTHON_VERSION
-- source activate _testing
-- conda install -q conda-build anaconda-client sphinx pytest pytest-cov coveralls
+- conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
+- source activate test_env
 script:
-- conda install --file=requirements.txt -c conda-forge
-- python setup.py develop
-- pytest --cov=pymt --cov-report= --cov-report=html --cov-config=setup.cfg
+- make install
+- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml
+- make lint
 after_success:
-- |
-  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-    coveralls --verbose
-  fi
+  coveralls

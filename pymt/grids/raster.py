@@ -33,9 +33,9 @@ array([ 1.,  2.])
 >>> g.get_origin()
 array([ 0.5,  0. ])
 >>> g.get_offset()
-array([4, 8], dtype=int32)
+array([4, 8])
 >>> g.get_connectivity()
-array([0, 1, 4, 3, 1, 2, 5, 4], dtype=int32)
+array([0, 1, 4, 3, 1, 2, 5, 4])
 
 **Uniform rectilinear grid of points**
 
@@ -90,6 +90,7 @@ array([-1., -1., -1., -1., -1., -1.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,
 """
 
 import numpy as np
+
 from .rectilinear import Rectilinear, RectilinearPoints
 
 

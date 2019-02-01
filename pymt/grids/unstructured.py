@@ -1,15 +1,14 @@
 #! /bin/env python
 
 import numpy as np
-
 from six import MAXSIZE
 
 from .igrid import IGrid
 from .utils import (
-    get_default_coordinate_units,
-    get_default_coordinate_names,
-    coordinates_to_numpy_matrix,
     args_as_numpy_arrays,
+    coordinates_to_numpy_matrix,
+    get_default_coordinate_names,
+    get_default_coordinate_units,
 )
 
 
@@ -38,7 +37,7 @@ class UnstructuredPoints(IGrid):
         self._coordinate_name = np.array(coordinate_names)
 
         if set_connectivity:
-            self._connectivity = np.arange(self._point_count, dtype=np.int32)
+            self._connectivity = np.arange(self._point_count, dtype=int)
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
@@ -193,16 +192,14 @@ class UnstructuredPoints(IGrid):
 
 
 class Unstructured(UnstructuredPoints):
-    """
-Define a grid that consists of two trianges that share two points.
+    r"""
+    Define a grid that consists of two trianges that share two points::
 
-::
+           (2) - (3)
+          /   \  /
+        (0) - (1)
 
-       (2) - (3)
-      /   \  /
-    (0) - (1)
-
-Create the grid,
+    Create the grid,
 
     >>> g = Unstructured([0, 0, 1, 1], [0, 2, 1, 3],
     ...                  connectivity=[0, 2, 1, 2, 3, 1], offset=[3, 6])
@@ -220,19 +217,17 @@ Create the grid,
     array([ 0.,  0.,  1.,  1.])
 
     >>> g.get_connectivity()
-    array([0, 2, 1, 2, 3, 1], dtype=int32)
+    array([0, 2, 1, 2, 3, 1])
 
     >>> g.get_offset()
-    array([3, 6], dtype=int32)
+    array([3, 6])
 
 
-Define a grid that consists of points in a line.
+    Define a grid that consists of points in a line::
 
-::
+        (0) ----- (1) -- (2) - (3)
 
-    (0) ----- (1) -- (2) - (3)
-
-Create the grid,
+    Create the grid,
 
     >>> g = Unstructured ([0., 6., 9., 11.], connectivity=[0, 1, 2, 3], offset=[1, 2, 3, 4])
     >>> g.get_point_count ()
@@ -240,8 +235,7 @@ Create the grid,
     >>> g.get_cell_count ()
     4
 
-
-Eight point that form a unit cube.
+    Eight point that form a unit cube.
 
     >>> x = [0, 1, 0, 1, 0, 1, 0, 1]
     >>> y = [0, 0, 1, 1, 0, 0, 1, 1]
@@ -257,8 +251,6 @@ Eight point that form a unit cube.
     array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
     >>> g.get_z()
     array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
-
-
     """
 
     def __init__(self, *args, **kwds):
@@ -277,8 +269,8 @@ Eight point that form a unit cube.
         super(Unstructured, self).__init__(*args, **kwds)
 
     def _set_connectivity(self, connectivity, offset):
-        self._connectivity = np.array(connectivity, dtype=np.int32)
-        self._offset = np.array(offset, dtype=np.int32)
+        self._connectivity = np.array(connectivity, dtype=int)
+        self._offset = np.array(offset, dtype=int)
         self._connectivity.shape = self._connectivity.size
         self._offset.shape = self._offset.size
         self._cell_count = self._offset.size
