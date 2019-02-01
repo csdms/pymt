@@ -1,4 +1,3 @@
-import pytest
 from pytest import approx
 
 from pymt.framework.bmi_bridge import _BmiCap
