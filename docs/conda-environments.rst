@@ -1,5 +1,3 @@
-.. _conda-env:
-
 Conda environments
 ==================
 
