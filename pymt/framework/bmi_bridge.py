@@ -7,11 +7,7 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-try:
-    from cfunits import Units
-    has_cfunits = True
-except ImportError:
-    has_cfunits = False
+from cfunits import Units
 from scipy.interpolate import interp1d
 
 from scripting.contexts import cd
@@ -116,7 +112,7 @@ def wrap_get_value(func):
 
         val_or_raise(func, (self._base, name, out))
 
-        if has_cfunits and units is not None:
+        if units is not None:
             try:
                 from_units = self.get_var_units(name)
             except (AttributeError, NotImplementedError):
@@ -133,7 +129,7 @@ def wrap_get_value(func):
 def wrap_get_time(func):
     def wrap(self, units=None):
         time = val_or_raise(func, (self._base,))
-        if has_cfunits and units is not None:
+        if units is not None:
             try:
                 from_units = Units(self.get_time_units())
                 to_units = Units(units)
@@ -507,32 +503,31 @@ class _BmiCap(object):
         if name in self._interpolators and at is not None:
             out[:] = self._interpolators[name].interpolate(at)
 
-        if has_cfunits:
-            from_units = Units(self.get_var_units(name))
-            if units is not None:
-                to_units = Units(units)
-            else:
-                to_units = from_units
+        from_units = Units(self.get_var_units(name))
+        if units is not None:
+            to_units = Units(units)
+        else:
+            to_units = from_units
 
-            if units is not None and from_units != to_units:
-                Units.conform(out, from_units, to_units, inplace=True)
+        if units is not None and from_units != to_units:
+            Units.conform(out, from_units, to_units, inplace=True)
 
-            # if units is not None:
-            #     try:
-            #         from_units = self.get_var_units(name)
-            #     except AttributeError, NotImplementedError:
-            #         pass
-            #     else:
-            #         Units.conform(out, Units(from_units), Units(units),
-            #                       inplace=True)
+        # if units is not None:
+        #     try:
+        #         from_units = self.get_var_units(name)
+        #     except AttributeError, NotImplementedError:
+        #         pass
+        #     else:
+        #         Units.conform(out, Units(from_units), Units(units),
+        #                       inplace=True)
 
-            if angle not in ("azimuth", "math", None):
-                raise ValueError("angle not understood")
+        if angle not in ("azimuth", "math", None):
+            raise ValueError("angle not understood")
 
-            if angle == "azimuth" and "azimuth" not in name:
-                transform_math_to_azimuth(out, to_units)
-            elif angle == "math" and "azimuth" in name:
-                transform_azimuth_to_math(out, to_units)
+        if angle == "azimuth" and "azimuth" not in name:
+            transform_math_to_azimuth(out, to_units)
+        elif angle == "math" and "azimuth" in name:
+            transform_azimuth_to_math(out, to_units)
 
         return out
 
@@ -677,9 +672,6 @@ class _BmiCap(object):
         return self.time_in(time, units)
 
     def time_in(self, time, units):
-        if not has_cfunits:
-            return time
-
         if units is None:
             units = self.time_units
             # return time
@@ -699,7 +691,7 @@ class _BmiCap(object):
         return time
 
     def time_from(self, time, units):
-        if not has_cfunits or units is None:
+        if units is None:
             return time
 
         try:

@@ -3,11 +3,6 @@ from pytest import approx
 
 from pymt.framework.bmi_bridge import _BmiCap
 
-try:
-    import cfunits
-except ImportError:
-    cfunits = None
-
 
 class SimpleTimeBmi:
     def get_time_units(self):
@@ -42,7 +37,6 @@ def test_time_wrap():
     assert bmi.time_units == "h"
 
 
-@pytest.mark.skipif(cfunits is None, reason="cfunits is not installed")
 def test_time_conversion():
     """Test unit conversion through units keyword."""
     bmi = Bmi()
@@ -54,7 +48,6 @@ def test_time_conversion():
     assert bmi.get_end_time(units="d") == approx(3)
 
 
-@pytest.mark.skipif(cfunits is None, reason="cfunits is not installed")
 def test_change_time_units():
     """Test changing a component's time units."""
     bmi = Bmi()
