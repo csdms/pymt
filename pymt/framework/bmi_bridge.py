@@ -53,18 +53,6 @@ def bmi_call(func, *args):
 
     return rtn
 
-    try:
-        status, val = rtn
-    except TypeError:
-        status, val = rtn, None
-    except ValueError:
-        status, val = 0, rtn
-
-    if status != 0:
-        raise BmiError(func.__name__ + pformat(args), status)
-    else:
-        return val
-
 
 def wrap_set_value(func):
     def wrap(self, name, val):
