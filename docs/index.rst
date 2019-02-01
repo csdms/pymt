@@ -70,6 +70,7 @@ Miscellaneous Pages
 .. toctree::
    :maxdepth: 2
 
+   conda-environments
    contributing
    authors
    history
