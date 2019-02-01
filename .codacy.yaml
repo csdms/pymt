@@ -1,7 +1,7 @@
 exclude_paths:
-  - deprecated
-  - cmt
-  - tests
+  - deprecated/**
+  - cmt/**
+  - tests/**
   - setup.py
   - versioneer.py
   - pymt/_version.py
