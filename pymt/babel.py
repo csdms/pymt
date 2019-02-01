@@ -52,16 +52,16 @@ def query_config_all(config="csdms-config"):
     except OSError:
         logging.info("Unable to run {prog} program.".format(prog=config))
 
-    vars = {}
+    vars_ = {}
     for line in shlex.split(contents):
         try:
             (key, var) = line.split("=", 1)
         except ValueError:
             pass
         else:
-            vars[key] = var
+            vars_[key] = var
 
-    return vars
+    return vars_
 
 
 def query_config_var(var, config="csdms-config", interpolate=True):
@@ -79,8 +79,8 @@ def query_config_var(var, config="csdms-config", interpolate=True):
         raise BabelConfigError(config)
 
     if interpolate:
-        vars = query_config_all(config=config)
-        value = recursive_substitute(value, **vars)
+        vars_ = query_config_all(config=config)
+        value = recursive_substitute(value, **vars_)
 
     return value
 
