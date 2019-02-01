@@ -13,7 +13,7 @@ def test_default(tmpdir):
         printer.open()
         printer.write()
 
-        assert os.path.isfile(filename)
+        assert os.path.isfile("landscape_surface__elevation.nc")
 
 
 def test_multiple_files(tmpdir):
