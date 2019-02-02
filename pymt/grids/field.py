@@ -133,7 +133,15 @@ class UnstructuredField(GridField):
 
 
 class StructuredField(Structured, GridField):
-    def add_field(self, field_name, val, centering="zonal", units="-"):
+    def add_field(
+        self,
+        field_name,
+        val,
+        centering="zonal",
+        units="-",
+        exist_action="clobber",
+        time=None,
+    ):
         if not hasattr(val, "ndim"):
             val = np.array(val)
         # try:
@@ -150,7 +158,12 @@ class StructuredField(Structured, GridField):
                 raise DimensionError(val.shape, self.get_shape())
         try:
             super(StructuredField, self).add_field(
-                field_name, val, centering=centering, units=units
+                field_name,
+                val,
+                centering=centering,
+                units=units,
+                exist_action=exist_action,
+                time=time,
             )
         except (DimensionError, CenteringValueError):
             raise

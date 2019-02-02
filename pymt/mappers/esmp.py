@@ -32,9 +32,10 @@ class EsmpMapper(IGridMapper):
     def init_fields(self):
         raise NotImplementedError("init_fields")
 
-    def initialize(
-        self, dest_grid, src_grid, method=REGRID_METHOD, unmapped=UNMAPPED_ACTION
-    ):
+    def initialize(self, dest_grid, src_grid, **kwds):
+        method = kwds.get("method", REGRID_METHOD)
+        unmapped = kwds.get("unmapped", UNMAPPED_ACTION)
+
         if not EsmpMapper.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
@@ -59,7 +60,8 @@ class EsmpMapper(IGridMapper):
             unmapped_action=unmapped,
         )
 
-    def run(self, src_values, dest_values=None):
+    def run(self, src_values, **kwds):
+        dest_values = kwds.get("dest_values", None)
         src_ptr = self.get_source_data()
         src_ptr[:] = src_values
         # src_ptr.data = src_values

@@ -72,7 +72,7 @@ class NearestVal(IGridMapper):
 
     _name = "PointToPoint"
 
-    def initialize(self, dest_grid, src_grid, var_names=None):
+    def initialize(self, dest_grid, src_grid, **kwds):
         """Map points on one grid to the nearest points on another.
 
         Parameters
@@ -84,6 +84,7 @@ class NearestVal(IGridMapper):
         var_names : iterable of tuples (optional)
             Iterable of (*dest*, *src*) variable names.
         """
+        var_names = kwds.get("var_names", None)
         if var_names is None:
             var_names = []
 
@@ -109,7 +110,7 @@ class NearestVal(IGridMapper):
 
         (_, self._nearest_src_id) = tree.query(list(zip(x, y)))
 
-    def run(self, src_values, dest_values=None):
+    def run(self, src_values, **kwds):
         """Map source values onto destination values.
 
         Parameters
@@ -124,6 +125,7 @@ class NearestVal(IGridMapper):
         dest : ndarray
             The (possibly newly-created) destination array.
         """
+        dest_values = kwds.get("dest_values", None)
         if dest_values is None:
             dest_values = np.zeros(len(self._nearest_src_id), dtype=src_values.dtype)
         elif not isinstance(dest_values, np.ndarray):

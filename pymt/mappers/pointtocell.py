@@ -27,7 +27,7 @@ class PointToCell(IGridMapper):
 
     _name = "PointToCell"
 
-    def initialize(self, dst_grid, src_grid):
+    def initialize(self, dst_grid, src_grid, **kwds):
         if not self.test(dst_grid, src_grid):
             raise IncompatibleGridError(dst_grid.name, src_grid.name)
         src_x = src_grid.get_x()
@@ -43,7 +43,11 @@ class PointToCell(IGridMapper):
         self._dst_cell_count = dst_grid.get_cell_count()
         self._src_point_count = src_grid.get_point_count()
 
-    def run(self, src_values, dst_vals=None, bad_val=-999, method=np.mean):
+    def run(self, src_values, **kwds):
+        dst_vals = kwds.get("dst_vals", None)
+        bad_val = kwds.get("bad_val", -999)
+        method = kwds.get("method", np.mean)
+
         if src_values.size != self._src_point_count:
             raise ValueError("size mismatch between source and point count")
 

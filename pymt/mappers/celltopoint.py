@@ -27,7 +27,7 @@ class CellToPoint(IGridMapper):
 
     _name = "CellToPoint"
 
-    def initialize(self, dest_grid, src_grid):
+    def initialize(self, dest_grid, src_grid, **kwds):
         if not CellToPoint.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
         dst_x = dest_grid.get_x()
@@ -41,7 +41,10 @@ class CellToPoint(IGridMapper):
         )
         self._bad = self._map == -1
 
-    def run(self, src_values, dst_vals=None, bad_val=-999.0):
+    def run(self, src_values, **kwds):
+        dst_vals = kwds.get("dst_vals", None)
+        bad_val = kwds.get("bad_val", -999.0)
+
         if dst_vals is None:
             dst_vals = np.zeros(len(self._map)) + bad_val
 

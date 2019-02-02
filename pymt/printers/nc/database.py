@@ -10,10 +10,10 @@ class IDatabase(object):
     def __init__(self):
         pass
 
-    def open(self, path, var_name):
+    def open(self, path, var_name, **kwds):
         pass
 
-    def write(self, field):
+    def write(self, field, **kwds):
         pass
 
     def close(self):
@@ -77,9 +77,3 @@ class Database(IDatabase):
             self._count += 1
 
         return next_file_name
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
