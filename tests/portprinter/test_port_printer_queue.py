@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import os
 
-import pytest
 import xarray
 
 from pymt.portprinter.port_printer import PortPrinter

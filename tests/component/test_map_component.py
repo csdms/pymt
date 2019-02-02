@@ -1,7 +1,5 @@
 import os
 
-from six.moves import xrange
-
 from pymt.component.component import Component
 
 
