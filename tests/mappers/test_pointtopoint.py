@@ -30,7 +30,7 @@ def test_some_bad():
     src_vals = np.arange(src.get_point_count())
     src_vals[2] = -999
     dst_vals = np.zeros(dst.get_point_count()) - 1
-    rv = mapper.run(src_vals, dst_vals)
+    rv = mapper.run(src_vals, dst_vals=dst_vals)
 
     assert rv is dst_vals
     assert_array_almost_equal(dst_vals, np.array([0.0, 1.0, -1.0, 3.0, 4.0, 5.0]))
