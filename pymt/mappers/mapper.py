@@ -38,7 +38,7 @@ array([ 0.,  1.,  2.,  3.,  4.,  5.])
 >>> mappers = find_mapper(dst, src)
 >>> len(mappers)
 3
->>> mappers[0].name()
+>>> mappers[0].name
 'PointToPoint'
 
 >>> src_vals[2] = -999

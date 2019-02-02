@@ -19,6 +19,12 @@ else:
 
 class EsmpMapper(IGridMapper):
 
+    _name = None
+
+    @property
+    def name(self):
+        return self._name
+
     @staticmethod
     def test(dest_grid, src_grid):
         raise NotImplementedError("test")
@@ -93,6 +99,9 @@ class EsmpMapper(IGridMapper):
 
 
 class EsmpCellToCell(EsmpMapper):
+
+    _name = "CellToCell"
+
     def init_fields(self):
         data = np.empty(self._src.get_cell_count(), dtype=np.float64)
         self._src.add_field("src", data, centering="zonal")
@@ -106,11 +115,11 @@ class EsmpCellToCell(EsmpMapper):
             np.diff(src_grid.get_offset()) > 2
         )
 
-    def name(self):
-        return "CellToCell"
-
 
 class EsmpPointToPoint(EsmpMapper):
+
+    _name = "PointToPoint"
+
     def init_fields(self):
         data = np.empty(self._src.get_point_count(), dtype=np.float64)
         self._src.add_field("src", data, centering="point")
@@ -121,6 +130,3 @@ class EsmpPointToPoint(EsmpMapper):
     @staticmethod
     def test(dst_grid, src_grid):
         return dst_grid is not None and src_grid is not None
-
-    def name(self):
-        return "PointToPoint"

@@ -69,6 +69,8 @@ class NearestVal(IGridMapper):
     array([ 0.,  1.,  2.,  3.,  4.,  5.])
     """
 
+    _name = "PointToPoint"
+
     def initialize(self, dest_grid, src_grid, var_names=None):
         """Map points on one grid to the nearest points on another.
 
@@ -144,7 +146,7 @@ class NearestVal(IGridMapper):
         """
         return dst_grid is not None and src_grid is not None
 
+    @property
     def name(self):
-        """Name of the grid mapper.
-        """
-        return "PointToPoint"
+        """Name of the grid mapper."""
+        return self._name
