@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import numpy as np
-from six.moves import xrange
 
 from pymt.grids.connectivity import get_connectivity
 
