@@ -30,7 +30,7 @@ class VtkExtent(object):
 
 class VtkOrigin(object):
     def __init__(self, origin, spacing):
-        if len(shape) > 3:
+        if len(origin) > 3 or len(spacing) > 3:
             raise ValueError("number of dimension must be <= 3")
         if len(spacing) != len(origin):
             raise ValueError("dimension mismatch for shape and origin")
