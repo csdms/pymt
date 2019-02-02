@@ -146,7 +146,7 @@ def discover_csdms_plugins():
     else:
         files = glob(os.path.join(csdms_module.__path__[0], "*so"))
         for path in files:
-            name, ext = os.path.splitext(os.path.basename(path))
+            name, _ = os.path.splitext(os.path.basename(path))
             entry_points.append("csdms.{name}:{name}".format(name=name))
 
     return entry_points
