@@ -176,21 +176,6 @@ def wrap_default(func):
     return wrap
 
 
-def wrap_update_until(func):
-    def wrap(self, then):
-        if hasattr(self._base, "update_until"):
-            try:
-                self._base.update_until(then)
-            except NotImplementedError:
-                pass
-
-        while self.get_current_time() < then:
-            self.update()
-
-        if self.get_current_time() > then:
-            pass
-
-
 class TimeInterpolator(object):
     def __init__(self, method="linear"):
         self._method = method or "linear"
