@@ -3,6 +3,7 @@ exclude_paths:
   - deprecated/**
   - scripts/**
   - tests/**
+  - docs/conf.py
   - setup.py
   - versioneer.py
   - pymt/_version.py
