@@ -26,7 +26,7 @@ class EsmpMapper(IGridMapper):
         return self._name
 
     @staticmethod
-    def test(dest_grid, src_grid):
+    def test(dst_grid, src_grid):
         raise NotImplementedError("test")
 
     def init_fields(self):
