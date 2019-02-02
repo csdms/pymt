@@ -90,7 +90,7 @@ class Model(object):
         """
         if filename:
             with open(filename, "r") as f:
-                model = yaml.load(f.read())
+                model = yaml.safe_load(f.read())
             self._driver, self._duration = (model["driver"], model["duration"])
 
         self._components[self.driver].go(self.duration)
@@ -234,7 +234,7 @@ class Model(object):
         connectivities = {}
 
         prefix = os.getcwd()
-        for section in yaml.load_all(source):
+        for section in yaml.safe_load_all(source):
             try:
                 section["run_dir"] = os.path.join(prefix, section.get("run_dir", "."))
             except AttributeError:

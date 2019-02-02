@@ -148,7 +148,7 @@ def get_initialize_arg(dir):
     """
     readme = os.path.join(dir, "README.yaml")
     with open(readme, "r") as fp:
-        metadata = yaml.load(fp)
+        metadata = yaml.safe_load(fp)
 
     args = metadata["bmi"]["initialize"]["args"]
     if isinstance(args, dict):

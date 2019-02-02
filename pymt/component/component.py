@@ -337,7 +337,7 @@ class Component(GridMixIn):
         Component
             A newly-created component.
         """
-        return cls.from_dict(yaml.load(source))
+        return cls.from_dict(yaml.safe_load(source))
 
     @classmethod
     def load_all(cls, source):
@@ -357,7 +357,7 @@ class Component(GridMixIn):
             A list of newly-created component.
         """
         components = []
-        for section in yaml.load_all(source):
+        for section in yaml.safe_load_all(source):
             components.append(cls.from_dict(section))
         return components
 
@@ -431,5 +431,5 @@ class Component(GridMixIn):
 
     @classmethod
     def _from_yaml(cls, contents):
-        comp = yaml.load(contents)
+        comp = yaml.safe_load(contents)
         return cls.from_dict(comp)

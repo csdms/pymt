@@ -105,7 +105,7 @@ def get_abspath_or_url(filename, prefix=""):
 
 
 def read_configuration(source):
-    config = yaml.load(source)
+    config = yaml.safe_load(source)
 
     input_file = config.get("input_file")
     input_dir = config.get("input_dir", "")
