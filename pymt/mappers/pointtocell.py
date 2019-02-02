@@ -27,20 +27,20 @@ class PointToCell(IGridMapper):
 
     _name = "PointToCell"
 
-    def initialize(self, dst_grid, src_grid, **kwds):
-        if not self.test(dst_grid, src_grid):
-            raise IncompatibleGridError(dst_grid.name, src_grid.name)
+    def initialize(self, dest_grid, src_grid, **kwds):
+        if not self.test(dest_grid, src_grid):
+            raise IncompatibleGridError(dest_grid.name, src_grid.name)
         src_x = src_grid.get_x()
         src_y = src_grid.get_y()
 
-        tree = KDTree(list(zip(dst_grid.get_x(), dst_grid.get_y())))
+        tree = KDTree(list(zip(dest_grid.get_x(), dest_grid.get_y())))
         (_, nearest_dest_id) = tree.query(list(zip(src_x, src_y)))
 
         self._map = map_cells_to_points(
-            (src_x, src_y), dst_grid, nearest_dest_id, bad_val=-1
+            (src_x, src_y), dest_grid, nearest_dest_id, bad_val=-1
         )
 
-        self._dst_cell_count = dst_grid.get_cell_count()
+        self._dst_cell_count = dest_grid.get_cell_count()
         self._src_point_count = src_grid.get_point_count()
 
     def run(self, src_values, **kwds):
