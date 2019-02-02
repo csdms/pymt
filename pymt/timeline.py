@@ -341,9 +341,7 @@ class Timeline(object):
         event
             The next event object as the timeline advances to *stop*.
         """
-        try:
-            assert stop >= self.time
-        except AssertionError:
+        if stop < self.time:
             raise ValueError("stop time is less than current time")
 
         while self.time_of_next_event <= stop:

@@ -44,7 +44,8 @@ def copy_good_values(src, dst, bad_val=-999):
     >>> copy_good_values(x, np.zeros(6), bad_val=3.)
     array([ 0.,  0.,  0.,  0.,  4.,  5.])
     """
-    assert src.size == dst.size
+    if src.size != dst.size:
+        raise ValueError("size mismatch between source and destination arrays")
 
     flat_src, flat_dst = _flat_view(src), _flat_view(dst)
 
@@ -86,10 +87,11 @@ class NearestVal(IGridMapper):
         if var_names is None:
             var_names = []
 
+        if len(var_names) > 1:
+            raise ValueError("only 0 or 1 var_names allowed")
+
         if not NearestVal.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
-
-        assert len(var_names) <= 1
 
         if len(var_names) == 0:
             (x, y) = src_grid.get_x().flat, src_grid.get_y().flat

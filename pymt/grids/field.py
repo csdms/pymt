@@ -37,7 +37,8 @@ class GridField(Unstructured, IField):
         exist_action="clobber",
         time=None,
     ):
-        assert exist_action in ["clobber", "append"]
+        if exist_action not in ("clobber", "append"):
+            raise ValueError("'exist_action' must be on of {'clobber', 'append'}")
 
         try:
             val.shape = val.size

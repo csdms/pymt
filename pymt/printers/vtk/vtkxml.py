@@ -11,7 +11,8 @@ from .vtktypes import np_to_vtk_type, sys_to_vtk_endian
 
 class VtkExtent(object):
     def __init__(self, shape):
-        assert len(shape) <= 3
+        if len(shape) > 3:
+            raise ValueError("number of dimension must be <= 3")
 
         self._shape = shape
 
@@ -29,8 +30,10 @@ class VtkExtent(object):
 
 class VtkOrigin(object):
     def __init__(self, origin, spacing):
-        assert len(spacing) <= 3
-        assert len(spacing) == len(origin)
+        if len(shape) > 3:
+            raise ValueError("number of dimension must be <= 3")
+        if len(spacing) != len(origin):
+            raise ValueError("dimension mismatch for shape and origin")
 
         self._spacing = spacing
         self._cell_origin = origin
@@ -50,7 +53,8 @@ class VtkOrigin(object):
 
 class VtkSpacing(object):
     def __init__(self, spacing):
-        assert len(spacing) <= 3
+        if len(shape) > 3:
+            raise ValueError("number of dimension must be <= 3")
 
         self._spacing = spacing
 

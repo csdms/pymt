@@ -24,8 +24,8 @@ class UnstructuredPoints(IGrid):
         )
         self._attrs = kwds.pop("attrs", {})
 
-        assert len(args) <= 3
-        assert len(args) >= 1
+        if len(args) < 1 or len(args) > 3:
+            raise ValueError("number of arguments must be between 1 and 3")
 
         args = args_as_numpy_arrays(*args)
 
@@ -73,12 +73,12 @@ class UnstructuredPoints(IGrid):
     def get_point_coordinates(self, *args, **kwds):
         axis = kwds.pop("axis", None)
 
-        assert len(args) < 2
-
         if len(args) == 0:
             inds = np.arange(self.get_point_count())
-        else:
+        elif len(args) == 1:
             inds = args
+        else:
+            raise ValueError("number of args must be 0 or 1")
 
         if axis is None:
             axis = np.arange(self.get_dim_count())
@@ -87,12 +87,14 @@ class UnstructuredPoints(IGrid):
         return tuple(self._coords[axis, inds])
 
     def get_axis_coordinates(self, axis=None, indexing="ij"):
-        assert indexing == "ij"
+        if indexing != "ij":
+            raise ValueError("only ij indexing is supported")
+        if axis is not None and axis >= self.get_dim_count():
+            raise ValueError("value for axis exceeds number of dimensions")
 
         if axis is None:
             return self._coords
         else:
-            assert axis < self.get_dim_count()
             return self._coords[axis]
 
     def get_x_units(self):

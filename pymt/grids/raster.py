@@ -98,7 +98,6 @@ class UniformRectilinearPoints(RectilinearPoints):
     def __init__(self, shape, spacing, origin, **kwds):
         kwds.setdefault("indexing", "xy")
         kwds.setdefault("set_connectivity", False)
-        assert len(shape) == len(spacing) == len(origin)
 
         xi = []
         for (nx, dx, x0) in zip(shape, spacing, origin):
