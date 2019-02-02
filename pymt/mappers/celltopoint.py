@@ -25,7 +25,7 @@ def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
 
 class CellToPoint(IGridMapper):
     def initialize(self, dest_grid, src_grid):
-        if not self.test(dest_grid, src_grid):
+        if not CellToPoint.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
         dst_x = dest_grid.get_x()
         dst_y = dest_grid.get_y()
@@ -50,7 +50,8 @@ class CellToPoint(IGridMapper):
 
         return rtn
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         return all(np.diff(src_grid.get_offset()) > 2)
 
     def name(self):

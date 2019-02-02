@@ -18,7 +18,9 @@ else:
 
 
 class EsmpMapper(IGridMapper):
-    def test(self, dest_grid, src_grid):
+
+    @staticmethod
+    def test(dest_grid, src_grid):
         raise NotImplementedError("test")
 
     def init_fields(self):
@@ -27,7 +29,7 @@ class EsmpMapper(IGridMapper):
     def initialize(
         self, dest_grid, src_grid, method=REGRID_METHOD, unmapped=UNMAPPED_ACTION
     ):
-        if not self.test(dest_grid, src_grid):
+        if not EsmpMapper.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
         self._src = EsmpUnstructuredField(
@@ -98,7 +100,8 @@ class EsmpCellToCell(EsmpMapper):
         data = np.empty(self._dst.get_cell_count(), dtype=np.float64)
         self._dst.add_field("dst", data, centering="zonal")
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         return all(np.diff(dst_grid.get_offset()) > 2) and all(
             np.diff(src_grid.get_offset()) > 2
         )
@@ -115,7 +118,8 @@ class EsmpPointToPoint(EsmpMapper):
         data = np.empty(self._dst.get_point_count(), dtype=np.float64)
         self._dst.add_field("dst", data, centering="point")
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         return dst_grid is not None and src_grid is not None
 
     def name(self):

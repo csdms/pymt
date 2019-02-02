@@ -84,7 +84,7 @@ class NearestVal(IGridMapper):
         if var_names is None:
             var_names = []
 
-        if not self.test(dest_grid, src_grid):
+        if not NearestVal.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
         assert len(var_names) <= 1
@@ -131,7 +131,8 @@ class NearestVal(IGridMapper):
 
         return dest_values
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         """Test if grids are compatible with this mapper.
 
         Parameters

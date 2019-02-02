@@ -163,9 +163,8 @@ def find_mapper(dst_grid, src_grid):
     """Find appropriate mappers to map bewteen two grid-like objects"""
     choices = []
     for cls in _MAPPERS:
-        mapper = cls()
-        if mapper.test(dst_grid, src_grid):
-            choices.append(mapper)
+        if cls.test(dst_grid, src_grid):
+            choices.append(cls())
 
     if len(choices) == 0:
         raise IncompatibleGridError()
