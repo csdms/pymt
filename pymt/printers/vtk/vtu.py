@@ -271,8 +271,8 @@ def parse_piece(piece):
     if piece.tag != "Piece":
         raise ValueError("not a Piece element")
 
-    cell_count = int(piece.get("NumberOfCells"))
-    point_count = int(piece.get("NumberOfPoints"))
+    # cell_count = int(piece.get("NumberOfCells"))
+    # point_count = int(piece.get("NumberOfPoints"))
 
     points = parse_points(piece.find("Points"))
     cells = parse_cells(piece.find("Cells"))
