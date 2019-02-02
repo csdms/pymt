@@ -53,7 +53,7 @@ class VtkOrigin(object):
 
 class VtkSpacing(object):
     def __init__(self, spacing):
-        if len(shape) > 3:
+        if len(spacing) > 3:
             raise ValueError("number of dimension must be <= 3")
 
         self._spacing = spacing
