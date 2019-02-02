@@ -290,7 +290,7 @@ def reconstruct_port_as_field(port, field):
     return field
 
 
-_FORMAT_EXTENSION = {"nc": ".nc", "vtk": ".vtu", "bov": ".bov"}
+_FORMAT_EXTENSION = {"nc": ".nc", "netcdf": ".nc"}
 
 
 def normalize_format_name(fmt):

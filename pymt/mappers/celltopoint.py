@@ -25,7 +25,7 @@ def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
 
 class CellToPoint(IGridMapper):
 
-    _name =  "CellToPoint"
+    _name = "CellToPoint"
 
     def initialize(self, dest_grid, src_grid):
         if not CellToPoint.test(dest_grid, src_grid):

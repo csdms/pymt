@@ -30,7 +30,7 @@ class: AirPort
 print:
 - name: air__temperature
   interval: 25.
-  format: vtk
+  format: nc
 """
     )
     earth = Component.from_string(
@@ -40,7 +40,7 @@ class: EarthPort
 print:
 - name: glacier_top_surface__slope
   interval: 20.
-  format: vtk
+  format: nc
 """
     )
     earth.connect("air_port", air)
@@ -48,7 +48,5 @@ print:
     with tmpdir.as_cwd():
         earth.go()
 
-        for i in xrange(5):
-            assert os.path.isfile("glacier_top_surface__slope_%04d.vtu" % i)
-        for i in xrange(4):
-            assert os.path.isfile("air__temperature_%04d.vtu" % i)
+        assert os.path.isfile("glacier_top_surface__slope.nc")
+        assert os.path.isfile("air__temperature.nc")
