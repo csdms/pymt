@@ -7,110 +7,19 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-from scipy.interpolate import interp1d
 
 from cfunits import Units
 from deprecated import deprecated
 from scripting.contexts import cd
 
+from ..errors import BmiError
+from .bmi import bmi_call
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
+from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
-
-
-class BmiError(Exception):
-    def __init__(self, fname, status):
-        self._fname = fname
-        self._status = status
-
-    def __str__(self):
-        return "Error calling BMI function: {fname} ({code})".format(
-            fname=self._fname, code=self._status
-        )
-
-
-def bmi_call(func, *args):
-    rtn = func(*args)
-
-    return rtn
-
-
-class TimeInterpolator(object):
-    def __init__(self, method="linear"):
-        self._method = method or "linear"
-        self._data = []
-        self._time = []
-        self._ti = None
-
-        # self.add_data(data, time)
-
-    def add_data(self, data, time):
-        self._data.append(data)
-        self._time.append(time)
-
-        self._func = None
-
-    def interpolate(self, time):
-        if self._func is None:
-            self._func = interp1d(
-                self._time,
-                self._data,
-                axis=0,
-                kind=self._method,
-                fill_value="extrapolate",
-            )
-
-        return self._func(time)
-
-
-class BmiTimeInterpolator(object):
-    # def __init__(self, method='linear'):
-    def __init__(self, *args, **kwds):
-        method = kwds.pop("method", "linear")
-        self._interpolators = dict(
-            [(name, None) for name in self.output_var_names if "__" in name]
-        )
-        self.reset(method=method)
-
-        super(BmiTimeInterpolator, self).__init__(*args, **kwds)
-
-    def reset(self, method="linear"):
-        for name in self._interpolators:
-            self._interpolators[name] = TimeInterpolator(method=method)
-
-    def add_data(self):
-        time = self.get_current_time()
-
-        for name in self._interpolators:
-            try:
-                self._interpolators[name].add_data(self.get_value(name), time)
-            except BmiError:
-                self._interpolators.pop(name)
-                print("unable to get value for {name}. ignoring".format(name=name))
-
-    def interpolate(self, name, at):
-        return self._interpolators[name].interpolate(at)
-
-    def update_until(self, then, method=None, units=None):
-        with cd(self.initdir):
-            then = self.time_from(then, units)
-
-            if hasattr(self.bmi, "update_until"):
-                try:
-                    bmi_call(self.bmi.update_until, then)
-                except NotImplementedError:
-                    pass
-
-            self.reset()
-            while self.get_current_time() < then:
-                if self.get_current_time() + self.get_time_step() > then:
-                    self.add_data()
-                self.update()
-
-            if self.get_current_time() > then:
-                self.add_data()
 
 
 def transform_math_to_azimuth(angle, units):
