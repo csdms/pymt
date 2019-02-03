@@ -117,7 +117,7 @@ class NearestVal(IGridMapper):
         ----------
         src_values : ndarray
             Source values at points.
-        dest_values : ndarray (optional)
+        dst_vals : ndarray (optional)
             Destination array to put mapped values.
 
         Returns
@@ -125,17 +125,19 @@ class NearestVal(IGridMapper):
         dest : ndarray
             The (possibly newly-created) destination array.
         """
-        dest_values = kwds.get("dest_values", None)
-        if dest_values is None:
-            dest_values = np.zeros(len(self._nearest_src_id), dtype=src_values.dtype)
-        elif not isinstance(dest_values, np.ndarray):
+        dst_vals = kwds.get("dst_vals", None)
+        bad_val = kwds.get("bad_val", -999)
+
+        if dst_vals is None:
+            dst_vals = np.zeros(len(self._nearest_src_id), dtype=src_values.dtype)
+        elif not isinstance(dst_vals, np.ndarray):
             raise TypeError("Destination array must be a numpy array")
 
         copy_good_values(
-            src_values.flat[self._nearest_src_id], dest_values, bad_val=-999
+            src_values.flat[self._nearest_src_id], dst_vals, bad_val=bad_val
         )
 
-        return dest_values
+        return dst_vals
 
     @staticmethod
     def test(dst_grid, src_grid):

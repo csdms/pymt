@@ -42,8 +42,8 @@ array([ 0.,  1.,  2.,  3.,  4.,  5.])
 'PointToPoint'
 
 >>> src_vals[2] = -999
->>> dst_vals = np.zeros(dst.get_point_count ()) - 1
->>> mapper.run(src_vals, dst_vals)
+>>> dst_vals = np.full(dst.get_point_count(), -1.)
+>>> mapper.run(src_vals, dst_vals=dst_vals)
 array([ 0.,  1., -1.,  3.,  4.,  5.])
 
 Cell-to-point Mapping
@@ -83,7 +83,7 @@ array([   0.,    2., -999.])
 >>> src_vals = np.arange(src.get_cell_count(), dtype=np.float64)
 >>> src_vals[0] = -9999
 >>> dst_vals = np.zeros(dst.get_point_count()) + 100
->>> _ = mapper.run(src_vals, dst_vals)
+>>> _ = mapper.run(src_vals, dst_vals=dst_vals)
 >>> dst_vals
 array([ 100.,    2., -999.])
 
@@ -110,7 +110,7 @@ array([ 3.,  4.,  1.])
 
 >>> src_vals[0] = -9999
 >>> dst_vals = np.zeros(dst.get_cell_count ()) - 1
->>> _ = mapper.run(src_vals, dst_vals)
+>>> _ = mapper.run(src_vals, dst_vals=dst_vals)
 >>> dst_vals
 array([-1.,  4.,  1.])
 
@@ -128,7 +128,7 @@ Point on cell edges
 
 >>> src_vals = np.arange(src.get_point_count(), dtype=np.float64)
 >>> dst_vals = np.zeros(dst.get_cell_count()) - 1
->>> _ = mapper.run(src_vals, dst_vals)
+>>> _ = mapper.run(src_vals, dst_vals=dst_vals)
 >>> dst_vals
 array([ 1. ,  0.5,  3. ])
 
@@ -145,7 +145,7 @@ A big mapper
 
 >>> src_vals = np.arange(src.get_point_count(), dtype=np.float64)
 >>> dst_vals = np.zeros(dst.get_cell_count(), dtype=np.float64) - 1
->>> _ = mapper.run(src_vals, dst_vals)
+>>> _ = mapper.run(src_vals, dst_vals=dst_vals)
 
 >>> from numpy.testing import assert_array_equal
 >>> assert_array_equal(dst_vals, src_vals)
