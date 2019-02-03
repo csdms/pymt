@@ -233,7 +233,7 @@ try:
     import ESMF as esmf
 except ImportError:
     esmf = None
-    __doc__ = "This module is not available (no ESMF installation was found)"
+    __doc__ = "This module is not available (no ESMF installation was found)" # pylint: disable=redefined-builtin
 
 
 class EsmpGrid(IGrid):

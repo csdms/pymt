@@ -107,7 +107,7 @@ def bmi_docstring(
             info = dict(
                 authors=author,
                 version=version,
-                license=license,
+                license=license, # pylint: disable=redefined-builtin
                 doi=doi,
                 url=url,
                 summary=summary,

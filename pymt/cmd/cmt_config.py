@@ -39,11 +39,11 @@ class redirect(object):
         sys.stderr = self._stderr
 
 
-def read_component_configuration(names, vars=None):
+def read_component_configuration(names, vars=None): # pylint: disable=redefined-builtin
     module = importlib.import_module(".".join(["pymt", "models"]))
 
     names = names or module.__all__
-    vars = vars or ("uses", "provides", "info", "parameters", "files", "api")
+    vars_ = vars or ("uses", "provides", "info", "parameters", "files", "api")
 
     configs = {}
 
@@ -51,19 +51,19 @@ def read_component_configuration(names, vars=None):
         model = module.__dict__[name]()
 
         config = {}
-        if "uses" in vars:
+        if "uses" in vars_:
             config["uses"] = list(model.get_input_var_names())
-        if "provides" in vars:
+        if "provides" in vars_:
             config["provides"] = list(model.get_output_var_names())
-        if "info" in vars:
+        if "info" in vars_:
             with open(os.path.join(model.datadir, "info.yaml")) as fp:
                 config["info"] = yaml.safe_load(fp)
-        if "parameters" in vars:
+        if "parameters" in vars_:
             with open(os.path.join(model.datadir, "parameters.yaml")) as fp:
                 config["parameters"] = yaml.safe_load(fp)
-        if "files" in vars:
+        if "files" in vars_:
             config["files"] = find_model_data_files(model.datadir)
-        if "api" in vars:
+        if "api" in vars_:
             with open(os.path.join(model.datadir, "api.yaml")) as fp:
                 api = yaml.safe_load(fp)
             config["api"] = {
@@ -86,12 +86,12 @@ def main():
 
     args = parser.parse_args()
 
-    vars = args.vars
-    if vars is not None:
-        vars = args.vars.split(",")
+    vars_ = args.vars
+    if vars_ is not None:
+        vars_ = args.vars.split(",")
 
     with redirect(stdout=sys.stderr):
-        config = read_component_configuration(args.name, vars=vars)
+        config = read_component_configuration(args.name, vars=vars_)
 
     host = {
         "hostname": socket.gethostname(),
