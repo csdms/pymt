@@ -54,24 +54,6 @@ def bmi_call(func, *args):
     return rtn
 
 
-def wrap_set_value(func):
-    def wrap(self, name, val):
-        """Set a value by name.
-
-        Parameters
-        ----------
-        name : str
-            CSDMS standard name.
-        val : array_like
-            Values to set.
-        """
-        val = np.asarray(val).reshape((-1,))
-        return val_or_raise(func, (self._base, name, val))
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
 def wrap_get_value(func):
     def wrap(self, name, out=None, units=None):
         """Get a value by name.
