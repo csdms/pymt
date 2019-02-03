@@ -45,22 +45,10 @@ def test_two_events(tmpdir, with_earth_and_air):
         with EventManager(((foo, 1.0), (bar, 1.2))) as mngr:
             mngr.run(1.0)
             assert os.path.isfile("air__density.nc")
-            os.remove("air__density.nc")
 
             mngr.run(2.0)
-            assert not os.path.isfile("air__density.nc")
             assert os.path.isfile("air__temperature.nc")
             assert mngr.time == approx(2.0)
 
             mngr.run(5.0)
             assert mngr.time == approx(5.0)
-
-        # assert os.path.isfile("air__density_0002.vtu")
-        # assert os.path.isfile("air__density_0003.vtu")
-        # assert os.path.isfile("air__density_0004.vtu")
-        # assert not os.path.exists("air__density_0005.vtu")
-
-        # assert os.path.isfile("air__temperature_0001.vtu")
-        # assert os.path.isfile("air__temperature_0002.vtu")
-        # assert os.path.isfile("air__temperature_0003.vtu")
-        # assert not os.path.exists("air__temperature_0004.vtu")
