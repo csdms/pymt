@@ -54,48 +54,6 @@ def bmi_call(func, *args):
     return rtn
 
 
-def wrap_get_value(func):
-    def wrap(self, name, out=None, units=None):
-        """Get a value by name.
-
-        Parameters
-        ----------
-        name : str
-            CSDMS standard name.
-        out : ndarray, optional
-            Buffer to place values.
-        units : str, optional
-            Convert units of the returned values.
-
-        Returns
-        -------
-        ndarray
-            Array of values (or *out*, if provided).
-        """
-        if out is None:
-            grid = self.get_var_grid(name)
-            dtype = self.get_var_type(name)
-            if dtype == "":
-                print(self.get_output_var_names())
-                raise ValueError("{name} not understood".format(name=name))
-            out = np.empty(self.get_grid_size(grid), dtype=dtype)
-
-        val_or_raise(func, (self._base, name, out))
-
-        if units is not None:
-            try:
-                from_units = self.get_var_units(name)
-            except (AttributeError, NotImplementedError):
-                pass
-            else:
-                Units.conform(out, Units(from_units), Units(units), inplace=True)
-
-        return out
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
 def wrap_get_time(func):
     def wrap(self, units=None):
         time = val_or_raise(func, (self._base,))
