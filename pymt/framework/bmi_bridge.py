@@ -54,24 +54,6 @@ def bmi_call(func, *args):
     return rtn
 
 
-def wrap_get_time(func):
-    def wrap(self, units=None):
-        time = val_or_raise(func, (self._base,))
-        if units is not None:
-            try:
-                from_units = Units(self.get_time_units())
-                to_units = Units(units)
-            except (AttributeError, NotImplementedError):
-                pass
-            else:
-                if not from_units.equals(to_units):
-                    time = Units.conform(time, from_units, to_units)
-        return time
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
 def wrap_get_grid_with_out_arg(func, dtype):
     def wrap(self, grid, out=None):
         if out is None:
