@@ -50,7 +50,7 @@ class PortPrinter(object):
 
     def close(self):
         self._printer.close()
-        self._printer = self._printer_class() # pylint: disable=redefine-name
+        self._printer = self._printer_class() # pylint: disable=not-callable
 
     def write(self):
         self.resync_field_to_port()
