@@ -10,9 +10,9 @@ import yaml
 from scipy.interpolate import interp1d
 
 from cfunits import Units
+from deprecated import deprecated
 from scripting.contexts import cd
 
-from ..utils.decorators import deprecated
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
@@ -351,21 +351,21 @@ class _BmiCapV1(object):
         else:
             return val
 
-    @deprecated(use="get_grid_number_of_vertices")
+    @deprecated(reason="use get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_vertex_count, grid)
 
-    @deprecated(use="get_grid_number_of_faces")
+    @deprecated(reason="use get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_face_count, grid)
 
-    @deprecated(use="get_grid_face_node_connectivity")
+    @deprecated(reason="use get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_vertex_count(grid), dtype=int)
         return _BmiCapV1._bmi_call(self.bmi.get_grid_connectivity, grid, out)
 
-    @deprecated(use="get_grid_face_node_offset")
+    @deprecated(reason="use get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_face_count(grid), dtype=int)
@@ -373,19 +373,19 @@ class _BmiCapV1(object):
 
 
 class _BmiCapV2(object):
-    @deprecated(use="get_grid_number_of_vertices")
+    @deprecated(reason="use get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return self.get_grid_number_of_vertices(grid)
 
-    @deprecated(use="get_grid_number_of_faces")
+    @deprecated(reason="use get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
         return self.get_grid_number_of_faces(grid)
 
-    @deprecated(use="get_grid_face_node_connectivity")
+    @deprecated(reason="use get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         return self.get_grid_face_node_connectivity(grid, out=out)
 
-    @deprecated(use="get_grid_face_node_offset")
+    @deprecated(reason="use get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         return self.get_grid_face_node_offset(grid, out=out)
 
@@ -507,7 +507,7 @@ class _BmiCap(object):
     def get_value_ptr(self, name):
         return bmi_call(self.bmi.get_value_ptr, name)
 
-    @deprecated(use="get_grid_ndim")
+    @deprecated(reason="use get_grid_ndim")
     def get_grid_rank(self, grid):
         return self.get_grid_ndim(grid)
 
@@ -524,7 +524,7 @@ class _BmiCap(object):
     def get_grid_dim(self, grid, dim):
         return getattr(self, self.NUMBER_OF_ELEMENTS[dim])(grid)
 
-    @deprecated(use="get_grid_number_of_nodes")
+    @deprecated(reason="use get_grid_number_of_nodes")
     def get_grid_size(self, grid):
         return self.get_grid_number_of_nodes(grid)
 
