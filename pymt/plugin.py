@@ -85,7 +85,7 @@ def load_plugin(entry_point, callback=None):
     return plugin
 
 
-def load_all_plugins(entry_points=[], callback=None):
+def load_all_plugins(entry_points=(), callback=None):
     """Load multiple plugins.
 
     Parameters
