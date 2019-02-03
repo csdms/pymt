@@ -429,7 +429,7 @@ class _BmiCap(object):
     def get_component_name(self):
         return bmi_call(self.bmi.get_component_name)
 
-    def initialize(self, fname=None, dir="."):
+    def initialize(self, fname=None, dir="."): # pylint: disable=redefined-builtin
         """Initialize the model.
 
         Parameters
