@@ -31,71 +31,10 @@ class BmiError(Exception):
         )
 
 
-def val_or_raise(func, args):
-    rtn = func(*args)
-
-    try:
-        status, val = rtn
-    except TypeError:
-        status, val = rtn, None
-
-    if status != 0:
-        raise RuntimeError(
-            "%s(%s) [Error code %d]"
-            % (func.__name__, ", ".join([repr(arg) for arg in args[1:]]), status)
-        )
-    else:
-        return val
-
-
 def bmi_call(func, *args):
     rtn = func(*args)
 
     return rtn
-
-
-def wrap_get_grid_with_out_arg(func, dtype):
-    def wrap(self, grid, out=None):
-        if out is None:
-            out = np.empty(self.get_grid_rank(grid), dtype=dtype)
-        val_or_raise(func, (self._base, grid, out))
-        return out
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_var_names(func):
-    def wrap(self):
-        """Get input/output variable names.
-
-        Returns
-        -------
-        tuple of str
-            Variable names as CSDMS Standard Names.
-        """
-        return tuple(val_or_raise(func, (self._base,)))
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_initialize(func):
-    def wrap(self, *args, **kwds):
-        if len(args) == 0:
-            args = (self.setup(case=kwds.pop("case", "default")),)
-        val_or_raise(func, (self._base,) + args)
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_default(func):
-    def wrap(self, *args):
-        return val_or_raise(func, (self._base,) + args)
-
-    wrap.__name__ = func.__name__
-    return wrap
 
 
 class TimeInterpolator(object):
