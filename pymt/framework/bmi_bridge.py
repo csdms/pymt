@@ -720,7 +720,7 @@ class _BmiCap(object):
             return units
 
     def as_dict(self):
-        vars = {}
+        vars_ = {}
         grid_ids = set()
         for var in set(self.input_var_names + self.output_var_names):
             var_desc = {
@@ -732,15 +732,15 @@ class _BmiCap(object):
                 "nbytes": self.get_var_nbytes(var),
                 "grid": self.get_var_grid(var),
             }
-            vars[var] = var_desc
+            vars_[var] = var_desc
 
             if var in self.input_var_names:
                 var_desc["intent"] += "in"
             if var in self.output_var_names:
                 var_desc["intent"] += "out"
-            # vars.append(var_desc)
+            # vars_.append(var_desc)
             grid_ids.add(var_desc["grid"])
-        # vars.sort(cmp=lambda a, b: cmp(a['name'], b['name']))
+        # vars_.sort(cmp=lambda a, b: cmp(a['name'], b['name']))
 
         grids = {}
         for grid_id in grid_ids:
@@ -770,7 +770,7 @@ class _BmiCap(object):
             "name": self.name,
             "input_var_names": in_vars,
             "output_var_names": out_vars,
-            "vars": vars,
+            "vars": vars_,
             "grids": grids,
             "times": times,
         }

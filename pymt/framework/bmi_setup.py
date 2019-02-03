@@ -44,27 +44,27 @@ class SetupMixIn(object):
             Path to the folder that contains the set up simulation.
         """
         if len(args) == 0:
-            dir = tempfile.mkdtemp()
+            dir_ = tempfile.mkdtemp()
         else:
-            dir = args[0]
+            dir_ = args[0]
 
         self._parameters.update(kwds)
 
-        FileSystemLoader(self.datadir).stage_all(dir, **self._parameters)
+        FileSystemLoader(self.datadir).stage_all(dir_, **self._parameters)
 
         config = self._meta.run["config_file"]
         if config["contents"] and not config["path"]:
-            config["path"] = dir
+            config["path"] = dir_
 
         if config["path"]:
-            with cd(dir):
+            with cd(dir_):
                 config_file = FileTemplate.write(
                     config["contents"], config["path"], **self._parameters
                 )
         else:
             config_file = None
 
-        return config_file, os.path.abspath(dir)
+        return config_file, os.path.abspath(dir_)
 
     @property
     def parameters(self):
@@ -133,12 +133,12 @@ class GitHubSetupMixIn(object):
         return get_initialize_arg(case_dir)
 
 
-def get_initialize_arg(dir):
+def get_initialize_arg(dir_):
     """Get the BMI initialize argument for a set of input files.
 
     Parameters
     ----------
-    dir : str
+    dir_ : str
         Path to a folder that contains input files.
 
     Returns
@@ -146,13 +146,13 @@ def get_initialize_arg(dir):
     str
         Argument that can be passed to a BMI initialize method.
     """
-    readme = os.path.join(dir, "README.yaml")
+    readme = os.path.join(dir_, "README.yaml")
     with open(readme, "r") as fp:
         metadata = yaml.safe_load(fp)
 
     args = metadata["bmi"]["initialize"]["args"]
     if isinstance(args, dict):
-        with tempfile.NamedTemporaryFile("w", dir=dir, delete=False) as fp:
+        with tempfile.NamedTemporaryFile("w", dir=dir_, delete=False) as fp:
             fp.write(args["contents"])
             args = fp.name
     return args

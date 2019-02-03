@@ -29,7 +29,7 @@ class redirect(object):
         else:
             sys.stderr = self._err
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, type_, value, traceback):
         if isinstance(self._out, six.string_types):
             sys.stdout.close()
         if isinstance(self._err, six.string_types):
