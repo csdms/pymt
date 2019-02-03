@@ -61,7 +61,8 @@ class Verbose(object):
         if verbosity <= self._verbosity:
             print(self._construct_msg(verbosity, msg), file=self._log)
 
-    def _construct_msg(self, verbosity, msg):
+    @staticmethod
+    def _construct_msg(verbosity, msg):
         if verbosity == 0:
             return msg
         else:
@@ -115,5 +116,6 @@ class CmtVerbose(Verbose):
 
         Verbose.__init__(self, verbosity, log)
 
-    def _construct_msg(self, verbosity, msg):
+    @staticmethod
+    def _construct_msg(verbosity, msg):
         return "#CMT " + msg.strip()

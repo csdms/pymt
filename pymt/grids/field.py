@@ -37,7 +37,8 @@ class GridField(Unstructured, IField):
         exist_action="clobber",
         time=None,
     ):
-        assert exist_action in ["clobber", "append"]
+        if exist_action not in ("clobber", "append"):
+            raise ValueError("'exist_action' must be on of {'clobber', 'append'}")
 
         try:
             val.shape = val.size
@@ -132,7 +133,15 @@ class UnstructuredField(GridField):
 
 
 class StructuredField(Structured, GridField):
-    def add_field(self, field_name, val, centering="zonal", units="-"):
+    def add_field(
+        self,
+        field_name,
+        val,
+        centering="zonal",
+        units="-",
+        exist_action="clobber",
+        time=None,
+    ):
         if not hasattr(val, "ndim"):
             val = np.array(val)
         # try:
@@ -149,7 +158,12 @@ class StructuredField(Structured, GridField):
                 raise DimensionError(val.shape, self.get_shape())
         try:
             super(StructuredField, self).add_field(
-                field_name, val, centering=centering, units=units
+                field_name,
+                val,
+                centering=centering,
+                units=units,
+                exist_action=exist_action,
+                time=time,
             )
         except (DimensionError, CenteringValueError):
             raise

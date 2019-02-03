@@ -16,7 +16,7 @@ class ConstantScalars(object):
             Name of initialization file.
         """
         with open(filename, "r") as opened:
-            scalar_vars = yaml.load(opened.read())
+            scalar_vars = yaml.safe_load(opened.read())
 
         self._vars = {}
         for (name, value) in scalar_vars.items():

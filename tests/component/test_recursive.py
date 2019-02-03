@@ -1,7 +1,5 @@
 import os
 
-from six.moves import xrange
-
 from pymt.component.component import Component
 from pymt.framework.services import del_component_instances
 
@@ -28,7 +26,7 @@ class: AirPort
 print:
 - name: air__temperature
   interval: 25.
-  format: vtk
+  format: nc
 """
     earth_init_string = """
 name: earth_port
@@ -36,7 +34,7 @@ class: EarthPort
 print:
 - name: glacier_top_surface__slope
   interval: 20.
-  format: vtk
+  format: nc
 """
     with tmpdir.as_cwd():
         del_component_instances(["air_port", "earth_port"])
@@ -47,12 +45,11 @@ print:
         air.connect("earth_port", earth)
         earth.go()
 
-        for i in xrange(5):
-            assert os.path.isfile("glacier_top_surface__slope_%04d.vtu" % i)
-            os.remove("glacier_top_surface__slope_%04d.vtu" % i)
-        for i in xrange(4):
-            assert os.path.isfile("air__temperature_%04d.vtu" % i)
-            os.remove("air__temperature_%04d.vtu" % i)
+        assert os.path.isfile("glacier_top_surface__slope.nc")
+        os.remove("glacier_top_surface__slope.nc")
+
+        assert os.path.isfile("air__temperature.nc")
+        os.remove("air__temperature.nc")
 
         del_component_instances(["air_port", "earth_port"])
 
@@ -62,7 +59,5 @@ print:
         air.connect("earth_port", earth)
         air.go()
 
-        for i in xrange(5):
-            assert os.path.isfile("glacier_top_surface__slope_%04d.vtu" % i)
-        for i in xrange(4):
-            assert os.path.isfile("air__temperature_%04d.vtu" % i)
+        assert os.path.isfile("glacier_top_surface__slope.nc")
+        assert os.path.isfile("air__temperature.nc")

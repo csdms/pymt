@@ -53,18 +53,6 @@ def bmi_call(func, *args):
 
     return rtn
 
-    try:
-        status, val = rtn
-    except TypeError:
-        status, val = rtn, None
-    except ValueError:
-        status, val = 0, rtn
-
-    if status != 0:
-        raise BmiError(func.__name__ + pformat(args), status)
-    else:
-        return val
-
 
 def wrap_set_value(func):
     def wrap(self, name, val):
@@ -186,21 +174,6 @@ def wrap_default(func):
 
     wrap.__name__ = func.__name__
     return wrap
-
-
-def wrap_update_until(func):
-    def wrap(self, then):
-        if hasattr(self._base, "update_until"):
-            try:
-                self._base.update_until(then)
-            except NotImplementedError:
-                pass
-
-        while self.get_current_time() < then:
-            self.update()
-
-        if self.get_current_time() > then:
-            pass
 
 
 class TimeInterpolator(object):

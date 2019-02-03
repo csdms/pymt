@@ -124,8 +124,8 @@ class StructuredPoints(UnstructuredPoints):
         """
         (coordinates, shape) = (args[:-1], args[-1])
 
-        assert len(coordinates) >= 1
-        assert len(coordinates) <= 3
+        if len(coordinates) < 1 or len(coordinates) > 3:
+            raise ValueError("number of dimensions must be between 1 and 3")
 
         kwds.setdefault("set_connectivity", True)
         indexing = kwds.pop("indexing", "xy")

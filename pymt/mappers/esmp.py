@@ -18,16 +18,25 @@ else:
 
 
 class EsmpMapper(IGridMapper):
-    def test(self, dest_grid, src_grid):
+
+    _name = None
+
+    @property
+    def name(self):
+        return self._name
+
+    @staticmethod
+    def test(dst_grid, src_grid):
         raise NotImplementedError("test")
 
     def init_fields(self):
         raise NotImplementedError("init_fields")
 
-    def initialize(
-        self, dest_grid, src_grid, method=REGRID_METHOD, unmapped=UNMAPPED_ACTION
-    ):
-        if not self.test(dest_grid, src_grid):
+    def initialize(self, dest_grid, src_grid, **kwds):
+        method = kwds.get("method", REGRID_METHOD)
+        unmapped = kwds.get("unmapped", UNMAPPED_ACTION)
+
+        if not EsmpMapper.test(dest_grid, src_grid):
             raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
         self._src = EsmpUnstructuredField(
@@ -51,7 +60,8 @@ class EsmpMapper(IGridMapper):
             unmapped_action=unmapped,
         )
 
-    def run(self, src_values, dest_values=None):
+    def run(self, src_values, **kwds):
+        dest_values = kwds.get("dest_values", None)
         src_ptr = self.get_source_data()
         src_ptr[:] = src_values
         # src_ptr.data = src_values
@@ -91,6 +101,9 @@ class EsmpMapper(IGridMapper):
 
 
 class EsmpCellToCell(EsmpMapper):
+
+    _name = "CellToCell"
+
     def init_fields(self):
         data = np.empty(self._src.get_cell_count(), dtype=np.float64)
         self._src.add_field("src", data, centering="zonal")
@@ -98,16 +111,17 @@ class EsmpCellToCell(EsmpMapper):
         data = np.empty(self._dst.get_cell_count(), dtype=np.float64)
         self._dst.add_field("dst", data, centering="zonal")
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         return all(np.diff(dst_grid.get_offset()) > 2) and all(
             np.diff(src_grid.get_offset()) > 2
         )
 
-    def name(self):
-        return "CellToCell"
-
 
 class EsmpPointToPoint(EsmpMapper):
+
+    _name = "PointToPoint"
+
     def init_fields(self):
         data = np.empty(self._src.get_point_count(), dtype=np.float64)
         self._src.add_field("src", data, centering="point")
@@ -115,8 +129,6 @@ class EsmpPointToPoint(EsmpMapper):
         data = np.empty(self._dst.get_point_count(), dtype=np.float64)
         self._dst.add_field("dst", data, centering="point")
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         return dst_grid is not None and src_grid is not None
-
-    def name(self):
-        return "PointToPoint"

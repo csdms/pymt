@@ -5,7 +5,8 @@ from six.moves.configparser import ConfigParser
 
 from ..framework import services
 from ..printers.nc.database import Database as NcDatabase
-from ..printers.vtk.vtu import Database as VtkDatabase
+
+# from ..printers.vtk.vtu import Database as VtkDatabase
 from ..utils.prefix import names_with_prefix, strip_prefix
 from .utils import (
     construct_file_name,
@@ -99,9 +100,9 @@ class PortPrinter(object):
         )
 
 
-class VtkPortPrinter(PortPrinter):
-    _format = "vtk"
-    _printer_class = VtkDatabase
+# class VtkPortPrinter(PortPrinter):
+#     _format = "vtk"
+#     _printer_class = VtkDatabase
 
 
 class NcPortPrinter(PortPrinter):
@@ -110,7 +111,7 @@ class NcPortPrinter(PortPrinter):
 
 
 _FORMAT_TO_PRINTER = {
-    "vtk": VtkPortPrinter,
+    # "vtk": VtkPortPrinter,
     "nc": NcPortPrinter,
     "netcdf": NcPortPrinter,
 }

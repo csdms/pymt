@@ -57,15 +57,15 @@ def read_component_configuration(names, vars=None):
             config["provides"] = list(model.get_output_var_names())
         if "info" in vars:
             with open(os.path.join(model.datadir, "info.yaml")) as fp:
-                config["info"] = yaml.load(fp)
+                config["info"] = yaml.safe_load(fp)
         if "parameters" in vars:
             with open(os.path.join(model.datadir, "parameters.yaml")) as fp:
-                config["parameters"] = yaml.load(fp)
+                config["parameters"] = yaml.safe_load(fp)
         if "files" in vars:
             config["files"] = find_model_data_files(model.datadir)
         if "api" in vars:
             with open(os.path.join(model.datadir, "api.yaml")) as fp:
-                api = yaml.load(fp)
+                api = yaml.safe_load(fp)
             config["api"] = {
                 "module": module.__name__,
                 "class": name,

@@ -41,10 +41,13 @@ class TimeInterpolator(object):
         )
 
     def update_until(self, time):
-        assert time >= self._start_time
-        assert time <= self._end_time
+        if time < self._start_time or time > self._endtime:
+            raise ValueError(
+                "time is outside of start/end time ({0} not in [{1}, {2}])".format(
+                    time, self._start_time, self._end_time
+                )
+            )
 
-        # self._last_time = self._time
         self._time = time
 
     def finalize(self):
@@ -102,7 +105,7 @@ def get_abspath_or_url(filename, prefix=""):
 
 
 def read_configuration(source):
-    config = yaml.load(source)
+    config = yaml.safe_load(source)
 
     input_file = config.get("input_file")
     input_dir = config.get("input_dir", "")

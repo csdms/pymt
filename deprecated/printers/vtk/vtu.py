@@ -210,7 +210,8 @@ Cell = namedtuple("Cell", ["connectivity", "offsets", "types"])
 
 
 def parse_data_array(data_array):
-    assert data_array.tag == "DataArray"
+    if data_array.tag != "DataArray":
+        raise ValueError("not a DataArray")
 
     name = data_array.get("Name")
     noc = data_array.get("NumberOfComponents", default="1")
@@ -219,7 +220,8 @@ def parse_data_array(data_array):
 
     noc = int(noc)
 
-    assert data_format == "ascii"
+    if data_format != "ascii":
+        raise ValueError("format is not ascii")
 
     data = [float(val) for val in data_array.text.split()]
     array = np.array(data, dtype=vtk_to_np_type[data_type])
@@ -241,7 +243,8 @@ def parse_all_data_array(element):
 
 
 def parse_points(points):
-    assert points.tag == "Points"
+    if points.tag != "Points":
+        raise ValueError("not a Points element")
 
     data = parse_data_array(points.find("DataArray"))
 
@@ -254,7 +257,8 @@ def parse_points(points):
 
 
 def parse_cells(cells):
-    assert cells.tag == "Cells"
+    if cells.tag != "Cells":
+        raise ValueError("not a Cells element")
 
     d = parse_all_data_array(cells)
     for (key, value) in d.items():
@@ -264,22 +268,17 @@ def parse_cells(cells):
 
 
 def parse_piece(piece):
-    assert piece.tag == "Piece"
+    if piece.tag != "Piece":
+        raise ValueError("not a Piece element")
 
-    cell_count = int(piece.get("NumberOfCells"))
-    point_count = int(piece.get("NumberOfPoints"))
+    # cell_count = int(piece.get("NumberOfCells"))
+    # point_count = int(piece.get("NumberOfPoints"))
 
     points = parse_points(piece.find("Points"))
     cells = parse_cells(piece.find("Cells"))
 
     point_data = parse_all_data_array(piece.find("PointData"))
     cell_data = parse_all_data_array(piece.find("CellData"))
-
-    assert cell_count == len(cells.offsets)
-    assert cell_count == len(cells.types)
-    assert point_count == len(points.x)
-    assert point_count == len(points.y)
-    assert point_count == len(points.z)
 
     return Piece(points=points, cells=cells, point_data=point_data, cell_data=cell_data)
 

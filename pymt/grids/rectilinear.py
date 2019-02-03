@@ -119,8 +119,8 @@ class RectilinearPoints(StructuredPoints):
         kwds.setdefault("indexing", "xy")
 
         n_dim = len(args)
-        assert n_dim >= 1
-        assert n_dim <= 3
+        if n_dim < 1 or n_dim > 3:
+            raise ValueError("number of dimensions must be between 1 and 3")
 
         coords = []
         for arg in args:
@@ -189,7 +189,8 @@ class RectilinearPoints(StructuredPoints):
         )
 
     def get_axis_coordinates(self, axis=None, indexing="ij"):
-        assert indexing == "ij"
+        if indexing != "ij":
+            raise ValueError("only ij indexing is supported")
 
         if axis is None:
             return [
@@ -199,7 +200,8 @@ class RectilinearPoints(StructuredPoints):
             ]
         else:
             n_dims = self.get_dim_count()
-            assert axis < n_dims
+            if axis >= n_dims:
+                raise ValueError("axis is greater than number of dimensions")
 
             axis = n_dims - axis - 1
 

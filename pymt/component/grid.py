@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import numpy as np
-from six.moves import xrange
 
 from pymt.grids.connectivity import get_connectivity
 
@@ -42,9 +41,9 @@ def raster_node_coordinates(shape, spacing=None, origin=None):
     origin = origin or np.zeros_like(shape, dtype=float)
 
     coordinate_vectors = []
-    for dim in xrange(len(shape)):
-        start, stop = origin[dim], origin[dim] + shape[dim] * spacing[dim]
-        coordinate_vectors.append(np.arange(start, stop, spacing[dim]))
+    for shape_, spacing_, origin_ in zip(shape, spacing, origin):
+        start, stop = origin_, origin_ + shape_ * spacing_
+        coordinate_vectors.append(np.arange(start, stop, spacing_))
 
     return np.meshgrid(*coordinate_vectors, indexing="ij")
 

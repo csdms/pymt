@@ -181,8 +181,6 @@ class NamespaceDict(dict):
 
     def _decrement_parent_path_references(self, name):
         for part in self._iter_paths(name):
-            assert part in self._ref_count, (part, name)
-
             self._ref_count[part] -= 1
             if self._ref_count[part] == 0:
                 del self._ref_count[part]

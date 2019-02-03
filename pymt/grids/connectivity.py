@@ -206,8 +206,8 @@ def get_connectivity(shape, **kwds):
     with_offsets = kwds.pop("with_offsets", False)
     as_cell_list = kwds.pop("as_cell_list", False)
 
-    if with_offsets:
-        assert not as_cell_list
+    if with_offsets and as_cell_list:
+        raise ValueError("with_offsets and as_cell_list keywords cannot both be True")
 
     c0 = _get_interior_ids(shape, dtype=kwds["dtype"])
     offsets = _get_offsets(shape, **kwds)
@@ -241,7 +241,8 @@ def get_connectivity_2d(shape, ordering="cw", dtype=int):
     array([ 0,  1,  5,  4,  1,  2,  6,  5,  2,  3,  7,  6,  4,  5,  9,  8,  5,
             6, 10,  9,  6,  7, 11, 10])
     """
-    assert len(shape) == 2
+    if len(shape) != 2:
+        raise ValueError("number of dimensions must be 2")
 
     point_count = shape[0] * shape[1]
 
@@ -269,7 +270,8 @@ def get_connectivity_2d(shape, ordering="cw", dtype=int):
 
 
 def get_connectivity_1d(shape, ordering="cw", dtype=int):
-    assert len(shape) == 1
+    if len(shape) != 1:
+        raise ValueError("number of dimensions must be 1")
 
     point_count = shape[0]
 

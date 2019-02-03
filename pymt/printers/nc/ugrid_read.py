@@ -58,10 +58,14 @@ class NetcdfFieldReader(object):
 
     def _get_mesh_topology(self):
         topology = self._root.variables["mesh"]
-        try:
-            assert topology.type in ["rectilinear", "structured", "unstructured"]
-        except AttributeError:
-            pass
+
+        if hasattr(topology, "type") and topology.type not in (
+            None,
+            "rectilinear",
+            "structured",
+            "unstructured",
+        ):
+            raise ValueError("topology not understood: {0}".format(topology.type))
 
         return topology
 

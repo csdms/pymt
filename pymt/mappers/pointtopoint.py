@@ -44,7 +44,8 @@ def copy_good_values(src, dst, bad_val=-999):
     >>> copy_good_values(x, np.zeros(6), bad_val=3.)
     array([ 0.,  0.,  0.,  0.,  4.,  5.])
     """
-    assert src.size == dst.size
+    if src.size != dst.size:
+        raise ValueError("size mismatch between source and destination arrays")
 
     flat_src, flat_dst = _flat_view(src), _flat_view(dst)
 
@@ -69,7 +70,9 @@ class NearestVal(IGridMapper):
     array([ 0.,  1.,  2.,  3.,  4.,  5.])
     """
 
-    def initialize(self, dest_grid, src_grid, var_names=None):
+    _name = "PointToPoint"
+
+    def initialize(self, dest_grid, src_grid, **kwds):
         """Map points on one grid to the nearest points on another.
 
         Parameters
@@ -81,13 +84,15 @@ class NearestVal(IGridMapper):
         var_names : iterable of tuples (optional)
             Iterable of (*dest*, *src*) variable names.
         """
+        var_names = kwds.get("var_names", None)
         if var_names is None:
             var_names = []
 
-        if not self.test(dest_grid, src_grid):
-            raise IncompatibleGridError(dest_grid.name, src_grid.name)
+        if len(var_names) > 1:
+            raise ValueError("only 0 or 1 var_names allowed")
 
-        assert len(var_names) <= 1
+        if not NearestVal.test(dest_grid, src_grid):
+            raise IncompatibleGridError(dest_grid.name, src_grid.name)
 
         if len(var_names) == 0:
             (x, y) = src_grid.get_x().flat, src_grid.get_y().flat
@@ -105,14 +110,14 @@ class NearestVal(IGridMapper):
 
         (_, self._nearest_src_id) = tree.query(list(zip(x, y)))
 
-    def run(self, src_values, dest_values=None):
+    def run(self, src_values, **kwds):
         """Map source values onto destination values.
 
         Parameters
         ----------
         src_values : ndarray
             Source values at points.
-        dest_values : ndarray (optional)
+        dst_vals : ndarray (optional)
             Destination array to put mapped values.
 
         Returns
@@ -120,18 +125,22 @@ class NearestVal(IGridMapper):
         dest : ndarray
             The (possibly newly-created) destination array.
         """
-        if dest_values is None:
-            dest_values = np.zeros(len(self._nearest_src_id), dtype=src_values.dtype)
-        elif not isinstance(dest_values, np.ndarray):
+        dst_vals = kwds.get("dst_vals", None)
+        bad_val = kwds.get("bad_val", -999)
+
+        if dst_vals is None:
+            dst_vals = np.zeros(len(self._nearest_src_id), dtype=src_values.dtype)
+        elif not isinstance(dst_vals, np.ndarray):
             raise TypeError("Destination array must be a numpy array")
 
         copy_good_values(
-            src_values.flat[self._nearest_src_id], dest_values, bad_val=-999
+            src_values.flat[self._nearest_src_id], dst_vals, bad_val=bad_val
         )
 
-        return dest_values
+        return dst_vals
 
-    def test(self, dst_grid, src_grid):
+    @staticmethod
+    def test(dst_grid, src_grid):
         """Test if grids are compatible with this mapper.
 
         Parameters
@@ -143,7 +152,7 @@ class NearestVal(IGridMapper):
         """
         return dst_grid is not None and src_grid is not None
 
+    @property
     def name(self):
-        """Name of the grid mapper.
-        """
-        return "PointToPoint"
+        """Name of the grid mapper."""
+        return self._name

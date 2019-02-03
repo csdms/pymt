@@ -139,7 +139,8 @@ class NetcdfField(object):
                 raise
 
     def set_variable(self, name, *args, **kwds):
-        assert len(args) in [0, 1]
+        if len(args) not in (0, 1):
+            raise ValueError("number of arguments must be 0 or 1")
 
         attrs = kwds.pop("attrs", {})
 

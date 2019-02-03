@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import os
 
-from six.moves import xrange
+import xarray
 
 from pymt.portprinter.port_printer import PortPrinter
 
@@ -10,9 +10,9 @@ def test_one_printer(tmpdir, with_two_components):
     with tmpdir.as_cwd():
         queue = PortPrinter.from_string(
             """
-[print.air__density]
-format=vtk
-port=air_port
+[print.ocean_surface__temperature]
+format=nc
+port=water_port
 """
         )
         assert isinstance(queue, PortPrinter)
@@ -20,7 +20,7 @@ port=air_port
         queue.open()
         queue.write()
 
-        assert os.path.isfile("air__density_0000.vtu")
+        assert os.path.isfile("ocean_surface__temperature.nc")
 
 
 def test_multiple_printers(tmpdir, with_two_components):
@@ -28,7 +28,7 @@ def test_multiple_printers(tmpdir, with_two_components):
         queue = PortPrinter.from_string(
             """
 [print.air__density]
-format=vtk
+format=nc
 port=air_port
 
 [print.glacier_top_surface__slope]
@@ -42,13 +42,16 @@ port=earth_port
         for printer in queue:
             printer.open()
 
-        for _ in xrange(5):
+        for _ in range(5):
             for printer in queue:
                 printer.write()
 
-        assert os.path.isfile("air__density_0000.vtu")
-        assert os.path.isfile("air__density_0001.vtu")
-        assert os.path.isfile("air__density_0002.vtu")
-        assert os.path.isfile("air__density_0003.vtu")
-        assert os.path.isfile("air__density_0004.vtu")
+        assert os.path.isfile("air__density.nc")
+        ds = xarray.open_dataset("air__density.nc")
+        assert "air__density" in ds.variables
+        assert ds.dims["time"] == 5
+
         assert os.path.isfile("glacier_top_surface__slope.nc")
+        ds = xarray.open_dataset("glacier_top_surface__slope.nc")
+        assert "glacier_top_surface__slope" in ds.variables
+        assert ds.dims["time"] == 5
