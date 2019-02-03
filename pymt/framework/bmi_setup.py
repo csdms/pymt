@@ -207,7 +207,7 @@ def fetch_input(name, path=None):
     """
     extract_to = os.path.abspath(path or tempfile.mkdtemp())
 
-    (path_, _) = urllib.urlretrieve(url_to_input_file_zip(name)) # nosec
+    (path_, _) = urllib.urlretrieve(url_to_input_file_zip(name))  # nosec
 
     with zipfile.ZipFile(path_, "r") as zipfp:
         zipfp.extractall(path=extract_to)

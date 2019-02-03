@@ -52,7 +52,7 @@ def bmi_docstring(
     plugin,
     author=None,
     version=None,
-    license=None, # pylint: disable=redefined-builtin
+    license=None,  # pylint: disable=redefined-builtin
     doi=None,
     url=None,
     parameters=None,
@@ -141,7 +141,7 @@ def bmi_docstring(
     if isinstance(cite_as, six.string_types):
         cite_as = [cite_as]
 
-    env = jinja2.Environment(loader=jinja2.DictLoader({"docstring": _DOCSTRING})) # nosec
+    env = jinja2.Environment(loader=jinja2.DictLoader({"docstring": _DOCSTRING}))  # nosec
     return env.get_template("docstring").render(
         desc=summary,
         name=name,

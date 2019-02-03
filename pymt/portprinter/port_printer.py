@@ -31,7 +31,7 @@ class PortPrinter(object):
             self._filename = var_name
 
         self._field = construct_port_as_field(self._port, var_name)
-        self._printer = self._printer_class() # pylint: disable=not-callable
+        self._printer = self._printer_class()  # pylint: disable=not-callable
 
     @property
     def var_name(self):
@@ -50,7 +50,7 @@ class PortPrinter(object):
 
     def close(self):
         self._printer.close()
-        self._printer = self._printer_class() # pylint: disable=not-callable
+        self._printer = self._printer_class()  # pylint: disable=not-callable
 
     def write(self):
         self.resync_field_to_port()

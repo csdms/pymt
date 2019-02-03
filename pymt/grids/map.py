@@ -128,10 +128,10 @@ class UnstructuredMap(Unstructured):
 class UnstructuredPointsMap(UnstructuredPoints):
     name = "UnstructuredPoints"
 
-    def get_shared_cells(self, point_id): # pylint: disable=no-self-use
+    def get_shared_cells(self, point_id):  # pylint: disable=no-self-use
         return []
 
-    def is_in_cell(self, x, y, cell_id): # pylint: disable=no-self-use
+    def is_in_cell(self, x, y, cell_id):  # pylint: disable=no-self-use
         return False
 
 

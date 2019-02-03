@@ -3,7 +3,7 @@
 import logging
 import os
 import shlex
-import subprocess # nosec
+import subprocess  # nosec
 from string import Template
 
 
@@ -46,7 +46,7 @@ def recursive_substitute(template, **kwds):
 
 def query_config_all(config="csdms-config"):
     try:
-        contents = subprocess.check_output([config, "--dump"]) # nosec
+        contents = subprocess.check_output([config, "--dump"])  # nosec
     except subprocess.CalledProcessError:
         logging.info("Error running {prog}.".format(prog=config))
     except OSError:
@@ -69,7 +69,7 @@ def query_config_var(var, config="csdms-config", interpolate=True):
     value = None
 
     try:
-        value = subprocess.check_output([config, "--var", var]).strip() # nosec
+        value = subprocess.check_output([config, "--var", var]).strip()  # nosec
     except subprocess.CalledProcessError:
         logging.info("Error running {prog}.".format(prog=config))
     except OSError:

@@ -39,7 +39,7 @@ class redirect(object):
         sys.stderr = self._stderr
 
 
-def read_component_configuration(names, vars=None): # pylint: disable=redefined-builtin
+def read_component_configuration(names, vars=None):  # pylint: disable=redefined-builtin
     module = importlib.import_module(".".join(["pymt", "models"]))
 
     names = names or module.__all__
