@@ -29,11 +29,13 @@ class NetcdfField(object):
         self._path = path
         self._field = field
 
-        if path in _OPENED_FILES and os.path.isfile(path):
+        if path in _OPENED_FILES and not os.path.isfile(path):
+            close(path)
+
+        if path in _OPENED_FILES:
             self._root = _OPENED_FILES[path]
         else:
             self._root = open_netcdf(path, mode="w", fmt=fmt, append=append)
-            _OPENED_FILES.pop(path, None)
 
         self._set_mesh_topology()
         self._set_node_variable_data()
