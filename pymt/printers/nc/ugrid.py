@@ -1,7 +1,5 @@
 #! /usr/bin/env python
-from __future__ import print_function
-
-from six.moves import xrange
+import os
 
 from ...grids import utils as gutils
 from .constants import _NP_TO_NC_TYPE, open_netcdf
@@ -27,13 +25,15 @@ class NetcdfField(object):
     def __init__(
         self, path, field, fmt="NETCDF4", append=False, time=None, keep_open=False
     ):
+        path = os.path.abspath(path)
         self._path = path
         self._field = field
 
-        if path in _OPENED_FILES:
+        if path in _OPENED_FILES and os.path.isfile(path):
             self._root = _OPENED_FILES[path]
         else:
             self._root = open_netcdf(path, mode="w", fmt=fmt, append=append)
+            _OPENED_FILES.pop(path, None)
 
         self._set_mesh_topology()
         self._set_node_variable_data()
@@ -130,13 +130,7 @@ class NetcdfField(object):
 
     def create_variable(self, name, *args, **kwds):
         if not self.has_variable(name):
-            try:
-                self._root.createVariable(name, *args, **kwds)
-            except ValueError as error:
-                print("error is", error)
-                print(args)
-                print(self._root.dimensions)
-                raise
+            self._root.createVariable(name, *args, **kwds)
 
     def set_variable(self, name, *args, **kwds):
         if len(args) not in (0, 1):
@@ -337,7 +331,7 @@ class NetcdfUnstructuredField(NetcdfStructuredField):
     @property
     def node_coordinates(self):
         names = []
-        for axis in xrange(self.field.get_dim_count()):
+        for axis in range(self.field.get_dim_count()):
             names.append("node_" + self.field.get_coordinate_name(axis))
         return names
 
