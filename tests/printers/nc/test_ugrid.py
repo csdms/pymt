@@ -1,6 +1,7 @@
-import pytest
+import os
 
 import numpy as np
+import pytest
 
 from pymt.printers.nc.ugrid import (
     NetcdfRectilinearField,
