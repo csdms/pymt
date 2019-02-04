@@ -1,408 +1,115 @@
 #! /usr/bin/env python
-
 import os
-import unittest
 
 import numpy as np
-from numpy.testing import assert_array_equal
+import pytest
+import xarray
 
 from pymt.grids import RasterField, RectilinearField, StructuredField, UnstructuredField
 from pymt.printers.nc.write import field_tofile
 
 
-class NumpyArrayMixIn(object):
-    def assertArrayEqual(self, actual, expected):
-        try:
-            assert_array_equal(actual, expected)
-        except AssertionError as error:
-            self.fail(error)
+@pytest.mark.parametrize("ndims", (0, 1, 2, 3))
+def test_raster(tmpdir, ndims):
+    if ndims == 0:
+        shape = (1,)
+        ndims = 1
+    else:
+        shape = np.random.randint(1, 101, ndims)
 
+    spacing = np.ones(ndims, dtype=float)
+    origin = np.zeros(ndims, dtype=float)
+    units = ["m"] * ndims
 
-class AssertIsFileMixIn(object):
-    def assertIsFile(self, file):
-        if not os.path.isfile(file):
-            self.fail("%s is not a regular file" % file)
+    field = RasterField(shape, spacing, origin, units=units)
 
+    attrs = {
+        "description": "Example {ndims}D nc file".format(ndims=ndims, author="pytest"),
+    }
+    data = np.arange(field.get_point_count())
 
-class TempFileMixIn(object):
-    def temp_file_name(self, **kwds):
-        import tempfile
-
-        if "dir" not in kwds:
-            kwds["dir"] = os.getcwd()
-
-        (handle, name) = tempfile.mkstemp(**kwds)
-        os.close(handle)
-        os.remove(name)
-        try:
-            self._temp_files.append(name)
-        except AttributeError:
-            self._temp_files = [name]
-        return name
-
-    def tearDown(self):
-        for file in self._temp_files:
-            try:
-                os.remove(file)
-            except OSError:
-                pass
-
-
-class NetcdfMixIn(TempFileMixIn, unittest.TestCase, NumpyArrayMixIn, AssertIsFileMixIn):
-    def assertDimensionsEqual(self, root, expected_keys):
-        self.assertSetEqual(set(expected_keys), set(root.dimensions.keys()))
-
-    def assertDataVariableNames(self, root, expected_names):
-        self.assertSetEqual(set(root.variables.keys()), set(expected_names))
-
-    def assertDataVariableArrayEqual(self, root, var, expected_values):
-        self.assertArrayEqual(expected_values, root.variables[var])
-
-    def assertDataVariableUnitsEqual(self, root, var, expected_units):
-        self.assertEqual(root.variables[var].units, expected_units)
-
-    def assertDataVariableLongNameEqual(self, root, var, expected_name):
-        self.assertEqual(root.variables[var].long_name, expected_name)
-
-    @staticmethod
-    def open_as_netcdf(file):
-        import netCDF4 as nc4
-
-        return nc4.Dataset(file, "r", format="NETCDF4")
-
-
-class TestUniformRectilinear(NetcdfMixIn):
-    def test_0d(self):
-        nc_file = self.temp_file_name(prefix="raster.0d.", suffix=".nc")
-        field = RasterField((1,), (0,), (0,), units=("m",))
-
-        attrs = dict(description="Example 0D nc file", author="Eric")
+    with tmpdir.as_cwd():
         for i in range(10):
-            field.add_field("Elevation", i * 10.0, centering="point")
-            field_tofile(field, nc_file, attrs=attrs, append=True)
+            field.add_field("Elevation", data * i, centering="point", units="m")
+            field_tofile(field, "raster.nc", attrs=attrs, append=True)
 
-        self.assertIsFile(nc_file)
+        assert os.path.isfile("raster.nc")
 
-        root = self.open_as_netcdf(nc_file)
+        ds = xarray.open_dataset("raster.nc")
 
-        self.assertDataVariableNames(root, ["mesh", "Elevation", "time"])
-        self.assertDimensionsEqual(root, ["time"])
+        assert {"mesh", "Elevation", "time"}.issubset(ds.variables)
+        assert "time" in ds.dims
 
-        self.assertDataVariableLongNameEqual(root, "Elevation", "Elevation")
-        self.assertDataVariableUnitsEqual(root, "Elevation", "-")
+        assert ds["Elevation"].long_name == "Elevation"
+        assert ds["Elevation"].units == "m"
 
-        self.assertDataVariableArrayEqual(root, "Elevation", 10.0 * np.arange(10))
-        self.assertDataVariableArrayEqual(root, "time", range(10))
 
-        root.close()
+@pytest.mark.parametrize("ndims", (1, 2))
+def test_rectilinear(tmpdir, ndims):
+    coords = [np.arange(dim) for dim in np.random.randint(1, 101, ndims)]
+    field = RectilinearField(*coords, units=["m"] * ndims)
 
-    def test_2d(self):
-        nc_file = self.temp_file_name(prefix="raster.2d.", suffix=".nc")
-        field = RasterField((3, 2), (2.0, 1), (0, 0.5), units=("m", "km"))
+    data = np.arange(field.get_point_count())
+    field.add_field("Elevation", data, centering="point")
 
-        data = np.arange(6.0)
+    attrs = dict(description="Example {0}D nc file".format(ndims), author="pytest")
 
-        field.add_field("Temperature", data * 10, centering="point", units="C")
-        field.add_field("Elevation", data, centering="point", units="meters")
-        field.add_field("Velocity", data * 100, centering="point", units="m/s")
-        field.add_field("Temp", data * 2, centering="point", units="F")
+    with tmpdir.as_cwd():
+        field_tofile(field, "rectilinear.nc", attrs=attrs, append=True)
 
-        attrs = dict(description="Example nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
+        assert os.path.isfile("rectilinear.nc")
 
-        self.assertTrue(os.path.isfile(nc_file))
 
-        root = self.open_as_netcdf(nc_file)
-        self.assertDataVariableNames(
-            root,
-            ["mesh", "Temperature", "Elevation", "Velocity", "Temp", "x", "y", "time"],
-        )
-        self.assertDimensionsEqual(root, ["x", "y", "time"])
-        self.assertDataVariableArrayEqual(root, "x", [0.5, 1.5])
-        self.assertDataVariableArrayEqual(root, "y", [0.0, 2.0, 4.0])
+@pytest.mark.parametrize("ndims", (1, 2))
+def test_structured(tmpdir, ndims):
+    shape = np.random.randint(1, 101, ndims)
+    coords = [np.arange(dim) for dim in shape]
 
-        for name in ["Temperature", "Elevation", "Velocity", "Temp"]:
-            self.assertDataVariableLongNameEqual(root, name, name)
+    field = StructuredField(
+        *np.meshgrid(*coords),
+        shape,
+        indexing="ij",
+        units=["m"] * ndims,
+    )
 
-        for (name, units) in [
-            ("Temperature", "C"),
-            ("Elevation", "meters"),
-            ("Velocity", "m/s"),
-            ("Temp", "F"),
-        ]:
-            self.assertDataVariableUnitsEqual(root, name, units)
+    data = np.arange(field.get_point_count())
 
-        root.close()
+    field.add_field("Temperature", data * 10, centering="point", units="C")
+    field.add_field("Elevation", data, centering="point", units="meters")
+    field.add_field("Velocity", data * 100, centering="point", units="m/s")
+    field.add_field("Temp", data * 2, centering="point", units="F")
 
-    def test_3d(self):
-        nc_file = self.temp_file_name(prefix="raster.3d.", suffix=".nc")
+    attrs = dict(description="Example nc file", author="pytest")
+    with tmpdir.as_cwd():
+        field_tofile(field, "structured.nc", attrs=attrs, append=True)
 
-        field = RasterField(
-            (2, 3, 4), (1, 2, 3), (-1, 0, 1), indexing="ij", units=("mm", "m", "km")
-        )
+        assert os.path.isfile("structured.nc")
 
-        data = np.arange(24.0)
-        field.add_field("Temperature", data * 10, centering="point", units="C")
-        field.add_field("Elevation", data, centering="point", units="meters")
-        field.add_field("Velocity", data * 100, centering="point", units="m/s")
-        field.add_field("Temp", data * 2, centering="point", units="F")
 
-        attrs = dict(description="Example 3D nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
-
-        self.assertIsFile(nc_file)
-
-    def test_1d(self):
-        nc_file = self.temp_file_name(prefix="raster.1d.", suffix=".nc")
-        field = RasterField((12,), (1,), (-1,), units=("m",))
-        data = np.arange(12.0)
-        field.add_field("Elevation", data, centering="point")
+def test_unstructured_1(tmpdir):
+    field = UnstructuredField(
+        [0, 1, 4, 10], [0, 1, 1, 2, 2, 3], [2, 4, 6], units=("m",)
+    )
 
-        attrs = dict(description="Example 1D nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
+    field.add_field("point_field", np.arange(4), centering="point", units="C")
+    field.add_field("cell_field", np.arange(3) * 10.0, centering="zonal", units="F")
 
-        self.assertIsFile(nc_file)
+    with tmpdir.as_cwd():
+        field_tofile(field, "unstructured.nc", append=False)
+        assert os.path.isfile("unstructured.nc")
 
-        root = self.open_as_netcdf(nc_file)
-        self.assertDataVariableNames(root, ["mesh", "Elevation", "x", "time"])
-        self.assertDimensionsEqual(root, ["x", "time"])
-        self.assertDataVariableArrayEqual(root, "x", np.arange(12.0) - 1.0)
 
-        self.assertDataVariableLongNameEqual(root, "Elevation", "Elevation")
-        self.assertDataVariableUnitsEqual(root, "Elevation", "-")
+def test_unstructured_2(tmpdir):
+    field = UnstructuredField(
+        [0, 0, 1, 1], [0, 2, 1, 3], [0, 2, 1, 2, 3, 1], [3, 6], units=("m", "m")
+    )
 
-        self.assertDataVariableUnitsEqual(root, "x", "m")
-        root.close()
-
+    data = np.arange(4)
+    field.add_field("point_field", data, centering="point", units="m")
 
-class TestRectilinear(NetcdfMixIn):
-    def test_1d(self):
-        nc_file = self.temp_file_name(prefix="rectilinear.1d.", suffix=".nc")
+    data = np.arange(2)
+    field.add_field("cell_field", data, centering="zonal", units="m^2")
 
-        field = RectilinearField((1, 2, 4, 5), units=("m",))
-        data = np.arange(4.0)
-        field.add_field("Elevation", data, centering="point")
-
-        attrs = dict(description="Example 1D nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
-
-        self.assertIsFile(nc_file)
-
-        root = self.open_as_netcdf(nc_file)
-        self.assertDataVariableNames(root, ["mesh", "Elevation", "x", "time"])
-        self.assertDimensionsEqual(root, ["x", "time"])
-        self.assertDataVariableArrayEqual(root, "x", [1, 2, 4, 5])
-
-        self.assertDataVariableLongNameEqual(root, "Elevation", "Elevation")
-        self.assertDataVariableUnitsEqual(root, "Elevation", "-")
-
-        self.assertDataVariableUnitsEqual(root, "x", "m")
-        root.close()
-
-    def test_2d(self):
-        nc_file = self.temp_file_name(prefix="rectilinear.2d.", suffix=".nc")
-
-        field = RectilinearField(
-            (1, 4, 5),
-            (2, 3),
-            units=("degrees_north", "degrees_east"),
-            coordinate_names=["latitude", "longitude"],
-        )
-
-        data = np.arange(6.0)
-
-        field.add_field("Temperature", data * 10, centering="point", units="C")
-        field.add_field("Elevation", data, centering="point", units="meters")
-        field.add_field("Velocity", data * 100, centering="point", units="m/s")
-        field.add_field("Temp", data * 2, centering="point", units="F")
-
-        attrs = dict(description="Example nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
-
-        self.assertTrue(os.path.isfile(nc_file))
-
-        root = self.open_as_netcdf(nc_file)
-        self.assertDataVariableNames(
-            root,
-            [
-                "mesh",
-                "Temperature",
-                "Elevation",
-                "Velocity",
-                "Temp",
-                "longitude",
-                "latitude",
-                "time",
-            ],
-        )
-        self.assertDimensionsEqual(root, ["longitude", "latitude", "time"])
-        self.assertDataVariableArrayEqual(root, "longitude", [2.0, 3.0])
-        self.assertDataVariableArrayEqual(root, "latitude", [1.0, 4.0, 5.0])
-        self.assertDataVariableLongNameEqual(root, "longitude", "longitude")
-        self.assertDataVariableLongNameEqual(root, "latitude", "latitude")
-        self.assertDataVariableUnitsEqual(root, "longitude", "degrees_east")
-        self.assertDataVariableUnitsEqual(root, "latitude", "degrees_north")
-
-        for name in ["Temperature", "Elevation", "Velocity", "Temp"]:
-            self.assertDataVariableLongNameEqual(root, name, name)
-        for (v, u) in dict(
-            Temperature="C", Elevation="meters", Velocity="m/s", Temp="F"
-        ).items():
-            self.assertDataVariableUnitsEqual(root, v, u)
-        root.close()
-
-
-class TestStructured(NetcdfMixIn):
-    def test_1d(self):
-        nc_file = self.temp_file_name(prefix="structured.1d.", suffix=".nc")
-
-        field = StructuredField((1, 2, 4, 5), (4,), indexing="ij", units=("m",))
-        data = np.arange(4.0)
-        field.add_field("Elevation", data, centering="point")
-
-        attrs = dict(description="Example 1D nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
-
-        self.assertTrue(os.path.isfile(nc_file))
-
-        try:
-            root = self.open_as_netcdf(nc_file)
-        except Exception:
-            raise AssertionError("%s: Could not open" % nc_file)
-        else:
-            self.assertDataVariableNames(root, ["mesh", "Elevation", "x", "time"])
-            self.assertDimensionsEqual(root, ["x", "time"])
-            self.assertDataVariableArrayEqual(root, "x", [1, 2, 4, 5])
-
-            self.assertDataVariableLongNameEqual(root, "Elevation", "Elevation")
-            self.assertDataVariableUnitsEqual(root, "Elevation", "-")
-
-            self.assertDataVariableUnitsEqual(root, "x", "m")
-        finally:
-            root.close()
-
-    def test_2d(self):
-        nc_file = self.temp_file_name(prefix="structured.2d.", suffix=".nc")
-
-        field = StructuredField(
-            (1, 1, 4, 4, 5, 5),
-            (2, 3, 2, 3, 2, 3),
-            (3, 2),
-            indexing="ij",
-            units=("m", "km"),
-        )
-
-        data = np.arange(6.0)
-
-        field.add_field("Temperature", data * 10, centering="point", units="C")
-        field.add_field("Elevation", data, centering="point", units="meters")
-        field.add_field("Velocity", data * 100, centering="point", units="m/s")
-        field.add_field("Temp", data * 2, centering="point", units="F")
-
-        attrs = dict(description="Example nc file", author="Eric")
-        field_tofile(field, nc_file, attrs=attrs, append=True)
-
-        self.assertTrue(os.path.isfile(nc_file))
-
-        try:
-            root = self.open_as_netcdf(nc_file)
-        except Exception:
-            raise AssertionError("%s: Could not open" % nc_file)
-        else:
-            self.assertDataVariableNames(
-                root,
-                [
-                    "mesh",
-                    "Temperature",
-                    "Elevation",
-                    "Velocity",
-                    "Temp",
-                    "x",
-                    "y",
-                    "time",
-                ],
-            )
-            self.assertDimensionsEqual(root, ["x", "y", "time"])
-            self.assertDataVariableArrayEqual(
-                root, "x", np.array([[2.0, 3.0], [2.0, 3.0], [2.0, 3.0]])
-            )
-            self.assertDataVariableArrayEqual(
-                root, "y", np.array([[1.0, 1.0], [4.0, 4.0], [5.0, 5.0]])
-            )
-
-            for name in ["Temperature", "Elevation", "Velocity", "Temp"]:
-                self.assertDataVariableLongNameEqual(root, name, name)
-            for (v, u) in dict(
-                Temperature="C", Elevation="meters", Velocity="m/s", Temp="F"
-            ).items():
-                self.assertDataVariableUnitsEqual(root, v, u)
-        finally:
-            root.close()
-
-
-class TestUnstructured(NetcdfMixIn):
-    def test_1d(self):
-        nc_file = self.temp_file_name(prefix="unstructured.1d.", suffix=".ncu")
-
-        field = UnstructuredField(
-            [0, 1, 4, 10], [0, 1, 1, 2, 2, 3], [2, 4, 6], units=("m",)
-        )
-
-        field.add_field("point_field", np.arange(4), centering="point", units="C")
-        field.add_field("cell_field", np.arange(3) * 10.0, centering="zonal", units="F")
-
-        field_tofile(field, nc_file, append=False)
-
-        self.assertIsFile(nc_file)
-
-    def test_2d(self):
-        nc_file = self.temp_file_name(prefix="unstructured.2d.", suffix=".ncu")
-
-        field = UnstructuredField(
-            [0, 0, 1, 1], [0, 2, 1, 3], [0, 2, 1, 2, 3, 1], [3, 6], units=("m", "m")
-        )
-
-        data = np.arange(4)
-        field.add_field("point_field", data, centering="point", units="m")
-
-        data = np.arange(2)
-        field.add_field("cell_field", data, centering="zonal", units="m^2")
-
-        field_tofile(field, nc_file, append=False)
-
-        root = self.open_as_netcdf(nc_file)
-
-        self.assertDataVariableNames(
-            root,
-            [
-                "mesh",
-                "point_field",
-                "cell_field",
-                "node_x",
-                "node_y",
-                "time",
-                "face_nodes",
-                "face_nodes_offset",
-                "face_nodes_connectivity",
-            ],
-        )
-        self.assertDimensionsEqual(
-            root, ["n_face", "n_node", "n_vertex", "n_max_face_nodes", "time"]
-        )
-        self.assertDataVariableArrayEqual(root, "node_x", [0.0, 2.0, 1.0, 3.0])
-        self.assertDataVariableArrayEqual(root, "node_y", [0.0, 0.0, 1.0, 1.0])
-        self.assertDataVariableArrayEqual(root, "face_nodes_offset", [3, 6])
-        self.assertDataVariableArrayEqual(
-            root, "face_nodes", np.array([[0, 2, 1], [2, 3, 1]])
-        )
-
-        self.assertDataVariableLongNameEqual(root, "point_field", "point_field")
-        self.assertDataVariableLongNameEqual(root, "cell_field", "cell_field")
-        self.assertDataVariableUnitsEqual(root, "point_field", "m")
-        self.assertDataVariableUnitsEqual(root, "cell_field", "m^2")
-
-        root.close()
-
-
-if __name__ == "__main__":
-    unittest.main()
+    with tmpdir.as_cwd():
+        field_tofile(field, "unstructured.nc", append=False)
+        assert os.path.isfile("unstructured.nc")
