@@ -46,8 +46,8 @@ this part of the documentation is for you.
    :maxdepth: 2
 
    Executive summary <readme>
-   installation
    quickstart
+   installation
    usage
    examples
 
