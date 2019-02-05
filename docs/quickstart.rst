@@ -1,29 +1,45 @@
 Quickstart
 ==========
 
-You can get *pymt* directly from *conda-forge*,
+Here's the fast path to using *pymt*.
+If you want to dig deeper,
+links are provided at each step to more detailed information elsewhere.
+
+
+Install conda
+-------------
+
+`Anaconda`_ is a free, open-source, Python distribution
+that contains a comprehensive set of packages for scientific computing.
+If you don't have conda installed, the `Anaconda installation guide`_
+can help you through the process.
+
+.. _Anaconda: https://www.anaconda.com/distribution/
+.. _Anaconda installation guide: http://docs.anaconda.com/anaconda/install/
+
+
+Install *pymt*
+--------------
+
+Once you've installed conda,
+You can get *pymt* directly from `conda-forge`_:
 
 .. code-block:: bash
 
   $ conda install pymt -c conda-forge 
 
-Installing into a *conda* environment is heavily recommended.
+Installing into a :doc:`conda environment<conda-environments>`
+is strongly recommended.
+Check the :doc:`installation guide<installation>`
+for more detailed information about installing *pymt*.
+
+.. _conda-forge: https://conda-forge.org/
 
 
-.. _basic-concepts:
+.. _install-a-model:
 
-Basic concepts
---------------
-
-This section gives a brief demonstration
-of how to install and run a model in *pymt*.
-Be sure to :doc:`install <installation>` *pymt*
-before trying the examples below.
-
-.. _installing-a-model:
-
-Installing a model into pymt
-++++++++++++++++++++++++++++
+Install a model
+---------------
 
 The `FrostNumber`_ model 
 calculates a dimensionless ratio of freezing to thawing degree days
@@ -49,10 +65,10 @@ we'll use it for the examples that follow.
 
 .. _FrostNumber: https://csdms.colorado.edu/wiki/Model:Frost_Model
 
-.. _running-a-model:
+.. _run-a-model:
 
-Setting up and running a model
-++++++++++++++++++++++++++++++
+Run a model
+-----------
 
 Now that FrostNumber has been installed into *pymt*,
 import it into your Python session and create an `instance`_:
@@ -126,3 +142,11 @@ can be found in the :doc:`usage` section.
 .. _instance: https://en.wikipedia.org/wiki/Instance_(computer_science)
 .. _configuration file: https://en.wikipedia.org/wiki/Configuration_file
 .. _method: https://en.wikipedia.org/wiki/Method_(computer_programming)
+
+
+View results
+------------
+
+.. todo::
+
+   Get a variable from the model and plot it.

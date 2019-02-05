@@ -9,4 +9,4 @@ and importing *pymt*:
 
 By default, no models are installed with *pymt*.
 Instructions for installing models into *pymt*
-are given in :ref:`installing-a-model`.
+are given in :ref:`install-a-model`.
