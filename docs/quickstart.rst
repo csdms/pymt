@@ -41,16 +41,14 @@ for more detailed information about installing *pymt*.
 Install a model
 ---------------
 
-The `FrostNumber`_ model 
-calculates a dimensionless ratio of freezing to thawing degree days
-over a year to provide a simple prediction of the existence of permafrost
-at a given location.
+`Hydrotrend`_ is a hydrological water balance and transport model
+that simulates water discharge and sediment load at a river outlet.
 It's also one of the models available in *pymt*.
-Install FrostNumber into *pymt* with:
+Install Hydrotrend into *pymt* with:
 
 .. code-block:: console
 
-    $ conda install pymt_permamodel
+    $ conda install pymt_hydrotrend -c conda-forge
 
 Check that the model has been installed by starting a Python
 session and importing *pymt*:
@@ -58,47 +56,47 @@ session and importing *pymt*:
 .. code-block:: python
 
     >>> import pymt
-    => models: FrostNumber, Ku
+    => models: Hydrotrend
 
 Keep this Python session open;
 we'll use it for the examples that follow.
 
-.. _FrostNumber: https://csdms.colorado.edu/wiki/Model:Frost_Model
+.. _Hydrotrend: https://csdms.colorado.edu/wiki/Model:HydroTrend
 
 .. _run-a-model:
 
 Run a model
 -----------
 
-Now that FrostNumber has been installed into *pymt*,
+Now that Hydrotrend has been installed into *pymt*,
 import it into your Python session and create an `instance`_:
 
 .. code-block:: python
 
-  >>> from pymt.models import FrostNumber
-  >>> frost = FrostNumber()
+  >>> from pymt.models import Hydrotrend
+  >>> model = Hydrotrend()
 
 To run a model,
 *pymt* expects a model `configuration file`_.
-Get the default configuration for the FrostNumber model:
+Get the default configuration for Hydrotrend:
 
 .. code-block:: python
 
-  >>> cfg_file, cfg_dir = frost.setup()
+  >>> cfg_file, cfg_dir = model.setup()
 
 Start the model, setting its initial conditions,
 by calling its *initialize* `method`_:
 
 .. code-block:: python
 
-  >>> frost.initialize(cfg_file, cfg_dir)
+  >>> model.initialize(cfg_file, cfg_dir)
 
 The model is now ready to run.
 For reference, show the current time in the model.
 
 .. code-block:: python
 
-  >>> frost.get_current_time()
+  >>> model.get_current_time()
   0.0
 
 Now call the *update* method to advance the model
@@ -106,42 +104,73 @@ by a single time step:
 
 .. code-block:: python
 
-  >>> frost.update()
-  >>> frost.get_current_time()
+  >>> model.update()
+  >>> model.get_current_time()
   1.0
 
-The FrostNumber model exposes three variables,
+What units are associated with this time step?
+(Picoseconds? `Parsecs`_?)
+Find out with the *get_time_units* method:
+
+.. code-block:: python
+
+  >>> model.get_time_units()
+  'd'
+
+The Hydrotrend model exposes a set of output variables,
 as shown by the *get_output_var_names* method:
 
 .. code-block:: python
 
-  >>> frost.get_output_var_names()
-  ('frostnumber__air', 'frostnumber__surface', 'frostnumber__stefan')
+  >>> for var in model.get_output_var_names():
+  ...     print(var)
+  ...
+  atmosphere_bottom_air__domain_mean_of_temperature
+  channel_exit_water_sediment~suspended__mass_flow_rate
+  channel_exit_water_flow__speed
+  channel_entrance_water_sediment~bedload__mass_flow_rate
+  channel_exit_water__volume_flow_rate
+  channel_exit_water_x-section__width
+  channel_exit_water_x-section__depth
+  channel_entrance_water__volume_flow_rate
+  atmosphere_water__domain_mean_of_precipitation_leq-volume_flux
+  channel_exit_water_sediment~bedload__mass_flow_rate
+  channel_exit_water_sediment~suspended__mass_concentration
 
 With the *get_value* method,
-get the current value of the air FrostNumber:
+find the current value of the discharge at the river mouth
+through its descriptive `CSDMS Standard Name`_:
 
 .. code-block:: python
 
-  >>> frost.get_value('frostnumber__air')
-  array([ 0.39614661])
+  >>> model.get_value('channel_exit_water__volume_flow_rate')
+  array([ 1.1])
+
+What units are attached to this discharge value?
+Find out with the *get_var_units* method:
+
+.. code-block:: python
+
+  >>> model.get_var_units('channel_exit_water__volume_flow_rate')
+  'm^3 / s'
 
 Complete the model run by calling the *finalize* method:
 
 .. code-block:: python
 
-  >>> frost.finalize()
+  >>> model.finalize()
 
-A more detailed example of using FrostNumber 
-can be found in the :doc:`demos/frost_number`
+A more detailed example of using Hydrotrend 
+can be found in the :doc:`demos/hydrotrend`
 Jupyter Notebook.
 An expanded description of the *pymt* methods used in this example
 can be found in the :doc:`usage` section.
 
-
 .. _instance: https://en.wikipedia.org/wiki/Instance_(computer_science)
 .. _configuration file: https://en.wikipedia.org/wiki/Configuration_file
 .. _method: https://en.wikipedia.org/wiki/Method_(computer_programming)
+.. _Parsecs: https://www.esquire.com/entertainment/movies/a20967903/solo-star-wars-kessel-distance-plot-hole/
+.. _CSDMS Standard Name: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
 
 
 View results
