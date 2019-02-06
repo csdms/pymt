@@ -154,16 +154,29 @@ Find out with the *get_var_units* method:
   >>> model.get_var_units('channel_exit_water__volume_flow_rate')
   'm^3 / s'
 
-Run the model to completion,
-storing the discharge values for future use:
+To finish, let's run the model to completion,
+storing the discharge values for future use.
+First,
+calculate how many time steps are in the model:
+
+.. code-block:: python
+
+  >>> n_steps = int(model.get_end_time() / model.get_time_step())
+
+
+Follow this by importing Python's `NumPy`_ library,
+then use it to create an empty array to hold the discharge values:
 
 .. code-block:: python
 
   >>> import numpy as np
-  >>> n_steps = int(model.get_end_time() / model.get_time_step())
   >>> discharge = np.empty(n_steps)
-  >>> for i in range(n_steps):
-  ...     discharge[i] = model.get_value('channel_exit_water__volume_flow_rate')
+
+Now use a loop to advance the model to its end,
+storing the discharge value at each time step:
+
+  >>> for t in range(n_steps):
+  ...     discharge[t] = model.get_value('channel_exit_water__volume_flow_rate')
   ...     model.update()
 
 Complete the model run by calling the *finalize* method:
@@ -177,6 +190,7 @@ Complete the model run by calling the *finalize* method:
 .. _method: https://en.wikipedia.org/wiki/Method_(computer_programming)
 .. _Parsecs: https://www.esquire.com/entertainment/movies/a20967903/solo-star-wars-kessel-distance-plot-hole/
 .. _CSDMS Standard Name: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
+.. _NumPy: http://www.numpy.org
 
 
 View results
