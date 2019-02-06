@@ -45,9 +45,9 @@ this part of the documentation is for you.
 .. toctree::
    :maxdepth: 2
 
-   Executive summary <readme>
-   installation
+   Summary <readme>
    quickstart
+   installation
    usage
    examples
 
@@ -70,6 +70,7 @@ Miscellaneous Pages
 .. toctree::
    :maxdepth: 2
 
+   conda-environments
    contributing
    authors
    history
