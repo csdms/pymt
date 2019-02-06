@@ -9,14 +9,14 @@ Usage
    in the :doc:`quickstart`.
 
 
+Importing a model into Python
+-----------------------------
+
 To use *pymt* in a project:
 
 .. code-block:: python
 
-    import pymt
-
-Loading a model
-+++++++++++++++
+    >>> import pymt
 
 .. code-block:: python
 
@@ -24,8 +24,21 @@ Loading a model
   >>> waves = Waves()
   >>> help(Waves)
 
+
+Instantiating a model
+---------------------
+
+.. code-block:: python
+
+  >>> from pymt.models import Waves
+  >>> waves = Waves()
+  >>> help(Waves)
+
+
 Model setup
-+++++++++++
+-----------
+
+Setup method and arguments.
 
 .. code-block:: python
 
@@ -35,8 +48,12 @@ Model setup
 
   >>> waves.setup(mean_wave_height=2.)
 
-Model initialization
-++++++++++++++++++++
+
+Lifecycle methods
+-----------------
+
+Initialize and finalize methods.
+Describe initialize arguments.
 
 .. code-block:: python
 
@@ -44,3 +61,23 @@ Model initialization
   >>> waves = Waves()
   >>> config_file, config_dir = waves.setup()
   >>> waves.initialize(config_file, dir=config_dir)
+
+
+Getting variable names
+----------------------
+
+
+Time methods
+------------
+
+
+Updating the model state
+------------------------
+
+update method.
+
+
+Getting and setting variables
+-----------------------------
+
+get_value and set_value methods.
