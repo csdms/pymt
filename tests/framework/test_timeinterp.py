@@ -54,7 +54,6 @@ def test_timeinterp_with_arrays():
 
 def test_timeinterp_with_dict_items():
     shape = (2, 3)
-    arr = np.ones(shape, dtype=float)
     data = {
         0.0: np.full(shape, 1.0),
         1.0: np.full(shape, 2.0),
