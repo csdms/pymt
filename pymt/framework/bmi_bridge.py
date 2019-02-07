@@ -7,7 +7,6 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-
 from cfunits import Units
 from deprecated import deprecated
 from scripting.contexts import cd
@@ -211,8 +210,8 @@ class _BmiCap(object):
         """
         self._initdir = os.path.abspath(dir)
         with cd(self.initdir, create=False):
-            if bmi_call(self.bmi.initialize, fname or "") == 0:
-                self._initialized = True
+            self.bmi.initialize(fname or "")
+            self._initialized = True
 
         for grid_id in self._grid_ids():
             self._grid[grid_id] = dataset_from_bmi_grid(self, grid_id)
@@ -574,6 +573,12 @@ def bmi_factory(cls):
         # __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
         __doc__ = bmi_docstring(cls)
         _cls = cls
+
+        def __str__(self):
+            return "{0}".format(cls.__name__)
+
+        def __repr__(self):
+            return "<{0}()>".format(cls.__name__)
 
     BmiWrapper.__name__ = cls.__name__
     return BmiWrapper
