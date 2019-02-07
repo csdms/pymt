@@ -37,27 +37,17 @@ print:
   format: nc
 """
     with tmpdir.as_cwd():
-        del_component_instances(["air_port", "earth_port"])
+        for _ in range(2):
+            del_component_instances(["air_port", "earth_port"])
 
-        air = Component.from_string(air_init_string)
-        earth = Component.from_string(earth_init_string)
-        earth.connect("air_port", air)
-        air.connect("earth_port", earth)
-        earth.go()
+            air = Component.from_string(air_init_string)
+            earth = Component.from_string(earth_init_string)
+            earth.connect("air_port", air)
+            air.connect("earth_port", earth)
+            earth.go()
 
-        assert os.path.isfile("glacier_top_surface__slope.nc")
-        os.remove("glacier_top_surface__slope.nc")
+            assert os.path.isfile("glacier_top_surface__slope.nc")
+            assert os.path.isfile("air__temperature.nc")
 
-        assert os.path.isfile("air__temperature.nc")
-        os.remove("air__temperature.nc")
-
-        del_component_instances(["air_port", "earth_port"])
-
-        air = Component.from_string(air_init_string)
-        earth = Component.from_string(earth_init_string)
-        earth.connect("air_port", air)
-        air.connect("earth_port", earth)
-        air.go()
-
-        assert os.path.isfile("glacier_top_surface__slope.nc")
-        assert os.path.isfile("air__temperature.nc")
+            # os.remove("glacier_top_surface__slope.nc")
+            # os.remove("air__temperature.nc")

@@ -5,6 +5,7 @@ dependencies:
   - python=3.7
   - cfunits
   - coveralls
+  - deprecated
   - flake8
   - jinja2
   - landlab

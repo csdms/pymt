@@ -7,249 +7,19 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-from scipy.interpolate import interp1d
 
 from cfunits import Units
+from deprecated import deprecated
 from scripting.contexts import cd
 
-from ..utils.decorators import deprecated
+from ..errors import BmiError
+from .bmi import bmi_call
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
+from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
-
-
-class BmiError(Exception):
-    def __init__(self, fname, status):
-        self._fname = fname
-        self._status = status
-
-    def __str__(self):
-        return "Error calling BMI function: {fname} ({code})".format(
-            fname=self._fname, code=self._status
-        )
-
-
-def val_or_raise(func, args):
-    rtn = func(*args)
-
-    try:
-        status, val = rtn
-    except TypeError:
-        status, val = rtn, None
-
-    if status != 0:
-        raise RuntimeError(
-            "%s(%s) [Error code %d]"
-            % (func.__name__, ", ".join([repr(arg) for arg in args[1:]]), status)
-        )
-    else:
-        return val
-
-
-def bmi_call(func, *args):
-    rtn = func(*args)
-
-    return rtn
-
-
-def wrap_set_value(func):
-    def wrap(self, name, val):
-        """Set a value by name.
-
-        Parameters
-        ----------
-        name : str
-            CSDMS standard name.
-        val : array_like
-            Values to set.
-        """
-        val = np.asarray(val).reshape((-1,))
-        return val_or_raise(func, (self._base, name, val))
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_get_value(func):
-    def wrap(self, name, out=None, units=None):
-        """Get a value by name.
-
-        Parameters
-        ----------
-        name : str
-            CSDMS standard name.
-        out : ndarray, optional
-            Buffer to place values.
-        units : str, optional
-            Convert units of the returned values.
-
-        Returns
-        -------
-        ndarray
-            Array of values (or *out*, if provided).
-        """
-        if out is None:
-            grid = self.get_var_grid(name)
-            dtype = self.get_var_type(name)
-            if dtype == "":
-                print(self.get_output_var_names())
-                raise ValueError("{name} not understood".format(name=name))
-            out = np.empty(self.get_grid_size(grid), dtype=dtype)
-
-        val_or_raise(func, (self._base, name, out))
-
-        if units is not None:
-            try:
-                from_units = self.get_var_units(name)
-            except (AttributeError, NotImplementedError):
-                pass
-            else:
-                Units.conform(out, Units(from_units), Units(units), inplace=True)
-
-        return out
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_get_time(func):
-    def wrap(self, units=None):
-        time = val_or_raise(func, (self._base,))
-        if units is not None:
-            try:
-                from_units = Units(self.get_time_units())
-                to_units = Units(units)
-            except (AttributeError, NotImplementedError):
-                pass
-            else:
-                if not from_units.equals(to_units):
-                    time = Units.conform(time, from_units, to_units)
-        return time
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_get_grid_with_out_arg(func, dtype):
-    def wrap(self, grid, out=None):
-        if out is None:
-            out = np.empty(self.get_grid_rank(grid), dtype=dtype)
-        val_or_raise(func, (self._base, grid, out))
-        return out
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_var_names(func):
-    def wrap(self):
-        """Get input/output variable names.
-
-        Returns
-        -------
-        tuple of str
-            Variable names as CSDMS Standard Names.
-        """
-        return tuple(val_or_raise(func, (self._base,)))
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_initialize(func):
-    def wrap(self, *args, **kwds):
-        if len(args) == 0:
-            args = (self.setup(case=kwds.pop("case", "default")),)
-        val_or_raise(func, (self._base,) + args)
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-def wrap_default(func):
-    def wrap(self, *args):
-        return val_or_raise(func, (self._base,) + args)
-
-    wrap.__name__ = func.__name__
-    return wrap
-
-
-class TimeInterpolator(object):
-    def __init__(self, method="linear"):
-        self._method = method or "linear"
-        self._data = []
-        self._time = []
-        self._ti = None
-
-        # self.add_data(data, time)
-
-    def add_data(self, data, time):
-        self._data.append(data)
-        self._time.append(time)
-
-        self._func = None
-
-    def interpolate(self, time):
-        if self._func is None:
-            self._func = interp1d(
-                self._time,
-                self._data,
-                axis=0,
-                kind=self._method,
-                fill_value="extrapolate",
-            )
-
-        return self._func(time)
-
-
-class BmiTimeInterpolator(object):
-    # def __init__(self, method='linear'):
-    def __init__(self, *args, **kwds):
-        method = kwds.pop("method", "linear")
-        self._interpolators = dict(
-            [(name, None) for name in self.output_var_names if "__" in name]
-        )
-        self.reset(method=method)
-
-        super(BmiTimeInterpolator, self).__init__(*args, **kwds)
-
-    def reset(self, method="linear"):
-        for name in self._interpolators:
-            self._interpolators[name] = TimeInterpolator(method=method)
-
-    def add_data(self):
-        time = self.get_current_time()
-
-        for name in self._interpolators:
-            try:
-                self._interpolators[name].add_data(self.get_value(name), time)
-            except BmiError:
-                self._interpolators.pop(name)
-                print("unable to get value for {name}. ignoring".format(name=name))
-
-    def interpolate(self, name, at):
-        return self._interpolators[name].interpolate(at)
-
-    def update_until(self, then, method=None, units=None):
-        with cd(self.initdir):
-            then = self.time_from(then, units)
-
-            if hasattr(self.bmi, "update_until"):
-                try:
-                    bmi_call(self.bmi.update_until, then)
-                except NotImplementedError:
-                    pass
-
-            self.reset()
-            while self.get_current_time() < then:
-                if self.get_current_time() + self.get_time_step() > then:
-                    self.add_data()
-                self.update()
-
-            if self.get_current_time() > then:
-                self.add_data()
 
 
 def transform_math_to_azimuth(angle, units):
@@ -351,21 +121,21 @@ class _BmiCapV1(object):
         else:
             return val
 
-    @deprecated(use="get_grid_number_of_vertices")
+    @deprecated(reason="use get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_vertex_count, grid)
 
-    @deprecated(use="get_grid_number_of_faces")
+    @deprecated(reason="use get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_face_count, grid)
 
-    @deprecated(use="get_grid_face_node_connectivity")
+    @deprecated(reason="use get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_vertex_count(grid), dtype=int)
         return _BmiCapV1._bmi_call(self.bmi.get_grid_connectivity, grid, out)
 
-    @deprecated(use="get_grid_face_node_offset")
+    @deprecated(reason="use get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_face_count(grid), dtype=int)
@@ -373,19 +143,19 @@ class _BmiCapV1(object):
 
 
 class _BmiCapV2(object):
-    @deprecated(use="get_grid_number_of_vertices")
+    @deprecated(reason="use get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return self.get_grid_number_of_vertices(grid)
 
-    @deprecated(use="get_grid_number_of_faces")
+    @deprecated(reason="use get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
         return self.get_grid_number_of_faces(grid)
 
-    @deprecated(use="get_grid_face_node_connectivity")
+    @deprecated(reason="use get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         return self.get_grid_face_node_connectivity(grid, out=out)
 
-    @deprecated(use="get_grid_face_node_offset")
+    @deprecated(reason="use get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         return self.get_grid_face_node_offset(grid, out=out)
 
@@ -507,7 +277,7 @@ class _BmiCap(object):
     def get_value_ptr(self, name):
         return bmi_call(self.bmi.get_value_ptr, name)
 
-    @deprecated(use="get_grid_ndim")
+    @deprecated(reason="use get_grid_ndim")
     def get_grid_rank(self, grid):
         return self.get_grid_ndim(grid)
 
@@ -524,7 +294,7 @@ class _BmiCap(object):
     def get_grid_dim(self, grid, dim):
         return getattr(self, self.NUMBER_OF_ELEMENTS[dim])(grid)
 
-    @deprecated(use="get_grid_number_of_nodes")
+    @deprecated(reason="use get_grid_number_of_nodes")
     def get_grid_size(self, grid):
         return self.get_grid_number_of_nodes(grid)
 

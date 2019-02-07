@@ -82,7 +82,7 @@ print:
 
         assert comp._port.current_time == approx(100.0)
         assert os.path.isfile("earth_surface__temperature.nc")
-        os.remove("earth_surface__temperature.nc")
+        # os.remove("earth_surface__temperature.nc")
 
         del_component_instances(["earth_port"])
 

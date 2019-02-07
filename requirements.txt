@@ -12,3 +12,4 @@ scripting
 model_metadata
 six
 landlab
+deprecated

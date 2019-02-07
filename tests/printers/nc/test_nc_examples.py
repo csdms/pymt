@@ -1,11 +1,10 @@
 #! /usr/bin/env python
-
-from __future__ import absolute_import
+import os
 
 import numpy as np
 
-from ...grids import RectilinearField
-from .write import field_tofile
+from pymt.grids import RectilinearField
+from pymt.printers.nc.write import field_tofile
 
 
 def sample_surface(x, y, alpha, eta=1.0, purity=1.0):
@@ -56,19 +55,19 @@ def rectilinear_3d_field():
     return field
 
 
-def rectilinear_1d_netcdf():
-    field_tofile(rectilinear_1d_field(), "rectilinear.1d.nc")
+def test_rectilinear_1d_netcdf(tmpdir):
+    with tmpdir.as_cwd():
+        field_tofile(rectilinear_1d_field(), "rectilinear.1d.nc")
+        assert os.path.isfile("rectilinear.1d.nc")
 
 
-def rectilinear_2d_netcdf():
-    field_tofile(rectilinear_2d_field(), "rectilinear.2d.nc")
+def test_rectilinear_2d_netcdf(tmpdir):
+    with tmpdir.as_cwd():
+        field_tofile(rectilinear_2d_field(), "rectilinear.2d.nc")
+        assert os.path.isfile("rectilinear.2d.nc")
 
 
-def rectilinear_3d_netcdf():
-    field_tofile(rectilinear_3d_field(), "rectilinear.3d.nc")
-
-
-def main():
-    rectilinear_1d_netcdf()
-    rectilinear_2d_netcdf()
-    rectilinear_3d_netcdf()
+def test_rectilinear_3d_netcdf(tmpdir):
+    with tmpdir.as_cwd():
+        field_tofile(rectilinear_3d_field(), "rectilinear.3d.nc")
+        assert os.path.isfile("rectilinear.3d.nc")
