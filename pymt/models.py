@@ -1,10 +1,16 @@
 __all__ = []
 
-import pkg_resources
 import sys
 
 
 def _load_models():
+    from collections import OrderedDict, namedtuple
+    import pkg_resources
+
+    from scripting import error, status
+
+    from .framework.bmi_bridge import bmi_factory
+
     models = OrderedDict()
 
     failed = []
@@ -40,4 +46,4 @@ try:
     del model
 except NameError:
     pass
-del sys, pkg_resources, _load_models
+del sys, _load_models

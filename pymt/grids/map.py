@@ -47,6 +47,8 @@ True
 
 """
 
+from shapely.geometry import Point, asLineString, asPoint, asPolygon
+
 from pymt.grids import (
     Rectilinear,
     Structured,
@@ -54,7 +56,6 @@ from pymt.grids import (
     Unstructured,
     UnstructuredPoints,
 )
-from shapely.geometry import Point, asLineString, asPoint, asPolygon
 
 
 class UnstructuredMap(Unstructured):

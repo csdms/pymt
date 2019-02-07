@@ -28,7 +28,6 @@ import sys
 
 import pkg_resources
 import six
-
 from model_metadata import ModelMetadata
 
 from ..babel import BabelConfigError, query_config_var

@@ -24,7 +24,7 @@ def test_raster(tmpdir, ndims):
     field = RasterField(shape, spacing, origin, units=units)
 
     attrs = {
-        "description": "Example {ndims}D nc file".format(ndims=ndims, author="pytest"),
+        "description": "Example {ndims}D nc file".format(ndims=ndims, author="pytest")
     }
     data = np.arange(field.get_point_count())
 
@@ -66,10 +66,7 @@ def test_structured(tmpdir, ndims):
     coords = [np.arange(dim) for dim in shape]
 
     field = StructuredField(
-        *np.meshgrid(*coords),
-        shape,
-        indexing="ij",
-        units=["m"] * ndims,
+        *np.meshgrid(*coords), shape, indexing="ij", units=["m"] * ndims
     )
 
     data = np.arange(field.get_point_count())
