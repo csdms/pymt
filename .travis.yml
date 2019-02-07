@@ -31,6 +31,7 @@ install:
 - source activate test_env
 script:
 - make install
+- conda install pymt_hydrotrend
 - pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml
 - make lint
 after_success:
