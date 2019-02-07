@@ -49,5 +49,5 @@ print:
             assert os.path.isfile("glacier_top_surface__slope.nc")
             assert os.path.isfile("air__temperature.nc")
 
-            os.remove("glacier_top_surface__slope.nc")
-            os.remove("air__temperature.nc")
+            # os.remove("glacier_top_surface__slope.nc")
+            # os.remove("air__temperature.nc")
