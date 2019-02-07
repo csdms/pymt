@@ -25,7 +25,7 @@ class BmiTimeInterpolator(object):
 
         for name in self._interpolators:
             try:
-                self._interpolators[name].add_data(self.get_value(name), time)
+                self._interpolators[name].add_data([(time, self.get_value(name))])
             except BmiError:
                 self._interpolators.pop(name)
                 print("unable to get value for {name}. ignoring".format(name=name))
