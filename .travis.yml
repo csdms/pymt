@@ -32,7 +32,7 @@ install:
 script:
 - make install
 - conda install pymt_hydrotrend==0.1.2 -c conda-forge
-- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml
+- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
 - make lint
 after_success:
   coveralls
