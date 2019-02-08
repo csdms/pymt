@@ -157,11 +157,11 @@ Find out with the *get_var_units* method:
 To finish, let's run the model to completion,
 storing the discharge values for future use.
 First,
-calculate how many time steps are in the model:
+calculate how many time steps remain in the model:
 
 .. code-block:: python
 
-  >>> n_steps = int(model.get_end_time() / model.get_time_step())
+  >>> n_steps = int(model.get_end_time() / model.get_time_step()) - 1
 
 
 Follow this by importing Python's `NumPy`_ library,
