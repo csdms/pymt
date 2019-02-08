@@ -139,11 +139,14 @@ as shown by the *get_output_var_names* method:
 
 With the *get_value* method,
 find the current value of the mean water discharge at the river mouth
-through its descriptive `CSDMS Standard Name`_:
+through its descriptive `CSDMS Standard Name`_.
+And because the Standard Name is long,
+let's store it in a variable:
 
 .. code-block:: python
 
-  >>> model.get_value('channel_exit_water__volume_flow_rate')
+  >>> discharge_sn = 'channel_exit_water__volume_flow_rate'
+  >>> model.get_value(discharge_sn)
   array([ 1.1])
 
 What units are attached to this discharge value?
@@ -151,7 +154,7 @@ Find out with the *get_var_units* method:
 
 .. code-block:: python
 
-  >>> model.get_var_units('channel_exit_water__volume_flow_rate')
+  >>> model.get_var_units(discharge_sn)
   'm^3 / s'
 
 To finish, let's run the model to completion,
@@ -176,7 +179,7 @@ Now use a loop to advance the model to its end,
 storing the discharge value at each time step:
 
   >>> for t in range(n_steps):
-  ...     discharge[t] = model.get_value('channel_exit_water__volume_flow_rate')
+  ...     discharge[t] = model.get_value(discharge_sn)
   ...     model.update()
 
 Complete the model run by calling the *finalize* method:
