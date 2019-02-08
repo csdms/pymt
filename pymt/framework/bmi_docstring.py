@@ -140,9 +140,9 @@ def bmi_docstring(
     if isinstance(cite_as, six.string_types):
         cite_as = [cite_as]
 
-    env = jinja2.Environment(
+    env = jinja2.Environment(  # nosec
         loader=jinja2.DictLoader({"docstring": _DOCSTRING})
-    )  # nosec
+    )
     return env.get_template("docstring").render(
         desc=summary,
         name=name,
