@@ -24,9 +24,15 @@ def test_model_initialize(cls):
 
 
 @pytest.mark.parametrize("cls", models.__all__)
-def test_model_irf(cls):
+def test_model_update(cls):
     model = models.__dict__[cls]()
     model.initialize(*model.setup())
     model.update()
     assert model.get_current_time() > model.get_start_time()
+
+
+@pytest.mark.parametrize("cls", models.__all__)
+def test_model_finalize(cls):
+    model = models.__dict__[cls]()
+    model.initialize(*model.setup())
     model.finalize()
