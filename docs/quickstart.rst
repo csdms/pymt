@@ -3,7 +3,8 @@ Quickstart
 
 Here's the fast path to using *pymt*.
 If you want to dig deeper,
-links are provided at each step to more detailed information elsewhere.
+links are provided at each step to more detailed information
+either here in the User Guide or elsewhere.
 
 
 Install conda
@@ -141,7 +142,7 @@ With the *get_value* method,
 find the current value of the mean water discharge at the river mouth
 through its descriptive `CSDMS Standard Name`_.
 And because the Standard Name is long,
-let's store it in a variable:
+let's first store it in a variable:
 
 .. code-block:: python
 
