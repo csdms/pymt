@@ -3,7 +3,6 @@ import bisect
 
 from scipy.interpolate import interp1d
 
-
 _MINIMUM_SIZE_FOR_METHOD = {
     "linear": 2,
     "nearest": 2,
@@ -29,7 +28,9 @@ class TimeInterpolator(object):
         "next",
     )
 
-    def __init__(self, data=(), method="linear", fill_value="extrapolate", maxsize=None):
+    def __init__(
+        self, data=(), method="linear", fill_value="extrapolate", maxsize=None
+    ):
         """Interpolate data based on an evolving time series of data values.
 
         Parameters

@@ -31,7 +31,7 @@ install:
 - source activate test_env
 script:
 - make install
-- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml
+- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
 - make lint
 after_success:
   coveralls

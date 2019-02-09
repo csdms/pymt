@@ -7,7 +7,6 @@ import sys
 
 import six
 import yaml
-
 from scripting import cd
 
 from ..component.grid import GridMixIn

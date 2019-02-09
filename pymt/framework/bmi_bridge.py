@@ -7,13 +7,11 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-
 from cfunits import Units
 from deprecated import deprecated
 from scripting.contexts import cd
 
 from ..errors import BmiError
-from .bmi import bmi_call
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
@@ -133,13 +131,13 @@ class _BmiCapV1(object):
     def get_grid_connectivity(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_vertex_count(grid), dtype=int)
-        return _BmiCapV1._bmi_call(self.bmi.get_grid_connectivity, grid, out)
+        return _BmiCapV1._call_bmi(self.bmi.get_grid_connectivity, grid, out)
 
     @deprecated(reason="use get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_face_count(grid), dtype=int)
-        return _BmiCapV1._bmi_call(self.bmi.get_grid_offset, grid, out)
+        return _BmiCapV1._call_bmi(self.bmi.get_grid_offset, grid, out)
 
 
 class _BmiCapV2(object):
@@ -197,7 +195,7 @@ class _BmiCap(object):
         return tuple(grids)
 
     def get_component_name(self):
-        return bmi_call(self.bmi.get_component_name)
+        return self.bmi.get_component_name()
 
     def initialize(self, fname=None, dir="."):  # pylint: disable=redefined-builtin
         """Initialize the model.
@@ -211,8 +209,8 @@ class _BmiCap(object):
         """
         self._initdir = os.path.abspath(dir)
         with cd(self.initdir, create=False):
-            if bmi_call(self.bmi.initialize, fname or "") == 0:
-                self._initialized = True
+            self.bmi.initialize(fname or "")
+            self._initialized = True
 
         for grid_id in self._grid_ids():
             self._grid[grid_id] = dataset_from_bmi_grid(self, grid_id)
@@ -222,15 +220,16 @@ class _BmiCap(object):
 
     def update(self):
         with cd(self.initdir):
-            return bmi_call(self.bmi.update)
+            return self.bmi.update()
 
     def finalize(self):
         with cd(self.initdir):
-            return bmi_call(self.bmi.finalize)
+            self._initialized = False
+            return self.bmi.finalize()
 
     def set_value(self, name, val):
         val = np.asarray(val).reshape((-1,))
-        return bmi_call(self.bmi.set_value, name, val)
+        return self.bmi.set_value(name, val)
 
     def get_value(self, name, out=None, units=None, angle=None, at=None, method=None):
         if out is None:
@@ -241,7 +240,7 @@ class _BmiCap(object):
             loc = self.get_var_grid_loc(name)
             out = np.empty(self.get_grid_dim(grid, loc), dtype=dtype)
 
-        bmi_call(self.bmi.get_value, name, out)
+        self.bmi.get_value(name, out)
 
         if name in self._interpolators and at is not None:
             out[:] = self._interpolators[name].interpolate(at)
@@ -275,14 +274,14 @@ class _BmiCap(object):
         return out
 
     def get_value_ptr(self, name):
-        return bmi_call(self.bmi.get_value_ptr, name)
+        return self.bmi.get_value_ptr(name)
 
     @deprecated(reason="use get_grid_ndim")
     def get_grid_rank(self, grid):
         return self.get_grid_ndim(grid)
 
     def get_grid_ndim(self, grid):
-        return bmi_call(self.bmi.get_grid_rank, grid)
+        return self.bmi.get_grid_rank(grid)
 
     NUMBER_OF_ELEMENTS = {
         "node": "get_grid_number_of_nodes",
@@ -299,28 +298,28 @@ class _BmiCap(object):
         return self.get_grid_number_of_nodes(grid)
 
     def get_grid_type(self, grid):
-        return bmi_call(self.bmi.get_grid_type, grid)
+        return self.bmi.get_grid_type(grid)
 
     def get_grid_shape(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_ndim(grid), dtype=int)
-        bmi_call(self.bmi.get_grid_shape, grid, out)
+        self.bmi.get_grid_shape(grid, out)
         return out
 
     def get_grid_spacing(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_ndim(grid), dtype=float)
-        bmi_call(self.bmi.get_grid_spacing, grid, out)
+        self.bmi.get_grid_spacing(grid, out)
         return out
 
     def get_grid_origin(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_ndim(grid), dtype=float)
-        bmi_call(self.bmi.get_grid_origin, grid, out)
+        self.bmi.get_grid_origin(grid, out)
         return out
 
     def get_grid_number_of_nodes(self, grid):
-        return bmi_call(self.bmi.get_grid_size, grid)
+        return self.bmi.get_grid_size(grid)
 
     def get_grid_number_of_vertices(self, grid):
         return self.get_grid_nodes_per_face(grid).sum()
@@ -331,13 +330,13 @@ class _BmiCap(object):
     def get_grid_face_node_connectivity(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_number_of_vertices(grid), dtype=int)
-        bmi_call(self.bmi.get_grid_face_nodes, grid, out)
+        self.bmi.get_grid_face_nodes(grid, out)
         return out
 
     def get_grid_face_nodes(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_number_of_vertices(grid), dtype=int)
-        bmi_call(self.bmi.get_grid_face_nodes, grid, out)
+        self.bmi.get_grid_face_nodes(grid, out)
         return out
 
     def get_grid_face_node_offset(self, grid, out=None):
@@ -347,37 +346,37 @@ class _BmiCap(object):
     def get_grid_nodes_per_face(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_number_of_faces(grid), dtype=int)
-        bmi_call(self.bmi.get_grid_nodes_per_face, grid, out)
+        self.bmi.get_grid_nodes_per_face(grid, out)
         return out
 
     def get_grid_x(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
-        bmi_call(self.bmi.get_grid_x, grid, out)
+        self.bmi.get_grid_x(grid, out)
         return out
 
     def get_grid_y(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
-        bmi_call(self.bmi.get_grid_y, grid, out)
+        self.bmi.get_grid_y(grid, out)
         return out
 
     def get_grid_z(self, grid, out=None):
         if out is None:
             out = np.empty(self.get_grid_size(grid), dtype=float)
-        bmi_call(self.bmi.get_grid_z, grid, out)
+        self.bmi.get_grid_z(grid, out)
         return out
 
     @property
     def input_var_names(self):
-        return tuple(bmi_call(self.bmi.get_input_var_names))
+        return tuple(self.bmi.get_input_var_names())
 
     def get_input_var_names(self):
         return self.input_var_names
 
     @property
     def output_var_names(self):
-        return tuple(bmi_call(self.bmi.get_output_var_names))
+        return tuple(self.bmi.get_output_var_names())
 
     def get_output_var_names(self):
         return self.output_var_names
@@ -392,25 +391,25 @@ class _BmiCap(object):
         self._time_units = new_units
 
     def get_time_units(self):
-        return bmi_call(self.bmi.get_time_units)
+        return self.bmi.get_time_units()
 
     def get_current_time(self, units=None):
-        time = bmi_call(self.bmi.get_current_time)
+        time = self.bmi.get_current_time()
 
         return self.time_in(time, units)
 
     def get_start_time(self, units=None):
-        time = bmi_call(self.bmi.get_start_time)
+        time = self.bmi.get_start_time()
 
         return self.time_in(time, units)
 
     def get_end_time(self, units=None):
-        time = bmi_call(self.bmi.get_end_time)
+        time = self.bmi.get_end_time()
 
         return self.time_in(time, units)
 
     def get_time_step(self, units=None):
-        time = bmi_call(self.bmi.get_time_step)
+        time = self.bmi.get_time_step()
 
         return self.time_in(time, units)
 
@@ -468,22 +467,22 @@ class _BmiCap(object):
         except AttributeError:
             return "node"
         else:
-            return bmi_call(self.bmi.get_var_location, name)
+            return self.bmi.get_var_location(name)
 
     def get_var_grid(self, name):
-        return bmi_call(self.bmi.get_var_grid, name)
+        return self.bmi.get_var_grid(name)
 
     def get_var_itemsize(self, name):
-        return bmi_call(self.bmi.get_var_itemsize, name)
+        return self.bmi.get_var_itemsize(name)
 
     def get_var_nbytes(self, name):
-        return bmi_call(self.bmi.get_var_nbytes, name)
+        return self.bmi.get_var_nbytes(name)
 
     def get_var_type(self, name):
-        return bmi_call(self.bmi.get_var_type, name)
+        return self.bmi.get_var_type(name)
 
     def get_var_units(self, name):
-        units = bmi_call(self.bmi.get_var_units, name)
+        units = self.bmi.get_var_units(name)
         if units == "-":
             return ""
         else:
@@ -574,6 +573,12 @@ def bmi_factory(cls):
         # __doc__ = bmi_docstring(cls.__name__.split('.')[-1])
         __doc__ = bmi_docstring(cls)
         _cls = cls
+
+        def __str__(self):
+            return "{0}".format(cls.__name__)
+
+        def __repr__(self):
+            return "<{0}()>".format(cls.__name__)
 
     BmiWrapper.__name__ = cls.__name__
     return BmiWrapper

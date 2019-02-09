@@ -7,7 +7,6 @@ import sys
 
 import six
 import yaml
-
 from model_metadata.find import find_model_data_files
 
 
