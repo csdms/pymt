@@ -225,6 +225,7 @@ class _BmiCap(object):
 
     def finalize(self):
         with cd(self.initdir):
+            self._initialized = False
             return bmi_call(self.bmi.finalize)
 
     def set_value(self, name, val):
