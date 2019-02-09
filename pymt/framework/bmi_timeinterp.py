@@ -2,7 +2,6 @@
 from scripting.contexts import cd
 
 from ..errors import BmiError
-from .bmi import bmi_call
 from .timeinterp import TimeInterpolator
 
 
@@ -39,7 +38,7 @@ class BmiTimeInterpolator(object):
 
             if hasattr(self.bmi, "update_until"):
                 try:
-                    bmi_call(self.bmi.update_until, then)
+                    self.bmi.update_until(then)
                 except NotImplementedError:
                     pass
 
