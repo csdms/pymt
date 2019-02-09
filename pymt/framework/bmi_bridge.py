@@ -12,13 +12,18 @@ from deprecated import deprecated
 from scripting.contexts import cd
 
 from ..errors import BmiError
-from .bmi import bmi_call
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
 from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
+
+
+def bmi_call(func, *args):
+    rtn = func(*args)
+
+    return rtn
 
 
 def transform_math_to_azimuth(angle, units):
