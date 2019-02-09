@@ -31,9 +31,9 @@ def test_model_update(cls):
     assert model.get_current_time() > model.get_start_time()
 
 
-@pytest.mark.skip("don't test finalize")
 @pytest.mark.parametrize("cls", models.__all__)
 def test_model_finalize(cls):
     model = models.__dict__[cls]()
     model.initialize(*model.setup())
     model.finalize()
+    assert not model._initialized
