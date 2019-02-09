@@ -3,7 +3,8 @@ Quickstart
 
 Here's the fast path to using *pymt*.
 If you want to dig deeper,
-links are provided at each step to more detailed information elsewhere.
+links are provided at each step to more detailed information
+either here in the User Guide or elsewhere.
 
 
 Install conda
@@ -139,11 +140,14 @@ as shown by the *get_output_var_names* method:
 
 With the *get_value* method,
 find the current value of the mean water discharge at the river mouth
-through its descriptive `CSDMS Standard Name`_:
+through its descriptive `CSDMS Standard Name`_.
+And because the Standard Name is long,
+let's first store it in a variable:
 
 .. code-block:: python
 
-  >>> model.get_value('channel_exit_water__volume_flow_rate')
+  >>> discharge_sn = 'channel_exit_water__volume_flow_rate'
+  >>> model.get_value(discharge_sn)
   array([ 1.1])
 
 What units are attached to this discharge value?
@@ -151,17 +155,17 @@ Find out with the *get_var_units* method:
 
 .. code-block:: python
 
-  >>> model.get_var_units('channel_exit_water__volume_flow_rate')
+  >>> model.get_var_units(discharge_sn)
   'm^3 / s'
 
 To finish, let's run the model to completion,
 storing the discharge values for future use.
 First,
-calculate how many time steps are in the model:
+calculate how many time steps remain in the model:
 
 .. code-block:: python
 
-  >>> n_steps = int(model.get_end_time() / model.get_time_step())
+  >>> n_steps = int(model.get_end_time() / model.get_time_step()) - 1
 
 
 Follow this by importing Python's `NumPy`_ library,
@@ -176,7 +180,7 @@ Now use a loop to advance the model to its end,
 storing the discharge value at each time step:
 
   >>> for t in range(n_steps):
-  ...     discharge[t] = model.get_value('channel_exit_water__volume_flow_rate')
+  ...     discharge[t] = model.get_value(discharge_sn)
   ...     model.update()
 
 Complete the model run by calling the *finalize* method:
