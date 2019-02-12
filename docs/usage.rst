@@ -55,6 +55,9 @@ before it can be used.
 .. _imported: https://docs.python.org/3/glossary.html#term-importing
 
 
+.. _instantiating-a-model:
+
+
 Instantiating a model
 ---------------------
 
@@ -89,13 +92,14 @@ The *setup* method configures a model run.
 It's used to:
 
 * set individual model input variables,
-* generate a model configuration file, and
-* create a run directory for the model.
+* generate a model configuration file for a run, and
+* make a run directory.
 
 Depending on a user's preference,
 *setup* can be invoked in different ways.
 For example,
-given the Waves instance from the previous section,
+given a Waves instance like the one created
+in :ref:`the previous section<instantiating-a-model>`,
 a basic call to *setup* would be:
 
 .. code-block:: python
@@ -130,7 +134,7 @@ to run the model in the current directory:
   >>> model.setup(cfg_dir)
 
 Here,
-we didn't need the outputs from *setup*
+we didn't use the outputs from *setup*
 because the run directory has been specified,
 and the configuration file is created within it.
 
@@ -149,8 +153,8 @@ Find the default values of the inputs by querying the
   angle_highness_factor = 0.2
   angle_asymmetry = 0.5
 
-For example,
-configure the model to use an incoming wave height of 3.5 meters:
+Configure the model to use an incoming wave height of 3.5,
+instead of the default 2.0, meters:
 
 .. code-block:: python
 
