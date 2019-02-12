@@ -2,19 +2,20 @@ language: generic
 os:
 - linux
 - osx
+env:
+  matrix:
+  - CONDA_ENV=py36
+  - CONDA_ENV=py37
+  - CONDA_ENV=lint
+  - CONDA_ENV=docs
+  global:
+    - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 matrix:
   exclude:
   - os: osx
     env: CONDA_ENV=lint
   - os: osx
     env: CONDA_ENV=docs
-env:
-  - CONDA_ENV=py36
-  - CONDA_ENV=py37
-  - CONDA_ENV=lint
-  - CONDA_ENV=docs
-  global:
-  - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 sudo: false
 before_install:
 - |
