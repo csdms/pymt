@@ -14,7 +14,7 @@ def new_rectilinear(**kwds):
     from pymt.grids import RectilinearField
 
     ndims = kwds.pop("ndims", 1)
-    shape = np.random.randint(2, 101 + 1, ndims)
+    shape = np.random.randint(3, 101 + 1, ndims)
     args = []
     for size in shape:
         args.append(np.cumsum((1.0 - np.random.random(size))))
