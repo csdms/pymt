@@ -2,8 +2,13 @@ language: generic
 os:
 - linux
 - osx
+matrix:
+  exclude:
+  - os: osx
+    env: CONDA_ENV=lint
+  - os: osx
+    env: CONDA_ENV=docs
 env:
-  matrix:
   - CONDA_ENV=py36
   - CONDA_ENV=py37
   - CONDA_ENV=lint
