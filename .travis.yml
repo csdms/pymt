@@ -42,6 +42,7 @@ install:
     conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
   fi
 - source activate test_env
+- make install
 script:
 - |
   if [[ "$CONDA_ENV" == "lint" ]]; then
@@ -50,7 +51,6 @@ script:
     sphinx-apidoc --force -o docs/api pymt *tests
     make -C docs clean html
   else
-    make install
     pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
   fi
 after_success:
