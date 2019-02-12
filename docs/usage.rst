@@ -167,8 +167,19 @@ have been updated.
 Lifecycle methods
 -----------------
 
-Initialize and finalize methods.
-Describe initialize arguments.
+The *initialize* and *finalize* methods
+are used to start and complete a model run.
+*Initialize* sets the initial conditions for a model,
+while *finalize* cleans up any resources
+allocated for the model run.
+
+*Initialize* requires a model configuration file.
+The run directory is an optional argument;
+if it's not provided, the current directory is assumed.
+
+Using the Waves model as an example,
+the steps to import, instantiate, set up,
+and initialize the model are:
 
 .. code-block:: python
 
@@ -176,6 +187,29 @@ Describe initialize arguments.
   >>> waves = Waves()
   >>> config_file, config_dir = waves.setup()
   >>> waves.initialize(config_file, dir=config_dir)
+
+Note that if the outputs from *setup*
+had been stored in a single variable,
+the values could be unpacked in the call to *initialize*:
+
+.. code-block:: python
+
+  >>> config = waves.setup()
+  >>> waves.initialize(*config)
+
+Further, if a model configuration file already exists,
+it can be passed directly to *initialize*,
+and the call to *setup* could be omitted.
+
+*Finalize* ends a model run.
+It takes no arguments:
+
+.. code-block:: python
+
+  >>> waves.finalize()
+
+No further operations can be performed on a model
+after it has been finalized.
 
 
 Getting variable names
