@@ -85,15 +85,79 @@ that are associated with a model instance in *pymt*.
 Model setup
 -----------
 
-Setup method and arguments.
+The *setup* method configures a model run.
+It's used to:
+
+* set individual model input variables,
+* generate a model configuration file, and
+* create a run directory for the model.
+
+Depending on a user's preference,
+*setup* can be invoked in different ways.
+For example,
+given the Waves instance from the previous section,
+a basic call to *setup* would be:
 
 .. code-block:: python
 
-  >>> from pymt.models import Waves
-  >>> waves = Waves()
-  >>> waves.setup()
+  >>> cfg_file, cfg_dir = model.setup()
 
-  >>> waves.setup(mean_wave_height=2.)
+This creates a model configuration file with default parameters
+in a run directory in a temporary location on the filessytem.
+It returns the name of configuration file and
+the path to the run directory:
+
+.. code-block:: python
+
+  >>> print(cfg_file, cfg_dir)
+  waves.txt /tmp/tmpeydq6usd
+
+Note that the two outputs could also be grouped
+into a single variable; e.g.:
+
+.. code-block:: python
+
+  >>> args = model.setup()
+
+Alternately,
+the run directory can be specified.
+For example,
+to run the model in the current directory:
+
+.. code-block:: python
+
+  >>> cfg_dir = '.'
+  >>> model.setup(cfg_dir)
+
+Here,
+we didn't need the outputs from *setup*
+because the run directory has been specified,
+and the configuration file is created within it.
+
+Model inputs can also be configured with *setup*.
+Find the default values of the inputs by querying the
+*parameters* property of the model:
+
+.. code-block:: python
+
+  >>> for name, value in model.parameters:
+  ...     print(name, '=', value)
+  ...
+  run_duration = 3650
+  incoming_wave_height = 2.0
+  incoming_wave_period = 7.0
+  angle_highness_factor = 0.2
+  angle_asymmetry = 0.5
+
+For example,
+configure the model to use an incoming wave height of 3.5 meters:
+
+.. code-block:: python
+
+  >>> waves.setup(cfg_dir, incoming_wave_height=3.5)
+
+Check the *parameters* property to verify that the model inputs
+have been updated.
 
 
 Lifecycle methods
