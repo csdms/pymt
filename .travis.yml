@@ -6,8 +6,16 @@ env:
   matrix:
   - CONDA_ENV=py36
   - CONDA_ENV=py37
+  - CONDA_ENV=lint
+  - CONDA_ENV=docs
   global:
-  - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
+    - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
+matrix:
+  exclude:
+  - os: osx
+    env: CONDA_ENV=lint
+  - os: osx
+    env: CONDA_ENV=docs
 sudo: false
 before_install:
 - |
@@ -27,11 +35,23 @@ install:
 - export PATH="$HOME/anaconda/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
-- conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
+- |
+  if [[ "$CONDA_ENV" == "docs" ]]; then
+    conda env create -n test_env --file docs/environment.yml
+  else
+    conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
+  fi
 - source activate test_env
-script:
 - make install
-- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml
-- make lint
+script:
+- |
+  if [[ "$CONDA_ENV" == "lint" ]]; then
+    make lint
+  elif [[ "$CONDA_ENV" == "docs" ]]; then
+    sphinx-apidoc --force -o docs/api pymt *tests
+    make -C docs clean html
+  else
+    pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
+  fi
 after_success:
   coveralls

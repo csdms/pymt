@@ -5,6 +5,7 @@ dependencies:
   - python=3.7
   - cfunits
   - coveralls
+  - deprecated
   - esmpy
   - flake8
   - jinja2
@@ -13,6 +14,8 @@ dependencies:
   - model_metadata
   - netcdf4
   - numpy
+  - pymt_hydrotrend
+  - pymt_permamodel
   - pytest
   - pytest-cov
   - pyyaml

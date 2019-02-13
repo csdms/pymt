@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import jinja2
 import six
-
 from model_metadata import MetadataNotFoundError
 
 from .bmi_metadata import PluginMetadata
@@ -141,7 +140,9 @@ def bmi_docstring(
     if isinstance(cite_as, six.string_types):
         cite_as = [cite_as]
 
-    env = jinja2.Environment(loader=jinja2.DictLoader({"docstring": _DOCSTRING}))  # nosec
+    env = jinja2.Environment(  # nosec
+        loader=jinja2.DictLoader({"docstring": _DOCSTRING})
+    )
     return env.get_template("docstring").render(
         desc=summary,
         name=name,

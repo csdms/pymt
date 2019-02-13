@@ -2,11 +2,13 @@
    :format: html
 
 
-.. image:: https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png
-    :align: center
-    :scale: 75%
-    :alt: Python Modeling Toolkit
-    :target: https://pymt.readthedocs.org/
+.. raw:: html
+
+   <p align="center">
+      <a href='https://pymt.readthedocs.org/'>
+         <img src='https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png'/>
+      </a>
+   </p>
 
 
 .. raw:: html

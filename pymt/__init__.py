@@ -3,7 +3,6 @@ from __future__ import print_function
 import numpy as np
 
 from ._version import get_versions
-from .plugin import load_pymt_plugins
 
 __version__ = get_versions()["version"]
 del get_versions
@@ -15,8 +14,3 @@ try:
 except TypeError:
     pass
 del np
-
-
-plugins = load_pymt_plugins(include_old_style=True)
-
-del load_pymt_plugins

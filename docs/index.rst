@@ -39,15 +39,16 @@ What does it look like?  Here is an example of a simple *pymt* program:
 User Guide
 ----------
 
-If you are looking for information on using *pymt* to run and couple models,
+If you are looking for information on using *pymt*
+to configure, run, and couple models,
 this part of the documentation is for you.
 
 .. toctree::
    :maxdepth: 2
 
-   Executive summary <readme>
-   installation
+   Summary <readme>
    quickstart
+   installation
    usage
    examples
 
@@ -70,6 +71,7 @@ Miscellaneous Pages
 .. toctree::
    :maxdepth: 2
 
+   conda-environments
    contributing
    authors
    history

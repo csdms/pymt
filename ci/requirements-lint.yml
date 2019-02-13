@@ -6,6 +6,7 @@ dependencies:
   - cfunits
   - coveralls
   - deprecated
+  - esmpy
   - flake8
   - jinja2
   - landlab
@@ -13,9 +14,6 @@ dependencies:
   - model_metadata
   - netcdf4
   - numpy
-  - pymt_permamodel
-  - pytest
-  - pytest-cov
   - pyyaml
   - scipy
   - scripting
