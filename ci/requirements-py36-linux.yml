@@ -1,0 +1,27 @@
+name: test_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.6
+  - cfunits
+  - coveralls
+  - deprecated
+  - esmpy
+  - flake8
+  - jinja2
+  - landlab
+  - matplotlib
+  - model_metadata
+  - netcdf4
+  - numpy
+  - pymt_cem
+  - pymt_hydrotrend
+  - pymt_permamodel
+  - pytest
+  - pytest-cov
+  - pyyaml
+  - scipy
+  - scripting
+  - shapely
+  - six
+  - xarray
