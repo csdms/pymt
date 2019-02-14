@@ -212,21 +212,74 @@ No further operations can be performed on a model
 after it has been finalized.
 
 
-Getting variable names
-----------------------
-
-
 Time methods
 ------------
+
+The start time, end time, and current time in a model
+are reported through a model's
+`Basic Model Interface`_
+and accesses in *pymt* through a set of methods,
+
+* *get_start_time*,
+* *get_end_time*, and
+* *get_current_time*.
+
+To demonstrate these methods,
+create and initialize a new instance of the Wave model:
+
+.. code-block:: python
+
+  >>> waves = Waves()
+  >>> config = waves.setup()
+  >>> waves.initialize(*config)
+
+then call these time methods with:
+
+.. code-block:: python
+
+  >>> waves.get_start_time()
+  0.0
+  >>> waves.get_end_time()
+  3650.0
+  >>> waves.get_current_time()
+  0.0
+
+Use the *get_time_units* method to see the
+units associatyed with these time values:
+
+.. code-block:: python
+
+  >>> waves.get_time_units()
+  'd'
+
+CSDMS recommends using time unit conventions from Unidata’s `UDUNITS`_ package.
+
+Finally,
+find the model time step through the 
+*get_time_step* method:
+
+.. code-block:: python
+
+  >>> waves.get_time_step()
+  1.0
+
+.. _Basic Model Interface: https://csdms.colorado.edu/wiki/BMI_Description
+.. _UDUNITS: https://www.unidata.ucar.edu/software/udunits
 
 
 Updating model state
 --------------------
 
-update method.
+Only the *update* method.
+
+
+Getting variable names
+----------------------
+
+The *get_input_var_names* and *get_output_var_names* methods.
 
 
 Getting and setting variables
 -----------------------------
 
-get_value and set_value methods.
+Only the *get_value* and *set_value* methods.
