@@ -218,14 +218,10 @@ Time methods
 The start time, end time, and current time in a model
 are reported through a model's
 `Basic Model Interface`_
-and accesses in *pymt* through a set of methods,
-
-* *get_start_time*,
-* *get_end_time*, and
-* *get_current_time*.
-
+and accessed in *pymt* through a set of three methods:
+*get_start_time*, *get_end_time*, and *get_current_time*.
 To demonstrate these methods,
-create and initialize a new instance of the Wave model:
+create and initialize a new instance of the Waves model:
 
 .. code-block:: python
 
@@ -245,7 +241,7 @@ then call these time methods with:
   0.0
 
 Use the *get_time_units* method to see the
-units associatyed with these time values:
+units associated with these time values:
 
 .. code-block:: python
 
