@@ -14,6 +14,8 @@ dependencies:
   - model_metadata
   - netcdf4
   - numpy
+  - pymt_cem
+  - pymt_child
   - pymt_hydrotrend
   - pymt_permamodel
   - pytest
