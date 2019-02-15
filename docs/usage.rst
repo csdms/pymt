@@ -229,12 +229,12 @@ then call these time methods with:
   >>> waves.get_current_time()
   0.0
 
-Use the *get_time_units* method to see the
+Use the *time_units* property to see the
 units associated with these time values:
 
 .. code-block:: python
 
-  >>> waves.get_time_units()
+  >>> waves.time_units
   'd'
 
 CSDMS recommends using time unit conventions from Unidata’s `UDUNITS`_ package.
@@ -285,25 +285,25 @@ These aren't internal variables in the model source code
 but rather variables that have `CSDMS Standard Names`_
 and are exposed through a model's `Basic Model Interface`_.
 
-The *get_input_var_names* and *get_output_var_names* methods
-are used to list the variables exposed by a model.
+The *input_var_names* and *output_var_names* properties
+list the variables exposed by a model.
 Find the variables exposed by our Waves instance:
 
 .. code-block:: python
 
-  >>> waves.get_input_var_names()
+  >>> waves.input_var_names
   ('sea_surface_water_wave__height',
-  'sea_surface_water_wave__period',
-  'sea_shoreline_wave~incoming~deepwater__ashton_et_al_approach_angle_highness_parameter',
-  'sea_shoreline_wave~incoming~deepwater__ashton_et_al_approach_angle_asymmetry_parameter')
+   'sea_surface_water_wave__period',
+   'sea_shoreline_wave~incoming~deepwater__ashton_et_al_approach_angle_highness_parameter',
+   'sea_shoreline_wave~incoming~deepwater__ashton_et_al_approach_angle_asymmetry_parameter')
   
-  >>> waves.get_output_var_names()
+  >>> waves.output_var_names
   ('sea_surface_water_wave__min_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
-  'sea_surface_water_wave__azimuth_angle_of_opposite_of_phase_velocity',
-  'sea_surface_water_wave__mean_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
-  'sea_surface_water_wave__max_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
-  'sea_surface_water_wave__height',
-  'sea_surface_water_wave__period')
+   'sea_surface_water_wave__azimuth_angle_of_opposite_of_phase_velocity',
+   'sea_surface_water_wave__mean_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
+   'sea_surface_water_wave__max_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
+   'sea_surface_water_wave__height',
+   'sea_surface_water_wave__period')
 
 In each case,
 the variable names are returned in a tuple.
