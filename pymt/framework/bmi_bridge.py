@@ -1,6 +1,7 @@
 """Bridge between BMI and a PyMT component."""
 from __future__ import print_function
 
+import ctypes
 import json
 import os
 from pprint import pformat
@@ -130,13 +131,13 @@ class _BmiCapV1(object):
     @deprecated(reason="use get_grid_face_node_connectivity")
     def get_grid_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_vertex_count(grid), dtype=int)
+            out = np.empty(self.get_grid_vertex_count(grid), dtype=ctypes.c_int)
         return _BmiCapV1._call_bmi(self.bmi.get_grid_connectivity, grid, out)
 
     @deprecated(reason="use get_grid_face_node_offset")
     def get_grid_offset(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_face_count(grid), dtype=int)
+            out = np.empty(self.get_grid_face_count(grid), dtype=ctypes.c_int)
         return _BmiCapV1._call_bmi(self.bmi.get_grid_offset, grid, out)
 
 
@@ -302,19 +303,19 @@ class _BmiCap(object):
 
     def get_grid_shape(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_ndim(grid), dtype=int)
+            out = np.empty(self.get_grid_ndim(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_shape(grid, out)
         return out
 
     def get_grid_spacing(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_ndim(grid), dtype=float)
+            out = np.empty(self.get_grid_ndim(grid), dtype=ctypes.c_double)
         self.bmi.get_grid_spacing(grid, out)
         return out
 
     def get_grid_origin(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_ndim(grid), dtype=float)
+            out = np.empty(self.get_grid_ndim(grid), dtype=ctypes.c_double)
         self.bmi.get_grid_origin(grid, out)
         return out
 
@@ -329,13 +330,13 @@ class _BmiCap(object):
 
     def get_grid_face_node_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=int)
+            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_face_nodes(grid, out)
         return out
 
     def get_grid_face_nodes(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=int)
+            out = np.empty(self.get_grid_number_of_vertices(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_face_nodes(grid, out)
         return out
 
@@ -345,25 +346,25 @@ class _BmiCap(object):
 
     def get_grid_nodes_per_face(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_number_of_faces(grid), dtype=int)
+            out = np.empty(self.get_grid_number_of_faces(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_nodes_per_face(grid, out)
         return out
 
     def get_grid_x(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_size(grid), dtype=float)
+            out = np.empty(self.get_grid_number_of_nodes(grid), dtype=float)
         self.bmi.get_grid_x(grid, out)
         return out
 
     def get_grid_y(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_size(grid), dtype=float)
+            out = np.empty(self.get_grid_number_of_nodes(grid), dtype=float)
         self.bmi.get_grid_y(grid, out)
         return out
 
     def get_grid_z(self, grid, out=None):
         if out is None:
-            out = np.empty(self.get_grid_size(grid), dtype=float)
+            out = np.empty(self.get_grid_number_of_nodes(grid), dtype=float)
         self.bmi.get_grid_z(grid, out)
         return out
 
@@ -516,7 +517,7 @@ class _BmiCap(object):
             grid_desc = {
                 # 'id': grid_id,
                 "rank": self.get_grid_ndim(grid_id),
-                "size": self.get_grid_size(grid_id),
+                "size": self.get_grid_number_of_nodes(grid_id),
                 "type": self.get_grid_type(grid_id),
             }
             grids[grid_id] = grid_desc
