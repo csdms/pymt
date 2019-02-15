@@ -312,20 +312,42 @@ in order to aid in semantic matching between models.
 In practice,
 it's often convenient to use a common short name for a variable
 instead of its Standard Name.
-The variable ``sea_surface_water_wave__height``
-is both an input and an output variable in Waves.
-Store its name in a more compact local variable
-for use in the next section:
-
-.. code-block:: python
-
-  >>> h = 'sea_surface_water_wave__height'
 
 
 Getting and setting variables
 -----------------------------
 
-Only the *get_value* and *set_value* methods.
+The values of variables exposed by a model
+can be accessed with the *get_value* method
+and modified with the *set_value* method.
+Each of these methods takes a variable name
+(a `CSDMS Standard Name`_) as input.
+
+As shown in the section above,
+the variable ``sea_surface_water_wave__height``
+is both an input and an output variable in Waves.
+Find its current value:
+
+.. code-block:: python
+
+  >>> waves.get_value('sea_surface_water_wave__height')
+  array([ 2.])
+
+In *pymt*,
+variable values are stored as `NumPy`_ arrays.
+
+Assign a new wave height value in the model:
+
+.. code-block:: python
+
+  >>> waves.set_value('sea_surface_water_wave__height', 3.5)
+
+and check the result with *get_value*:
+
+.. code-block:: python
+
+  >>> waves.get_value('sea_surface_water_wave__height')
+  array([ 3.5])
 
 
 .. Links
@@ -341,3 +363,5 @@ Only the *get_value* and *set_value* methods.
 .. _Basic Model Interface: https://csdms.colorado.edu/wiki/BMI_Description
 .. _UDUNITS: https://www.unidata.ucar.edu/software/udunits
 .. _CSDMS Standard Names: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
+.. _CSDMS Standard Name: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
+.. _NumPy: http://www.numpy.org/
