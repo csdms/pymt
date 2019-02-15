@@ -13,7 +13,7 @@ dependencies:
   - model_metadata
   - netcdf4
   - numpy
-  - pymt_permamodel
+  - pymt_permamodel=0.1.1
   - pytest
   - pytest-cov
   - pyyaml
