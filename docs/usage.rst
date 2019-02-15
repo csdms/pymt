@@ -18,9 +18,6 @@ Install them with:
 
     $ conda install pymt_cem
 
-.. _CEM: https://csdms.colorado.edu/wiki/Model:CEM
-.. _Waves: https://csdms.colorado.edu/wiki/Model_help:Waves
-
 
 Loading *pymt*
 --------------
@@ -51,9 +48,6 @@ In either case,
 *pymt* must always be imported into a Python session
 before it can be used.
 
-.. _package: https://docs.python.org/3/glossary.html#term-package
-.. _imported: https://docs.python.org/3/glossary.html#term-importing
-
 
 .. _instantiating-a-model:
 
@@ -78,11 +72,6 @@ as well as programs (called `methods`_)
 that allow access to these data.
 The sections below describe some of the data and methods
 that are associated with a model instance in *pymt*.
-
-.. _instance: https://en.wikipedia.org/wiki/Instance_(computer_science)
-.. _object: https://docs.python.org/3/glossary.html#term-object
-.. _properties: https://en.wikipedia.org/wiki/Property_(programming)
-.. _methods: https://en.wikipedia.org/wiki/Method_(computer_programming)
 
 
 Model setup
@@ -259,9 +248,6 @@ find the model time step through the
   >>> waves.get_time_step()
   1.0
 
-.. _Basic Model Interface: https://csdms.colorado.edu/wiki/BMI_Description
-.. _UDUNITS: https://www.unidata.ucar.edu/software/udunits
-
 
 Updating model state
 --------------------
@@ -335,10 +321,23 @@ for use in the next section:
 
   >>> h = 'sea_surface_water_wave__height'
 
-.. _CSDMS Standard Names: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
-
 
 Getting and setting variables
 -----------------------------
 
 Only the *get_value* and *set_value* methods.
+
+
+.. Links
+
+.. _CEM: https://csdms.colorado.edu/wiki/Model:CEM
+.. _Waves: https://csdms.colorado.edu/wiki/Model_help:Waves
+.. _package: https://docs.python.org/3/glossary.html#term-package
+.. _imported: https://docs.python.org/3/glossary.html#term-importing
+.. _instance: https://en.wikipedia.org/wiki/Instance_(computer_science)
+.. _object: https://docs.python.org/3/glossary.html#term-object
+.. _properties: https://en.wikipedia.org/wiki/Property_(programming)
+.. _methods: https://en.wikipedia.org/wiki/Method_(computer_programming)
+.. _Basic Model Interface: https://csdms.colorado.edu/wiki/BMI_Description
+.. _UDUNITS: https://www.unidata.ucar.edu/software/udunits
+.. _CSDMS Standard Names: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
