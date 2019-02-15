@@ -266,13 +266,76 @@ find the model time step through the
 Updating model state
 --------------------
 
-Only the *update* method.
+A model can be advanced through time,
+one step at a time,
+with the the *update* method.
+
+Update the instance of Waves created in the previous section
+by a single time step,
+checking the time before and after the update:
+
+.. code-block:: python
+
+  >>> waves.get_current_time()
+  0.0
+  >>> waves.update()
+  >>> waves.get_current_time()
+  1.0
+
+Although we verified that the model time has been updated,
+it would be more interesting to see model variables change.
+In the next two sections,
+we'll find what variables a model exposes,
+and how to get their values.
 
 
 Getting variable names
 ----------------------
 
-The *get_input_var_names* and *get_output_var_names* methods.
+What variables does a model expose for input and output,
+for exchange with other models?
+These aren't internal variables in the model source code
+(like loop counters),
+but rather variables that have `CSDMS Standard Names`_
+and are exposed through a model's `Basic Model Interface`_.
+
+The *get_input_var_names* and *get_output_var_names* methods
+are used to list the variables exposed by a model.
+Find the variables exposed by our Waves instance:
+
+.. code-block:: python
+
+  >>> waves.get_input_var_names()
+  ('sea_surface_water_wave__height',
+  'sea_surface_water_wave__period',
+  'sea_shoreline_wave~incoming~deepwater__ashton_et_al_approach_angle_highness_parameter',
+  'sea_shoreline_wave~incoming~deepwater__ashton_et_al_approach_angle_asymmetry_parameter')
+  
+  >>> waves.get_output_var_names()
+  ('sea_surface_water_wave__min_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
+  'sea_surface_water_wave__azimuth_angle_of_opposite_of_phase_velocity',
+  'sea_surface_water_wave__mean_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
+  'sea_surface_water_wave__max_of_increment_of_azimuth_angle_of_opposite_of_phase_velocity',
+  'sea_surface_water_wave__height',
+  'sea_surface_water_wave__period')
+
+In each case,
+the variable names are returned in a tuple.
+The names tend to be quite descriptive,
+in order to aid in semantic matching between models.
+In practice,
+it's often convenient to use a common short name for a variable
+instead of its Standard Name.
+The variable ``sea_surface_water_wave__height``
+is both an input and an output variable in Waves.
+Store its name in a more compact local variable
+for use in the next section:
+
+.. code-block:: python
+
+  >>> h = 'sea_surface_water_wave__height'
+
+.. _CSDMS Standard Names: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
 
 
 Getting and setting variables
