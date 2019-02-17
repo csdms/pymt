@@ -28,11 +28,11 @@ def test_time_wrap():
     """Test wrapping BMI time methods."""
     bmi = Bmi()
 
-    assert bmi.get_time_units() == "h"
-    assert bmi.get_start_time() == approx(1.0)
-    assert bmi.get_current_time() == approx(10.5)
-    assert bmi.get_end_time() == approx(72.0)
-    assert bmi.get_time_step() == approx(0.25)
+    assert bmi.time_units == "h"
+    assert bmi.start_time == approx(1.0)
+    assert bmi.time == approx(10.5)
+    assert bmi.end_time == approx(72.0)
+    assert bmi.time_step == approx(0.25)
     assert bmi.time_units == "h"
 
 
@@ -40,11 +40,22 @@ def test_time_conversion():
     """Test unit conversion through units keyword."""
     bmi = Bmi()
 
-    assert bmi.get_start_time(units="h") == approx(1.0)
+    bmi.time_units = "h"
+    assert bmi.start_time == approx(1.0)
 
-    assert bmi.get_start_time(units="min") == approx(60.0)
-    assert bmi.get_current_time(units="min") == approx(630.0)
-    assert bmi.get_end_time(units="d") == approx(3)
+    bmi.time_units = "min"
+    assert bmi.time_units == "min"
+    assert bmi.start_time == approx(60.0)
+    assert bmi.time == approx(630.0)
+
+    bmi.time_units = "d"
+    assert bmi.end_time == approx(3)
+
+    # assert bmi.get_start_time(units="h") == approx(1.0)
+
+    # assert bmi.get_start_time(units="min") == approx(60.0)
+    # assert bmi.get_current_time(units="min") == approx(630.0)
+    # assert bmi.get_end_time(units="d") == approx(3)
 
 
 def test_change_time_units():
@@ -55,10 +66,11 @@ def test_change_time_units():
     bmi.time_units = "min"
     assert bmi.time_units == "min"
 
-    assert bmi.get_start_time() == approx(60.0)
-    assert bmi.get_current_time() == approx(630.0)
-    assert bmi.get_end_time() == approx(72 * 60)
+    assert bmi.start_time == approx(60.0)
+    assert bmi.time == approx(630.0)
+    assert bmi.end_time == approx(72 * 60)
 
-    assert bmi.get_start_time(units="h") == approx(1.0)
-    assert bmi.get_current_time(units="h") == approx(10.5)
-    assert bmi.get_end_time(units="h") == approx(72)
+    bmi.time_units = "h"
+    assert bmi.start_time == approx(1.0)
+    assert bmi.time == approx(10.5)
+    assert bmi.end_time == approx(72)
