@@ -418,8 +418,7 @@ class _BmiCap(object):
             self._time_converter
         except AttributeError:
             self._time_converter = UnitConverter(self.bmi.get_time_units())
-        finally:
-            return self._time_converter(time, self.time_units)
+        return self._time_converter(time, self.time_units)
 
     @property
     def start_time(self):
