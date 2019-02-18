@@ -17,7 +17,6 @@ Examples
 --------
 Create an event that prints, "hello".
 
->>> from __future__ import print_function
 >>> class PrintHello(object):
 ...     def initialize(self):
 ...         print("hello from initialize")
@@ -46,8 +45,6 @@ hello!
 hello!
 hello from finalize
 """
-from __future__ import print_function
-
 from six import StringIO
 from six.moves.configparser import ConfigParser
 

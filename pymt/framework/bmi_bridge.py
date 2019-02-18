@@ -1,6 +1,4 @@
 """Bridge between BMI and a PyMT component."""
-from __future__ import print_function
-
 import ctypes
 import json
 import os

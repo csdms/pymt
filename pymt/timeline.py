@@ -3,8 +3,6 @@
 
 Examples
 --------
->>> from __future__ import print_function
-
 >>> timeline = Timeline()
 >>> timeline.add_recurring_event('event 1', 1.)
 >>> timeline.add_recurring_event('event 2', .3)
