@@ -97,7 +97,7 @@ For reference, show the current time in the model.
 
 .. code-block:: python
 
-  >>> model.get_current_time()
+  >>> model.time
   0.0
 
 Now call the *update* method to advance the model
@@ -106,16 +106,16 @@ by a single time step:
 .. code-block:: python
 
   >>> model.update()
-  >>> model.get_current_time()
+  >>> model.time
   1.0
 
 What units are associated with this time step?
 (Picoseconds? `Parsecs`_?)
-Find out with the *get_time_units* method:
+Find out with the *time_units* property:
 
 .. code-block:: python
 
-  >>> model.get_time_units()
+  >>> model.time_units
   'd'
 
 The Hydrotrend model exposes a set of output variables,
@@ -165,7 +165,7 @@ calculate how many time steps remain in the model:
 
 .. code-block:: python
 
-  >>> n_steps = int(model.get_end_time() / model.get_time_step()) - 1
+  >>> n_steps = int(model.end_time / model.time_step) - 1
 
 
 Follow this by importing Python's `NumPy`_ library,
