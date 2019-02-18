@@ -20,11 +20,9 @@ class BmiTimeInterpolator(object):
             self._interpolators[name] = TimeInterpolator(method=method)
 
     def add_data(self):
-        time = self.get_current_time()
-
         for name in self._interpolators:
             try:
-                self._interpolators[name].add_data([(time, self.get_value(name))])
+                self._interpolators[name].add_data([(self.time, self.get_value(name))])
             except BmiError:
                 self._interpolators.pop(name)
                 print("unable to get value for {name}. ignoring".format(name=name))
@@ -43,10 +41,10 @@ class BmiTimeInterpolator(object):
                     pass
 
             self.reset()
-            while self.get_current_time() < then:
-                if self.get_current_time() + self.get_time_step() > then:
+            while self.time < then:
+                if self.time + self.time_step > then:
                     self.add_data()
                 self.update()
 
-            if self.get_current_time() > then:
+            if self.time > then:
                 self.add_data()

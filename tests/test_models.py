@@ -32,7 +32,7 @@ def test_model_update(cls):
     model = cls()
     model.initialize(*model.setup())
     model.update()
-    # assert model.get_current_time() > model.get_start_time()
+    # assert model.time > model.start_time
 
 
 @pytest.mark.parametrize("cls", MODELS)

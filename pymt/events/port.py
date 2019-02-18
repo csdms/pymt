@@ -1,7 +1,5 @@
 """Wrap a port as a :class:`Timeline` event.
 """
-from __future__ import print_function
-
 import os
 import sys
 

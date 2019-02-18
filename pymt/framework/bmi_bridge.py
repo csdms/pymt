@@ -1,6 +1,4 @@
 """Bridge between BMI and a PyMT component."""
-from __future__ import print_function
-
 import ctypes
 import json
 import os
@@ -13,28 +11,13 @@ from deprecated import deprecated
 from scripting.contexts import cd
 
 from ..errors import BmiError
+from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
 from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
-
-
-def transform_math_to_azimuth(angle, units):
-    angle *= -1.0
-    if units == Units("rad"):
-        angle += np.pi * 0.5
-    else:
-        angle += 90.0
-
-
-def transform_azimuth_to_math(angle, units):
-    angle *= -1.0
-    if units == Units("rad"):
-        angle -= np.pi * 0.5
-    else:
-        angle -= 90.0
 
 
 class DataValues(object):
@@ -384,35 +367,54 @@ class _BmiCap(object):
 
     @property
     def time_units(self):
-        return self._time_units or self.get_time_units()
+        return self._time_units or self.bmi.get_time_units()
         # return self.get_time_units()
 
     @time_units.setter
     def time_units(self, new_units):
         self._time_units = new_units
 
-    def get_time_units(self):
-        return self.bmi.get_time_units()
+    # def get_time_units(self):
+    #     return self.bmi.get_time_units()
 
-    def get_current_time(self, units=None):
-        time = self.bmi.get_current_time()
+    @property
+    def time(self):
+        return self._conform_time(self.bmi.get_current_time())
 
-        return self.time_in(time, units)
+    def _conform_time(self, time):
+        try:
+            self._time_converter
+        except AttributeError:
+            self._time_converter = UnitConverter(self.bmi.get_time_units())
+        return self._time_converter(time, self.time_units)
 
-    def get_start_time(self, units=None):
-        time = self.bmi.get_start_time()
+    @property
+    def start_time(self):
+        return self._conform_time(self.bmi.get_start_time())
 
-        return self.time_in(time, units)
+    @property
+    def end_time(self):
+        return self._conform_time(self.bmi.get_end_time())
 
-    def get_end_time(self, units=None):
-        time = self.bmi.get_end_time()
+    @property
+    def time_step(self):
+        return self._conform_time(self.bmi.get_time_step())
 
-        return self.time_in(time, units)
+    # def get_current_time(self, units=None):
+    #     time = self.bmi.get_current_time()
+    #     return self.time_in(time, units)
 
-    def get_time_step(self, units=None):
-        time = self.bmi.get_time_step()
+    # def get_start_time(self, units=None):
+    #     time = self.bmi.get_start_time()
+    #     return self.time_in(time, units)
 
-        return self.time_in(time, units)
+    # def get_end_time(self, units=None):
+    #     time = self.bmi.get_end_time()
+    #     return self.time_in(time, units)
+
+    # def get_time_step(self, units=None):
+    #     time = self.bmi.get_time_step()
+    #     return self.time_in(time, units)
 
     def time_in(self, time, units):
         if units is None:
@@ -420,7 +422,7 @@ class _BmiCap(object):
             # return time
 
         try:
-            units_str = self.get_time_units()
+            units_str = self.time_units
             # units_str = self.time_units
         except (AttributeError, NotImplementedError):
             pass
@@ -438,7 +440,7 @@ class _BmiCap(object):
             return time
 
         try:
-            # units_str = self.get_time_units()
+            # units_str = self.time_units
             units_str = self.time_units
         except (AttributeError, NotImplementedError):
             pass
@@ -530,11 +532,11 @@ class _BmiCap(object):
         out_vars.sort()
 
         times = {
-            "start": self.get_start_time(),
-            "end": self.get_end_time(),
-            "current": self.get_current_time(),
+            "start": self.start_time,
+            "end": self.end_time,
+            "current": self.time,
             # 'time_step': self.get_time_step(),
-            "units": self.get_time_units(),
+            "units": self.time_units,
         }
         return {
             "name": self.name,
