@@ -39,6 +39,7 @@ can be imported individually:
 .. code-block:: python
 
   >>> from pymt.models import Waves
+  => models: Cem, Waves
 
 Either technique is acceptable,
 but there's a slight Pythonic preference
@@ -147,7 +148,7 @@ instead of the default 2.0, meters:
 
 .. code-block:: python
 
-  >>> waves.setup(cfg_dir, incoming_wave_height=3.5)
+  >>> model.setup(cfg_dir, incoming_wave_height=3.5)
 
 Check the *parameters* property to verify that the model inputs
 have been updated.
