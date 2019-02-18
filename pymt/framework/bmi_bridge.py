@@ -13,43 +13,13 @@ from deprecated import deprecated
 from scripting.contexts import cd
 
 from ..errors import BmiError
+from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
 from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
-
-
-class UnitConverter(object):
-
-    """Convert values in some units to another."""
-
-    def __init__(self, from_units):
-        self._from_units = Units(from_units)
-
-    def __call__(self, time, units):
-        to_units = Units(units)
-        if self._from_units.equals(to_units):
-            return time
-        else:
-            return Units.conform(time, self._from_units, to_units)
-
-
-def transform_math_to_azimuth(angle, units):
-    angle *= -1.0
-    if units == Units("rad"):
-        angle += np.pi * 0.5
-    else:
-        angle += 90.0
-
-
-def transform_azimuth_to_math(angle, units):
-    angle *= -1.0
-    if units == Units("rad"):
-        angle -= np.pi * 0.5
-    else:
-        angle -= 90.0
 
 
 class DataValues(object):
