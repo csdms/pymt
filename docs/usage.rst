@@ -201,15 +201,15 @@ No further operations can be performed on a model
 after it has been finalized.
 
 
-Time methods
-------------
+Time
+----
 
 The start time, end time, and current time in a model
 are reported through a model's
 `Basic Model Interface`_
-and accessed in *pymt* through a set of three methods:
-*get_start_time*, *get_end_time*, and *get_current_time*.
-To demonstrate these methods,
+and made available in *pymt* through three properties:
+*start_time*, *end_time*, and *time*.
+To demonstrate these properties,
 create and initialize a new instance of the Waves model:
 
 .. code-block:: python
@@ -218,15 +218,15 @@ create and initialize a new instance of the Waves model:
   >>> config = waves.setup()
   >>> waves.initialize(*config)
 
-then call these time methods with:
+then access these time properties with:
 
 .. code-block:: python
 
-  >>> waves.get_start_time()
+  >>> waves.start_time
   0.0
-  >>> waves.get_end_time()
+  >>> waves.end_time
   3650.0
-  >>> waves.get_current_time()
+  >>> waves.time
   0.0
 
 Use the *time_units* property to see the
@@ -241,11 +241,11 @@ CSDMS recommends using time unit conventions from Unidata’s `UDUNITS`_ package
 
 Finally,
 find the model time step through the 
-*get_time_step* method:
+*time_step* property:
 
 .. code-block:: python
 
-  >>> waves.get_time_step()
+  >>> waves.time_step
   1.0
 
 
@@ -262,10 +262,10 @@ checking the time before and after the update:
 
 .. code-block:: python
 
-  >>> waves.get_current_time()
+  >>> waves.time
   0.0
   >>> waves.update()
-  >>> waves.get_current_time()
+  >>> waves.time
   1.0
 
 Although we verified that the model time has been updated,
