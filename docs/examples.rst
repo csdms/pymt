@@ -19,20 +19,15 @@ have to first install Jupyter notebook:
 Single Models
 -------------
 
-.. toctree::
-   :titlesonly:
+* :doc:`Frost Number Model <demos/frost_number>` (macOS, Linux, Windows)
+* :doc:`Kudryavtsev Model <demos/ku>` (macOS, Linux, Windows)
+* :doc:`Coastline Evolution Model <demos/cem>` (macOS, Linux)
+* :doc:`Hydrotrend<demos/hydrotrend>` (macOS, Linux)
+* :doc:`Sedflux3D <demos/sedflux3d>` (macOS, Linux)
+* :doc:`Flexural Subsidence <demos/subside>` (macOS, Linux)
 
-   demos/frost_number
-   demos/ku
-   demos/cem
-   demos/hydrotrend
-   demos/sedflux3d
-   demos/subside
 
 Coupled Models
 --------------
 
-.. toctree::
-   :titlesonly:
-
-   demos/cem_and_waves
+* :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` (macOS, Linux)
