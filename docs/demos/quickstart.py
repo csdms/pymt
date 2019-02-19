@@ -11,12 +11,12 @@ model = Hydrotrend()
 cfg_file, cfg_dir = model.setup()
 model.initialize(cfg_file, cfg_dir)
 
-model.get_current_time()
+model.time
 
 model.update()
-model.get_current_time()
+model.time
 
-model.get_time_units()
+model.time_units
 
 for var in model.get_output_var_names():
     print(var)
@@ -26,7 +26,7 @@ model.get_value(discharge_sn)
 
 model.get_var_units(discharge_sn)
 
-n_steps = int(model.get_end_time() / model.get_time_step()) - 1
+n_steps = int(model.end_time / model.time_step) - 1
 discharge = np.empty(n_steps)
 for t in range(n_steps):
     discharge[t] = model.get_value(discharge_sn)
