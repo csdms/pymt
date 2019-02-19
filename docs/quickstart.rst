@@ -57,6 +57,7 @@ session and importing *pymt*:
 .. code-block:: python
 
     >>> import pymt
+    => models: Hydrotrend
 
 Keep this Python session open;
 we'll use it for the examples that follow.
@@ -74,7 +75,6 @@ import it into your Python session and create an `instance`_:
 .. code-block:: python
 
   >>> from pymt.models import Hydrotrend
-  => models: Hydrotrend
   >>> model = Hydrotrend()
 
 To run a model,
