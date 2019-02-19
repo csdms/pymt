@@ -56,7 +56,7 @@ session and importing *pymt*:
 
 .. code-block:: python
 
-    >>> import pymt
+    >>> import pymt.models
     => models: Hydrotrend
 
 Keep this Python session open;
