@@ -77,6 +77,21 @@ Miscellaneous Pages
    history
    license
 
+
+Help
+----
+
+If you encounter any problems when using *pymt*,
+or if you find any bugs,
+please contact us at csdmssupport@colorado.edu.
+Or,
+if you're comfortable using GitHub,
+feel free to open an `issue`_
+in the *pymt* GitHub repository.
+
+.. _issue: https://github.com/csdms/pymt/issues
+
+
 Indices and tables
 ==================
 * :ref:`genindex`
