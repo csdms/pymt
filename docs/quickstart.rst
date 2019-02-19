@@ -56,7 +56,7 @@ session and importing *pymt*:
 
 .. code-block:: python
 
-    >>> import pymt
+    >>> import pymt.models
     => models: Hydrotrend
 
 Keep this Python session open;
@@ -212,7 +212,7 @@ Then set up a line plot of the discharge values:
 
 .. code-block:: python
 
-  >>> plt.plot(discharge, 'b')
+  >>> plt.plot(discharge, 'r')
 
 Nothing appears on the screen yet; this statement only
 configures the plot.
