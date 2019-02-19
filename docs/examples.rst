@@ -25,7 +25,6 @@ Single Models
    demos/frost_number
    demos/ku
    demos/cem
-   demos/child
    demos/hydrotrend
    demos/sedflux3d
    demos/subside
@@ -37,4 +36,3 @@ Coupled Models
    :titlesonly:
 
    demos/cem_and_waves
-   demos/sedflux3d_and_child
