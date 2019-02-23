@@ -4,7 +4,7 @@ and importing *pymt*:
 
 .. code-block:: python
 
-    >>> import pymt
+    >>> import pymt.models
     => models: (none)
 
 By default, no models are installed with *pymt*.
