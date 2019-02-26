@@ -10,8 +10,8 @@ to the list of enabled conda channels on your machine:
 
     $ conda config --add channels conda-forge
 
-We advise installing *pymt* into a conda environment
-(see the :doc:`conda-environments` section).
+We advise installing *pymt* into a
+:doc:`conda environment<conda-environments>`.
 Conda environments can easily be created and discarded.
 Create an environment for *pymt* with:
 
