@@ -43,6 +43,12 @@ If you are looking for information on using *pymt*
 to configure, run, and couple models,
 this part of the documentation is for you.
 
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+      Summary <readme>
+
 * :doc:`Summary <readme>`
 
 .. toctree::

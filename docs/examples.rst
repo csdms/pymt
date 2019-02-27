@@ -31,3 +31,21 @@ Coupled Models
 --------------
 
 * :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` (macOS, Linux)
+
+..
+   Sphinx emits a warning if documents aren't in a toctree.
+   Make a hidden toctree for the items above.
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+      <demos/frost_number>
+      <demos/ku>
+      <demos/cem>
+      <demos/hydrotrend>
+      <demos/sedflux3d>
+      <demos/subside>
+      <demos/child>
+      <demos/cem_and_waves>
+      <demos/sedflux3d_and_child>
