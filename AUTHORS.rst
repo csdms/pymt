@@ -11,4 +11,7 @@ Development Leads
 Contributors
 ------------
 
-Your name here!
+* Niels Drost
+* Albert Kettner
+* Irina Overeem
+* Scott Stewart

@@ -7,12 +7,13 @@ Installation
 There are two ways to install *pymt* on your local machine:
 
 * :ref:`stable-release`
-* :ref:`from-source`
+* :ref:`from-source` (advanced option)
 
 If you plan to use *pymt* to run and couple models,
 installing a :ref:`stable release<stable-release>`
 is a good option.
 However, if you intend to develop with *pymt*,
+possibly modifying it,
 it's best to install it
 :ref:`from source<from-source>`.
 
