@@ -43,10 +43,11 @@ If you are looking for information on using *pymt*
 to configure, run, and couple models,
 this part of the documentation is for you.
 
+* :doc:`Summary <readme>`
+
 .. toctree::
    :maxdepth: 2
 
-   Summary <readme>
    quickstart
    installation
    usage

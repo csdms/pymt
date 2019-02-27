@@ -40,9 +40,6 @@
 
    </p>
 
-Summary
-=======
-
 PyMT is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
 (CSDMS), that provides the necessary tools used for the coupling of models
