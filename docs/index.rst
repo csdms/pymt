@@ -58,6 +58,7 @@ this part of the documentation is for you.
    installation
    usage
    examples
+   glossary
 
 
 API Reference
