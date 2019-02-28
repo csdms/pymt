@@ -60,7 +60,8 @@ can be found in the `Python Glossary`_.
    conda environment
 
       A :term:`conda` sub-installation that isolates a group of
-      packages from the main conda installation.
+      packages from the main conda installation. See also
+      :doc:`conda-environments`.
 
    configuration file
 
