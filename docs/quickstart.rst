@@ -15,8 +15,6 @@ that contains a comprehensive set of packages for scientific computing.
 If you don't have conda installed, the `Anaconda installation guide`_
 can help you through the process.
 
-.. _Anaconda installation guide: http://docs.anaconda.com/anaconda/install/
-
 
 Install *pymt*
 --------------
@@ -58,7 +56,6 @@ session and importing *pymt*:
 Keep this Python session open;
 we'll use it for the examples that follow.
 
-.. _Hydrotrend: https://csdms.colorado.edu/wiki/Model:HydroTrend
 
 .. _run-a-model:
 
@@ -185,8 +182,6 @@ Complete the model run by calling the *finalize* method:
 
   >>> model.finalize()
 
-.. _Parsecs: https://www.esquire.com/entertainment/movies/a20967903/solo-star-wars-kessel-distance-plot-hole/
-
 
 View results
 ------------
@@ -233,4 +228,10 @@ Jupyter Notebook.
 An expanded description of the *pymt* methods used in this example
 can be found in the :doc:`usage` section.
 
+..
+   Links
+
+.. _Anaconda installation guide: http://docs.anaconda.com/anaconda/install/
+.. _Hydrotrend: https://csdms.colorado.edu/wiki/Model:HydroTrend
+.. _Parsecs: https://www.esquire.com/entertainment/movies/a20967903/solo-star-wars-kessel-distance-plot-hole/
 .. _variety: https://matplotlib.org/gallery/index.html
