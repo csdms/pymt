@@ -22,9 +22,9 @@ Install them with:
 Loading *pymt*
 --------------
 
-*pymt* is distributed as a Python `package`_.
+*pymt* is distributed as a Python :term:`package`.
 To use *pymt*,
-it has to be `imported`_ into a Python session.
+it has to be :term:`imported <import>` into a Python session.
 For example,
 the entire package can be loaded with a single import:
 
@@ -57,8 +57,8 @@ Instantiating a model
 ---------------------
 
 After importing a *pymt* model into a Python session,
-you can create an `instance`_  of it
-(also known as an `object`_):
+you can create an :term:`instance` of it
+(also known as an :term:`object`):
 
 .. code-block:: python
 
@@ -67,9 +67,9 @@ you can create an `instance`_  of it
 It is through an instance
 that we can configure, interact with, and run a model in *pymt*.
 The instance we've created here, ``model``, contains information
-(called `properties`_ or data) about the Waves model
+(called properties or :term:`data`) about the Waves model
 (e.g., its inputs and outputs, its time step, its spatial domain),
-as well as programs (called `methods`_)
+as well as programs (called :term:`methods <method>`)
 that allow access to these data.
 The sections below describe some of the data and methods
 that are associated with a model instance in *pymt*.
@@ -89,14 +89,14 @@ Depending on a user's preference,
 *setup* can be invoked in different ways.
 For example,
 given a Waves instance like the one created
-in :ref:`the previous section<instantiating-a-model>`,
+in the previous section,
 a basic call to *setup* would be:
 
 .. code-block:: python
 
   >>> cfg_file, cfg_dir = model.setup()
 
-This creates a model configuration file with default parameters
+This creates a :term:`model configuration file` with default parameters
 in a run directory in a temporary location on the filessytem.
 It returns the name of configuration file and
 the path to the run directory:
@@ -207,7 +207,7 @@ Time
 
 The start time, end time, and current time in a model
 are reported through a model's
-`Basic Model Interface`_
+:term:`Basic Model Interface <Basic Model Interface (BMI)>`
 and made available in *pymt* through three properties:
 *start_time*, *end_time*, and *time*.
 To demonstrate these properties,
@@ -283,8 +283,9 @@ What variables does a model expose for input and output,
 for exchange with other models?
 These aren't internal variables in the model source code
 (like loop counters),
-but rather variables that have `CSDMS Standard Names`_
-and are exposed through a model's `Basic Model Interface`_.
+but rather variables that have CSDMS :term:`Standard Names`
+and are exposed through a model's
+:term:`Basic Model Interface <Basic Model Interface (BMI)>`.
 
 The *input_var_names* and *output_var_names* properties
 list the variables exposed by a model.
@@ -322,7 +323,7 @@ The values of variables exposed by a model
 can be accessed with the *get_value* method
 and modified with the *set_value* method.
 Each of these methods takes a variable name
-(a `CSDMS Standard Name`_) as input.
+(a CSDMS :term:`Standard Name <Standard Names>`) as input.
 
 As shown in the section above,
 the variable ``sea_surface_water_wave__height``
@@ -335,7 +336,7 @@ Find its current value:
   array([ 2.])
 
 In *pymt*,
-variable values are stored as `NumPy`_ arrays.
+variable values are stored as :term:`NumPy` arrays.
 
 Assign a new wave height value in the model:
 
@@ -355,14 +356,4 @@ and check the result with *get_value*:
 
 .. _CEM: https://csdms.colorado.edu/wiki/Model:CEM
 .. _Waves: https://csdms.colorado.edu/wiki/Model_help:Waves
-.. _package: https://docs.python.org/3/glossary.html#term-package
-.. _imported: https://docs.python.org/3/glossary.html#term-importing
-.. _instance: https://en.wikipedia.org/wiki/Instance_(computer_science)
-.. _object: https://docs.python.org/3/glossary.html#term-object
-.. _properties: https://en.wikipedia.org/wiki/Property_(programming)
-.. _methods: https://en.wikipedia.org/wiki/Method_(computer_programming)
-.. _Basic Model Interface: https://csdms.colorado.edu/wiki/BMI_Description
 .. _UDUNITS: https://www.unidata.ucar.edu/software/udunits
-.. _CSDMS Standard Names: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
-.. _CSDMS Standard Name: https://csdms.colorado.edu/wiki/CSDMS_Standard_Names
-.. _NumPy: http://www.numpy.org/

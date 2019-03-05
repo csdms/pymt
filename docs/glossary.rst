@@ -75,6 +75,11 @@ can be found in the `Python Glossary`_.
 
       Information held by an :term:`object`.
 
+   import
+
+      The process of bringing code from a Python :term:`module` into
+      another module or into an interactive Python session.
+
    instance
 
       See :term:`object`.
@@ -95,6 +100,11 @@ can be found in the `Python Glossary`_.
       solved numerically. For more information, see, for example,
       https://en.wikipedia.org/wiki/Numerical_modeling_(geology).
 
+   model configuration file
+
+      A file, usually in a text-based format, that lists the tunable
+      parameters of a model and supplies their initial values.
+
    model coupling
 
       Models are *coupled* when they exchange inputs and outputs,
@@ -104,6 +114,10 @@ can be found in the `Python Glossary`_.
       one model are used as inputs for another model, which in turn
       supplies its outputs to the first model as inputs, producing a
       feedback.
+
+   module
+
+      A file (with the ``.py`` extension) that contains Python code.
 
    NumPy
 
@@ -115,6 +129,19 @@ can be found in the `Python Glossary`_.
       A variable that is a concrete example of a
       :term:`class`. Objects have :term:`data` and
       :term:`methods<method>` that act upon those data.
+
+   package
+
+      A directory of Python :term:`modules <module>` that contains a
+      :term:`package definition file`. Packages can be installed into
+      a Python distribution and :term:`imported <import>` into a
+      Python session. Packages may define subpackages, each with their
+      own package definition file.
+
+   package definition file
+
+      A file named ``__init__.py`` that denotes a directory contains a
+      Python :term:`package`.
 
    Standard Names
 
