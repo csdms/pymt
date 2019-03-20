@@ -79,7 +79,10 @@ class SetupMixIn(object):
 
     @property
     def author(self):
-        return self._meta.info["author"]
+        author = self._meta.info.get("author", self._meta.info.get("authors", ""))
+        if isinstance(author, str):
+            author = (author,)
+        return tuple(author)
 
     @property
     def email(self):
@@ -87,7 +90,7 @@ class SetupMixIn(object):
 
     @property
     def contact(self):
-        contact = self.author
+        contact = self.author[0]
         email = self.email
         if email != "-":
             contact = "{name} <{email}>".format(name=contact, email=email)
