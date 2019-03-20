@@ -21,4 +21,7 @@ def test_author_as_list(key, iter):
 @pytest.mark.parametrize("key", ("author", "authors"))
 @pytest.mark.parametrize("iter", (tuple, list))
 def test_author_multiple_authors(key, iter):
-    assert _parse_author_info({key: iter(("John Cleese", "Eric Idle"))}) == ("John Cleese", "Eric Idle")
+    assert _parse_author_info({key: iter(("John Cleese", "Eric Idle"))}) == (
+        "John Cleese",
+        "Eric Idle",
+    )
