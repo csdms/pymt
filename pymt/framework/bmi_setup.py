@@ -12,6 +12,14 @@ from scripting.contexts import cd
 from .bmi_metadata import PluginMetadata
 
 
+def _parse_author_info(info):
+    """Get list of authors as a tuple."""
+    author = info.get("author", info.get("authors", ""))
+    if isinstance(author, str):
+        author = (author,)
+    return tuple(author)
+
+
 class SetupMixIn(object):
     def __init__(self):
         name = self.__class__.__name__.split(".")[-1]
@@ -79,10 +87,7 @@ class SetupMixIn(object):
 
     @property
     def author(self):
-        author = self._meta.info.get("author", self._meta.info.get("authors", ""))
-        if isinstance(author, str):
-            author = (author,)
-        return tuple(author)
+        return _parse_author_info(self._meta.info)
 
     @property
     def email(self):
