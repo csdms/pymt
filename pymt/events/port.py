@@ -73,7 +73,7 @@ class PortEvent(GridMixIn):
             self._status_fp.flush()
             sys.stdout.flush()
             sys.stderr.flush()
-            print(yaml.dump(status))
+            print(yaml.dump(status, default_flow_style=True))
 
             self._port.run(time)
 
