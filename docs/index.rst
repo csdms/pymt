@@ -4,6 +4,8 @@
     :alt: Python Modeling Tool
     :target: https://pymt.readthedocs.org/
 
+.. title:: PyMT
+
 *pymt* is the *Python Modeling Toolkit*.
 It is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
