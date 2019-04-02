@@ -92,13 +92,14 @@ Help
 ----
 
 If you encounter any problems when using *pymt*,
-or if you find any bugs,
-please contact us at csdmssupport@colorado.edu.
+please visit us at the `CSDMS Help Desk`_
+and explain what occurred.
 Or,
-if you're comfortable using GitHub,
+if you're developing with *pymt*
 feel free to open an `issue`_
 in the *pymt* GitHub repository.
 
+.. _CSDMS Help Desk: https://github.com/csdms/help-desk
 .. _issue: https://github.com/csdms/pymt/issues
 
 
