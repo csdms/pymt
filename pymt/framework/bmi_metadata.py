@@ -94,7 +94,7 @@ def find_model_metadata(plugin):
         else:
             path_to_mmd = model_metadata_dir
 
-    return path_to_mmd
+    return os.path.abspath(path_to_mmd)
 
 
 class PluginMetadata(ModelMetadata):
