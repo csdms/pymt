@@ -87,9 +87,12 @@ def find_model_metadata(plugin):
 
         path_to_mmd = bmi_data_dir(plugin_name)
     else:
-        path_to_mmd = pkg_resources.resource_filename(
-            plugin.__module__, model_metadata_dir
-        )
+        if not os.path.isabs(model_metadata_dir):
+            path_to_mmd = pkg_resources.resource_filename(
+                plugin.__module__, model_metadata_dir
+            )
+        else:
+            path_to_mmd = model_metadata_dir
 
     return path_to_mmd
 
