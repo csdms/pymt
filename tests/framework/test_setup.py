@@ -1,6 +1,8 @@
+import os
 import pytest
 
 from pymt.framework.bmi_setup import _parse_author_info
+from pymt.framework.bmi_metadata import find_model_metadata
 
 
 @pytest.mark.parametrize("key", ("author", "authors"))
@@ -24,4 +26,15 @@ def test_author_multiple_authors(key, iter):
     assert _parse_author_info({key: iter(("John Cleese", "Eric Idle"))}) == (
         "John Cleese",
         "Eric Idle",
+    )
+
+
+@pytest.mark.parametrize("path_to_meta", ("", "meta", "/usr/local/share"))
+def test_find_metadata(path_to_meta):
+    class _MyBmi:
+        METADATA = path_to_meta
+
+    path_to_mmd = find_model_metadata(_MyBmi)
+    assert path_to_mmd == os.path.abspath(
+        os.path.join(os.path.dirname(__file__), path_to_meta)
     )
