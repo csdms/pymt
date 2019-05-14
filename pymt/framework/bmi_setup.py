@@ -24,7 +24,7 @@ class SetupMixIn(object):
     def __init__(self):
         name = self.__class__.__name__.split(".")[-1]
 
-        self._meta = PluginMetadata(self)
+        self._meta = PluginMetadata(self._bmi)
 
         self._defaults = {}
         self._parameters = {}
