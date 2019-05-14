@@ -153,7 +153,7 @@ class NetcdfField(object):
                 else:
                     variable[n_times] = array[0]
             else:
-                variable[:] = array.flat
+                variable[:] = array.reshape(variable.shape)
 
     def data_variable(self, name):
         return self.root.variables[name]
