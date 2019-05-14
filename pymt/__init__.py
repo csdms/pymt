@@ -1,3 +1,6 @@
+import os
+import sys
+
 import numpy as np
 
 from ._version import get_versions
@@ -12,3 +15,13 @@ try:
 except TypeError:
     pass
 del np
+
+
+os.environ.setdefault(
+    "UDUNITS2_XML_PATH",
+    os.path.abspath(
+        os.path.join(sys.prefix, "lib/site-packages/cfunits/etc/udunits/udunits2.xml")
+    ),
+)
+
+del os, sys
