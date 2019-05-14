@@ -29,7 +29,7 @@ def test_author_multiple_authors(key, iter):
     )
 
 
-@pytest.mark.parametrize("path_to_meta", ("", "meta", "/usr/local/share"))
+@pytest.mark.parametrize("path_to_meta", ("", ".", "meta", "/usr/local/share"))
 def test_find_metadata(path_to_meta):
     class _MyBmi:
         METADATA = path_to_meta

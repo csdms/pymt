@@ -75,7 +75,7 @@ def find_model_metadata(plugin):
         Path to the folder that contains the plugin's metadata.
     """
     try:
-        model_metadata_dir = plugin.METADATA
+        model_metadata_dir = plugin.METADATA or "."
     except AttributeError:
         if isinstance(plugin, six.string_types):
             plugin_name = plugin
