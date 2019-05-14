@@ -1,0 +1,54 @@
+***************
+*** 79,85 ****
+  _ut_read_xml.restype = _c_void_p
+  
+  #print('units: before _udunits.ut_read_xml(',_unit_database,')')
+- _ut_system = _ut_read_xml(None)
+  #print('units: after  _udunits.ut_read_xml(',_unit_database,')')
+  
+  # Reinstate the reporting of error messages
+--- 79,94 ----
+  _ut_read_xml.restype = _c_void_p
+  
+  #print('units: before _udunits.ut_read_xml(',_unit_database,')')
++ if sys.platform == 'darwin' or sys.platform.startswith("linux"):
++     path_to_xml = None  # Use the default path
++ else:
++     path_to_xml = _c_char_p(
++         os.path.join(
++             sys.prefix,
++             "Lib/site-packages/cfunits/etc/udunits/udunits2.xml"
++         ).encode("utf-8")
++     )
++ _ut_system = _ut_read_xml(path_to_xml)
+  #print('units: after  _udunits.ut_read_xml(',_unit_database,')')
+  
+  # Reinstate the reporting of error messages
+***************
+*** 234,245 ****
+                                     _ut_get_unit_by_name(_ut_system, _c_char_p(b'sverdrup'))))
+  
+  # Add new base unit calendar_year
+- calendar_year_unit = _ut_new_base_unit(_ut_system)
+- assert(0 == _ut_map_symbol_to_unit(_c_char_p(b'cY'), _UT_ASCII, calendar_year_unit))
+- assert(0 == _ut_map_unit_to_symbol(calendar_year_unit, _c_char_p(b'cY'), _UT_ASCII))
+- assert(0 == _ut_map_name_to_unit(_c_char_p(b'calendar_year'), _UT_ASCII, calendar_year_unit))
+- assert(0 == _ut_map_unit_to_name(calendar_year_unit, _c_char_p(b'calendar_year'), _UT_ASCII))
+- assert(0 == _ut_map_name_to_unit(_c_char_p(b'calendar_years'), _UT_ASCII, calendar_year_unit))
+  
+  # Add various aliases useful for CF.
+  def add_unit_alias(definition, symbol, singular, plural):
+--- 243,255 ----
+                                     _ut_get_unit_by_name(_ut_system, _c_char_p(b'sverdrup'))))
+  
+  # Add new base unit calendar_year
++ if sys.platform == 'darwin' or sys.platform.startswith("linux"):
++     calendar_year_unit = _ut_new_base_unit(_ut_system)
++     assert(0 == _ut_map_symbol_to_unit(_c_char_p(b'cY'), _UT_ASCII, calendar_year_unit))
++     assert(0 == _ut_map_unit_to_symbol(calendar_year_unit, _c_char_p(b'cY'), _UT_ASCII))
++     assert(0 == _ut_map_name_to_unit(_c_char_p(b'calendar_year'), _UT_ASCII, calendar_year_unit))
++     assert(0 == _ut_map_unit_to_name(calendar_year_unit, _c_char_p(b'calendar_year'), _UT_ASCII))
++     assert(0 == _ut_map_name_to_unit(_c_char_p(b'calendar_years'), _UT_ASCII, calendar_year_unit))
+  
+  # Add various aliases useful for CF.
+  def add_unit_alias(definition, symbol, singular, plural):

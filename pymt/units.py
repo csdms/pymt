@@ -1,5 +1,5 @@
 import numpy as np
-from cfunits import Units
+from .cfunits import Units
 
 
 class UnitConverter(object):
