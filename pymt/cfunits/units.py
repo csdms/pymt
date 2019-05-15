@@ -79,15 +79,18 @@ _ut_read_xml.restype = _c_void_p
 
 #print('units: before _udunits.ut_read_xml(',_unit_database,')')
 if sys.platform == 'darwin' or sys.platform.startswith("linux"):
-    path_to_xml = None  # Use the default path
-else:
-    path_to_xml = _c_char_p(
-        os.path.join(
-            sys.prefix,
-            "lib/site-packages/cfunits/etc/udunits/udunits2.xml"
-        ).encode("utf-8")
+    # path_to_xml = None  # Use the default path
+    site_packages = os.path.join(
+        sys.prefix, "lib/python{0}.{1}/site-packages".format(
+            sys.version_info.major, sys.version_info.minor
+        )
     )
-_ut_system = _ut_read_xml(path_to_xml)
+else:
+    site_packages = os.path.join(sys.prefix, "lib/site-packages")
+
+udunits2_xml_path = os.path.join(site_packages, "cfunits/etc/udunits/udunits2.xml")
+_ut_system = _ut_read_xml(_c_char_p(udunits2_xml_path.encode("utf-8")))
+
 #print('units: after  _udunits.ut_read_xml(',_unit_database,')')
 
 # Reinstate the reporting of error messages
@@ -241,7 +244,7 @@ assert(0 == _ut_unmap_symbol_to_unit(_ut_system, _c_char_p(b'Sv'), _UT_ASCII))
 assert(0 == _ut_map_symbol_to_unit(_c_char_p(b'Sv'), _UT_ASCII,
                                    _ut_get_unit_by_name(_ut_system, _c_char_p(b'sverdrup'))))
 
-if sys.platform == 'darwin' or sys.platform.startswith("linux"):
+if False:
     # Add new base unit calendar_year
     calendar_year_unit = _ut_new_base_unit(_ut_system)
     assert(0 == _ut_map_symbol_to_unit(_c_char_p(b'cY'), _UT_ASCII, calendar_year_unit))
@@ -1945,11 +1948,7 @@ b'W'
 
 >>> u = Units("dram")
 >>> u.formatted(names=True)
-b'0.001771845 kilogram'
-
->> u.units = 'dram'
->> u.formatted(names=True)
-'1.848345703125e-06 meter^3'
+b'1.848345703125e-06 meter^3'
 
 Formatting is also available during object initialization:
 
@@ -1959,9 +1958,7 @@ b'm.s-1'
 
 >>> u = Units('dram', names=True)
 >>> u.units
-b'0.001771845 kilogram'
-
-'1.848345703125e-06 m3'
+b'1.848345703125e-06 meter^3'
 
 >>> u = Units('Watt')
 >>> u.units
