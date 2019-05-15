@@ -6,7 +6,7 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-from cfunits import Units
+from ..cfunits import Units
 from deprecated import deprecated
 from scripting.contexts import cd
 

@@ -8,3 +8,4 @@ exclude_paths:
   - setup.py
   - versioneer.py
   - pymt/_version.py
+  - pymt/cfunits/**
