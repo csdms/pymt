@@ -516,9 +516,10 @@ package, with the few exceptions given in the CF conventions.
 
 >>> u = Units('m s-1')
 >>> u
-<Cf Units: 'm s-1'>
->>> u.units = 'days since 2004-3-1'
->>> u
+<CF Units: m s-1>
+
+>> u.units = 'days since 2004-3-1'
+>> u
 <CF Units: days since 2004-3-1>
 
 
@@ -555,11 +556,10 @@ representations.
 Time units may be given as durations of time (*time units*) or as an
 amount of time since a reference time (*reference time units*):
 
->>> v = Units()
->>> v.units = 's'
->>> v.units = 'day'
->>> v.units = 'days since 1970-01-01'
->>> v.units = 'seconds since 1992-10-8 15:15:42.5 -6:00'
+>>> v = Units("s")
+>>> v = Units("day")
+>>> v = Units("days since 1970-01-01")
+>>> v = Units("seconds since 1992-10-8 15:15:42.5 -6:00")
 
 .. note::
 
@@ -585,9 +585,10 @@ defined by Udunits:
 
 >>> u = Units('days since 2000-1-1')
 >>> u.calendar
-AttributeError: Can't get 'Units' attribute 'calendar'
->>> v = Units('days since 2000-1-1')
->>> v.calendar = 'gregorian'
+Traceback (most recent call last):
+...
+AttributeError: Units has no attribute 'calendar'
+>>> v = Units('days since 2000-1-1', calendar="gregorian")
 >>> v.equals(u)
 True
 
@@ -604,14 +605,14 @@ the `isvalid` attribute returns `False` instead of `True`:
 >>> u.isvalid
 False
 >>> print(u)
-'M/S'
+M/S
 >>> v = Units('m/s')
 >>> v
 <CF Units: m/s>
 >>> v.isvalid
 True
 >>> print(v)
-'m/s'
+m/s
 
 
 **Arithmetic with units**
@@ -638,7 +639,6 @@ The comparison operations return a boolean and all other operations
 return a new units object or modify the units object in place.
 
 >>> u = Units('m')
-<CF Units: m>
 
 >>> v = u * 1000
 >>> v
@@ -679,9 +679,12 @@ array([ 0.,  1.,  2.,  3.,  4.])
 If the *inplace* keyword is True, then a numpy array is modified in
 place, without any copying overheads:
 
->>> Units.conform(a,
-                  Units('days since 2000-12-1'),
-                  Units('days since 2001-1-1'), inplace=True)
+>>> Units.conform(
+...     a,
+...     Units('days since 2000-12-1'),
+...     Units('days since 2001-1-1'),
+...     inplace=True,
+... )
 array([-31., -30., -29., -28., -27.])
 >>> a
 array([-31., -30., -29., -28., -27.])
@@ -972,7 +975,7 @@ x.__str__() <==> str(x)
 '''
         string = []
         if self._units is not None:
-            string.append(self._units)
+            string.append(_bytes_to_str(self._units))
         if self._calendar is not None:
             string.append('{0}'.format(self._calendar))
         return ' '.join(string)
@@ -1447,17 +1450,17 @@ units.
 
 :Examples:
 
->>> print Units('days since 2000-12-1 03:00').isreftime
+>>> print(Units('days since 2000-12-1 03:00').isreftime)
 True
->>> print Units('hours since 2100-1-1', calendar='noleap').isreftime
+>>> print(Units('hours since 2100-1-1', calendar='noleap').isreftime)
 True
->>> print Units(calendar='360_day').isreftime
+>>> print(Units(calendar='360_day').isreftime)
 True
->>> print Units('days').isreftime
+>>> print(Units('days').isreftime)
 False
->>> print Units('kg').isreftime
+>>> print(Units('kg').isreftime)
 False
->>> print Units().isreftime
+>>> print(Units().isreftime)
 False
 
 '''
@@ -1481,17 +1484,17 @@ units.
 
 :Examples:
 
->>> print Units('days since 2000-12-1 03:00').isreftime
+>>> print(Units('days since 2000-12-1 03:00').isreftime)
 True
->>> print Units('hours since 2100-1-1', calendar='noleap').isreftime
+>>> print(Units('hours since 2100-1-1', calendar='noleap').isreftime)
 True
->>> print Units(calendar='360_day').isreftime
+>>> print(Units(calendar='360_day').isreftime)
 True
->>> print Units('days').isreftime
+>>> print(Units('days').isreftime)
 False
->>> print Units('kg').isreftime
+>>> print(Units('kg').isreftime)
 False
->>> print Units().isreftime
+>>> print(Units().isreftime)
 False
 
 '''
@@ -1513,19 +1516,19 @@ time units.
 
 :Examples:
 
->>> print Units('calendar_months').iscalendartime
+>>> print(Units('calendar_months').iscalendartime)
 True
->>> print Units('calendar_years').iscalendartime
+>>> print(Units('calendar_years').iscalendartime)
 True
->>> print Units('days').iscalendartime
+>>> print(Units('days').iscalendartime)
 False
->>> print Units('km s-1').iscalendartime
+>>> print(Units('km s-1').iscalendartime)
 False
->>> print Units('kg').isreftime
+>>> print(Units('kg').isreftime)
 False
->>> print Units('').isreftime
+>>> print(Units('').isreftime)
 False
->>> print Units().isreftime
+>>> print(Units().isreftime)
 False
 
         '''
@@ -1546,23 +1549,23 @@ True if the units are dimensionless, false otherwise.
 
 :Examples:
 
->>> cf.Units('').isdimensionless
+>>> Units('').isdimensionless
 True
->>> cf.Units('1').isdimensionless
+>>> Units('1').isdimensionless
 True
->>> cf.Units('100').isdimensionless
+>>> Units('100').isdimensionless
 True
->>> cf.Units('m/m').isdimensionless
+>>> Units('m/m').isdimensionless
 True
->>> cf.Units('m km-1').isdimensionless
+>>> Units('m km-1').isdimensionless
 True
->>> cf.Units().isdimensionless
+>>> Units().isdimensionless
 False
->>> cf.Units('m').isdimensionless
+>>> Units('m').isdimensionless
 False
->>> cf.Units('m/s').isdimensionless
+>>> Units('m/s').isdimensionless
 False
->>> cf.Units('days since 2000-1-1', calendar='noleap').isdimensionless
+>>> Units('days since 2000-1-1', calendar='noleap').isdimensionless
 False
 
 '''
@@ -1587,7 +1590,7 @@ True if the units are pressure units, false otherwise.
 True
 >>> Units('hPa').ispressure
 True
->>> print Units('meter^-1-kilogram-second^-2').ispressure
+>>> print(Units('meter^-1-kilogram-second^-2').ispressure)
 True
 >>> Units('hours since 2100-1-1', calendar='noleap').ispressure
 False
@@ -1740,7 +1743,7 @@ True
 >>> u.isvalid
 False
 >>> print(u)
-'M/S'
+M/S
 
         '''
         return getattr(self, '_isvalid', False)
@@ -1760,7 +1763,7 @@ The reference date-time of reference time units.
 :Examples:
 
 >>> repr(Units('days since 1900-1-1').reftime)
-<CF Datetime: 1900-01-01 00:00:00>
+'cftime.datetime(1900, 1, 1, 0, 0, 0, 0, -1, 1)'
 >>> str(Units('days since 1900-1-1 03:00').reftime)
 '1900-01-01 03:00:00'
 
@@ -1798,8 +1801,9 @@ If it is unset then the default CF calendar is assumed when required.
 >>> Units('days since 2001-1-1', calendar='noleap').calendar
 'noleap'
 >>> Units('days since 2001-1-1').calendar
+Traceback (most recent call last):
+...
 AttributeError: Units has no attribute 'calendar'
-
 '''
         value = self._calendar
         if value is not None:
@@ -1871,7 +1875,7 @@ False
 
 >>> u = Units('days since 2000-1-1')
 >>> v = Units('days since 2000-1-1', calendar='366_day')
->>> w = Units('seconds since 1978-3-12', calendar='gregorian)
+>>> w = Units('seconds since 1978-3-12', calendar='gregorian')
 
 >>> u.equivalent(v)
 False
@@ -1930,30 +1934,33 @@ is returned.
 >>> u = Units('W')
 >>> u.units
 'W'
->>> u.units = u.format(names=True)
->>> u.units
-'watt'
->>> u.units = u.format(definition=True)
->>> u.units
-'m2.kg.s-3'
->>> u.units = u.format(names=True, definition=True)
-'meter^2-kilogram-second^-3'
->>> u.units = u.format()
->>> u.units
-'W'
+>>> u.formatted(names=True)
+b'watt'
+>>> u.formatted(definition=True)
+b'm2.kg.s-3'
+>>> u.formatted(names=True, definition=True)
+b'meter^2-kilogram-second^-3'
+>>> u.formatted()
+b'W'
 
->>> u.units='dram'
->>> u.format(names=True)
+>>> u = Units("dram")
+>>> u.formatted(names=True)
+b'0.001771845 kilogram'
+
+>> u.units = 'dram'
+>> u.formatted(names=True)
 '1.848345703125e-06 meter^3'
 
 Formatting is also available during object initialization:
 
->>> u = Units('m/s', format=True)
+>>> u = Units('m/s', formatted=True)
 >>> u.units
-'m.s-1'
+b'm.s-1'
 
 >>> u = Units('dram', names=True)
 >>> u.units
+b'0.001771845 kilogram'
+
 '1.848345703125e-06 m3'
 
 >>> u = Units('Watt')
@@ -1962,19 +1969,19 @@ Formatting is also available during object initialization:
 
 >>> u = Units('Watt', formatted=True)
 >>> u.units
-'W'
+b'W'
 
 >>> u = Units('Watt', names=True)
 >>> u.units
-'watt'
+b'watt'
 
->>> u = cf.Units('Watt', definition=True)
+>>> u = Units('Watt', definition=True)
 >>> u.units
-'m2.kg.s-3'
+b'm2.kg.s-3'
 
->>> u = cf.Units('Watt', names=True, definition=True)
+>>> u = Units('Watt', names=True, definition=True)
 >>> u.units
-'meter^2-kilogram-second^-3'
+b'meter^2-kilogram-second^-3'
 
         '''
         ut_unit = self._ut_unit
@@ -2045,9 +2052,12 @@ array([   0.,   60.,  120.,  180.,  240.])
 >>> a
 array([ 0.,  1.,  2.,  3.,  4.])
 
->>> Units.conform(a,
-                  Units('days since 2000-12-1'),
-                  Units('days since 2001-1-1'), inplace=True)
+>>> Units.conform(
+...     a,
+...     Units('days since 2000-12-1'),
+...     Units('days since 2001-1-1'),
+...     inplace=True,
+... )
 array([-31., -30., -29., -28., -27.])
 >>> a
 array([-31., -30., -29., -28., -27.])
@@ -2220,7 +2230,7 @@ Equivalent to ``copy.deepcopy(u)``.
 
 :Examples:
 
->>> v = u.copy()
+>>> v = Units("m").copy()
 
 '''
         return self
