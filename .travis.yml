@@ -53,7 +53,8 @@ before_install:
 - source activate test_env
 install:
 - pip install numpy pytest pytest-cov flake8 coveralls
-- conda install landlab esmpy -c conda-forge
+- pip install --pre landlab
+- conda install esmpy -c conda-forge
 - pip install .
 script:
 - pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
