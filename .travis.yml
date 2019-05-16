@@ -4,19 +4,34 @@ os:
 - osx
 env:
   matrix:
-  - CONDA_ENV=py36
-  - CONDA_ENV=py37
-  - CONDA_ENV=lint
-  - CONDA_ENV=docs
-  global:
-    - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
-matrix:
-  exclude:
-  - os: osx
-    env: CONDA_ENV=lint
-  - os: osx
-    env: CONDA_ENV=docs
+  - CONDA_ENV=3.7
+  - CONDA_ENV=3.6
 sudo: false
+jobs:
+  include:
+  - stage: lint
+    os: linux
+    script:
+    - make lint
+  - stage: docs
+    os: linux
+    install:
+    - conda env create --file docs/environment.yml
+    - conda activate pymt_docs
+    script:
+    - sphinx-apidoc --force -o docs/api pymt *tests
+    - make -C docs clean html
+  - stage: deploy
+    if: tag =~ v.*$
+    script: skip
+    os: linux
+    deploy:
+      on:
+        all_branches: true
+      provider: pypi
+      user: mcflugen
+      password:
+        secure: B0w/bZarTtbtjXQZPyAUZeDCrMcHB+Fes8wrPPxTG+tBN0t/SqBaUv6LmKjX2JqKIS8+R3TCqidqryhrvnEj7kmhCOmc3yo88NOd5v2qwMINxb13/SecH7sKOKditpkvciIcAD7BmiPUCroMxcZL9UJieYPUJvfQAGthp8H4N9g=
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -24,7 +39,6 @@ before_install:
     brew cleanup -s
     rm -rf $(brew --cache)
   fi
-install:
 - |
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     curl https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > $HOME/miniconda.sh
@@ -35,23 +49,12 @@ install:
 - export PATH="$HOME/anaconda/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
-- |
-  if [[ "$CONDA_ENV" == "docs" ]]; then
-    conda env create -n test_env --file docs/environment.yml
-  else
-    conda env create -n test_env --file ci/requirements-$CONDA_ENV-$TRAVIS_OS_NAME.yml
-  fi
+- conda create -n test_env python=$CONDA_ENV
 - source activate test_env
-- make install
+install:
+- pip install numpy pytest pytest-cov flake8 coveralls
+- conda install cfunits esmpy
+- pip install .
 script:
-- |
-  if [[ "$CONDA_ENV" == "lint" ]]; then
-    make lint
-  elif [[ "$CONDA_ENV" == "docs" ]]; then
-    sphinx-apidoc --force -o docs/api pymt *tests
-    make -C docs clean html
-  else
-    pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
-  fi
-after_success:
-  coveralls
+- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
+after_success: coveralls
