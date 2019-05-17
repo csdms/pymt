@@ -21,7 +21,6 @@
 import os
 import sys
 
-# sys.path.insert(0, os.path.abspath('..'))
 from unittest.mock import MagicMock
 
 
@@ -66,6 +65,7 @@ if os.environ.get('READTHEDOCS', ''):
 
     subprocess.run(["sphinx-apidoc", "--force", "-o", "./api", "../pymt", "*tests"])
 
+sys.path.insert(0, os.path.abspath('..'))
 
 import pymt
 
