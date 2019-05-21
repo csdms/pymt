@@ -5,10 +5,11 @@ from model_metadata import MetadataNotFoundError
 
 from .bmi_metadata import PluginMetadata
 
+# {{ desc|trim|wordwrap(70) if desc }}
 _DOCSTRING = u"""
 Basic Model Interface for {{ name }}.
 
-{{ desc|trim|wordwrap(70) if desc }}
+{{ desc|trim if desc }}
 
 {% if author -%}
 Author:
@@ -45,6 +46,9 @@ Examples
 ...     model.update()
 >>> model.finalize()
 """.strip()
+
+
+from landlab.core.messages import format_message
 
 
 def bmi_docstring(
@@ -138,6 +142,8 @@ def bmi_docstring(
         author = [author]
     if isinstance(cite_as, six.string_types):
         cite_as = [cite_as]
+
+    summary = format_message(summary)
 
     env = jinja2.Environment(  # nosec
         loader=jinja2.DictLoader({"docstring": _DOCSTRING})
