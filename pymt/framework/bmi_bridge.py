@@ -435,7 +435,7 @@ class _BmiCap(DeprecatedMethods):
 
     def grid_nodes_per_face(self, grid, out=None):
         if out is None:
-            out = np.empty(self.grid_number_of_faces(grid), dtype=ctypes.c_int)
+            out = np.empty(self.grid_face_count(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_nodes_per_face(grid, out)
         return out
 
