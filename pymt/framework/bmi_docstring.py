@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import jinja2
 import six
+from landlab.core.messages import format_message
 from model_metadata import MetadataNotFoundError
 
 from .bmi_metadata import PluginMetadata
@@ -46,9 +47,6 @@ Examples
 ...     model.update()
 >>> model.finalize()
 """.strip()
-
-
-from landlab.core.messages import format_message
 
 
 def bmi_docstring(
