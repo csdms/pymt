@@ -1,8 +1,9 @@
 import os
+
 import pytest
 
-from pymt.framework.bmi_setup import _parse_author_info
 from pymt.framework.bmi_metadata import find_model_metadata
+from pymt.framework.bmi_setup import _parse_author_info
 
 
 @pytest.mark.parametrize("key", ("author", "authors"))

@@ -1,7 +1,7 @@
-from .mapper import find_mapper, IncompatibleGridError
 from .celltopoint import CellToPoint
-from .pointtopoint import NearestVal
+from .mapper import IncompatibleGridError, find_mapper
 from .pointtocell import PointToCell
+from .pointtopoint import NearestVal
 
 __all__ = [
     "find_mapper",

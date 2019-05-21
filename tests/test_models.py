@@ -5,7 +5,6 @@ import pytest
 
 from pymt import models
 
-
 MODELS = [models.__dict__[name] for name in models.__all__]
 MODELS.sort(key=lambda item: item.__name__)
 

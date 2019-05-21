@@ -4,8 +4,8 @@ import numpy as np
 
 
 def quick_plot(bmi, name, **kwds):
-    gid = bmi.get_var_grid(name)
-    gtype = bmi.get_grid_type(gid)
+    gid = bmi.var_grid(name)
+    gtype = bmi.grid_type(gid)
     grid = bmi.grid[gid]
 
     x, y = grid.node_x.values, grid.node_y.values
@@ -19,12 +19,12 @@ def quick_plot(bmi, name, **kwds):
     )
 
     if gtype in ("unstructured_triangular",):
-        tris = bmi.get_grid_face_node_connectivity(gid).reshape((-1, 3))
+        tris = bmi.grid_face_node_connectivity(gid).reshape((-1, 3))
         plt.tripcolor(x, y, tris, z, **kwds)
     elif gtype in ("uniform_rectilinear", "structured_quad"):
-        shape = bmi.get_grid_shape(gid)
-        spacing = bmi.get_grid_spacing(gid)
-        origin = bmi.get_grid_origin(gid)
+        shape = bmi.grid_shape(gid)
+        spacing = bmi.grid_spacing(gid)
+        origin = bmi.grid_origin(gid)
         x = np.arange(shape[-1]) * spacing[-1] + origin[-1]
         y = np.arange(shape[-2]) * spacing[-2] + origin[-2]
         plt.pcolormesh(x, y, z.reshape(shape), **kwds)
@@ -37,6 +37,4 @@ def quick_plot(bmi, name, **kwds):
     plt.ylabel(y_label)
 
     cbar = plt.colorbar()
-    cbar.ax.set_ylabel(
-        "{name} ({units})".format(name=name, units=bmi.get_var_units(name))
-    )
+    cbar.ax.set_ylabel("{name} ({units})".format(name=name, units=bmi.var_units(name)))
