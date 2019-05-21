@@ -6,10 +6,11 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-from ..cfunits import Units
-from deprecated import deprecated
 from scripting.contexts import cd
 
+from deprecated import deprecated
+
+from ..cfunits import Units
 from ..errors import BmiError
 from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
 from .bmi_docstring import bmi_docstring
@@ -143,7 +144,6 @@ class _BmiCapV2(object):
 
 
 class DeprecatedMethods:
-
     @deprecated(reason="use grid_ndim")
     def get_grid_rank(self, grid):
         return self.get_grid_ndim(grid)

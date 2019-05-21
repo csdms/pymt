@@ -1,4 +1,5 @@
 import numpy as np
+
 from .cfunits import Units
 
 
@@ -30,7 +31,7 @@ class UnitConverter(object):
             return Units.conform(val, from_units, to_units)
 
     def __repr__(self):
-        return "UnitConverter(\"{0}\")".format(str(self.from_units))
+        return 'UnitConverter("{0}")'.format(str(self.from_units))
 
 
 def transform_math_to_azimuth(angle, units="rad"):

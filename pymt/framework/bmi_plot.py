@@ -37,6 +37,4 @@ def quick_plot(bmi, name, **kwds):
     plt.ylabel(y_label)
 
     cbar = plt.colorbar()
-    cbar.ax.set_ylabel(
-        "{name} ({units})".format(name=name, units=bmi.var_units(name))
-    )
+    cbar.ax.set_ylabel("{name} ({units})".format(name=name, units=bmi.var_units(name)))
