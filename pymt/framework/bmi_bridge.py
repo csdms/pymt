@@ -482,6 +482,9 @@ class _BmiCap(DeprecatedMethods):
         else:
             return self.bmi.get_grid_face_count(grid)
 
+    def grid_vertex_count(self, grid):
+        return self.grid_nodes_per_face(grid).sum()
+
     @property
     def input_var_names(self):
         return tuple(self.bmi.get_input_var_names())
