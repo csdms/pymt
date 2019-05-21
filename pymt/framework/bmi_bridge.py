@@ -160,7 +160,7 @@ class DeprecatedMethods:
 
     @deprecated(reason="use grid_node_count")
     def get_grid_size(self, grid):
-        return self.grid_number_of_nodes(grid)
+        return self.grid_node_count(grid)
 
     @deprecated(reason="use grid_type")
     def get_grid_type(self, grid):
@@ -441,19 +441,19 @@ class _BmiCap(DeprecatedMethods):
 
     def grid_x(self, grid, out=None):
         if out is None:
-            out = np.empty(self.grid_number_of_nodes(grid), dtype=float)
+            out = np.empty(self.grid_node_count(grid), dtype=float)
         self.bmi.get_grid_x(grid, out)
         return out
 
     def grid_y(self, grid, out=None):
         if out is None:
-            out = np.empty(self.grid_number_of_nodes(grid), dtype=float)
+            out = np.empty(self.grid_node_count(grid), dtype=float)
         self.bmi.get_grid_y(grid, out)
         return out
 
     def grid_z(self, grid, out=None):
         if out is None:
-            out = np.empty(self.grid_number_of_nodes(grid), dtype=float)
+            out = np.empty(self.node_count(grid), dtype=float)
         self.bmi.get_grid_z(grid, out)
         return out
 
@@ -650,7 +650,7 @@ class _BmiCap(DeprecatedMethods):
             grid_desc = {
                 # 'id': grid_id,
                 "rank": self.get_grid_ndim(grid_id),
-                "size": self.grid_number_of_nodes(grid_id),
+                "size": self.grid_node_count(grid_id),
                 "type": self.get_grid_type(grid_id),
             }
             grids[grid_id] = grid_desc
