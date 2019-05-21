@@ -128,7 +128,7 @@ class _BmiCapV1(object):
 class _BmiCapV2(object):
     @deprecated(reason="use get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
-        return self.grid_number_of_vertices(grid)
+        return self.grid_vertex_count(grid)
 
     @deprecated(reason="use get_grid_number_of_faces")
     def get_grid_face_count(self, grid):
@@ -419,13 +419,13 @@ class _BmiCap(DeprecatedMethods):
 
     def grid_face_node_connectivity(self, grid, out=None):
         if out is None:
-            out = np.empty(self.grid_number_of_vertices(grid), dtype=ctypes.c_int)
+            out = np.empty(self.grid_vertex_count(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_face_nodes(grid, out)
         return out
 
     def grid_face_nodes(self, grid, out=None):
         if out is None:
-            out = np.empty(self.grid_number_of_vertices(grid), dtype=ctypes.c_int)
+            out = np.empty(self.grid_vertex_count(grid), dtype=ctypes.c_int)
         self.bmi.get_grid_face_nodes(grid, out)
         return out
 
