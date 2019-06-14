@@ -21,6 +21,8 @@ def dataset_from_bmi_grid(bmi, grid_id):
         grid = dataset_from_bmi_points(bmi, grid_id)
     elif grid_type == "uniform_rectilinear":
         grid = dataset_from_bmi_uniform_rectilinear(bmi, grid_id)
+    elif grid_type == "structured_quadrilateral":
+        grid = dataset_from_bmi_structured_quadrilateral(bmi, grid_id)
     elif grid_type == "scalar":
         grid = dataset_from_bmi_scalar(bmi, grid_id)
     elif grid_type.startswith("unstructured"):
@@ -143,6 +145,73 @@ def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
                 )
             }
         )
+
+    return dataset
+
+
+def dataset_from_bmi_structured_quadrilateral(bmi, grid_id):
+    from landlab.graph import StructuredQuadGraph
+
+    rank = bmi.grid_ndim(grid_id)
+    shape = bmi.grid_shape(grid_id)
+
+    if rank < 1 or rank > 3:
+        raise ValueError("structured_quadrilateral grids must be rank 1, 2, or 3")
+
+    attrs = OrderedDict(
+        [
+            ("cf_role", "grid_topology"),
+            (
+                "long_name",
+                "Topology data of {}D structured quadrilateral".format(rank),
+            ),
+            ("topology_dimension", rank),
+            ("node_coordinates", " ".join(coordinate_names(rank))),
+            ("node_dimensions", " ".join(index_names(rank))),
+            ("type", "structured_quad"),
+        ]
+    )
+
+    dataset = xr.Dataset(
+        {
+            "mesh": xr.DataArray(data=grid_id, attrs=attrs),
+            "node_shape": xr.DataArray(data=shape, dims=("rank",)),
+        }
+    )
+
+    nodes = []
+    coords = {}
+    for dim_name in COORDINATE_NAMES[: -(rank + 1) : -1]:
+        data = getattr(bmi, "grid_" + dim_name)(grid_id)
+        nodes.insert(0, data.copy())
+        coord = xr.DataArray(
+            data=data,
+            dims=("node",),
+            attrs={"standard_name": dim_name, "units": "m"}
+        )
+        coords["node_" + dim_name] = coord
+
+    graph = StructuredQuadGraph(nodes, shape=tuple(shape))
+
+    dataset.update(coords)
+    dataset.update(
+        {
+            "face_node_connectivity": xr.DataArray(
+                data=graph.nodes_at_patch.reshape((-1,)),
+                dims=("vertex",),
+                attrs={"standard_name": "Face-node connectivity"},
+            )
+        }
+    )
+    dataset.update(
+        {
+            "face_node_offset": xr.DataArray(
+                data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4,
+                dims=("face",),
+                attrs={"standard_name": "Offset to face-node connectivity"},
+            )
+        }
+    )
 
     return dataset
 
