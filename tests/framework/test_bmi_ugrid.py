@@ -25,6 +25,7 @@ def test_scalar_grid():
 
     assert grid.ndim == 0
     assert grid.metadata["type"] == "scalar"
+    assert grid.data_vars["mesh"].attrs["type"] == "scalar"
     assert isinstance(grid, xr.Dataset)
 
 
@@ -45,4 +46,5 @@ def test_vector_grid():
 
     assert grid.ndim == 1
     assert grid.metadata["type"] == "vector"
+    assert grid.data_vars["mesh"].attrs["type"] == "vector"
     assert isinstance(grid, xr.Dataset)
