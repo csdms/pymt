@@ -31,6 +31,19 @@ class _Base(xr.Dataset):
             }
         )
 
+    def set_nodes(self):
+        coords = {}
+        for dim_name in COORDINATE_NAMES[: -(self.ndim + 1) : -1]:
+            data = getattr(self.bmi, "grid_" + dim_name)(self.grid_id)
+            coord = xr.DataArray(
+                data=data,
+                dims=("node",),
+                attrs={"standard_name": dim_name, "units": "m"}
+            )
+            coords["node_" + dim_name] = coord
+
+        self.update(coords)
+
 
 class Scalar(_Base):
 
@@ -70,10 +83,28 @@ class Vector(_Base):
         self.set_mesh()
 
 
+class Points(_Base):
+
+    def __init__(self, *args):
+        super(Points, self).__init__(*args)
+
+        self.metadata = OrderedDict(
+            [
+                ("cf_role", "mesh_topology"),
+                ("long_name", "Topology data of 2D unstructured points"),
+                ("topology_dimension", self.ndim),
+                ("node_coordinates", "node_x node_y"),
+                ("type", "points"),
+            ]
+        )
+        self.set_mesh()
+        self.set_nodes()
+
+
 def dataset_from_bmi_grid(bmi, grid_id):
     grid_type = bmi.grid_type(grid_id)
     if grid_type == "points":
-        grid = dataset_from_bmi_points(bmi, grid_id)
+        grid = Points(bmi, grid_id)
     elif grid_type == "uniform_rectilinear":
         grid = dataset_from_bmi_uniform_rectilinear(bmi, grid_id)
     elif grid_type == "structured_quadrilateral":
@@ -233,33 +264,6 @@ def dataset_from_bmi_structured_quadrilateral(bmi, grid_id):
     )
 
     return dataset
-
-
-def dataset_from_bmi_points(bmi, grid_id):
-    rank = bmi.grid_ndim(grid_id)
-    attrs = OrderedDict(
-        [
-            ("cf_role", "mesh_topology"),
-            ("long_name", "Topology data of 2D unstructured points"),
-            ("topology_dimension", rank),
-            ("node_coordinates", "node_x node_y"),
-            ("type", "points"),
-        ]
-    )
-
-    ugrid = xr.Dataset({"mesh": xr.DataArray(data=grid_id, attrs=attrs)})
-
-    coords = {}
-    for dim_name in COORDINATE_NAMES[: -(rank + 1) : -1]:
-        data = getattr(bmi, "grid_" + dim_name)(grid_id)
-        coord = xr.DataArray(
-            data=data, dims=("node",), attrs={"standard_name": dim_name, "units": "m"}
-        )
-        coords["node_" + dim_name] = coord
-
-    ugrid.update(coords)
-
-    return ugrid
 
 
 def dataset_from_bmi_unstructured(bmi, grid_id):
