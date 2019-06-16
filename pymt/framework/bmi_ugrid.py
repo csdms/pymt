@@ -15,6 +15,50 @@ def coordinate_names(rank):
     return ["node_" + d for d in COORDINATE_NAMES[-rank:]]
 
 
+class Scalar(xr.Dataset):
+
+    def __init__(self, bmi, grid_id):
+        self.ndim = bmi.grid_ndim(grid_id)
+        if self.ndim != 0:
+            raise ValueError("scalar must be rank 0")
+
+        self.metadata = OrderedDict(
+            [
+                ("cf_role", "grid_topology"),
+                ("long_name", "scalar value"),
+                ("topology_dimension", self.ndim),
+                ("type", "scalar"),
+            ]
+        )
+        super(Scalar, self).__init__(
+            {
+                "mesh": xr.DataArray(data=grid_id, attrs=self.metadata)
+            }
+        )
+
+
+class Vector(xr.Dataset):
+
+    def __init__(self, bmi, grid_id):
+        self.ndim = bmi.grid_ndim(grid_id)
+        if self.ndim != 1:
+            raise ValueError("vector must be rank 1")
+
+        self.metadata = OrderedDict(
+            [
+                ("cf_role", "grid_topology"),
+                ("long_name", "vector value"),
+                ("topology_dimension", self.ndim),
+                ("type", "vector"),
+            ]
+        )
+        super(Vector, self).__init__(
+            {
+                "mesh": xr.DataArray(data=grid_id, attrs=self.metadata)
+            }
+        )
+
+
 def dataset_from_bmi_grid(bmi, grid_id):
     grid_type = bmi.grid_type(grid_id)
     if grid_type == "points":
@@ -24,51 +68,15 @@ def dataset_from_bmi_grid(bmi, grid_id):
     elif grid_type == "structured_quadrilateral":
         grid = dataset_from_bmi_structured_quadrilateral(bmi, grid_id)
     elif grid_type == "scalar":
-        grid = dataset_from_bmi_scalar(bmi, grid_id)
+        grid = Scalar(bmi, grid_id)
     elif grid_type.startswith("unstructured"):
         grid = dataset_from_bmi_unstructured(bmi, grid_id)
     elif grid_type == "vector":
-        grid = dataset_from_bmi_vector(bmi, grid_id)
+        grid = Vector(bmi, grid_id)
     else:
         raise ValueError("grid type not understood ({gtype})".format(gtype=grid_type))
 
     return grid
-
-
-def dataset_from_bmi_scalar(bmi, grid_id):
-    rank = bmi.grid_ndim(grid_id)
-
-    if rank != 0:
-        raise ValueError("scalar must be rank 0")
-
-    attrs = OrderedDict(
-        [
-            ("cf_role", "grid_topology"),
-            ("long_name", "scalar value"),
-            ("topology_dimension", rank),
-            ("type", "scalar"),
-        ]
-    )
-
-    return xr.Dataset({"mesh": xr.DataArray(data=grid_id, attrs=attrs)})
-
-
-def dataset_from_bmi_vector(bmi, grid_id):
-    rank = bmi.grid_ndim(grid_id)
-
-    if rank != 1:
-        raise ValueError("scalar must be rank 1")
-
-    attrs = OrderedDict(
-        [
-            ("cf_role", "grid_topology"),
-            ("long_name", "vector value"),
-            ("topology_dimension", rank),
-            ("type", "vector"),
-        ]
-    )
-
-    return xr.Dataset({"mesh": xr.DataArray(data=grid_id, attrs=attrs)})
 
 
 def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
