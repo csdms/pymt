@@ -1,5 +1,4 @@
 """Unit tests for the pymt.framwork.bmi_ugrid module."""
-import numpy as np
 import xarray as xr
 
 from pymt.framework.bmi_ugrid import Scalar, Vector
@@ -26,7 +25,7 @@ def test_scalar_grid():
 
     assert grid.ndim == 0
     assert grid.metadata["type"] == "scalar"
-    assert isinstance(grid, xr.Dataset) == True
+    assert isinstance(grid, xr.Dataset)
 
 
 class TestVector:
@@ -46,4 +45,4 @@ def test_vector_grid():
 
     assert grid.ndim == 1
     assert grid.metadata["type"] == "vector"
-    assert isinstance(grid, xr.Dataset) == True
+    assert isinstance(grid, xr.Dataset)
