@@ -15,10 +15,28 @@ def coordinate_names(rank):
     return ["node_" + d for d in COORDINATE_NAMES[-rank:]]
 
 
-class Scalar(xr.Dataset):
+class _Base(xr.Dataset):
 
     def __init__(self, bmi, grid_id):
+        self.bmi = bmi
+        self.grid_id = grid_id
         self.ndim = bmi.grid_ndim(grid_id)
+        self.metadata = OrderedDict()
+        super(_Base, self).__init__()
+
+    def set_mesh(self):
+        self.update(
+            {
+                "mesh": xr.DataArray(data=self.grid_id, attrs=self.metadata)
+            }
+        )
+
+
+class Scalar(_Base):
+
+    def __init__(self, *args):
+        super(Scalar, self).__init__(*args)
+
         if self.ndim != 0:
             raise ValueError("scalar must be rank 0")
 
@@ -30,17 +48,14 @@ class Scalar(xr.Dataset):
                 ("type", "scalar"),
             ]
         )
-        super(Scalar, self).__init__(
-            {
-                "mesh": xr.DataArray(data=grid_id, attrs=self.metadata)
-            }
-        )
+        self.set_mesh()
 
 
-class Vector(xr.Dataset):
+class Vector(_Base):
 
-    def __init__(self, bmi, grid_id):
-        self.ndim = bmi.grid_ndim(grid_id)
+    def __init__(self, *args):
+        super(Vector, self).__init__(*args)
+
         if self.ndim != 1:
             raise ValueError("vector must be rank 1")
 
@@ -52,11 +67,7 @@ class Vector(xr.Dataset):
                 ("type", "vector"),
             ]
         )
-        super(Vector, self).__init__(
-            {
-                "mesh": xr.DataArray(data=grid_id, attrs=self.metadata)
-            }
-        )
+        self.set_mesh()
 
 
 def dataset_from_bmi_grid(bmi, grid_id):
