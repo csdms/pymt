@@ -44,6 +44,22 @@ class _Base(xr.Dataset):
 
         self.update(coords)
 
+    def set_connectivity(self):
+        face_node_connectivity = xr.DataArray(
+            data=self.bmi.grid_face_nodes(self.grid_id),
+            dims=("vertex",),
+            attrs={"standard_name": "Face-node connectivity"},
+        )
+        self.update({"face_node_connectivity": face_node_connectivity})
+
+    def set_offset(self):
+        face_node_offset = xr.DataArray(
+            data=self.bmi.grid_face_node_offset(self.grid_id),
+            dims=("face",),
+            attrs={"standard_name": "Offset to face-node connectivity"},
+        )
+        self.update({"face_node_offset": face_node_offset})
+
 
 class Scalar(_Base):
 
@@ -101,6 +117,26 @@ class Points(_Base):
         self.set_nodes()
 
 
+class Unstructured(_Base):
+
+    def __init__(self, *args):
+        super(Unstructured, self).__init__(*args)
+
+        self.metadata = OrderedDict(
+            [
+                ("cf_role", "mesh_topology"),
+                ("long_name", "Topology data of 2D unstructured points"),
+                ("topology_dimension", self.ndim),
+                ("node_coordinates", "node_x node_y"),
+                ("type", "unstructured"),
+            ]
+        )
+        self.set_mesh()
+        self.set_nodes()
+        self.set_connectivity()
+        self.set_offset()
+
+
 def dataset_from_bmi_grid(bmi, grid_id):
     grid_type = bmi.grid_type(grid_id)
     if grid_type == "points":
@@ -112,7 +148,7 @@ def dataset_from_bmi_grid(bmi, grid_id):
     elif grid_type == "scalar":
         grid = Scalar(bmi, grid_id)
     elif grid_type.startswith("unstructured"):
-        grid = dataset_from_bmi_unstructured(bmi, grid_id)
+        grid = Unstructured(bmi, grid_id)
     elif grid_type == "vector":
         grid = Vector(bmi, grid_id)
     else:
@@ -264,45 +300,3 @@ def dataset_from_bmi_structured_quadrilateral(bmi, grid_id):
     )
 
     return dataset
-
-
-def dataset_from_bmi_unstructured(bmi, grid_id):
-    rank = bmi.grid_ndim(grid_id)
-    attrs = OrderedDict(
-        [
-            ("cf_role", "mesh_topology"),
-            ("long_name", "Topology data of 2D unstructured points"),
-            ("topology_dimension", rank),
-            ("node_coordinates", "node_x node_y"),
-            ("type", "unstructured"),
-        ]
-    )
-
-    ugrid = xr.Dataset({"mesh": xr.DataArray(data=grid_id, attrs=attrs)})
-
-    coords = {}
-    for dim_name in COORDINATE_NAMES[: -(rank + 1) : -1]:
-        data = getattr(bmi, "grid_" + dim_name)(grid_id)
-        coord = xr.DataArray(
-            data=data, dims=("node",), attrs={"standard_name": dim_name, "units": "m"}
-        )
-        coords["node_" + dim_name] = coord
-
-    ugrid.update(coords)
-
-    face_node_connectivity = xr.DataArray(
-        data=bmi.grid_face_nodes(grid_id),
-        # data=bmi.grid_face_node_connectivity(grid_id),
-        dims=("vertex",),
-        attrs={"standard_name": "Face-node connectivity"},
-    )
-    ugrid.update({"face_node_connectivity": face_node_connectivity})
-
-    face_node_offset = xr.DataArray(
-        data=bmi.grid_face_node_offset(grid_id),
-        dims=("face",),
-        attrs={"standard_name": "Offset to face-node connectivity"},
-    )
-    ugrid.update({"face_node_offset": face_node_offset})
-
-    return ugrid
