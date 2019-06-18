@@ -3,7 +3,7 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
-from landlab.graph import StructuredQuadGraph
+from landlab.graph import StructuredQuadGraph, UniformRectilinearGraph
 
 
 COORDINATE_NAMES = ["z", "y", "x"]
@@ -39,6 +39,20 @@ class _Base(xr.Dataset):
         self.update(
             {
                 "node_shape": xr.DataArray(data=shape, dims=("rank",))
+            }
+        )
+
+    def set_spacing(self, spacing):
+        self.update(
+            {
+                "node_spacing": xr.DataArray(data=spacing, dims=("rank",))
+            }
+        )
+
+    def set_origin(self, origin):
+        self.update(
+            {
+                "node_origin": xr.DataArray(data=origin, dims=("rank",))
             }
         )
 
@@ -195,12 +209,71 @@ class StructuredQuadrilateral(_Base):
                                        dtype=np.int32) * 4)
 
 
+class UniformRectilinear(_Base):
+
+    def __init__(self, *args):
+        super(UniformRectilinear, self).__init__(*args)
+
+        if self.ndim < 1 or self.ndim > 3:
+            raise ValueError("structured_quadrilateral grid must be rank 1, 2, or 3")
+
+        shape = self.bmi.grid_shape(self.grid_id)
+        spacing = self.bmi.grid_spacing(self.grid_id)
+        origin = self.bmi.grid_origin(self.grid_id)
+
+        self.metadata = OrderedDict(
+            [
+                ("cf_role", "grid_topology"),
+                (
+                    "long_name",
+                    "Topology data of {}D structured quadrilateral".format(self.ndim),
+                ),
+                ("topology_dimension", self.ndim),
+                ("node_coordinates", " ".join(coordinate_names(self.ndim))),
+                ("node_dimensions", " ".join(index_names(self.ndim))),
+                ("node_spacing", "node_spacing"),
+                ("node_origin", "node_origin"),
+                ("type", self.grid_type),
+            ]
+        )
+        self.set_mesh()
+        self.set_shape(shape)
+        self.set_spacing(spacing)
+        self.set_origin(origin)
+
+        grid_coords = []
+        for dim in range(self.ndim):
+            grid_coords.append(
+                np.arange(shape[dim], dtype=float) * spacing[dim] + origin[dim]
+            )
+        self.set_nodes(grid_coords)
+
+        graph = UniformRectilinearGraph(shape, spacing=spacing, origin=origin)
+
+        self.set_connectivity(data=graph.nodes_at_patch.reshape((-1,)))
+        self.set_offset(data=np.arange(1, graph.number_of_patches + 1,
+                                       dtype=np.int32) * 4)
+
+    def set_nodes(self, grid_coords):
+        coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
+        coords = {}
+        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim:]):
+            coord = xr.DataArray(
+                data=coords_at_node[axis].reshape(-1),
+                dims=("node",),
+                attrs={"standard_name": dim_name, "units": "m"}
+            )
+            coords["node_" + dim_name] = coord
+
+        self.update(coords)
+
+
 def dataset_from_bmi_grid(bmi, grid_id):
     grid_type = bmi.grid_type(grid_id)
     if grid_type == "points":
         grid = Points(bmi, grid_id)
     elif grid_type == "uniform_rectilinear":
-        grid = dataset_from_bmi_uniform_rectilinear(bmi, grid_id)
+        grid = UniformRectilinear(bmi, grid_id)
     elif grid_type == "structured_quadrilateral":
         grid = StructuredQuadrilateral(bmi, grid_id)
     elif grid_type == "scalar":
@@ -213,81 +286,3 @@ def dataset_from_bmi_grid(bmi, grid_id):
         raise ValueError("grid type not understood ({gtype})".format(gtype=grid_type))
 
     return grid
-
-
-def dataset_from_bmi_uniform_rectilinear(bmi, grid_id):
-    from landlab.graph import UniformRectilinearGraph
-
-    rank = bmi.grid_ndim(grid_id)
-    shape = bmi.grid_shape(grid_id)
-    spacing = bmi.grid_spacing(grid_id)
-    origin = bmi.grid_origin(grid_id)
-
-    if rank < 1 or rank > 3:
-        raise ValueError("uniform rectilinear grids must be rank 1, 2, or 3")
-
-    attrs = OrderedDict(
-        [
-            ("cf_role", "grid_topology"),
-            (
-                "long_name",
-                "Topology data of {rank}D structured quadrilateral".format(rank=rank),
-            ),
-            ("topology_dimension", rank),
-            ("node_coordinates", " ".join(coordinate_names(rank))),
-            ("node_dimensions", " ".join(index_names(rank))),
-            ("node_spacing", "node_spacing"),
-            ("node_origin", "node_origin"),
-            ("type", "structured_quad"),
-        ]
-    )
-    dataset = xr.Dataset(
-        {
-            "mesh": xr.DataArray(data=grid_id, attrs=attrs),
-            "node_shape": xr.DataArray(data=shape, dims=("rank",)),
-            "node_spacing": xr.DataArray(data=spacing, dims=("rank",)),
-            "node_origin": xr.DataArray(data=origin, dims=("rank",)),
-        }
-    )
-
-    coords = []
-    for dim in range(rank):
-        coords.append(np.arange(shape[dim], dtype=float) * spacing[dim] + origin[dim])
-
-    coords_at_node = np.meshgrid(*coords, indexing="ij")
-
-    for axis, name in enumerate(COORDINATE_NAMES[-rank:]):
-        dataset = dataset.update(
-            {
-                "node_"
-                + name: xr.DataArray(
-                    data=coords_at_node[axis].reshape(-1),
-                    dims=("node",),
-                    attrs={"standard_name": name, "units": "m"},
-                )
-            }
-        )
-
-    if rank == 2:
-        graph = UniformRectilinearGraph(shape, spacing=spacing, origin=origin)
-
-        dataset = dataset.update(
-            {
-                "face_node_connectivity": xr.DataArray(
-                    data=graph.nodes_at_patch.reshape((-1,)),
-                    dims=("vertex",),
-                    attrs={"standard_name": "Face-node connectivity"},
-                )
-            }
-        )
-        dataset = dataset.update(
-            {
-                "face_node_offset": xr.DataArray(
-                    data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4,
-                    dims=("face",),
-                    attrs={"standard_name": "Offset to face-node connectivity"},
-                )
-            }
-        )
-
-    return dataset

@@ -3,7 +3,9 @@ import xarray as xr
 import numpy as np
 
 from pymt.framework.bmi_ugrid import (Scalar, Vector, Points,
-                                      Unstructured, StructuredQuadrilateral)
+                                      Unstructured,
+                                      StructuredQuadrilateral,
+                                      UniformRectilinear)
 
 
 grid_id = 0
@@ -132,6 +134,40 @@ def test_structured_quadrilateral_grid():
     """Test creating a structured quadrilateral grid."""
     bmi = BmiStructuredQuadrilateral()
     grid = StructuredQuadrilateral(bmi, grid_id)
+
+    assert isinstance(grid, xr.Dataset)
+    assert grid.ndim == 2
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) == np.ndarray
+
+
+class BmiUniformRectilinear():
+
+    shape = (4, 3)
+    spacing = (1., 1.)
+    origin = (5., 2.)
+
+    def grid_type(self, grid_id):
+        return "uniform_rectilinear"
+
+    def grid_ndim(self, grid_id):
+        return len(self.shape)
+
+    def grid_shape(self, grid_id, out=None):
+        return np.array(self.shape)
+
+    def grid_spacing(self, grid_id, out=None):
+        return np.array(self.spacing)
+
+    def grid_origin(self, grid_id, out=None):
+        return np.array(self.origin)
+
+
+def test_uniform_rectilinear_grid():
+    """Test creating a uniform rectilinear grid."""
+    bmi = BmiUniformRectilinear()
+    grid = UniformRectilinear(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
