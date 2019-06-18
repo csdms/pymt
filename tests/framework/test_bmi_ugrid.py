@@ -64,10 +64,10 @@ class TestPoints:
         return self.node_count
 
     def get_grid_x(self, grid_id, out=None):
-        return self.x
+        return self.x.flatten()
 
     def get_grid_y(self, grid_id, out=None):
-        return self.y
+        return self.y.flatten()
 
 
 class PointsBmi(_BmiCap):
