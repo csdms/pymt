@@ -14,6 +14,7 @@ class TestScalar:
     def grid_ndim(self, grid_id):
         return 0
 
+
 def test_scalar_grid():
     """Test creating a scalar grid."""
     bmi = TestScalar()
@@ -96,8 +97,8 @@ def test_unstructured_grid():
 
 class TestStructuredQuadrilateral():
 
-    x = np.array([[0.,3.], [1.,4.], [2.,5.]])
-    y = np.array([[0.,1.], [2.,3.], [4.,5.]])
+    x = np.array([[0., 3.], [1., 4.], [2., 5.]])
+    y = np.array([[0., 1.], [2., 3.], [4., 5.]])
 
     def grid_ndim(self, grid_id):
         return self.x.ndim
