@@ -64,7 +64,7 @@ class _Base(xr.Dataset):
 
         return tuple(nodes)
 
-    def set_nodes(self):
+    def set_nodes(self, grid_coords=None):
         coords = {}
         for dim_name in COORDINATE_NAMES[: -(self.ndim + 1) : -1]:
             data = getattr(self.bmi, "grid_" + dim_name)(self.grid_id)
@@ -246,7 +246,7 @@ class UniformRectilinear(_Base):
             grid_coords.append(
                 np.arange(shape[dim], dtype=float) * spacing[dim] + origin[dim]
             )
-        self.set_nodes(grid_coords)
+        self.set_nodes(grid_coords=grid_coords)
 
         graph = UniformRectilinearGraph(shape, spacing=spacing, origin=origin)
 
@@ -254,7 +254,7 @@ class UniformRectilinear(_Base):
         self.set_offset(data=np.arange(1, graph.number_of_patches + 1,
                                        dtype=np.int32) * 4)
 
-    def set_nodes(self, grid_coords):
+    def set_nodes(self, grid_coords=None):
         coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
         coords = {}
         for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim:]):
