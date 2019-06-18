@@ -9,7 +9,7 @@ from pymt.framework.bmi_ugrid import (Scalar, Vector, Points,
 grid_id = 0
 
 
-class TestScalar:
+class BmiScalar:
 
     def grid_ndim(self, grid_id):
         return 0
@@ -17,7 +17,7 @@ class TestScalar:
 
 def test_scalar_grid():
     """Test creating a scalar grid."""
-    bmi = TestScalar()
+    bmi = BmiScalar()
     grid = Scalar(bmi, grid_id)
 
     assert grid.ndim == 0
@@ -26,7 +26,7 @@ def test_scalar_grid():
     assert isinstance(grid, xr.Dataset)
 
 
-class TestVector:
+class BmiVector:
 
     def grid_ndim(self, grid_id):
         return 1
@@ -34,7 +34,7 @@ class TestVector:
 
 def test_vector_grid():
     """Test creating a vector grid."""
-    bmi = TestVector()
+    bmi = BmiVector()
     grid = Vector(bmi, grid_id)
 
     assert grid.ndim == 1
@@ -43,7 +43,7 @@ def test_vector_grid():
     assert isinstance(grid, xr.Dataset)
 
 
-class TestPoints:
+class BmiPoints:
 
     x = np.array([0., 1., 0., 1.])
     y = np.array([0., 0., 1., 1.])
@@ -60,7 +60,7 @@ class TestPoints:
 
 def test_points_grid():
     """Test creating a grid from points."""
-    bmi = TestPoints()
+    bmi = BmiPoints()
     grid = Points(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
@@ -70,7 +70,7 @@ def test_points_grid():
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
-class TestUnstructured(TestPoints):
+class BmiUnstructured(BmiPoints):
 
     def grid_nodes_per_face(self, grid_id, out=None):
         return 4
@@ -85,7 +85,7 @@ class TestUnstructured(TestPoints):
 
 def test_unstructured_grid():
     """Test creating an unstructured grid."""
-    bmi = TestUnstructured()
+    bmi = BmiUnstructured()
     grid = Unstructured(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
@@ -95,7 +95,7 @@ def test_unstructured_grid():
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
-class TestStructuredQuadrilateral():
+class BmiStructuredQuadrilateral():
 
     x = np.array([[0., 3.], [1., 4.], [2., 5.]])
     y = np.array([[0., 1.], [2., 3.], [4., 5.]])
@@ -115,7 +115,7 @@ class TestStructuredQuadrilateral():
 
 def test_structured_quadrilateral_grid():
     """Test creating a structured quadrilateral grid."""
-    bmi = TestStructuredQuadrilateral()
+    bmi = BmiStructuredQuadrilateral()
     grid = StructuredQuadrilateral(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
