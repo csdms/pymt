@@ -23,6 +23,7 @@ class _Base(xr.Dataset):
     def __init__(self, bmi, grid_id):
         self.bmi = bmi
         self.grid_id = grid_id
+        self.grid_type = bmi.grid_type(grid_id)
         self.ndim = bmi.grid_ndim(grid_id)
         self.metadata = OrderedDict()
         super(_Base, self).__init__()
@@ -96,7 +97,7 @@ class Scalar(_Base):
                 ("cf_role", "grid_topology"),
                 ("long_name", "scalar value"),
                 ("topology_dimension", self.ndim),
-                ("type", "scalar"),
+                ("type", self.grid_type),
             ]
         )
         self.set_mesh()
@@ -115,7 +116,7 @@ class Vector(_Base):
                 ("cf_role", "grid_topology"),
                 ("long_name", "vector value"),
                 ("topology_dimension", self.ndim),
-                ("type", "vector"),
+                ("type", self.grid_type),
             ]
         )
         self.set_mesh()
@@ -132,7 +133,7 @@ class Points(_Base):
                 ("long_name", "Topology data of 2D unstructured points"),
                 ("topology_dimension", self.ndim),
                 ("node_coordinates", "node_x node_y"),
-                ("type", "points"),
+                ("type", self.grid_type),
             ]
         )
         self.set_mesh()
@@ -150,7 +151,7 @@ class Unstructured(_Base):
                 ("long_name", "Topology data of 2D unstructured points"),
                 ("topology_dimension", self.ndim),
                 ("node_coordinates", "node_x node_y"),
-                ("type", "unstructured"),
+                ("type", self.grid_type),
             ]
         )
         self.set_mesh()
@@ -179,7 +180,7 @@ class StructuredQuadrilateral(_Base):
                 ("topology_dimension", self.ndim),
                 ("node_coordinates", " ".join(coordinate_names(self.ndim))),
                 ("node_dimensions", " ".join(index_names(self.ndim))),
-                ("type", "structured_quadrilateral"),
+                ("type", self.grid_type),
             ]
         )
         self.set_mesh()

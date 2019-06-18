@@ -11,6 +11,9 @@ grid_id = 0
 
 class BmiScalar:
 
+    def grid_type(self, grid_id):
+        return "scalar"
+
     def grid_ndim(self, grid_id):
         return 0
 
@@ -21,12 +24,15 @@ def test_scalar_grid():
     grid = Scalar(bmi, grid_id)
 
     assert grid.ndim == 0
-    assert grid.metadata["type"] == "scalar"
-    assert grid.data_vars["mesh"].attrs["type"] == "scalar"
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
     assert isinstance(grid, xr.Dataset)
 
 
 class BmiVector:
+
+    def grid_type(self, grid_id):
+        return "vector"
 
     def grid_ndim(self, grid_id):
         return 1
@@ -38,8 +44,8 @@ def test_vector_grid():
     grid = Vector(bmi, grid_id)
 
     assert grid.ndim == 1
-    assert grid.metadata["type"] == "vector"
-    assert grid.data_vars["mesh"].attrs["type"] == "vector"
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
     assert isinstance(grid, xr.Dataset)
 
 
@@ -47,6 +53,9 @@ class BmiPoints:
 
     x = np.array([0., 1., 0., 1.])
     y = np.array([0., 0., 1., 1.])
+
+    def grid_type(self, grid_id):
+        return "points"
 
     def grid_ndim(self, grid_id):
         return 2
@@ -65,12 +74,15 @@ def test_points_grid():
 
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
-    assert grid.metadata["type"] == "points"
-    assert grid.data_vars["mesh"].attrs["type"] == "points"
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
 class BmiUnstructured(BmiPoints):
+
+    def grid_type(self, grid_id):
+        return "unstructured"
 
     def grid_nodes_per_face(self, grid_id, out=None):
         return 4
@@ -90,8 +102,8 @@ def test_unstructured_grid():
 
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
-    assert grid.metadata["type"] == "unstructured"
-    assert grid.data_vars["mesh"].attrs["type"] == "unstructured"
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
@@ -99,6 +111,9 @@ class BmiStructuredQuadrilateral():
 
     x = np.array([[0., 3.], [1., 4.], [2., 5.]])
     y = np.array([[0., 1.], [2., 3.], [4., 5.]])
+
+    def grid_type(self, grid_id):
+        return "structured_quadrilateral"
 
     def grid_ndim(self, grid_id):
         return self.x.ndim
@@ -120,6 +135,6 @@ def test_structured_quadrilateral_grid():
 
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
-    assert grid.metadata["type"] == "structured_quadrilateral"
-    assert grid.data_vars["mesh"].attrs["type"] == "structured_quadrilateral"
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
     assert type(grid.data_vars["node_x"].data) == np.ndarray
