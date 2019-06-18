@@ -53,8 +53,8 @@ def test_vector_grid():
 
 class TestPoints:
 
-    x = np.array([0, 1, 0, 1])
-    y = np.array([0, 0, 1, 1])
+    x = np.array([0., 1., 0., 1.])
+    y = np.array([0., 0., 1., 1.])
     node_count = x.size
 
     def get_grid_rank(self, grid_id):
