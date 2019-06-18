@@ -3,7 +3,6 @@ import xarray as xr
 import numpy as np
 
 from pymt.framework.bmi_ugrid import Scalar, Vector, Points, Unstructured
-from pymt.framework.bmi_bridge import _BmiCap
 
 
 grid_id = 0
@@ -11,17 +10,12 @@ grid_id = 0
 
 class TestScalar:
 
-    def get_grid_rank(self, grid_id):
+    def grid_ndim(self, grid_id):
         return 0
-
-
-class ScalarBmi(_BmiCap):
-    _cls = TestScalar
-
 
 def test_scalar_grid():
     """Test creating a scalar grid."""
-    bmi = ScalarBmi()
+    bmi = TestScalar()
     grid = Scalar(bmi, grid_id)
 
     assert grid.ndim == 0
@@ -32,17 +26,13 @@ def test_scalar_grid():
 
 class TestVector:
 
-    def get_grid_rank(self, grid_id):
+    def grid_ndim(self, grid_id):
         return 1
-
-
-class VectorBmi(_BmiCap):
-    _cls = TestVector
 
 
 def test_vector_grid():
     """Test creating a vector grid."""
-    bmi = VectorBmi()
+    bmi = TestVector()
     grid = Vector(bmi, grid_id)
 
     assert grid.ndim == 1
@@ -55,28 +45,20 @@ class TestPoints:
 
     x = np.array([0., 1., 0., 1.])
     y = np.array([0., 0., 1., 1.])
-    node_count = x.size
 
-    def get_grid_rank(self, grid_id):
+    def grid_ndim(self, grid_id):
         return 2
 
-    def get_grid_node_count(self, grid_id):
-        return self.node_count
-
-    def get_grid_x(self, grid_id, out=None):
+    def grid_x(self, grid_id, out=None):
         return self.x.flatten()
 
-    def get_grid_y(self, grid_id, out=None):
+    def grid_y(self, grid_id, out=None):
         return self.y.flatten()
-
-
-class PointsBmi(_BmiCap):
-    _cls = TestPoints
 
 
 def test_points_grid():
     """Test creating a grid from points."""
-    bmi = PointsBmi()
+    bmi = TestPoints()
     grid = Points(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
@@ -88,23 +70,20 @@ def test_points_grid():
 
 class TestUnstructured(TestPoints):
 
-    def get_grid_number_of_faces(self, grid_id):
-        return 1
-
-    def get_grid_nodes_per_face(self, grid_id, out=None):
+    def grid_nodes_per_face(self, grid_id, out=None):
         return 4
 
-    def get_grid_face_nodes(self, grid_id, out=None):
+    def grid_face_nodes(self, grid_id, out=None):
         return np.array([0, 1, 3, 2])
 
-
-class UnstructuredBmi(_BmiCap):
-    _cls = TestUnstructured
+    def grid_face_node_offset(self, grid_id, out=None):
+        nodes_per_face = self.grid_nodes_per_face(grid_id)
+        return np.cumsum(nodes_per_face)
 
 
 def test_unstructured_grid():
     """Test creating an unstructured grid."""
-    bmi = UnstructuredBmi()
+    bmi = TestUnstructured()
     grid = Unstructured(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
