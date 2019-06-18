@@ -53,9 +53,9 @@ def test_vector_grid():
 
 class TestPoints:
 
-    node_count = 6
-    x = np.random.rand(node_count)
-    y = np.random.rand(node_count)
+    x = np.array([0, 1, 0, 1])
+    y = np.array([0, 0, 1, 1])
+    node_count = x.size
 
     def get_grid_rank(self, grid_id):
         return 2
@@ -86,23 +86,7 @@ def test_points_grid():
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
-class TestUnstructured:
-
-    x = np.array([0, 1, 0, 1])
-    y = np.array([0, 0, 1, 1])
-    node_count = x.size
-
-    def get_grid_rank(self, grid_id):
-        return 2
-
-    def get_grid_node_count(self, grid_id):
-        return self.node_count
-
-    def get_grid_x(self, grid_id, out=None):
-        return self.x
-
-    def get_grid_y(self, grid_id, out=None):
-        return self.y
+class TestUnstructured(TestPoints):
 
     def get_grid_number_of_faces(self, grid_id):
         return 1
@@ -111,7 +95,7 @@ class TestUnstructured:
         return 4
 
     def get_grid_face_nodes(self, grid_id, out=None):
-        return 4
+        return np.array([0, 1, 3, 2])
 
 
 class UnstructuredBmi(_BmiCap):
