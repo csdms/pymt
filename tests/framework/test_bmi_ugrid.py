@@ -2,7 +2,8 @@
 import xarray as xr
 import numpy as np
 
-from pymt.framework.bmi_ugrid import Scalar, Vector, Points, Unstructured
+from pymt.framework.bmi_ugrid import (Scalar, Vector, Points,
+                                      Unstructured, StructuredQuadrilateral)
 
 
 grid_id = 0
@@ -90,4 +91,34 @@ def test_unstructured_grid():
     assert grid.ndim == 2
     assert grid.metadata["type"] == "unstructured"
     assert grid.data_vars["mesh"].attrs["type"] == "unstructured"
+    assert type(grid.data_vars["node_x"].data) == np.ndarray
+
+
+class TestStructuredQuadrilateral():
+
+    x = np.array([[0.,3.], [1.,4.], [2.,5.]])
+    y = np.array([[0.,1.], [2.,3.], [4.,5.]])
+
+    def grid_ndim(self, grid_id):
+        return self.x.ndim
+
+    def grid_shape(self, grid_id, out=None):
+        return np.array(self.x.shape)
+
+    def grid_x(self, grid_id, out=None):
+        return self.x.flatten()
+
+    def grid_y(self, grid_id, out=None):
+        return self.y.flatten()
+
+
+def test_structured_quadrilateral_grid():
+    """Test creating a structured quadrilateral grid."""
+    bmi = TestStructuredQuadrilateral()
+    grid = StructuredQuadrilateral(bmi, grid_id)
+
+    assert isinstance(grid, xr.Dataset)
+    assert grid.ndim == 2
+    assert grid.metadata["type"] == "structured_quadrilateral"
+    assert grid.data_vars["mesh"].attrs["type"] == "structured_quadrilateral"
     assert type(grid.data_vars["node_x"].data) == np.ndarray
