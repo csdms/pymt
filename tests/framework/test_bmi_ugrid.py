@@ -1,18 +1,20 @@
 """Unit tests for the pymt.framwork.bmi_ugrid module."""
-import xarray as xr
 import numpy as np
+import xarray as xr
 
-from pymt.framework.bmi_ugrid import (Scalar, Vector, Points,
-                                      Unstructured,
-                                      StructuredQuadrilateral,
-                                      UniformRectilinear)
-
+from pymt.framework.bmi_ugrid import (
+    Points,
+    Scalar,
+    StructuredQuadrilateral,
+    UniformRectilinear,
+    Unstructured,
+    Vector,
+)
 
 grid_id = 0
 
 
 class BmiScalar:
-
     def grid_type(self, grid_id):
         return "scalar"
 
@@ -32,7 +34,6 @@ def test_scalar_grid():
 
 
 class BmiVector:
-
     def grid_type(self, grid_id):
         return "vector"
 
@@ -53,8 +54,8 @@ def test_vector_grid():
 
 class BmiPoints:
 
-    x = np.array([0., 1., 0., 1.])
-    y = np.array([0., 0., 1., 1.])
+    x = np.array([0.0, 1.0, 0.0, 1.0])
+    y = np.array([0.0, 0.0, 1.0, 1.0])
 
     def grid_type(self, grid_id):
         return "points"
@@ -82,7 +83,6 @@ def test_points_grid():
 
 
 class BmiUnstructured(BmiPoints):
-
     def grid_type(self, grid_id):
         return "unstructured"
 
@@ -109,10 +109,10 @@ def test_unstructured_grid():
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
-class BmiStructuredQuadrilateral():
+class BmiStructuredQuadrilateral:
 
-    x = np.array([[0., 3.], [1., 4.], [2., 5.]])
-    y = np.array([[0., 1.], [2., 3.], [4., 5.]])
+    x = np.array([[0.0, 3.0], [1.0, 4.0], [2.0, 5.0]])
+    y = np.array([[0.0, 1.0], [2.0, 3.0], [4.0, 5.0]])
 
     def grid_type(self, grid_id):
         return "structured_quadrilateral"
@@ -142,11 +142,11 @@ def test_structured_quadrilateral_grid():
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
-class BmiUniformRectilinear():
+class BmiUniformRectilinear:
 
     shape = (4, 3)
-    spacing = (1., 1.)
-    origin = (5., 2.)
+    spacing = (1.0, 1.0)
+    origin = (5.0, 2.0)
 
     def grid_type(self, grid_id):
         return "uniform_rectilinear"

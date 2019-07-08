@@ -5,7 +5,6 @@ import xarray as xr
 
 from landlab.graph import StructuredQuadGraph, UniformRectilinearGraph
 
-
 COORDINATE_NAMES = ["z", "y", "x"]
 INDEX_NAMES = ["k", "j", "i"]
 
@@ -19,7 +18,6 @@ def coordinate_names(rank):
 
 
 class _Base(xr.Dataset):
-
     def __init__(self, bmi, grid_id):
         self.bmi = bmi
         self.grid_id = grid_id
@@ -29,32 +27,16 @@ class _Base(xr.Dataset):
         super(_Base, self).__init__()
 
     def set_mesh(self):
-        self.update(
-            {
-                "mesh": xr.DataArray(data=self.grid_id, attrs=self.metadata)
-            }
-        )
+        self.update({"mesh": xr.DataArray(data=self.grid_id, attrs=self.metadata)})
 
     def set_shape(self, shape):
-        self.update(
-            {
-                "node_shape": xr.DataArray(data=shape, dims=("rank",))
-            }
-        )
+        self.update({"node_shape": xr.DataArray(data=shape, dims=("rank",))})
 
     def set_spacing(self, spacing):
-        self.update(
-            {
-                "node_spacing": xr.DataArray(data=spacing, dims=("rank",))
-            }
-        )
+        self.update({"node_spacing": xr.DataArray(data=spacing, dims=("rank",))})
 
     def set_origin(self, origin):
-        self.update(
-            {
-                "node_origin": xr.DataArray(data=origin, dims=("rank",))
-            }
-        )
+        self.update({"node_origin": xr.DataArray(data=origin, dims=("rank",))})
 
     def get_nodes(self):
         nodes = []
@@ -71,7 +53,7 @@ class _Base(xr.Dataset):
             coord = xr.DataArray(
                 data=data,
                 dims=("node",),
-                attrs={"standard_name": dim_name, "units": "m"}
+                attrs={"standard_name": dim_name, "units": "m"},
             )
             coords["node_" + dim_name] = coord
 
@@ -99,7 +81,6 @@ class _Base(xr.Dataset):
 
 
 class Scalar(_Base):
-
     def __init__(self, *args):
         super(Scalar, self).__init__(*args)
 
@@ -118,7 +99,6 @@ class Scalar(_Base):
 
 
 class Vector(_Base):
-
     def __init__(self, *args):
         super(Vector, self).__init__(*args)
 
@@ -137,7 +117,6 @@ class Vector(_Base):
 
 
 class Points(_Base):
-
     def __init__(self, *args):
         super(Points, self).__init__(*args)
 
@@ -155,7 +134,6 @@ class Points(_Base):
 
 
 class Unstructured(_Base):
-
     def __init__(self, *args):
         super(Unstructured, self).__init__(*args)
 
@@ -175,7 +153,6 @@ class Unstructured(_Base):
 
 
 class StructuredQuadrilateral(_Base):
-
     def __init__(self, *args):
         super(StructuredQuadrilateral, self).__init__(*args)
 
@@ -205,12 +182,12 @@ class StructuredQuadrilateral(_Base):
         graph = StructuredQuadGraph(nodes, shape=tuple(shape))
 
         self.set_connectivity(data=graph.nodes_at_patch.reshape((-1,)))
-        self.set_offset(data=np.arange(1, graph.number_of_patches + 1,
-                                       dtype=np.int32) * 4)
+        self.set_offset(
+            data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4
+        )
 
 
 class UniformRectilinear(_Base):
-
     def __init__(self, *args):
         super(UniformRectilinear, self).__init__(*args)
 
@@ -251,17 +228,18 @@ class UniformRectilinear(_Base):
         graph = UniformRectilinearGraph(shape, spacing=spacing, origin=origin)
 
         self.set_connectivity(data=graph.nodes_at_patch.reshape((-1,)))
-        self.set_offset(data=np.arange(1, graph.number_of_patches + 1,
-                                       dtype=np.int32) * 4)
+        self.set_offset(
+            data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4
+        )
 
     def set_nodes(self, grid_coords=None):
         coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
         coords = {}
-        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim:]):
+        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim :]):
             coord = xr.DataArray(
                 data=coords_at_node[axis].reshape(-1),
                 dims=("node",),
-                attrs={"standard_name": dim_name, "units": "m"}
+                attrs={"standard_name": dim_name, "units": "m"},
             )
             coords["node_" + dim_name] = coord
 
