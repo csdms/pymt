@@ -4,6 +4,7 @@ import xarray as xr
 
 from pymt.framework.bmi_ugrid import (
     Points,
+    Rectilinear,
     Scalar,
     StructuredQuadrilateral,
     UniformRectilinear,
@@ -134,6 +135,40 @@ def test_structured_quadrilateral_grid():
     """Test creating a structured quadrilateral grid."""
     bmi = BmiStructuredQuadrilateral()
     grid = StructuredQuadrilateral(bmi, grid_id)
+
+    assert isinstance(grid, xr.Dataset)
+    assert grid.ndim == 2
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) == np.ndarray
+
+
+class BmiRectilinear:
+
+    x = np.array([1, 4, 8])
+    y = np.array([0, 1, 2, 3])
+    shape = (len(y), len(x))
+
+    def grid_type(self, grid_id):
+        return "rectilinear"
+
+    def grid_ndim(self, grid_id):
+        return len(self.shape)
+
+    def grid_shape(self, grid_id, out=None):
+        return np.array(self.shape)
+
+    def grid_x(self, grid_id, out=None):
+        return self.x
+
+    def grid_y(self, grid_id, out=None):
+        return self.y
+
+
+def test_rectilinear_grid():
+    """Test creating a rectilinear grid."""
+    bmi = BmiRectilinear()
+    grid = Rectilinear(bmi, grid_id)
 
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
