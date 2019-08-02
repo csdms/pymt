@@ -242,7 +242,7 @@ class UniformRectilinear(_Base):
         super(UniformRectilinear, self).__init__(*args)
 
         if self.ndim < 1 or self.ndim > 3:
-            raise ValueError("structured_quadrilateral grid must be rank 1, 2, or 3")
+            raise ValueError("uniform_rectangular grid must be rank 1, 2, or 3")
 
         shape = self.bmi.grid_shape(self.grid_id)
         spacing = self.bmi.grid_spacing(self.grid_id)
