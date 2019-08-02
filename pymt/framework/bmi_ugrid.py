@@ -48,12 +48,25 @@ class _Base(xr.Dataset):
 
         return tuple(nodes)
 
-    def set_nodes(self, grid_coords=None):
+    def set_nodes(self):
         coords = {}
         for dim_name in COORDINATE_NAMES[: -(self.ndim + 1) : -1]:
             data = getattr(self.bmi, "grid_" + dim_name)(self.grid_id)
             coord = xr.DataArray(
                 data=data,
+                dims=("node",),
+                attrs={"standard_name": dim_name, "units": "m"},
+            )
+            coords["node_" + dim_name] = coord
+
+        self.update(coords)
+
+    def set_nodes_rectilinear(self, grid_coords):
+        coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
+        coords = {}
+        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim :]):
+            coord = xr.DataArray(
+                data=coords_at_node[axis].reshape(-1),
                 dims=("node",),
                 attrs={"standard_name": dim_name, "units": "m"},
             )
@@ -214,7 +227,7 @@ class Rectilinear(_Base):
         self.set_mesh()
         self.set_shape(shape)
         nodes = self.get_nodes()
-        self.set_nodes(grid_coords=nodes)
+        self.set_nodes_rectilinear(nodes)
 
         graph = RectilinearGraph(nodes)
 
@@ -222,19 +235,6 @@ class Rectilinear(_Base):
         self.set_offset(
             data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4
         )
-
-    def set_nodes(self, grid_coords=None):
-        coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
-        coords = {}
-        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim :]):
-            coord = xr.DataArray(
-                data=coords_at_node[axis].reshape(-1),
-                dims=("node",),
-                attrs={"standard_name": dim_name, "units": "m"},
-            )
-            coords["node_" + dim_name] = coord
-
-        self.update(coords)
 
 
 class UniformRectilinear(_Base):
@@ -273,7 +273,7 @@ class UniformRectilinear(_Base):
             grid_coords.append(
                 np.arange(shape[dim], dtype=float) * spacing[dim] + origin[dim]
             )
-        self.set_nodes(grid_coords=grid_coords)
+        self.set_nodes_rectilinear(grid_coords)
 
         graph = UniformRectilinearGraph(shape, spacing=spacing, origin=origin)
 
@@ -281,19 +281,6 @@ class UniformRectilinear(_Base):
         self.set_offset(
             data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4
         )
-
-    def set_nodes(self, grid_coords=None):
-        coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
-        coords = {}
-        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim :]):
-            coord = xr.DataArray(
-                data=coords_at_node[axis].reshape(-1),
-                dims=("node",),
-                attrs={"standard_name": dim_name, "units": "m"},
-            )
-            coords["node_" + dim_name] = coord
-
-        self.update(coords)
 
 
 def dataset_from_bmi_grid(bmi, grid_id):
