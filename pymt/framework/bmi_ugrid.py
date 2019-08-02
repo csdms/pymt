@@ -3,7 +3,9 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
-from landlab.graph import StructuredQuadGraph, UniformRectilinearGraph
+from landlab.graph import (StructuredQuadGraph,
+                           UniformRectilinearGraph,
+                           RectilinearGraph)
 
 COORDINATE_NAMES = ["z", "y", "x"]
 INDEX_NAMES = ["k", "j", "i"]
@@ -187,6 +189,54 @@ class StructuredQuadrilateral(_Base):
         )
 
 
+class Rectilinear(_Base):
+    def __init__(self, *args):
+        super(Rectilinear, self).__init__(*args)
+
+        if self.ndim < 1 or self.ndim > 3:
+            raise ValueError("rectilinear grid must be rank 1, 2, or 3")
+
+        shape = self.bmi.grid_shape(self.grid_id)
+
+        self.metadata = OrderedDict(
+            [
+                ("cf_role", "grid_topology"),
+                (
+                    "long_name",
+                    "Topology data of {}D structured quadrilateral".format(self.ndim),
+                ),
+                ("topology_dimension", self.ndim),
+                ("node_coordinates", " ".join(coordinate_names(self.ndim))),
+                ("node_dimensions", " ".join(index_names(self.ndim))),
+                ("type", self.grid_type),
+            ]
+        )
+        self.set_mesh()
+        self.set_shape(shape)
+        nodes = self.get_nodes()
+        self.set_nodes(grid_coords=nodes)
+
+        graph = RectilinearGraph(nodes)
+
+        self.set_connectivity(data=graph.nodes_at_patch.reshape((-1,)))
+        self.set_offset(
+            data=np.arange(1, graph.number_of_patches + 1, dtype=np.int32) * 4
+        )
+
+    def set_nodes(self, grid_coords=None):
+        coords_at_node = np.meshgrid(*grid_coords, indexing="ij")
+        coords = {}
+        for axis, dim_name in enumerate(COORDINATE_NAMES[-self.ndim :]):
+            coord = xr.DataArray(
+                data=coords_at_node[axis].reshape(-1),
+                dims=("node",),
+                attrs={"standard_name": dim_name, "units": "m"},
+            )
+            coords["node_" + dim_name] = coord
+
+        self.update(coords)
+
+
 class UniformRectilinear(_Base):
     def __init__(self, *args):
         super(UniformRectilinear, self).__init__(*args)
@@ -260,6 +310,8 @@ def dataset_from_bmi_grid(bmi, grid_id):
         grid = Unstructured(bmi, grid_id)
     elif grid_type == "vector":
         grid = Vector(bmi, grid_id)
+    elif grid_type == "rectilinear":
+        grid = Rectilinear(bmi, grid_id)
     else:
         raise ValueError("grid type not understood ({gtype})".format(gtype=grid_type))
 
