@@ -21,6 +21,7 @@ Single Models
 
 * :doc:`Frost Number Model <demos/frost_number>` (macOS, Linux, Windows)
 * :doc:`Kudryavtsev Model <demos/ku>` (macOS, Linux, Windows)
+* :doc:`GIPL Model<demos/Example_01_Basic_Use_GIPL>` (macOS, Linux)
 * :doc:`Coastline Evolution Model <demos/cem>` (macOS, Linux)
 * :doc:`Hydrotrend<demos/hydrotrend>` (macOS, Linux)
 * :doc:`Sedflux3D <demos/sedflux3d>` (macOS, Linux)
@@ -31,6 +32,7 @@ Coupled Models
 --------------
 
 * :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` (macOS, Linux)
+* :doc:`GIPL + ECSimpleSnow Models <demos/Example_02_GIPL_ECSimpleSnow>` (macOS, Linux)
 
 ..
    Sphinx emits a warning if documents aren't in a toctree.
@@ -42,10 +44,12 @@ Coupled Models
 
       <demos/frost_number>
       <demos/ku>
+      <demos/Example_01_Basic_Use_GIPL>
       <demos/cem>
       <demos/hydrotrend>
       <demos/sedflux3d>
       <demos/subside>
       <demos/child>
       <demos/cem_and_waves>
+      <demos/Example_02_GIPL_ECSimpleSnow>
       <demos/sedflux3d_and_child>
