@@ -22,6 +22,7 @@ Single Models
 * :doc:`Frost Number Model <demos/frost_number>` |macOS| |Linux| |Windows|
 * :doc:`Kudryavtsev Model <demos/ku>` |macOS| |Linux| |Windows|
 * :doc:`GIPL Model<demos/Example_01_Basic_Use_GIPL>` |macOS| |Linux|
+* :doc:`ECSimpleSnow Model <demos/ECSnow_PyMT>` |macOS| |Linux| |Windows|
 * :doc:`Coastline Evolution Model <demos/cem>` |macOS| |Linux|
 * :doc:`Hydrotrend<demos/hydrotrend>` |macOS| |Linux|
 * :doc:`Sedflux3D <demos/sedflux3d>` |macOS| |Linux|
@@ -66,3 +67,4 @@ Coupled Models
       <demos/cem_and_waves>
       <demos/Example_02_GIPL_ECSimpleSnow>
       <demos/sedflux3d_and_child>
+      <demos/ECSnow_PyMT>
