@@ -19,20 +19,33 @@ have to install Jupyter Notebook:
 Single Models
 -------------
 
-* :doc:`Frost Number Model <demos/frost_number>` (macOS, Linux, Windows)
-* :doc:`Kudryavtsev Model <demos/ku>` (macOS, Linux, Windows)
-* :doc:`GIPL Model<demos/Example_01_Basic_Use_GIPL>` (macOS, Linux)
-* :doc:`Coastline Evolution Model <demos/cem>` (macOS, Linux)
-* :doc:`Hydrotrend<demos/hydrotrend>` (macOS, Linux)
-* :doc:`Sedflux3D <demos/sedflux3d>` (macOS, Linux)
-* :doc:`Flexural Subsidence <demos/subside>` (macOS, Linux)
+* :doc:`Frost Number Model <demos/frost_number>` |macOS| |Linux| |Windows|
+* :doc:`Kudryavtsev Model <demos/ku>` |macOS| |Linux| |Windows|
+* :doc:`GIPL Model<demos/Example_01_Basic_Use_GIPL>` |macOS| |Linux|
+* :doc:`Coastline Evolution Model <demos/cem>` |macOS| |Linux|
+* :doc:`Hydrotrend<demos/hydrotrend>` |macOS| |Linux|
+* :doc:`Sedflux3D <demos/sedflux3d>` |macOS| |Linux|
+* :doc:`Flexural Subsidence <demos/subside>` |macOS| |Linux|
 
 
 Coupled Models
 --------------
 
-* :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` (macOS, Linux)
-* :doc:`GIPL + ECSimpleSnow Models <demos/Example_02_GIPL_ECSimpleSnow>` (macOS, Linux)
+* :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` |macOS| |Linux|
+* :doc:`GIPL + ECSimpleSnow Models <demos/Example_02_GIPL_ECSimpleSnow>` |macOS| |Linux|
+
+
+.. |macOS| image:: _static/apple.svg
+   :height: 15px
+   :alt: macOS
+
+.. |Linux| image:: _static/linux.svg
+   :height: 15px
+   :alt: Linux
+
+.. |Windows| image:: _static/windows.svg
+   :height: 15px
+   :alt: Windows
 
 ..
    Sphinx emits a warning if documents aren't in a toctree.
