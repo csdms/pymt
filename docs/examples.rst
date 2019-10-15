@@ -16,37 +16,52 @@ have to install Jupyter Notebook:
     $ conda install notebook
 
 
-Single Models
+SSingle Models
 -------------
+* Frost Number Model |binder-frost_number|
+.. |binder-frost_number| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Ffrost_number.ipynb
 
-* :doc:`Frost Number Model <demos/frost_number>` |macOS| |Linux| |Windows|
-* :doc:`Kudryavtsev Model <demos/ku>` |macOS| |Linux| |Windows|
-* :doc:`GIPL Model<demos/Example_01_Basic_Use_GIPL>` |macOS| |Linux|
-* :doc:`ECSimpleSnow Model <demos/ECSnow_PyMT>` |macOS| |Linux| |Windows|
-* :doc:`Coastline Evolution Model <demos/cem>` |macOS| |Linux|
-* :doc:`Hydrotrend<demos/hydrotrend>` |macOS| |Linux|
-* :doc:`Sedflux3D <demos/sedflux3d>` |macOS| |Linux|
-* :doc:`Flexural Subsidence <demos/subside>` |macOS| |Linux|
+* Kudryavtsev Model |binder-ku|
+.. |binder-ku| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Fku.ipynb
+
+* GIPL Model |binder-GIPL|
+.. |binder-GIPL| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2FExample_01_Basic_Use_GIPL.ipynb
+
+* ECSimpleSnow Model |binder-ECSnow|
+.. |binder-ECSnow| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2FECSnow_PyMT.ipynb
+
+* Coastline Evolution Model |binder-cem|
+.. |binder-cem| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Fcem.ipynb
+
+* Hydrotrend |binder-hydrotrend|
+.. |binder-hydrotrend| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Fhydrotrend.ipynb
+
+* Sedflux3D |binder-sedflux3d|
+.. |binder-sedflux3d| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Fsedflux3d.ipynb
+
+* Flexural Subsidence |binder-subside|
+.. |binder-subside| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Fsubside.ipynb
 
 
 Coupled Models
 --------------
 
-* :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` |macOS| |Linux|
-* :doc:`GIPL + ECSimpleSnow Models <demos/Example_02_GIPL_ECSimpleSnow>` |macOS| |Linux|
+* Coastline Evolution Model + Waves |binder-cem_and_waves|
+.. |binder-cem_and_waves| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2Fcem_and_waves.ipynb
 
+* GIPL + ECSimpleSnow Models |binder-GIPL_and_ECSnow|
+.. |binder-GIPL_and_ECSnow| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gantian127/pymt.git/tian/enable-binder?filepath=notebooks%2FExample_02_GIPL_ECSimpleSnow.ipynb
 
-.. |macOS| image:: _static/apple.svg
-   :height: 15px
-   :alt: macOS
-
-.. |Linux| image:: _static/linux.svg
-   :height: 15px
-   :alt: Linux
-
-.. |Windows| image:: _static/windows.svg
-   :height: 15px
-   :alt: Windows
 
 ..
    Sphinx emits a warning if documents aren't in a toctree.
