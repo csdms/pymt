@@ -16,7 +16,7 @@ have to install Jupyter Notebook:
     $ conda install notebook
 
 
-SSingle Models
+Single Models
 -------------
 * Frost Number Model |binder-frost_number|
 .. |binder-frost_number| image:: https://mybinder.org/badge_logo.svg
