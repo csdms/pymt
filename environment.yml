@@ -1,0 +1,13 @@
+name: test-environment
+channels:
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pymt=1.0.3
+  - pymt_gipl
+  - pymt_ecsimplesnow
+  - seaborn
+  - matplotlib
+  - pandas
+  - numpy
+
