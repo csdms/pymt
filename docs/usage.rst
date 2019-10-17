@@ -9,7 +9,7 @@ configure, run, and couple models.
 
 We assume here that you have
 installed *pymt*,
-following the instructions in the :doc:`installation` guide.
+following the instructions in the :doc:`install` guide.
 Below,
 we'll use the `CEM`_ and `Waves`_ models.
 Install them with:
