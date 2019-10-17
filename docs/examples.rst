@@ -84,13 +84,13 @@ Models                                                                     Noteb
 
       <notebooks/frost_number>
       <notebooks/ku>
-      <notebooks/Example_01_Basic_Use_GIPL>
+      <notebooks/gipl>
       <notebooks/cem>
       <notebooks/hydrotrend>
       <notebooks/sedflux3d>
       <notebooks/subside>
       <notebooks/child>
       <notebooks/cem_and_waves>
-      <notebooks/Example_02_GIPL_ECSimpleSnow>
+      <notebooks/gipl_and_ecsimplesnow>
       <notebooks/sedflux3d_and_child>
-      <notebooks/ECSnow_PyMT>
+      <notebooks/ecsimplesnow>

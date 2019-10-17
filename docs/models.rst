@@ -1,4 +1,4 @@
-.. _models:
+.. _available_models:
 
 Available Models
 ================
@@ -98,11 +98,11 @@ Waves                             Generates a shallow-water wave climate for a l
 ================================  =================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
 
 .. |binder-ECSimpleSnow| image:: https://mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2FECSnow_PyMT.ipynb
+    :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fecsimplesnow.ipynb
 
 
 .. |binder-Cem| image:: https://mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem_and_waves.ipynb
+    :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem.ipynb
 
 
 .. |binder-Waves| image:: https://mybinder.org/badge_logo.svg
@@ -110,7 +110,7 @@ Waves                             Generates a shallow-water wave climate for a l
 
 
 .. |binder-GIPL| image:: https://mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2FExample_01_Basic_Use_GIPL.ipynb
+    :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl.ipynb
 
 
 .. |binder-Child| image:: https://mybinder.org/badge_logo.svg

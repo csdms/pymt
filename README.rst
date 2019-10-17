@@ -35,7 +35,7 @@
      <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
    <a href="https://www.codacy.com/app/mcflugen/pymt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csdms/pymt&amp;utm_campaign=Badge_Grade">
      <img src="https://api.codacy.com/project/badge/Grade/e8e273131ecb4d7d981fe9f4cf3e83d9"/></a>
-   <a href="https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2FWelcome.ipynb">
+   <a href="https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fwelcome.ipynb">
      <img alt="Launch Binder" src="https://static.mybinder.org/badge_logo.svg"></a>
    </p>
 
