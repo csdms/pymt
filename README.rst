@@ -29,8 +29,6 @@
      <img src="https://ci.appveyor.com/api/projects/status/bf8g17c05ugvhvfe/branch/master"></a>
    <a href="https://coveralls.io/github/csdms/pymt?branch=master">
      <img alt="Coverage Status" src="https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master"></a>
-   <a href="https://landscape.io/github/csdms/pymt/master">
-     <img alt="Code Health" src="https://landscape.io/github/csdms/pymt/master/landscape.svg"></a>
    <a href="https://opensource.org/licenses/MIT">
      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
    <a href="https://github.com/csdms/pymt">
@@ -61,6 +59,11 @@ that expose the
   all usable from within the Python programming language
 * A plug-in framework for adding additional BMI-enabled models to
   the framework
+
+Quick links:
+  * `Installation instructions <https://pymt.readthedocs.io/install>`_
+  * `User documentation <https://pymt.readthedocs.io/>`_
+  * `List of available models <https://pymt.readthedocs.io/models>`_
 
 This material is based upon work
 supported by the National Science Foundation
