@@ -20,6 +20,8 @@ def coordinate_names(rank):
 
 
 class _Base(xr.Dataset):
+    __slots__ = ()
+
     def __init__(self, bmi, grid_id):
         self.bmi = bmi
         self.grid_id = grid_id
@@ -96,6 +98,8 @@ class _Base(xr.Dataset):
 
 
 class Scalar(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(Scalar, self).__init__(*args)
 
@@ -114,6 +118,8 @@ class Scalar(_Base):
 
 
 class Vector(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(Vector, self).__init__(*args)
 
@@ -132,6 +138,8 @@ class Vector(_Base):
 
 
 class Points(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(Points, self).__init__(*args)
 
@@ -149,6 +157,8 @@ class Points(_Base):
 
 
 class Unstructured(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(Unstructured, self).__init__(*args)
 
@@ -168,6 +178,8 @@ class Unstructured(_Base):
 
 
 class StructuredQuadrilateral(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(StructuredQuadrilateral, self).__init__(*args)
 
@@ -203,6 +215,8 @@ class StructuredQuadrilateral(_Base):
 
 
 class Rectilinear(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(Rectilinear, self).__init__(*args)
 
@@ -238,6 +252,8 @@ class Rectilinear(_Base):
 
 
 class UniformRectilinear(_Base):
+    __slots__ = ()
+
     def __init__(self, *args):
         super(UniformRectilinear, self).__init__(*args)
 
