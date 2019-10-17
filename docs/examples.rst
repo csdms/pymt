@@ -19,18 +19,18 @@ have to install Jupyter Notebook:
 Single Models
 -------------
 
-=================================================== =====================
-Model                                               Notebook
-=================================================== =====================
-:doc:`Frost Number Model <demos/frost_number>`      |binder-frost_number|
-:doc:`Kudryavtsev Model <demos/ku>`                 |binder-ku|
-:doc:`GIPL Model <demos/Example_01_Basic_Use_GIPL>` |binder-GIPL|
-:doc:`ECSimpleSnow Model <demos/ECSnow_PyMT>`       |binder-ECSnow|
-:doc:`Coastline Evolution Model <demos/cem>`        |binder-cem|
-:doc:`Hydrotrend <demos/hydrotrend>`                |binder-hydrotrend|
-:doc:`Sedflux3D <demos/sedflux3d>`                  |binder-sedflux3d|
-:doc:`Flexural Subsidence <demos/subside>`          |binder-subside|
-=================================================== =====================
+======================================================= =====================
+Model                                                   Notebook
+======================================================= =====================
+:doc:`Frost Number Model <notebooks/frost_number>`      |binder-frost_number|
+:doc:`Kudryavtsev Model <notebooks/ku>`                 |binder-ku|
+:doc:`GIPL Model <notebooks/Example_01_Basic_Use_GIPL>` |binder-GIPL|
+:doc:`ECSimpleSnow Model <notebooks/ECSnow_PyMT>`       |binder-ECSnow|
+:doc:`Coastline Evolution Model <notebooks/cem>`        |binder-cem|
+:doc:`Hydrotrend <notebooks/hydrotrend>`                |binder-hydrotrend|
+:doc:`Sedflux3D <notebooks/sedflux3d>`                  |binder-sedflux3d|
+:doc:`Flexural Subsidence <notebooks/subside>`          |binder-subside|
+======================================================= =====================
 
 .. |binder-frost_number| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Ffrost_number.ipynb
@@ -60,12 +60,12 @@ Model                                               Notebook
 Coupled Models
 --------------
 
-====================================================================== ========================
-Models                                                                 Notebook
-====================================================================== ========================
-:doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>`         |binder-cem_and_waves|
-:doc:`GIPL + ECSimpleSnow Models <demos/Example_02_GIPL_ECSimpleSnow>` |binder-GIPL_and_ECSnow|
-====================================================================== ========================
+========================================================================== ========================
+Models                                                                     Notebook
+========================================================================== ========================
+:doc:`Coastline Evolution Model + Waves <notebooks/cem_and_waves>`         |binder-cem_and_waves|
+:doc:`GIPL + ECSimpleSnow Models <notebooks/Example_02_GIPL_ECSimpleSnow>` |binder-GIPL_and_ECSnow|
+========================================================================== ========================
 
 .. |binder-cem_and_waves| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem_and_waves.ipynb
@@ -82,15 +82,15 @@ Models                                                                 Notebook
    :maxdepth: 1
    :hidden:
 
-      <demos/frost_number>
-      <demos/ku>
-      <demos/Example_01_Basic_Use_GIPL>
-      <demos/cem>
-      <demos/hydrotrend>
-      <demos/sedflux3d>
-      <demos/subside>
-      <demos/child>
-      <demos/cem_and_waves>
-      <demos/Example_02_GIPL_ECSimpleSnow>
-      <demos/sedflux3d_and_child>
-      <demos/ECSnow_PyMT>
+      <notebooks/frost_number>
+      <notebooks/ku>
+      <notebooks/Example_01_Basic_Use_GIPL>
+      <notebooks/cem>
+      <notebooks/hydrotrend>
+      <notebooks/sedflux3d>
+      <notebooks/subside>
+      <notebooks/child>
+      <notebooks/cem_and_waves>
+      <notebooks/Example_02_GIPL_ECSimpleSnow>
+      <notebooks/sedflux3d_and_child>
+      <notebooks/ECSnow_PyMT>

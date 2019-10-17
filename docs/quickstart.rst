@@ -223,7 +223,7 @@ Now display the plot:
     :alt: Mean daily water discharge from the Hydrotrend model.
 
 A more detailed example of using Hydrotrend 
-can be found in the :doc:`demos/hydrotrend`
+can be found in the :doc:`notebooks/hydrotrend`
 Jupyter Notebook.
 An expanded description of the *pymt* methods used in this example
 can be found in the :doc:`usage` section.
