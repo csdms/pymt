@@ -20,7 +20,7 @@ def coordinate_names(rank):
 
 
 class _Base(xr.Dataset):
-    __slots__ = ()
+    __slots__ = "bmi", "grid_id", "grid_type", "ndim", "metadata"
 
     def __init__(self, bmi, grid_id):
         self.bmi = bmi
