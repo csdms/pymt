@@ -57,8 +57,9 @@ this part of the documentation is for you.
    :maxdepth: 2
 
    quickstart
-   installation
+   install
    usage
+   models
    examples
    glossary
 

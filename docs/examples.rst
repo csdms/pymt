@@ -18,35 +18,41 @@ have to install Jupyter Notebook:
 
 Single Models
 -------------
-* Frost Number Model |binder-frost_number|
+
+======================================================= =====================
+Model                                                   Notebook
+======================================================= =====================
+:doc:`Frost Number Model <notebooks/frost_number>`      |binder-frost_number|
+:doc:`Kudryavtsev Model <notebooks/ku>`                 |binder-ku|
+:doc:`GIPL Model <notebooks/gipl>`                      |binder-GIPL|
+:doc:`ECSimpleSnow Model <notebooks/ecsimplesnow>`      |binder-ECSnow|
+:doc:`Coastline Evolution Model <notebooks/cem>`        |binder-cem|
+:doc:`Hydrotrend <notebooks/hydrotrend>`                |binder-hydrotrend|
+:doc:`Sedflux3D <notebooks/sedflux3d>`                  |binder-sedflux3d|
+:doc:`Flexural Subsidence <notebooks/subside>`          |binder-subside|
+======================================================= =====================
+
 .. |binder-frost_number| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Ffrost_number.ipynb
 
-* Kudryavtsev Model |binder-ku|
 .. |binder-ku| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fku.ipynb
 
-* GIPL Model |binder-GIPL|
 .. |binder-GIPL| image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2FExample_01_Basic_Use_GIPL.ipynb
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl.ipynb
 
-* ECSimpleSnow Model |binder-ECSnow|
 .. |binder-ECSnow| image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2FECSnow_PyMT.ipynb
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fecsimplesnow.ipynb
 
-* Coastline Evolution Model |binder-cem|
 .. |binder-cem| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem.ipynb
 
-* Hydrotrend |binder-hydrotrend|
 .. |binder-hydrotrend| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fhydrotrend.ipynb
 
-* Sedflux3D |binder-sedflux3d|
 .. |binder-sedflux3d| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsedflux3d.ipynb
 
-* Flexural Subsidence |binder-subside|
 .. |binder-subside| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsubside.ipynb
 
@@ -54,13 +60,18 @@ Single Models
 Coupled Models
 --------------
 
-* Coastline Evolution Model + Waves |binder-cem_and_waves|
+========================================================================== ========================
+Models                                                                     Notebook
+========================================================================== ========================
+:doc:`Coastline Evolution Model + Waves <notebooks/cem_and_waves>`         |binder-cem_and_waves|
+:doc:`GIPL + ECSimpleSnow Models <notebooks/gipl_and_ecsimplesnow>`        |binder-GIPL_and_ECSnow|
+========================================================================== ========================
+
 .. |binder-cem_and_waves| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem_and_waves.ipynb
 
-* GIPL + ECSimpleSnow Models |binder-GIPL_and_ECSnow|
 .. |binder-GIPL_and_ECSnow| image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2FExample_02_GIPL_ECSimpleSnow.ipynb
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl_and_ecsimplesnow.ipynb
 
 
 ..
@@ -71,15 +82,15 @@ Coupled Models
    :maxdepth: 1
    :hidden:
 
-      <demos/frost_number>
-      <demos/ku>
-      <demos/Example_01_Basic_Use_GIPL>
-      <demos/cem>
-      <demos/hydrotrend>
-      <demos/sedflux3d>
-      <demos/subside>
-      <demos/child>
-      <demos/cem_and_waves>
-      <demos/Example_02_GIPL_ECSimpleSnow>
-      <demos/sedflux3d_and_child>
-      <demos/ECSnow_PyMT>
+      <notebooks/frost_number>
+      <notebooks/ku>
+      <notebooks/gipl>
+      <notebooks/cem>
+      <notebooks/hydrotrend>
+      <notebooks/sedflux3d>
+      <notebooks/subside>
+      <notebooks/child>
+      <notebooks/cem_and_waves>
+      <notebooks/gipl_and_ecsimplesnow>
+      <notebooks/sedflux3d_and_child>
+      <notebooks/ecsimplesnow>

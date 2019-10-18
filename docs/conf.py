@@ -23,6 +23,19 @@ import sys
 
 # sys.path.insert(0, os.path.abspath('..'))
 from unittest.mock import MagicMock
+from sphinx.domains.python import PythonDomain
+
+
+class PatchedPythonDomain(PythonDomain):
+    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
+        if 'refspecific' in node:
+            del node['refspecific']
+        return super(PatchedPythonDomain, self).resolve_xref(
+            env, fromdocname, builder, typ, target, node, contnode)
+
+
+def setup(sphinx):
+    sphinx.override_domain(PatchedPythonDomain)
 
 
 class Mock(MagicMock):

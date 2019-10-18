@@ -27,7 +27,7 @@ You can get *pymt* directly from :term:`conda-forge`:
   $ conda install pymt -c conda-forge 
 
 Installing into a :term:`conda environment` is strongly recommended.
-Check the :doc:`installation guide<installation>` for more detailed
+Check the :doc:`installation guide<install>` for more detailed
 information about installing *pymt*.
 
 
@@ -223,7 +223,7 @@ Now display the plot:
     :alt: Mean daily water discharge from the Hydrotrend model.
 
 A more detailed example of using Hydrotrend 
-can be found in the :doc:`demos/hydrotrend`
+can be found in the :doc:`notebooks/hydrotrend`
 Jupyter Notebook.
 An expanded description of the *pymt* methods used in this example
 can be found in the :doc:`usage` section.
