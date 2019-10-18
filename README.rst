@@ -39,6 +39,11 @@
      <img alt="Launch Binder" src="https://static.mybinder.org/badge_logo.svg"></a>
    </p>
 
+Quick links:
+  * `User documentation <https://pymt.readthedocs.io/>`_
+  * `Installation instructions <https://pymt.readthedocs.io/en/latest/install.html>`_
+  * `List of available models <https://pymt.readthedocs.io/en/latest/models.html>`_
+
 PyMT is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
 (CSDMS), that provides the necessary tools used for the coupling of models
@@ -59,11 +64,6 @@ that expose the
   all usable from within the Python programming language
 * A plug-in framework for adding additional BMI-enabled models to
   the framework
-
-Quick links:
-  * `Installation instructions <https://pymt.readthedocs.io/install>`_
-  * `User documentation <https://pymt.readthedocs.io/>`_
-  * `List of available models <https://pymt.readthedocs.io/models>`_
 
 This material is based upon work
 supported by the National Science Foundation
