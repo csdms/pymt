@@ -15,6 +15,12 @@ have to install Jupyter Notebook:
 
     $ conda install notebook
 
+If you encounter any problems when running these Notebooks,
+please visit us at the `CSDMS Help Desk`_
+and explain what occurred.
+
+.. _CSDMS Help Desk: https://github.com/csdms/help-desk
+
 
 Single Models
 -------------

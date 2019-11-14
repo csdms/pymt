@@ -17,6 +17,12 @@ possibly modifying it,
 it's best to install it
 :ref:`from source<from-source>`.
 
+If you encounter any problems when installing *pymt*,
+please visit us at the `CSDMS Help Desk`_
+and explain what occurred.
+
+.. _CSDMS Help Desk: https://github.com/csdms/help-desk
+
 
 .. _stable-release:
 
