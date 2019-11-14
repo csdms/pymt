@@ -6,6 +6,12 @@ If you want to dig deeper,
 links are provided at each step to more detailed information
 either here in the User Guide or elsewhere.
 
+If you encounter any problems when installing or running *pymt*,
+please visit us at the `CSDMS Help Desk`_
+and explain what occurred.
+
+.. _CSDMS Help Desk: https://github.com/csdms/help-desk
+
 
 Install conda
 -------------
