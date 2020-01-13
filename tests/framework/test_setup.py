@@ -39,4 +39,4 @@ def test_find_metadata(path_to_meta):
     class _MyBmi:
         METADATA = path_to_meta
 
-    assert find_model_metadata(_MyBmi).lower() == expected.lower()
+    assert find_model_metadata(_MyBmi) == expected
