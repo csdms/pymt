@@ -15,22 +15,70 @@ have to install Jupyter Notebook:
 
     $ conda install notebook
 
+If you encounter any problems when running these Notebooks,
+please visit us at the `CSDMS Help Desk`_
+and explain what occurred.
+
+.. _CSDMS Help Desk: https://github.com/csdms/help-desk
+
 
 Single Models
 -------------
 
-* :doc:`Frost Number Model <demos/frost_number>` (macOS, Linux, Windows)
-* :doc:`Kudryavtsev Model <demos/ku>` (macOS, Linux, Windows)
-* :doc:`Coastline Evolution Model <demos/cem>` (macOS, Linux)
-* :doc:`Hydrotrend<demos/hydrotrend>` (macOS, Linux)
-* :doc:`Sedflux3D <demos/sedflux3d>` (macOS, Linux)
-* :doc:`Flexural Subsidence <demos/subside>` (macOS, Linux)
+======================================================= =====================
+Model                                                   Notebook
+======================================================= =====================
+:doc:`Frost Number Model <notebooks/frost_number>`      |binder-frost_number|
+:doc:`Kudryavtsev Model <notebooks/ku>`                 |binder-ku|
+:doc:`GIPL Model <notebooks/gipl>`                      |binder-GIPL|
+:doc:`ECSimpleSnow Model <notebooks/ecsimplesnow>`      |binder-ECSnow|
+:doc:`Coastline Evolution Model <notebooks/cem>`        |binder-cem|
+:doc:`Hydrotrend <notebooks/hydrotrend>`                |binder-hydrotrend|
+:doc:`Sedflux3D <notebooks/sedflux3d>`                  |binder-sedflux3d|
+:doc:`Flexural Subsidence <notebooks/subside>`          |binder-subside|
+======================================================= =====================
+
+.. |binder-frost_number| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Ffrost_number.ipynb
+
+.. |binder-ku| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fku.ipynb
+
+.. |binder-GIPL| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl.ipynb
+
+.. |binder-ECSnow| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fecsimplesnow.ipynb
+
+.. |binder-cem| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem.ipynb
+
+.. |binder-hydrotrend| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fhydrotrend.ipynb
+
+.. |binder-sedflux3d| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsedflux3d.ipynb
+
+.. |binder-subside| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsubside.ipynb
 
 
 Coupled Models
 --------------
 
-* :doc:`Coastline Evolution Model + Waves <demos/cem_and_waves>` (macOS, Linux)
+========================================================================== ========================
+Models                                                                     Notebook
+========================================================================== ========================
+:doc:`Coastline Evolution Model + Waves <notebooks/cem_and_waves>`         |binder-cem_and_waves|
+:doc:`GIPL + ECSimpleSnow Models <notebooks/gipl_and_ecsimplesnow>`        |binder-GIPL_and_ECSnow|
+========================================================================== ========================
+
+.. |binder-cem_and_waves| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem_and_waves.ipynb
+
+.. |binder-GIPL_and_ECSnow| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl_and_ecsimplesnow.ipynb
+
 
 ..
    Sphinx emits a warning if documents aren't in a toctree.
@@ -40,12 +88,15 @@ Coupled Models
    :maxdepth: 1
    :hidden:
 
-      <demos/frost_number>
-      <demos/ku>
-      <demos/cem>
-      <demos/hydrotrend>
-      <demos/sedflux3d>
-      <demos/subside>
-      <demos/child>
-      <demos/cem_and_waves>
-      <demos/sedflux3d_and_child>
+      <notebooks/frost_number>
+      <notebooks/ku>
+      <notebooks/gipl>
+      <notebooks/cem>
+      <notebooks/hydrotrend>
+      <notebooks/sedflux3d>
+      <notebooks/subside>
+      <notebooks/child>
+      <notebooks/cem_and_waves>
+      <notebooks/gipl_and_ecsimplesnow>
+      <notebooks/sedflux3d_and_child>
+      <notebooks/ecsimplesnow>

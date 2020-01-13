@@ -29,16 +29,20 @@
      <img src="https://ci.appveyor.com/api/projects/status/bf8g17c05ugvhvfe/branch/master"></a>
    <a href="https://coveralls.io/github/csdms/pymt?branch=master">
      <img alt="Coverage Status" src="https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master"></a>
-   <a href="https://landscape.io/github/csdms/pymt/master">
-     <img alt="Code Health" src="https://landscape.io/github/csdms/pymt/master/landscape.svg"></a>
    <a href="https://opensource.org/licenses/MIT">
      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
    <a href="https://github.com/csdms/pymt">
      <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
    <a href="https://www.codacy.com/app/mcflugen/pymt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csdms/pymt&amp;utm_campaign=Badge_Grade">
      <img src="https://api.codacy.com/project/badge/Grade/e8e273131ecb4d7d981fe9f4cf3e83d9"/></a>
-
+   <a href="https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fwelcome.ipynb">
+     <img alt="Launch Binder" src="https://static.mybinder.org/badge_logo.svg"></a>
    </p>
+
+Quick links:
+  * `User documentation <https://pymt.readthedocs.io/>`_
+  * `Installation instructions <https://pymt.readthedocs.io/en/latest/install.html>`_
+  * `List of available models <https://pymt.readthedocs.io/en/latest/models.html>`_
 
 PyMT is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_

@@ -1849,7 +1849,7 @@ The reference date-time of reference time units.
 :Examples:
 
 >>> repr(Units('days since 1900-1-1').reftime)
-'cftime.datetime(1900, 1, 1, 0, 0, 0, 0, -1, 1)'
+'cftime.datetime(1900-01-01 00:00:00)'
 >>> str(Units('days since 1900-1-1 03:00').reftime)
 '1900-01-01 03:00:00'
 
