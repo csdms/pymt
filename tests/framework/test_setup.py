@@ -32,7 +32,7 @@ def test_author_multiple_authors(key, iter):
 
 @pytest.mark.parametrize("path_to_meta", ("", ".", "meta", "/usr/local/share"))
 def test_find_metadata(path_to_meta):
-    expected = os.path.abspath(os.path.join(os.path.dirname(__file__), path_to_meta))
+    expected = os.path.normcase(os.path.abspath(os.path.join(os.path.dirname(__file__), path_to_meta)))
     if expected.endswith(os.path.sep):
         expected = expected[:-1]
 
