@@ -1,4 +1,3 @@
-cfunits
 deprecated
 jinja2
 landlab>=2.0.0*
@@ -12,4 +11,5 @@ scipy
 shapely
 six
 xarray
+# cfunits
 # esmpy
