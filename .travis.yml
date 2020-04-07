@@ -47,7 +47,7 @@ before_install:
 - conda activate _testing
 - conda info -a && conda list
 install:
-- pip install --pre -e .
+- pip install -e .
 - conda install esmpy ununits2 -c conda-forge
 script:
 - pip install -r requirements-testing.txt
