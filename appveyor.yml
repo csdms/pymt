@@ -2,14 +2,11 @@ environment:
 
   matrix:
 
-    - TARGET_ARCH: x64
-      PYTHON: "C:\\Python38-x64"
+    - PYTHON: "3.7"
+      MINICONDA: C:\\Miniconda37-x64
 
-    - TARGET_ARCH: x64
-      PYTHON: "C:\\Python37-x64"
-
-    - TARGET_ARCH: x64
-      PYTHON: "C:\\Python36-x64"
+    - PYTHON: "3.6"
+      MINICONDA: C:\\Miniconda36-x64
 
 platform:
   - x64
@@ -21,12 +18,15 @@ init:
   - "ECHO %APPVEYOR_REPO_BRANCH%"
 
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "pip install twine wheel -r requirements-testing.txt"
-  - "python -VV"
+  - cmd: call %MINICONDA%\Scripts\activate.bat
+  - cmd: conda update --yes --quiet conda
+  - cmd: set PYTHONUNBUFFERED=1
+  - cmd: conda config --set always_yes yes
+  - cmd: python --version
 
 build: false
 
 test_script:
   - cmd: pip install -e .
+  - cmd: conda install udunits2 -c conda-forge
   - cmd: pytest -vvv
