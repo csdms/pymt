@@ -53,7 +53,7 @@ before_install:
 - conda info -a && conda list
 install:
 - pip install -e .
-- conda install esmpy ununits2 -c conda-forge
+- conda install esmpy udunits2 -c conda-forge
 script:
 - pip install -r requirements-testing.txt
 - pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
