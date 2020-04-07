@@ -27,6 +27,7 @@ install:
 build: false
 
 test_script:
+  - cmd: pip install -r requirements-testing.txt
   - cmd: pip install -e .
   - cmd: conda install udunits2 -c conda-forge
   - cmd: pytest -vvv
