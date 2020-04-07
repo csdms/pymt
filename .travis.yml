@@ -41,7 +41,12 @@ before_install:
 - export PATH="$HOME/anaconda/bin:$PATH"
 - conda init bash
 - hash -r
-- source $HOME/.bashrc
+- |
+  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    source $HOME/.bash_profile
+  else
+    source $HOME/.bashrc
+  fi
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$PYTHON
 - conda activate _testing
