@@ -39,8 +39,9 @@ before_install:
   fi
 - bash $HOME/miniconda.sh -b -p $HOME/anaconda
 - export PATH="$HOME/anaconda/bin:$PATH"
-- hash -r
 - conda init bash
+- hash -r
+- source $HOME/.bashrc
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$PYTHON
 - conda activate _testing
