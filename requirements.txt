@@ -1,7 +1,7 @@
 cfunits
 deprecated
 jinja2
-landlab==2.0.0b7
+landlab>=2.0.0*
 matplotlib
 model_metadata
 netcdf4
