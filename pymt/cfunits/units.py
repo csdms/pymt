@@ -88,7 +88,10 @@ if sys.platform == "darwin" or sys.platform.startswith("linux"):
 else:
     site_packages = os.path.join(sys.prefix, "lib/site-packages")
 
-udunits2_xml_path = os.path.join(site_packages, "cfunits/etc/udunits/udunits2.xml")
+udunits2_xml_path = os.path.join(
+    os.path.dirname(__file__), "etc/udunits/udunits2.xml"
+)
+# udunits2_xml_path = os.path.join(site_packages, "cfunits/etc/udunits/udunits2.xml")
 _ut_system = _ut_read_xml(_c_char_p(udunits2_xml_path.encode("utf-8")))
 
 # print('units: after  _udunits.ut_read_xml(',_unit_database,')')
