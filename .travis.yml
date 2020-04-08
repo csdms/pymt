@@ -16,14 +16,6 @@ jobs:
     script:
     - pip install flake8
     - make lint
-  - stage: deploy
-    if: tag=~ v.*$
-    os: linux
-    env: PYTHON=3.8
-    script: &1
-    - pip install twine wheel
-    - python setup.py sdist
-    - twine upload -u mcflugen -p$PYPI_PASS dist/*pymt*
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -33,9 +25,9 @@ before_install:
   fi
 - |
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    curl https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > $HOME/miniconda.sh
+    curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > $HOME/miniconda.sh
   else
-    curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh > $HOME/miniconda.sh
+    curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh > $HOME/miniconda.sh
   fi
 - bash $HOME/miniconda.sh -b -p $HOME/anaconda
 - export PATH="$HOME/anaconda/bin:$PATH"
