@@ -34,6 +34,7 @@ Model                                                   Notebook
 :doc:`ECSimpleSnow Model <notebooks/ecsimplesnow>`      |binder-ECSnow|
 :doc:`Coastline Evolution Model <notebooks/cem>`        |binder-cem|
 :doc:`Hydrotrend <notebooks/hydrotrend>`                |binder-hydrotrend|
+:doc:`Hydrotrend Ganges <notebooks/hydrotrend_Ganges>`  |binder-hydrotrend_Ganges|
 :doc:`Sedflux3D <notebooks/sedflux3d>`                  |binder-sedflux3d|
 :doc:`Flexural Subsidence <notebooks/subside>`          |binder-subside|
 ======================================================= =====================
@@ -55,6 +56,9 @@ Model                                                   Notebook
 
 .. |binder-hydrotrend| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fhydrotrend.ipynb
+
+.. |binder-hydrotrend_Ganges| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fhydrotrend_Ganges.ipynb
 
 .. |binder-sedflux3d| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsedflux3d.ipynb
@@ -93,6 +97,7 @@ Models                                                                     Noteb
       <notebooks/gipl>
       <notebooks/cem>
       <notebooks/hydrotrend>
+      <notebooks/hydrotrend_Ganges>
       <notebooks/sedflux3d>
       <notebooks/subside>
       <notebooks/child>
