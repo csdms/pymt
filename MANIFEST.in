@@ -1,3 +1,5 @@
 include versioneer.py
 include pymt/_version.py
 recursive-include pymt/cfunits/etc/udunits/ *
+include LICENSE
+include requirements.txt

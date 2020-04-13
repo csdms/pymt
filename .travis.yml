@@ -4,19 +4,18 @@ os:
 - osx
 env:
   matrix:
-  - CONDA_ENV=py36
-  - CONDA_ENV=py37
-  - CONDA_ENV=lint
-  - CONDA_ENV=docs
+  - PYTHON="3.8"
+  - PYTHON="3.7"
+  - PYTHON="3.6"
   global:
     - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
-matrix:
-  exclude:
-  - os: osx
-    env: CONDA_ENV=lint
-  - os: osx
-    env: CONDA_ENV=docs
-sudo: false
+jobs:
+  include:
+  - stage: lint
+    os: linux
+    script:
+    - pip install flake8
+    - make lint
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -24,7 +23,6 @@ before_install:
     brew cleanup -s
     rm -rf $(brew --cache)
   fi
-install:
 - |
   if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh > $HOME/miniconda.sh
@@ -33,25 +31,22 @@ install:
   fi
 - bash $HOME/miniconda.sh -b -p $HOME/anaconda
 - export PATH="$HOME/anaconda/bin:$PATH"
+- conda init bash
 - hash -r
+- |
+  if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    source $HOME/.bash_profile
+  else
+    source $HOME/.bashrc
+  fi
 - conda config --set always_yes yes --set changeps1 no
-- |
-  if [[ "$CONDA_ENV" == "docs" ]]; then
-    conda env create -n test_env --file docs/environment.yml
-  else
-    conda env create -n test_env --file ci/requirements-$CONDA_ENV-$TRAVIS_OS_NAME.yml
-  fi
-- source activate test_env
-- make install
+- conda create -n _testing python=$PYTHON
+- conda activate _testing
+- conda info -a && conda list
+install:
+- pip install -e .
+- conda install esmpy udunits2 -c conda-forge
 script:
-- |
-  if [[ "$CONDA_ENV" == "lint" ]]; then
-    make lint
-  elif [[ "$CONDA_ENV" == "docs" ]]; then
-    sphinx-apidoc --force -o docs/api pymt *tests
-    make -C docs clean html
-  else
-    pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
-  fi
-after_success:
-  coveralls
+- pip install -r requirements-testing.txt
+- pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
+after_success: coveralls
