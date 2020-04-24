@@ -2226,21 +2226,21 @@ array([-31., -30., -29., -28., -27.])
             # Convert an integer numpy array to a float numpy array
             # ----------------------------------------------------------------
             if inplace:
-                if x.dtype.kind is "i":
-                    if x.dtype.char is "i":
+                if x.dtype.kind == "i":
+                    if x.dtype.char == "i":
                         y = x.view(dtype="float32")
                         y[...] = x
                         x.dtype = numpy_dtype("float32")
-                    elif x.dtype.char is "l":
+                    elif x.dtype.char == "l":
                         y = x.view(dtype=float)
                         y[...] = x
                         x.dtype = numpy_dtype(float)
             else:
                 # At numpy vn1.7 astype has many more keywords ...
-                if x.dtype.kind is "i":
-                    if x.dtype.char is "i":
+                if x.dtype.kind == "i":
+                    if x.dtype.char == "i":
                         x = x.astype("float32")
-                    elif x.dtype.char is "l":
+                    elif x.dtype.char == "l":
                         x = x.astype(float)
                 else:
                     x = x.copy()

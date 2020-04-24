@@ -14,6 +14,7 @@ setup(
     url="http://csdms.colorado.edu",
     python_requires=">=3.6",
     install_requires=open("requirements.txt", "r").read().splitlines(),
+    include_package_data=True,
     setup_requires=[],
     classifiers=[
         "Intended Audience :: Science/Research",
