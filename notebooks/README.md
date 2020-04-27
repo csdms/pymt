@@ -5,7 +5,7 @@ This folder includes Jupyter Notebooks that provide an introduction to Pymt and 
 
 1.  [Create an account](https://csdms.rc.colorado.edu/hub/signup) on the CSDMS JupyterHub
 2.  Provide a username and password - it can be whatever you like
-3.  Wait for authorization - we will get to it as soon as possible
+3.  Wait for authorization - please contact us via the [CSDMS Help Desk](https://github.com/csdms/help-desk) to provide your username for authorization 
 4.  [Run Jupyter Notebooks](https://csdms.rc.colorado.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fcsdms%2Fpymt&urlpath=tree%2Fpymt%2Fnotebooks%2Fwelcome.ipynb&branch=master)
 
 ## Links
