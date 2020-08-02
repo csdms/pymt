@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-from scripting.contexts import cd
-
 from ..errors import BmiError
+from ..utils import as_cwd
 from .timeinterp import TimeInterpolator
 
 
@@ -31,7 +30,7 @@ class BmiTimeInterpolator(object):
         return self._interpolators[name].interpolate(at)
 
     def update_until(self, then, method=None, units=None):
-        with cd(self.initdir):
+        with as_cwd(self.initdir):
             then = self.time_from(then, units)
 
             if hasattr(self.bmi, "update_until"):

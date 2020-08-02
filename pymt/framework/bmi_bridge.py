@@ -6,12 +6,12 @@ from pprint import pformat
 
 import numpy as np
 import yaml
-from scripting.contexts import cd
 
 from deprecated import deprecated
 
 # from ..cfunits import Units
 from ..udunits2 import UnitConverter
+from ..utils import as_cwd
 from ..errors import BmiError
 # from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
 from ..units import transform_azimuth_to_math, transform_math_to_azimuth
@@ -312,7 +312,7 @@ class _BmiCap(DeprecatedMethods):
             Path to folder in which to run initialization.
         """
         self._initdir = os.path.abspath(dir)
-        with cd(self.initdir, create=False):
+        with as_cwd(self.initdir, create=False):
             self.bmi.initialize(fname or "")
             self._initialized = True
 
@@ -323,11 +323,11 @@ class _BmiCap(DeprecatedMethods):
             self._var[name] = DataValues(self, name)
 
     def update(self):
-        with cd(self.initdir):
+        with as_cwd(self.initdir):
             return self.bmi.update()
 
     def finalize(self):
-        with cd(self.initdir):
+        with as_cwd(self.initdir):
             self._initialized = False
             return self.bmi.finalize()
 
