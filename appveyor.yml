@@ -22,7 +22,7 @@ install:
   - cmd: conda update --yes --quiet conda
   - cmd: set PYTHONUNBUFFERED=1
   - cmd: conda config --set always_yes yes
-  - cmd: conda install udunits2 -c conda-forge
+  - cmd: conda install geos udunits2 -c conda-forge
   - cmd: conda list
   - cmd: python --version
 
