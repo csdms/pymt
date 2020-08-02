@@ -2,6 +2,8 @@
 import numpy as np
 cimport numpy as np
 
+from .errors import BadUnitError, IncompatibleUnitsError
+
 
 cdef extern from "udunits2.h":
     ctypedef struct ut_system:
@@ -17,7 +19,9 @@ cdef extern from "udunits2.h":
     int ut_format(const ut_unit* unit, char* buf, size_t size, unsigned opts)
     cv_converter* ut_get_converter(ut_unit* const src, ut_unit* const dst)
     double cv_convert_double(const cv_converter* converter, const double value)
-    double* cv_convert_doubles (const cv_converter* converter, const double* src, size_t count, double* dst)
+    double* cv_convert_doubles(
+        const cv_converter* converter, const double* src, size_t count, double* dst
+    )
     void cv_free(cv_converter* conv)
     void ut_free(ut_unit* unit)
 
@@ -32,10 +36,14 @@ cdef class _UnitConverter:
     def __cinit__(self, src, dst):
         src_unit = ut_parse(unit_system, src.encode("utf-8"), 0)
         dst_unit = ut_parse(unit_system, dst.encode("utf-8"), 0)
+
+        if NULL in (src_unit, dst_unit):
+            raise BadUnitError(src if src_unit == NULL else dst)
+
         self._conv = ut_get_converter(src_unit, dst_unit)
         self._inv = ut_get_converter(dst_unit, src_unit)
         if self._conv == NULL:
-            raise ValueError("units are not convertible")
+            raise IncompatibleUnitsError(src, dst)
 
     def __call__(self, value, out=None, inverse=False):
         try:
@@ -74,7 +82,7 @@ cdef class _Unit:
     def __cinit__(self, name):
         self._unit = ut_parse(unit_system, name.encode("utf-8"), 0)
         if self._unit == NULL:
-            raise ValueError(f"invalid units: {name}")
+            raise BadUnitError(name)
         str_len = ut_format(self._unit, self._name, 2048, 4 | 8)
         if str_len >= 2048:
             raise ValueError("unit string is too large")
