@@ -29,7 +29,7 @@ install:
 build: false
 
 test_script:
-  - cmd: pip install numpy
+  - cmd: pip install cython numpy
   - cmd: pip install -r requirements-testing.txt
   - cmd: pip install -e .
   - cmd: pytest -vvv

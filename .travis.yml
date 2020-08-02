@@ -44,7 +44,7 @@ before_install:
 - conda activate _testing
 - conda info -a && conda list
 install:
-- pip install numpy
+- pip install cython numpy
 - pip install -e .
 - conda install esmpy udunits2 -c conda-forge
 script:
