@@ -10,9 +10,11 @@ from scripting.contexts import cd
 
 from deprecated import deprecated
 
-from ..cfunits import Units
+# from ..cfunits import Units
+from ..udunits2 import UnitConverter
 from ..errors import BmiError
-from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
+# from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
+from ..units import transform_azimuth_to_math, transform_math_to_azimuth
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
@@ -348,14 +350,18 @@ class _BmiCap(DeprecatedMethods):
         if name in self._interpolators and at is not None:
             out[:] = self._interpolators[name].interpolate(at)
 
-        from_units = Units(self.var_units(name))
-        if units is not None:
-            to_units = Units(units)
-        else:
-            to_units = from_units
+        # from_units = Units(self.var_units(name))
+        # if units is not None:
+        #     to_units = Units(units)
+        # else:
+        #     to_units = from_units
 
-        if units is not None and from_units != to_units:
-            Units.conform(out, from_units, to_units, inplace=True)
+        # if units is not None and from_units != to_units:
+        #     Units.conform(out, from_units, to_units, inplace=True)
+
+        if units is not None:
+            convert = UnitConverter(self.var_units(name), units)
+            convert(out, out=out)
 
         # if units is not None:
         #     try:
@@ -522,6 +528,7 @@ class _BmiCap(DeprecatedMethods):
     @time_units.setter
     def time_units(self, new_units):
         self._time_units = new_units
+        self._time_converter = UnitConverter(self.bmi.get_time_units(), new_units)
 
     # def get_time_units(self):
     #     return self.bmi.get_time_units()
@@ -534,8 +541,15 @@ class _BmiCap(DeprecatedMethods):
         try:
             self._time_converter
         except AttributeError:
-            self._time_converter = UnitConverter(self.bmi.get_time_units())
-        return self._time_converter(time, self.time_units)
+            return time
+        else:
+            return self._time_converter(time)
+
+        # try:
+        #     self._time_converter
+        # except AttributeError:
+        #     self._time_converter = UnitConverter(self.bmi.get_time_units())
+        # return self._time_converter(time, self.time_units)
 
     @property
     def start_time(self):
@@ -566,39 +580,57 @@ class _BmiCap(DeprecatedMethods):
     #     return self.time_in(time, units)
 
     def time_in(self, time, units):
-        if units is None:
-            units = self.time_units
-            # return time
+        # if units is None:
+        #     units = self.time_units
+        #     # return time
+
+        # try:
+        #     units_str = self.time_units
+        #     # units_str = self.time_units
+        # except (AttributeError, NotImplementedError):
+        #     pass
+        # else:
+        #     from_units = Units(units_str)
+        #     to_units = Units(units)
+
+        #     if not from_units.equals(to_units):
+        #         time = Units.conform(time, from_units, to_units)
 
         try:
-            units_str = self.time_units
-            # units_str = self.time_units
+            self.time_units
         except (AttributeError, NotImplementedError):
-            pass
-        else:
-            from_units = Units(units_str)
-            to_units = Units(units)
+            return time
 
-            if not from_units.equals(to_units):
-                time = Units.conform(time, from_units, to_units)
+        if units is not None:
+            convert = UnitConverter(self.time_units, units)
+            time = convert(time)
 
         return time
 
     def time_from(self, time, units):
-        if units is None:
-            return time
+        # if units is None:
+        #     return time
+
+        # try:
+        #     # units_str = self.time_units
+        #     units_str = self.time_units
+        # except (AttributeError, NotImplementedError):
+        #     pass
+        # else:
+        #     to_units = Units(units_str)
+        #     from_units = Units(units)
+
+        #     if not from_units.equals(to_units):
+        #         time = Units.conform(time, from_units, to_units)
 
         try:
-            # units_str = self.time_units
-            units_str = self.time_units
+            self.time_units
         except (AttributeError, NotImplementedError):
-            pass
-        else:
-            to_units = Units(units_str)
-            from_units = Units(units)
+            return time
 
-            if not from_units.equals(to_units):
-                time = Units.conform(time, from_units, to_units)
+        if units is not None:
+            convert = UnitConverter(units, self.time_units)
+            time = convert(time)
 
         return time
 
