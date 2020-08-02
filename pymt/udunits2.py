@@ -2,7 +2,6 @@ import contextlib
 import os
 
 
-
 @contextlib.contextmanager
 def suppress_stdout():
     null_fds = [os.open(os.devnull, os.O_RDWR) for x in range(2)]
@@ -51,7 +50,6 @@ class UnitConverter(_UnitConverter):
         return "UnitConverter({0!r}, {1!r})".format(self.src_units, self.dst_units)
 
 
-
 class Unit(_Unit):
 
     def __init__(self, name):
@@ -66,4 +64,3 @@ class Unit(_Unit):
 
     def __repr__(self):
         return "Unit({0!r})".format(str(self))
-

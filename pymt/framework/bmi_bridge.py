@@ -375,10 +375,11 @@ class _BmiCap(DeprecatedMethods):
         if angle not in ("azimuth", "math", None):
             raise ValueError("angle not understood")
 
-        if angle == "azimuth" and "azimuth" not in name:
-            transform_math_to_azimuth(out, to_units)
-        elif angle == "math" and "azimuth" in name:
-            transform_azimuth_to_math(out, to_units)
+        if units is not None:
+            if angle == "azimuth" and "azimuth" not in name:
+                transform_math_to_azimuth(out, units)
+            elif angle == "math" and "azimuth" in name:
+                transform_azimuth_to_math(out, units)
 
         return out
 

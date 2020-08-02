@@ -42,7 +42,7 @@ def test_unit_converter_bad_from_units(to_, from_):
 
 def test_unit_converter_incompatible_units():
     with raises(IncompatibleUnitsError):
-        convert = UnitConverter("s", "m")
+        UnitConverter("s", "m")
 
 
 def test_unit_converter_inverse():
