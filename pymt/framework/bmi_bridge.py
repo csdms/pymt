@@ -10,7 +10,7 @@ import yaml
 from deprecated import deprecated
 
 # from ..cfunits import Units
-from ..udunits2 import UnitConverter
+from .._udunits2 import UnitSystem
 from ..utils import as_cwd
 from ..errors import BmiError
 # from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
@@ -21,6 +21,9 @@ from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
 from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
+
+
+UNITS = UnitSystem()
 
 
 class DataValues(object):
@@ -312,7 +315,7 @@ class _BmiCap(DeprecatedMethods):
             Path to folder in which to run initialization.
         """
         self._initdir = os.path.abspath(dir)
-        with as_cwd(self.initdir, create=False):
+        with as_cwd(self.initdir):
             self.bmi.initialize(fname or "")
             self._initialized = True
 
@@ -360,7 +363,8 @@ class _BmiCap(DeprecatedMethods):
         #     Units.conform(out, from_units, to_units, inplace=True)
 
         if units is not None:
-            convert = UnitConverter(self.var_units(name), units)
+            convert = UNITS.Unit(self.var_units(name)).to(units)
+            # convert = UnitConverter(self.var_units(name), units)
             convert(out, out=out)
 
         # if units is not None:
@@ -529,7 +533,8 @@ class _BmiCap(DeprecatedMethods):
     @time_units.setter
     def time_units(self, new_units):
         self._time_units = new_units
-        self._time_converter = UnitConverter(self.bmi.get_time_units(), new_units)
+        self._time_converter = UNITS.Unit(self.bmi.get_time_units()).to(new_units)
+        # self._time_converter = UnitConverter(self.bmi.get_time_units(), new_units)
 
     # def get_time_units(self):
     #     return self.bmi.get_time_units()
@@ -603,7 +608,8 @@ class _BmiCap(DeprecatedMethods):
             return time
 
         if units is not None:
-            convert = UnitConverter(self.time_units, units)
+            convert = UNITS.Unit(self.time_units).to(units)
+            # convert = UnitConverter(self.time_units, units)
             time = convert(time)
 
         return time
@@ -630,7 +636,8 @@ class _BmiCap(DeprecatedMethods):
             return time
 
         if units is not None:
-            convert = UnitConverter(units, self.time_units)
+            convert = UNITS.Unit(units).to(self.time_units)
+            # convert = UnitConverter(units, self.time_units)
             time = convert(time)
 
         return time

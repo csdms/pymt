@@ -3,6 +3,7 @@ from numpy.testing import assert_array_equal
 
 from pymt.errors import BadUnitError, IncompatibleUnitsError
 from pymt.framework.bmi_bridge import BmiTimeInterpolator, GridMapperMixIn, _BmiCap
+from pymt._udunits2 import UnitNameError
 
 
 class SimpleBmi:
@@ -68,5 +69,5 @@ def test_incompatible_units():
 def test_bad_units():
     """Test wrapping BMI time methods."""
     bmi = Bmi()
-    with pytest.raises(BadUnitError):
+    with pytest.raises(UnitNameError):
         bmi.get_value("elevation", units="not_real_units")

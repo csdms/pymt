@@ -17,12 +17,4 @@ except TypeError:
 del np
 
 
-os.environ.setdefault(
-    "UDUNITS2_XML_PATH",
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "cfunits/etc/udunits/udunits2.xml")
-        # os.path.join(sys.prefix, "lib/site-packages/cfunits/etc/udunits/udunits2.xml")
-    ),
-)
-
 del os, sys
