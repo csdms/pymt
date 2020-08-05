@@ -1,5 +1,7 @@
 # cython: language_level=3
+import os
 import pathlib
+import pkg_resources
 from enum import Enum, Flag
 
 import numpy as np
@@ -132,9 +134,12 @@ cdef class UnitSystem:
     def __cinit__(self, filepath=None):
         cdef char* path
 
-        if filepath is None:
-            path = NULL
-        else:
+        if filepath is None and "UDUNITS2_XML_PATH" not in os.environ:
+            filepath = pkg_resources.resource_filename(
+                "pymt", "data/udunits/udunits2.xml"
+            )
+
+        if filepath is not None:
             as_bytes = str(filepath).encode("utf-8")
             path = as_bytes
 

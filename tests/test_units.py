@@ -1,6 +1,5 @@
 import os
 import random
-import pathlib
 
 import numpy as np
 import pytest
@@ -19,11 +18,11 @@ def system():
     return UnitSystem()
 
 
-def test_default_system():
-    os.environ.pop("UDUNITS2_XML_PATH", None)
-    system = UnitSystem()
-    assert system.status == "default"
-    assert system.database.is_file()
+# def test_default_system():
+#     os.environ.pop("UDUNITS2_XML_PATH", None)
+#     system = UnitSystem()
+#     assert system.status == "default"
+#     assert system.database.is_file()
 
 
 def test_user_system():
