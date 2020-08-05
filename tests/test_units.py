@@ -1,4 +1,6 @@
+import os
 import random
+import pathlib
 
 import numpy as np
 import pytest
@@ -14,6 +16,56 @@ from pymt.errors import IncompatibleUnitsError
 @pytest.fixture
 def system():
     return UnitSystem()
+
+
+def test_default_system():
+    system = UnitSystem()
+    assert system.status == "default"
+    assert system.database.is_file()
+
+
+def test_user_system():
+    path = UnitSystem().database
+    system = UnitSystem(path)
+    assert system.status == "user"
+    assert system.database.is_file()
+    assert system == UnitSystem()
+    assert UnitSystem(path) == UnitSystem(str(path))
+
+
+def test_env_system():
+    os.environ.pop("UDUNITS2_XML_PATH", None)
+    default_system = UnitSystem()
+    os.environ["UDUNITS2_XML_PATH"] = str(default_system.database)
+    system = UnitSystem()
+    os.environ.pop("UDUNITS2_XML_PATH")
+
+    assert system.status == "env"
+    assert system.database.is_file()
+    assert str(system) == str(default_system)
+    assert system.database.samefile(default_system.database)
+    assert system == default_system
+
+
+def test_system_dimensionless(system):
+    assert system.dimensionless_unit() == system.Unit("1")
+    assert str(system.dimensionless_unit()) == "1"
+
+
+def test_system_unit_by_name(system):
+    assert system.unit_by_name("meter") == system.Unit("m")
+    assert system.unit_by_name("meters") == system.Unit("m")
+    assert system.unit_by_name("m") is None
+    assert system.unit_by_name("meter2") is None
+    assert system.unit_by_name("not_a_name") is None
+
+
+def test_system_unit_by_symbol(system):
+    assert system.unit_by_symbol("m") == system.Unit("m")
+    assert system.unit_by_symbol("km") is None
+    assert system.unit_by_symbol("meter") is None
+    assert system.unit_by_symbol("m s-2") is None
+    assert system.unit_by_symbol("not_a_symbol") is None
 
 
 def test_unit_converter_length(system):
