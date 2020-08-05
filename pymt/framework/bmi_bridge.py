@@ -9,11 +9,9 @@ import yaml
 
 from deprecated import deprecated
 
-# from ..cfunits import Units
 from .._udunits2 import UnitSystem
 from ..utils import as_cwd
 from ..errors import BmiError
-# from ..units import UnitConverter, transform_azimuth_to_math, transform_math_to_azimuth
 from ..units import transform_azimuth_to_math, transform_math_to_azimuth
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
