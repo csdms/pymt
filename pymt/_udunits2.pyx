@@ -4,6 +4,8 @@ from enum import Enum, Flag
 
 import numpy as np
 cimport numpy as np
+from libc.stdlib cimport free, malloc
+from libc.string cimport strcpy
 
 from .errors import BadUnitError, IncompatibleUnitsError
 from .utils.utils import suppress_stdout
@@ -125,15 +127,27 @@ cdef class UnitSystem:
     cdef ut_system* _unit_system
     cdef ut_status _status
     cdef char* _filepath
+    cdef bint _own_filepath
 
     def __cinit__(self, filepath=None):
+        cdef char* path
+
         if filepath is None:
-            self._filepath = ut_get_path_xml(NULL, &self._status)
+            path = NULL
         else:
-            self._filepath = ut_get_path_xml(
-                bytes(pathlib.Path(filepath)), &self._status
-            )
+            as_bytes = str(filepath).encode("utf-8")
+            path = as_bytes
+
+        _filepath = ut_get_path_xml(path, &self._status)
         self._status = UnitStatus(self._status)
+
+        if self._status in (UnitStatus.OPEN_ARG, UnitStatus.OPEN_ENV):
+            self._filepath = <char*>malloc((len(_filepath) + 1) * sizeof(char))
+            strcpy(self._filepath, _filepath)
+            self._own_filepath = True
+        else:
+            self._filepath = _filepath
+            self._own_filepath = False
 
         with suppress_stdout():
             self._unit_system = ut_read_xml(self._filepath)
@@ -143,16 +157,19 @@ cdef class UnitSystem:
             raise UnitError(status)
 
     def dimensionless_unit(self):
-        return Unit.from_ptr(ut_get_dimensionless_unit_one(self._unit_system))
+        cdef ut_unit* unit = ut_get_dimensionless_unit_one(self._unit_system)
+        if unit == NULL:
+            raise UnitError(ut_get_status())
+        return Unit.from_ptr(unit)
 
     def unit_by_name(self, name):
         unit = ut_get_unit_by_name(self._unit_system, name.encode("utf-8"))
         if unit == NULL:
             status = ut_get_status()
             if status == UnitStatus.SUCCESS:
-                raise UnitError(status, msg=f"{name} doesn’t map to a unit of system")
+                return None
             else:
-                raise UnitNameError(name, status)
+                raise RuntimeError("system and/or name is NULL")
         return Unit.from_ptr(unit, owner=True)
 
     def unit_by_symbol(self, symbol):
@@ -160,9 +177,9 @@ cdef class UnitSystem:
         if unit == NULL:
             status = ut_get_status()
             if status == UnitStatus.SUCCESS:
-                raise UnitError(status, msg=f"{symbol} doesn’t map to a unit of system")
+                return None
             else:
-                raise UnitNameError(symbol, status)
+                raise RuntimeError("system and/or symbol is NULL")
         return Unit.from_ptr(unit, owner=True)
 
     def Unit(self, name):
@@ -174,14 +191,14 @@ cdef class UnitSystem:
 
     @property
     def database(self):
-        return self._filepath.decode()
+        return pathlib.Path(self._filepath.decode())
 
     @property
     def status(self):
         if self._status == UnitStatus.OPEN_ARG:
             return "user"
         elif self._status == UnitStatus.OPEN_ENV:
-            return "UDUNITS2_XML_PATH"
+            return "env"
         elif self._status == UnitStatus.OPEN_DEFAULT:
             return "default"
         else:
@@ -189,12 +206,17 @@ cdef class UnitSystem:
 
     def __dealloc__(self):
         ut_free_system(self._unit_system)
+        if self._own_filepath:
+            free(self._filepath)
 
     def __str__(self):
-        return self.database
+        return str(self.database)
 
     def __repr__(self):
-        return "UnitSystem({0!r})".format(self.database)
+        return "UnitSystem({0!r})".format(str(self.database))
+
+    def __eq__(self, other):
+        return self.database.samefile(other.database)
 
 
 cdef class Unit:
@@ -252,21 +274,51 @@ cdef class Unit:
         return "Unit({0!r})".format(self.format())
 
     def __lt__(self, other):
+        if not isinstance(other, Unit):
+            type_ = type(other).__name__
+            raise TypeError(
+                f"'<' not supported between instances of 'Unit' and {type_!r}"
+            )
         return ut_compare(self._unit, (<Unit>other)._unit) < 0
 
     def __le__(self, other):
+        if not isinstance(other, Unit):
+            type_ = type(other).__name__
+            raise TypeError(
+                f"'<=' not supported between instances of 'Unit' and {type_!r}"
+            )
         return ut_compare(self._unit, (<Unit>other)._unit) <= 0
 
     def __eq__(self, other):
+        if not isinstance(other, Unit):
+            type_ = type(other).__name__
+            raise TypeError(
+                f"'==' not supported between instances of 'Unit' and {type_!r}"
+            )
         return ut_compare(self._unit, (<Unit>other)._unit) == 0
 
     def __ge__(self, other):
+        if not isinstance(other, Unit):
+            type_ = type(other).__name__
+            raise TypeError(
+                f"'>=' not supported between instances of 'Unit' and {type_!r}"
+            )
         return ut_compare(self._unit, (<Unit>other)._unit) >= 0
 
     def __gt__(self, other):
+        if not isinstance(other, Unit):
+            type_ = type(other).__name__
+            raise TypeError(
+                f"'>' not supported between instances of 'Unit' and {type_!r}"
+            )
         return ut_compare(self._unit, (<Unit>other)._unit) > 0
 
     def __ne__(self, other):
+        if not isinstance(other, Unit):
+            type_ = type(other).__name__
+            raise TypeError(
+                f"'!=' not supported between instances of 'Unit' and {type_!r}"
+            )
         return ut_compare(self._unit, (<Unit>other)._unit) != 0
 
     def format(self, opts=UnitEncoding.UTF8 | UnitFormatting.NAMES):
