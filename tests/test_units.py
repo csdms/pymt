@@ -2,17 +2,12 @@ import random
 
 import numpy as np
 import pytest
-from pytest import approx
 
-from pymt.units import (
-    # UnitConverter,
-    transform_azimuth_to_math,
-    transform_math_to_azimuth,
-)
+from pymt.units import transform_azimuth_to_math, transform_math_to_azimuth
+
 
 from pymt._udunits2 import UnitSystem, UnitNameError
-# from pymt.udunits2 import Unit, UnitConverter, UnitSystem
-from pymt.errors import BadUnitError, IncompatibleUnitsError
+from pymt.errors import IncompatibleUnitsError
 
 
 @pytest.fixture
