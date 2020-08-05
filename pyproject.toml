@@ -7,7 +7,6 @@ testpaths = ["pymt", "tests"]
 norecursedirs = [".*", "*.egg*", "build", "dist"]
 addopts = """
   --ignore setup.py
-  --ignore pymt/cfunits
   --tb native
   --strict
   --durations 16
