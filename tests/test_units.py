@@ -15,10 +15,12 @@ from pymt.errors import IncompatibleUnitsError
 
 @pytest.fixture
 def system():
+    os.environ.pop("UDUNITS2_XML_PATH", None)
     return UnitSystem()
 
 
 def test_default_system():
+    os.environ.pop("UDUNITS2_XML_PATH", None)
     system = UnitSystem()
     assert system.status == "default"
     assert system.database.is_file()
@@ -33,18 +35,15 @@ def test_user_system():
     assert UnitSystem(path) == UnitSystem(str(path))
 
 
-def test_env_system():
-    os.environ.pop("UDUNITS2_XML_PATH", None)
-    default_system = UnitSystem()
-    os.environ["UDUNITS2_XML_PATH"] = str(default_system.database)
-    system = UnitSystem()
-    os.environ.pop("UDUNITS2_XML_PATH")
+def test_env_system(system):
+    os.environ["UDUNITS2_XML_PATH"] = str(system.database)
+    env_system = UnitSystem()
 
-    assert system.status == "env"
-    assert system.database.is_file()
-    assert str(system) == str(default_system)
-    assert system.database.samefile(default_system.database)
-    assert system == default_system
+    assert env_system.status == "env"
+    assert env_system.database.is_file()
+    assert str(env_system) == str(system)
+    assert env_system.database.samefile(system.database)
+    assert env_system == system
 
 
 def test_system_dimensionless(system):
