@@ -129,30 +129,15 @@ cdef class UnitSystem:
     cdef ut_system* _unit_system
     cdef ut_status _status
     cdef char* _filepath
-    cdef bint _own_filepath
 
     def __cinit__(self, filepath=None):
         cdef char* path
 
-        if filepath is None and "UDUNITS2_XML_PATH" not in os.environ:
-            filepath = pkg_resources.resource_filename(
-                "pymt", "data/udunits/udunits2.xml"
-            )
+        filepath, self._status = UnitSystem.get_xml_path(filepath)
+        as_bytes = str(filepath).encode("utf-8")
 
-        if filepath is not None:
-            as_bytes = str(filepath).encode("utf-8")
-            path = as_bytes
-
-        _filepath = ut_get_path_xml(path, &self._status)
-        self._status = UnitStatus(self._status)
-
-        if self._status in (UnitStatus.OPEN_ARG, UnitStatus.OPEN_ENV):
-            self._filepath = <char*>malloc((len(_filepath) + 1) * sizeof(char))
-            strcpy(self._filepath, _filepath)
-            self._own_filepath = True
-        else:
-            self._filepath = _filepath
-            self._own_filepath = False
+        self._filepath = <char*>malloc((len(as_bytes) + 1) * sizeof(char))
+        strcpy(self._filepath, as_bytes)
 
         with suppress_stdout():
             self._unit_system = ut_read_xml(self._filepath)
@@ -160,6 +145,22 @@ cdef class UnitSystem:
         if self._unit_system == NULL:
             status = ut_get_status()
             raise UnitError(status)
+
+    @staticmethod
+    def get_xml_path(filepath=None):
+        if filepath is None:
+            try:
+                filepath = os.environ["UDUNITS2_XML_PATH"]
+            except KeyError:
+                filepath = pkg_resources.resource_filename(
+                    "pymt", "data/udunits/udunits2.xml"
+                )
+                status = UnitStatus.OPEN_DEFAULT
+            else:
+                status = UnitStatus.OPEN_ENV
+        else:
+            status = UnitStatus.OPEN_ARG
+        return pathlib.Path(filepath), status
 
     def dimensionless_unit(self):
         cdef ut_unit* unit = ut_get_dimensionless_unit_one(self._unit_system)
@@ -211,8 +212,7 @@ cdef class UnitSystem:
 
     def __dealloc__(self):
         ut_free_system(self._unit_system)
-        if self._own_filepath:
-            free(self._filepath)
+        free(self._filepath)
 
     def __str__(self):
         return str(self.database)
