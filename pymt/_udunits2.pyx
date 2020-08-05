@@ -43,6 +43,18 @@ class UnitEncoding(int, Enum):
     UTF8 = 2
 
 
+UDUNITS_ENCODING = {
+    "ascii": UnitEncoding.ASCII,
+    "us-ascii": UnitEncoding.ASCII,
+    "iso-8859-1": UnitEncoding.ISO_8859_1,
+    "iso8859-1": UnitEncoding.ISO_8859_1,
+    "latin-1": UnitEncoding.LATIN1,
+    "latin1": UnitEncoding.LATIN1,
+    "utf-8": UnitEncoding.UTF8,
+    "utf8": UnitEncoding.UTF8,
+}
+
+
 class UnitFormatting(int, Flag):
     NAMES = 4
     DEFINITIONS = 8
@@ -278,10 +290,10 @@ cdef class Unit:
 
 
     def __str__(self):
-        return self.format()
+        return self.format(encoding="ascii")
 
     def __repr__(self):
-        return "Unit({0!r})".format(self.format())
+        return "Unit({0!r})".format(self.format(encoding="ascii"))
 
     cpdef compare(self, Unit other):
         return ut_compare(self._unit, other._unit)
@@ -304,11 +316,19 @@ cdef class Unit:
     def __ne__(self, other):
         return self.compare(other) != 0
 
-    def format(self, opts=UnitEncoding.UTF8 | UnitFormatting.NAMES):
-        str_len = ut_format(self._unit, self._buffer, 2048, opts)
+    def format(self, encoding="ascii", formatting=UnitFormatting.NAMES):
+        try:
+            unit_encoding = UDUNITS_ENCODING[encoding]
+        except KeyError:
+            raise ValueError("unknown encoding ({encoding})")
+
+        str_len = ut_format(
+            self._unit, self._buffer, 2048, opts=unit_encoding | formatting
+        )
         if str_len >= 2048:
             raise ValueError("unit string is too large")
-        return self._buffer.decode()
+
+        return self._buffer.decode(encoding=encoding)
 
     @property
     def name(self):

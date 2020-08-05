@@ -8,7 +8,7 @@ from pymt.units import transform_azimuth_to_math, transform_math_to_azimuth
 
 
 from pymt import UnitSystem
-from pymt._udunits2 import UnitNameError, UnitStatus
+from pymt._udunits2 import UnitNameError, UnitStatus, UnitFormatting
 from pymt.errors import IncompatibleUnitsError
 
 
@@ -80,6 +80,21 @@ def test_system_unit_by_symbol(system):
     assert system.unit_by_symbol("meter") is None
     assert system.unit_by_symbol("m s-2") is None
     assert system.unit_by_symbol("not_a_symbol") is None
+
+
+def test_unit_formatting(system):
+    unit = system.Unit("0.1 lg(re m/(5 s)^2) @ 50")
+    assert unit.format(encoding="ascii", formatting=UnitFormatting.NAMES) == "0.1 lg(re 0.04 meter-second^-2) from 50"
+    assert unit.format(encoding="ascii", formatting=UnitFormatting.DEFINITIONS) == "0.1 lg(re 0.04 m.s-2) @ 50"
+
+    assert unit.format(encoding="iso-8859-1", formatting=UnitFormatting.NAMES) == "0.1 lg(re 0.04 meter/second²) from 50"
+    assert unit.format(encoding="iso-8859-1", formatting=UnitFormatting.DEFINITIONS) == "0.1 lg(re 0.04 m/s²) @ 50"
+
+    assert unit.format(encoding="latin-1", formatting=UnitFormatting.NAMES) == "0.1 lg(re 0.04 meter/second²) from 50"
+    assert unit.format(encoding="latin-1", formatting=UnitFormatting.DEFINITIONS) == "0.1 lg(re 0.04 m/s²) @ 50"
+
+    assert unit.format(encoding="utf-8", formatting=UnitFormatting.NAMES) == "0.1 lg(re 0.04 meter·second⁻²) from 50"
+    assert unit.format(encoding="utf-8", formatting=UnitFormatting.DEFINITIONS) == "0.1 lg(re 0.04 m·s⁻²) @ 50"
 
 
 @pytest.mark.parametrize(
