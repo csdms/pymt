@@ -82,18 +82,23 @@ def test_system_unit_by_symbol(system):
     assert system.unit_by_symbol("not_a_symbol") is None
 
 
-def test_unit_comparisons(system):
-    meter = system.Unit("m")
-    km = system.Unit("km")
-
-    assert meter < km
-    assert meter <= km
-    assert meter <= meter
-    assert meter == meter
-    assert meter != km
-    assert km >= meter
-    assert km >= km
-    assert km > meter
+@pytest.mark.parametrize(
+    ("lhs", "cmp_", "rhs"), [
+        ("m", "lt", "km"),
+        ("m", "le", "km"),
+        ("m", "le", "m"),
+        ("m", "eq", "m"),
+        ("m", "ne", "km"),
+        ("km", "ge", "m"),
+        ("km", "ge", "km"),
+        ("km", "gt", "m"),
+    ]
+)
+def test_unit_comparisons(system, lhs, cmp_, rhs):
+    compare = getattr(system.Unit(lhs), f"__{cmp_}__")
+    assert compare(system.Unit(rhs))
+    with pytest.raises(TypeError):
+        compare(rhs)
 
 
 def test_unit_symbol(system):
@@ -119,29 +124,38 @@ def test_unit_is_dimensionless(system):
 
 
 def test_unit_is_convertible(system):
-    assert system.Unit("m").is_convertible_to("km")
-    assert not system.Unit("m").is_convertible_to("kg")
+    assert system.Unit("m").is_convertible_to(system.Unit("km"))
+    assert not system.Unit("m").is_convertible_to(system.Unit("kg"))
+
+    with pytest.raises(TypeError):
+        system.Unit("m").is_convertible_to("km")
 
 
 def test_unit_converter_length(system):
     meters = system.Unit("m")
-    assert meters.to("km")(1.0) == pytest.approx(1e-3)
-    # assert meters.convert_to(1.0, "km") == pytest.approx(1e-3)
+    km = system.Unit("km")
 
-    m_to_km = meters.to("km")
-    # convert = UnitConverter("m", "km")
+    assert meters.to(km)(1.0) == pytest.approx(1e-3)
+    with pytest.raises(TypeError):
+        meters.to("km")
+
+    m_to_km = meters.to(km)
     assert m_to_km(1.0) == pytest.approx(1e-3)
 
 
 def test_unit_converter_time(system):
     hours = system.Unit("h")
-    hours_to_seconds = hours.to("s")
+    seconds = system.Unit("s")
+    hours_to_seconds = hours.to(seconds)
     assert hours_to_seconds(1.0) == pytest.approx(3600.0)
+
+    with pytest.raises(TypeError):
+        hours.to("s")
 
 
 def test_unit_converter_same_units(system):
     hours = system.Unit("h")
-    hours_to_hours = hours.to("h")
+    hours_to_hours = hours.to(system.Unit("h"))
     assert hours_to_hours(1.0) == pytest.approx(1.0)
 
 
@@ -151,25 +165,19 @@ def test_unit_converter_same_units(system):
 )
 def test_unit_converter_bad_from_units(system, to_, from_):
     with pytest.raises(UnitNameError):
-        system.Unit(from_).to(to_)
+        system.Unit(from_).to(system.Unit(to_))
 
 
 def test_unit_converter_incompatible_units(system):
     with pytest.raises(IncompatibleUnitsError):
-        system.Unit("s").to("m")
+        system.Unit("s").to(system.Unit("m"))
 
 
 def test_unit_converter_inverse(system):
     val = random.random()
-    seconds_to_hours = system.Unit("s").to("h")
-    hours_to_seconds = system.Unit("h").to("s")
+    seconds_to_hours = system.Unit("s").to(system.Unit("h"))
+    hours_to_seconds = system.Unit("h").to(system.Unit("s"))
     assert hours_to_seconds(seconds_to_hours(val)) == pytest.approx(val)
-
-
-# def test_unit_converter_units_attr(system):
-#     m_to_km = system.Unit("m").to("km")
-#     assert m_to_km.src_units == "m"
-#     assert m_to_km.dst_units == "km"
 
 
 def test_math_to_azimuth():
