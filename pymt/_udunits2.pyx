@@ -125,7 +125,20 @@ cdef extern from "udunits2.h":
     ut_status ut_get_status()
 
 
-cdef class UnitSystem:
+class UnitSystem(_UnitSystem):
+    def __init__(self, filepath=None):
+        self._registry = dict()
+
+    def __getitem__(self, key):
+        try:
+            return self._registry[key]
+        except KeyError:
+            pass
+        self._registry[key] = self.Unit(key)
+        return self._registry[key]
+
+
+cdef class _UnitSystem:
     cdef ut_system* _unit_system
     cdef ut_status _status
     cdef char* _filepath
@@ -133,7 +146,7 @@ cdef class UnitSystem:
     def __cinit__(self, filepath=None):
         cdef char* path
 
-        filepath, self._status = UnitSystem.get_xml_path(filepath)
+        filepath, self._status = _UnitSystem.get_xml_path(filepath)
         as_bytes = str(filepath).encode("utf-8")
 
         self._filepath = <char*>malloc((len(as_bytes) + 1) * sizeof(char))
@@ -213,6 +226,9 @@ cdef class UnitSystem:
     def __dealloc__(self):
         ut_free_system(self._unit_system)
         free(self._filepath)
+        self._unit_system = NULL
+        self._filepath = NULL
+        self._status = UnitStatus.SUCCESS
 
     def __str__(self):
         return str(self.database)
@@ -242,27 +258,15 @@ cdef class Unit:
     def __cinit__(self):
         self.ptr_owner = False
 
-    def to(self, name):
-        return self.UnitConverter(name)
+    def to(self, unit):
+        return self.UnitConverter(unit)
 
-    def UnitConverter(self, name):
-        unit_ptr = ut_parse(
-            ut_get_system(self._unit), name.encode("utf-8"), UnitEncoding.UTF8
-        )
-
-        if unit_ptr == NULL:
-            status = ut_get_status()
-            raise UnitNameError(name, status)
-        else:
-            unit = Unit.from_ptr(unit_ptr, owner=True)
-
-        src, dst = self, unit
-
-        converter = ut_get_converter(src._unit, dst._unit)
+    cpdef UnitConverter(self, Unit unit):
+        converter = ut_get_converter(self._unit, unit._unit)
 
         if converter == NULL:
             status = ut_get_status()
-            raise IncompatibleUnitsError(str(src), str(dst))
+            raise IncompatibleUnitsError(str(self), str(unit))
 
         return UnitConverter.from_ptr(converter, owner=True)
 
@@ -270,6 +274,7 @@ cdef class Unit:
         if self._unit is not NULL and self.ptr_owner is True:
             ut_free(self._unit)
             self._unit = NULL
+            self.ptr_owner = False
 
 
     def __str__(self):
@@ -278,53 +283,26 @@ cdef class Unit:
     def __repr__(self):
         return "Unit({0!r})".format(self.format())
 
+    cpdef compare(self, Unit other):
+        return ut_compare(self._unit, other._unit)
+
     def __lt__(self, other):
-        if not isinstance(other, Unit):
-            type_ = type(other).__name__
-            raise TypeError(
-                f"'<' not supported between instances of 'Unit' and {type_!r}"
-            )
-        return ut_compare(self._unit, (<Unit>other)._unit) < 0
+        return self.compare(other) < 0
 
     def __le__(self, other):
-        if not isinstance(other, Unit):
-            type_ = type(other).__name__
-            raise TypeError(
-                f"'<=' not supported between instances of 'Unit' and {type_!r}"
-            )
-        return ut_compare(self._unit, (<Unit>other)._unit) <= 0
+        return self.compare(other) <= 0
 
     def __eq__(self, other):
-        if not isinstance(other, Unit):
-            type_ = type(other).__name__
-            raise TypeError(
-                f"'==' not supported between instances of 'Unit' and {type_!r}"
-            )
-        return ut_compare(self._unit, (<Unit>other)._unit) == 0
+        return self.compare(other) == 0
 
     def __ge__(self, other):
-        if not isinstance(other, Unit):
-            type_ = type(other).__name__
-            raise TypeError(
-                f"'>=' not supported between instances of 'Unit' and {type_!r}"
-            )
-        return ut_compare(self._unit, (<Unit>other)._unit) >= 0
+        return self.compare(other) >= 0
 
     def __gt__(self, other):
-        if not isinstance(other, Unit):
-            type_ = type(other).__name__
-            raise TypeError(
-                f"'>' not supported between instances of 'Unit' and {type_!r}"
-            )
-        return ut_compare(self._unit, (<Unit>other)._unit) > 0
+        return self.compare(other) > 0
 
     def __ne__(self, other):
-        if not isinstance(other, Unit):
-            type_ = type(other).__name__
-            raise TypeError(
-                f"'!=' not supported between instances of 'Unit' and {type_!r}"
-            )
-        return ut_compare(self._unit, (<Unit>other)._unit) != 0
+        return self.compare(other) != 0
 
     def format(self, opts=UnitEncoding.UTF8 | UnitFormatting.NAMES):
         str_len = ut_format(self._unit, self._buffer, 2048, opts)
@@ -360,8 +338,8 @@ cdef class Unit:
     def is_dimensionless(self):
         return ut_is_dimensionless(self._unit) != 0
 
-    def is_convertible_to(self, dst):
-        return bool(ut_are_convertible(self._unit, (<Unit>dst)._unit))
+    cpdef is_convertible_to(self, Unit unit):
+        return bool(ut_are_convertible(self._unit, unit._unit))
 
 
 cdef class UnitConverter:
@@ -404,3 +382,4 @@ cdef class UnitConverter:
         if self._conv is not NULL and self.ptr_owner is True:
             cv_free(self._conv)
             self._conv = NULL
+            self.ptr_owner = False

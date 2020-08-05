@@ -361,7 +361,7 @@ class _BmiCap(DeprecatedMethods):
         #     Units.conform(out, from_units, to_units, inplace=True)
 
         if units is not None:
-            convert = UNITS.Unit(self.var_units(name)).to(units)
+            convert = UNITS.Unit(self.var_units(name)).to(UNITS[units])
             # convert = UnitConverter(self.var_units(name), units)
             convert(out, out=out)
 
@@ -531,7 +531,7 @@ class _BmiCap(DeprecatedMethods):
     @time_units.setter
     def time_units(self, new_units):
         self._time_units = new_units
-        self._time_converter = UNITS.Unit(self.bmi.get_time_units()).to(new_units)
+        self._time_converter = UNITS.Unit(self.bmi.get_time_units()).to(UNITS[new_units])
         # self._time_converter = UnitConverter(self.bmi.get_time_units(), new_units)
 
     # def get_time_units(self):
@@ -606,7 +606,7 @@ class _BmiCap(DeprecatedMethods):
             return time
 
         if units is not None:
-            convert = UNITS.Unit(self.time_units).to(units)
+            convert = UNITS.Unit(self.time_units).to(UNITS[units])
             # convert = UnitConverter(self.time_units, units)
             time = convert(time)
 
@@ -634,7 +634,7 @@ class _BmiCap(DeprecatedMethods):
             return time
 
         if units is not None:
-            convert = UNITS.Unit(units).to(self.time_units)
+            convert = UNITS.Unit(units).to(UNITS[self.time_units])
             # convert = UnitConverter(units, self.time_units)
             time = convert(time)
 
