@@ -11,11 +11,13 @@ from .utils.utils import suppress_stdout
 
 class UnitError(Exception):
 
-    def __init__(self, code):
+    def __init__(self, code, msg=""):
         self._code = code
+        self._msg = msg
 
     def __str__(self):
-        return "{0} (status {1})".format(STATUS_MESSAGE.get(self._code, "Unknown"), self._code)
+        msg = self._msg or STATUS_MESSAGE.get(self._code, "Unknown")
+        return "{0} (status {1})".format(msg, self._code)
 
 
 class UnitNameError(UnitError):
@@ -93,6 +95,7 @@ cdef extern from "udunits2.h":
 
     const char* ut_get_path_xml(const char* path, ut_status* status)
     ut_unit* ut_get_unit_by_symbol(const ut_system* system, const char* symbol)
+    ut_unit* ut_get_unit_by_name(const ut_system* system, const char* name)
 
     ut_system* ut_read_xml(const char * path)
     ut_unit* ut_parse(const ut_system* system, const char* string, int encoding)
@@ -105,6 +108,7 @@ cdef extern from "udunits2.h":
     const char* ut_get_symbol (const ut_unit* unit, ut_encoding encoding)
     ut_system* ut_get_system(const ut_unit* unit)
     int ut_is_dimensionless(const ut_unit* unit)
+    int ut_compare(const ut_unit* unit1, const ut_unit* unit2)
     void ut_free(ut_unit* unit)
 
     cv_converter* ut_get_converter(ut_unit* const src, ut_unit* const dst)
@@ -115,9 +119,6 @@ cdef extern from "udunits2.h":
     void cv_free(cv_converter* conv)
 
     ut_status ut_get_status()
-
-
-# cdef ut_system* unit_system = ut_read_xml(NULL)
 
 
 cdef class UnitSystem:
@@ -144,11 +145,24 @@ cdef class UnitSystem:
     def dimensionless_unit(self):
         return Unit.from_ptr(ut_get_dimensionless_unit_one(self._unit_system))
 
+    def unit_by_name(self, name):
+        unit = ut_get_unit_by_name(self._unit_system, name.encode("utf-8"))
+        if unit == NULL:
+            status = ut_get_status()
+            if status == UnitStatus.SUCCESS:
+                raise UnitError(status, msg=f"{name} doesn’t map to a unit of system")
+            else:
+                raise UnitNameError(name, status)
+        return Unit.from_ptr(unit, owner=True)
+
     def unit_by_symbol(self, symbol):
         unit = ut_get_unit_by_symbol(self._unit_system, symbol.encode("utf-8"))
         if unit == NULL:
             status = ut_get_status()
-            raise UnitNameError(symbol, status)
+            if status == UnitStatus.SUCCESS:
+                raise UnitError(status, msg=f"{symbol} doesn’t map to a unit of system")
+            else:
+                raise UnitNameError(symbol, status)
         return Unit.from_ptr(unit, owner=True)
 
     def Unit(self, name):
@@ -190,6 +204,9 @@ cdef class Unit:
 
     @staticmethod
     cdef Unit from_ptr(ut_unit* unit_ptr, bint owner=False):
+        if unit_ptr == NULL:
+            raise RuntimeError("unit pointer is NULL")
+
         cdef Unit unit = Unit.__new__(Unit)
         unit._unit = unit_ptr
         unit.ptr_owner = owner
@@ -233,6 +250,24 @@ cdef class Unit:
 
     def __repr__(self):
         return "Unit({0!r})".format(self.format())
+
+    def __lt__(self, other):
+        return ut_compare(self._unit, (<Unit>other)._unit) < 0
+
+    def __le__(self, other):
+        return ut_compare(self._unit, (<Unit>other)._unit) <= 0
+
+    def __eq__(self, other):
+        return ut_compare(self._unit, (<Unit>other)._unit) == 0
+
+    def __ge__(self, other):
+        return ut_compare(self._unit, (<Unit>other)._unit) >= 0
+
+    def __gt__(self, other):
+        return ut_compare(self._unit, (<Unit>other)._unit) > 0
+
+    def __ne__(self, other):
+        return ut_compare(self._unit, (<Unit>other)._unit) != 0
 
     def format(self, opts=UnitEncoding.UTF8 | UnitFormatting.NAMES):
         str_len = ut_format(self._unit, self._buffer, 2048, opts)

@@ -6,7 +6,8 @@ import pytest
 from pymt.units import transform_azimuth_to_math, transform_math_to_azimuth
 
 
-from pymt._udunits2 import UnitSystem, UnitNameError
+from pymt import UnitSystem
+from pymt._udunits2 import UnitNameError
 from pymt.errors import IncompatibleUnitsError
 
 
