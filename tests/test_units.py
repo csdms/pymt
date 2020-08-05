@@ -8,7 +8,7 @@ from pymt.units import transform_azimuth_to_math, transform_math_to_azimuth
 
 
 from pymt import UnitSystem
-from pymt._udunits2 import UnitNameError
+from pymt._udunits2 import UnitNameError, UnitStatus
 from pymt.errors import IncompatibleUnitsError
 
 
@@ -18,11 +18,27 @@ def system():
     return UnitSystem()
 
 
-# def test_default_system():
-#     os.environ.pop("UDUNITS2_XML_PATH", None)
-#     system = UnitSystem()
-#     assert system.status == "default"
-#     assert system.database.is_file()
+def test_get_xml():
+    os.environ.pop("UDUNITS2_XML_PATH", None)
+    path, status = UnitSystem.get_xml_path()
+    assert path.is_file()
+    assert status == UnitStatus.OPEN_DEFAULT
+
+    path, status = UnitSystem.get_xml_path(path)
+    assert path.is_file()
+    assert status == UnitStatus.OPEN_ARG
+
+    os.environ["UDUNITS2_XML_PATH"] = str(path)
+    path, status = UnitSystem.get_xml_path()
+    assert path.is_file()
+    assert status == UnitStatus.OPEN_ENV
+
+
+def test_default_system():
+    os.environ.pop("UDUNITS2_XML_PATH", None)
+    system = UnitSystem()
+    assert system.status == "default"
+    assert system.database.is_file()
 
 
 def test_user_system():
@@ -64,6 +80,47 @@ def test_system_unit_by_symbol(system):
     assert system.unit_by_symbol("meter") is None
     assert system.unit_by_symbol("m s-2") is None
     assert system.unit_by_symbol("not_a_symbol") is None
+
+
+def test_unit_comparisons(system):
+    meter = system.Unit("m")
+    km = system.Unit("km")
+
+    assert meter < km
+    assert meter <= km
+    assert meter <= meter
+    assert meter == meter
+    assert meter != km
+    assert km >= meter
+    assert km >= km
+    assert km > meter
+
+
+def test_unit_symbol(system):
+    meters = system.Unit("m")
+    assert meters.symbol == "m"
+
+    km = system.Unit("km")
+    assert km.symbol is None
+
+
+def test_unit_name(system):
+    meters = system.Unit("m")
+    assert meters.name == "meter"
+
+    km = system.Unit("km")
+    assert km.name is None
+
+
+def test_unit_is_dimensionless(system):
+    assert not system.Unit("m").is_dimensionless
+    assert system.Unit("1").is_dimensionless
+    assert system.Unit("rad").is_dimensionless
+
+
+def test_unit_is_convertible(system):
+    assert system.Unit("m").is_convertible_to("km")
+    assert not system.Unit("m").is_convertible_to("kg")
 
 
 def test_unit_converter_length(system):
