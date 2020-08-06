@@ -1,48 +1,15 @@
-.. role:: raw-html-m2r(raw)
-   :format: html
+|PYMT|
 
+The Python Modeling Toolkit (pymt)
+==================================
 
-.. raw:: html
-
-   <p align="center">
-      <a href='https://pymt.readthedocs.org/'>
-         <img src='https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png'/>
-      </a>
-   </p>
-
-
-.. raw:: html
-
-   <h2 align="center">The Python Modeling Toolkit</h2>
-
-
-
-.. raw:: html
-
-   <p align="center">
-
-   <a href='https://pymt.readthedocs.io/en/latest/?badge=latest'>
-     <img src='https://readthedocs.org/projects/pymt/badge/?version=latest' alt='Documentation Status' /></a>
-   <a href="https://travis-ci.org/csdms/pymt">
-     <img alt="Build Status" src="https://travis-ci.org/csdms/pymt.svg?branch=master"></a>
-   <a href="https://ci.appveyor.com/project/mcflugen/pymt/branch/master">
-     <img src="https://ci.appveyor.com/api/projects/status/bf8g17c05ugvhvfe/branch/master"></a>
-   <a href="https://coveralls.io/github/csdms/pymt?branch=master">
-     <img alt="Coverage Status" src="https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master"></a>
-   <a href="https://opensource.org/licenses/MIT">
-     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
-   <a href="https://github.com/csdms/pymt">
-     <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-   <a href="https://www.codacy.com/app/mcflugen/pymt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csdms/pymt&amp;utm_campaign=Badge_Grade">
-     <img src="https://api.codacy.com/project/badge/Grade/e8e273131ecb4d7d981fe9f4cf3e83d9"/></a>
-   <a href="https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fwelcome.ipynb">
-     <img alt="Launch Binder" src="https://static.mybinder.org/badge_logo.svg"></a>
-   </p>
+|Build Status| |AppVeyor Status| |License| |Code Style| |Documentation Status| |Coverage Status| |Conda Version|
+|Conda Installation| |Conda Downloads| |Codacy| |Binder|
 
 Quick links:
-  * `User documentation <https://pymt.readthedocs.io/>`_
-  * `Installation instructions <https://pymt.readthedocs.io/en/latest/install.html>`_
-  * `List of available models <https://pymt.readthedocs.io/en/latest/models.html>`_
+* `User documentation <https://pymt.readthedocs.io/>`_
+* `Installation instructions <https://pymt.readthedocs.io/en/latest/install.html>`_
+* `List of available models <https://pymt.readthedocs.io/en/latest/models.html>`_
 
 PyMT is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
@@ -72,3 +39,32 @@ under Grant No. `1831623`_,
 The Community Surface Dynamics Modeling System (CSDMS)*.
 
 .. _1831623: https://nsf.gov/awardsearch/showAward?AWD_ID=1831623
+
+.. |PYMT| image:: https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png
+   :target: https://pymt.readthedocs.org/
+.. |Build Status| image:: https://travis-ci.org/csdms/pymt.svg?branch=master
+   :target: https://travis-ci.org/csdms/pymt
+.. |AppVeyor Status| image:: https://ci.appveyor.com/api/projects/status/bf8g17c05ugvhvfe/branch/master
+   :target: https://ci.appveyor.com/project/mcflugen/pymt/branch/master
+.. |License| image:: https://img.shields.io/badge/License-MIT-yellow.svg
+   :target: https://opensource.org/licenses/MIT
+.. |Code Style| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/csdms/pymt
+.. |Documentation Status| image:: https://readthedocs.org/projects/pymt/badge/?version=latest
+   :target: https://pymt.readthedocs.io/en/latest/?badge=latest
+.. |Coverage Status| image:: https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master
+   :target: https://coveralls.io/github/csdms/pymt?branch=master
+.. |Conda Version| image:: https://anaconda.org/conda-forge/pymt/badges/version.svg
+   :target: https://anaconda.org/conda-forge/pymt
+.. |Conda Installation| image:: https://anaconda.org/conda-forge/pymt/badges/installer/conda.svg
+   :target: https://conda.anaconda.org/conda-forge
+.. |Conda Downloads| image:: https://anaconda.org/conda-forge/pymt/badges/downloads.svg
+   :target: https://anaconda.org/conda-forge/pymt
+.. |Codacy| image:: https://app.codacy.com/project/badge/Grade/e8e273131ecb4d7d981fe9f4cf3e83d9
+    :target: https://www.codacy.com/manual/mcflugen/pymt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csdms/pymt&amp;utm_campaign=Badge_Grade
+.. |Binder| image:: https://static.mybinder.org/badge_logo.svg
+   :target: https://static.mybinder.org/badge_logo.svg
+
+
+
+
