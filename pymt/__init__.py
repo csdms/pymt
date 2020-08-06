@@ -1,8 +1,8 @@
-from ._version import get_versions
+import pkg_resources
+
 from ._udunits2 import UnitSystem
 
-
+__version__ = pkg_resources.get_distribution("pymt").version
 __all__ = ["UnitSystem"]
 
-__version__ = get_versions()["version"]
-del get_versions
+del pkg_resources

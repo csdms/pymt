@@ -3,7 +3,19 @@ import pkg_resources
 import sys
 from setuptools import setup, find_packages, Extension
 
-import versioneer
+
+def read(filename):
+    with open(filename, "r", encoding="utf-8") as fp:
+        return fp.read()
+
+
+long_description = u'\n\n'.join(
+    [
+        read('README.rst'),
+        read('AUTHORS.rst'),
+        read('CHANGELOG.rst'),
+    ]
+)
 
 
 udunits2_prefix = pathlib.Path(sys.prefix)
@@ -14,10 +26,9 @@ numpy_incl = pkg_resources.resource_filename("numpy", "core/include")
 
 setup(
     name="pymt",
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    version="1.2.dev0",
     description="The CSDMS Python Modeling Toolkit",
-    long_description=open("README.rst", encoding="utf-8").read(),
+    long_description=long_description,
     author="Eric Hutton",
     author_email="huttone@colorado.edu",
     url="http://csdms.colorado.edu",
