@@ -1,6 +1,5 @@
-from scripting import cd
-
 from ..portprinter.port_printer import PortPrinter
+from ..utils import as_cwd
 
 
 class PrintEvent(object):
@@ -10,14 +9,14 @@ class PrintEvent(object):
         self._kwds = kwds
 
     def initialize(self, *args):
-        with cd(self._run_dir):
+        with as_cwd(self._run_dir):
             self._printer = PortPrinter.from_dict(self._kwds)
             self._printer.open()
 
     def run(self, time):
-        with cd(self._run_dir):
+        with as_cwd(self._run_dir):
             self._printer.write()
 
     def finalize(self):
-        with cd(self._run_dir):
+        with as_cwd(self._run_dir):
             self._printer.close()

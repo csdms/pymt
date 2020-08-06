@@ -1,11 +1,11 @@
+click
 deprecated
 jinja2
-landlab>=2.0.0*
+landlab>=2
 matplotlib
 model_metadata
 netcdf4
 numpy
-py-scripting
 pyyaml
 scipy
 shapely

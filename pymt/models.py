@@ -2,12 +2,12 @@ __all__ = []
 
 import sys
 
+from .utils import err, out
+
 
 def _load_models():
     from collections import OrderedDict, namedtuple
     import pkg_resources
-
-    from scripting import error, status
 
     from .framework.bmi_bridge import bmi_factory
 
@@ -24,11 +24,11 @@ def _load_models():
             models[entry_point.name] = model
 
     if len(models) > 0:
-        status("models: {0}".format(", ".join(models.keys())))
+        out("models: {0}".format(", ".join(models.keys())))
     else:
-        status("models: (none)")
+        out("models: (none)")
     if failed:
-        error("failed to load the following models: {0}".format(", ".join(failed)))
+        err("failed to load the following models: {0}".format(", ".join(failed)))
 
     Models = namedtuple("Models", models.keys())
     return Models(*models.values())

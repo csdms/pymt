@@ -1,7 +1,16 @@
-from setuptools import setup, find_packages
+import pathlib
+import pkg_resources
+import sys
+from setuptools import setup, find_packages, Extension
 
 import versioneer
 
+
+udunits2_prefix = pathlib.Path(sys.prefix)
+if sys.platform.startswith("win"):
+    udunits2_prefix = udunits2_prefix / "Library"
+
+numpy_incl = pkg_resources.resource_filename("numpy", "core/include")
 
 setup(
     name="pymt",
@@ -29,4 +38,13 @@ setup(
     ],
     packages=find_packages(exclude=("tests*",)),
     entry_points={"console_scripts": ["cmt-config=cmt.cmd.cmt_config:main"]},
+    ext_modules=[
+        Extension(
+            "pymt._udunits2",
+            ["pymt/_udunits2.pyx"],
+            libraries=["udunits2"],
+            include_dirs=[str(udunits2_prefix / "include"), numpy_incl],
+            library_dirs=[str(udunits2_prefix / "lib")],
+        )
+    ],
 )

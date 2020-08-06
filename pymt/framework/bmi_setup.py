@@ -7,8 +7,8 @@ import zipfile
 import yaml
 from model_metadata.model_data_files import FileTemplate
 from model_metadata.model_setup import FileSystemLoader
-from scripting.contexts import cd
 
+from ..utils import as_cwd
 from .bmi_metadata import PluginMetadata
 
 
@@ -64,7 +64,7 @@ class SetupMixIn(object):
             config["path"] = dir_
 
         if config["path"]:
-            with cd(dir_):
+            with as_cwd(dir_):
                 config_file = FileTemplate.write(
                     config["contents"], config["path"], **self._parameters
                 )
