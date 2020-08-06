@@ -138,6 +138,26 @@ cdef extern from "udunits2.h":
 
 
 class UnitSystem(_UnitSystem):
+
+    """A system of units.
+
+    A unit-system is a set of units that are all defined in terms of
+    the same set of base units. In the SI system of units, for example,
+    the base units are the meter, kilogram, second, ampere, kelvin,
+    mole, and candela. (For definitions of these base units,
+    see http://physics.nist.gov/cuu/Units/current.html)
+
+    In the UDUNITS-2 package, every accessible unit belongs to one and
+    only one unit-system. It is not possible to convert numeric values
+    between units of different unit-systems. Similarly, units belonging
+    to different unit-systems always compare unequal.
+
+    Parameters
+    ----------
+    filepath : str, optional
+        Path to a *udunits2* xml-formatted unit database. If not provided,
+        a default system of units is used.
+    """
     def __init__(self, filepath=None):
         self._registry = dict()
 
@@ -173,6 +193,20 @@ cdef class _UnitSystem:
 
     @staticmethod
     def get_xml_path(filepath=None):
+        """Get the path to a unit database.
+
+        Parameters
+        ----------
+        filepath : str, optional
+            The path to an xml-formatted unit database. If not provided, use
+            the value of the *UDUNITS2_XML_PATH* environment variable,
+            otherwise use a default unit database.
+
+        Returns
+        -------
+        str
+            The path to a units database.
+        """
         if filepath is None:
             try:
                 filepath = os.environ["UDUNITS2_XML_PATH"]
@@ -188,12 +222,32 @@ cdef class _UnitSystem:
         return pathlib.Path(filepath), status
 
     def dimensionless_unit(self):
+        """The dimensionless unit used by the unit system.
+
+        Returns
+        -------
+        Unit
+            The dimensionless unit of the system.
+        """
         cdef ut_unit* unit = ut_get_dimensionless_unit_one(self._unit_system)
         if unit == NULL:
             raise UnitError(ut_get_status())
         return Unit.from_ptr(unit)
 
     def unit_by_name(self, name):
+        """Get a unit from the system by name.
+
+        Parameters
+        ----------
+        name : str
+            Name of a unit.
+
+        Returns
+        -------
+        Unit or None
+            The unit of the system that *name* maps to. If no mapping exists,
+            return ``None``.
+        """
         unit = ut_get_unit_by_name(self._unit_system, name.encode("utf-8"))
         if unit == NULL:
             status = ut_get_status()
@@ -204,6 +258,19 @@ cdef class _UnitSystem:
         return Unit.from_ptr(unit, owner=True)
 
     def unit_by_symbol(self, symbol):
+        """Get a unit from the system by symbol.
+
+        Parameters
+        ----------
+        symbol : str
+            Symbol of a unit.
+
+        Returns
+        -------
+        Unit or None
+            The unit of the system that *symbol* maps to. If no mapping exists,
+            return ``None``.
+        """
         unit = ut_get_unit_by_symbol(self._unit_system, symbol.encode("utf-8"))
         if unit == NULL:
             status = ut_get_status()
@@ -214,6 +281,18 @@ cdef class _UnitSystem:
         return Unit.from_ptr(unit, owner=True)
 
     def Unit(self, name):
+        """Construct a unit from a unit string.
+
+        Parameters
+        ----------
+        name : str
+            Unit string.
+
+        Returns
+        -------
+        Unit
+            A new unit corresponding the the provided string.
+        """
         unit = ut_parse(self._unit_system, name.encode("utf-8"), UnitEncoding.UTF8)
         if unit == NULL:
             status = ut_get_status()
@@ -222,10 +301,20 @@ cdef class _UnitSystem:
 
     @property
     def database(self):
+        """Path to the unit-database being used."""
         return pathlib.Path(self._filepath.decode())
 
     @property
     def status(self):
+        """Status that indicates how the database was found.
+
+        Returns
+        -------
+        str
+            *'user'* if a user-supplied path was used, *'env'* if the path
+            was provided by the *UDUNITS2_XML_PATH* environment variable, or
+            *'default'* if the default path was used.
+        """
         if self._status == UnitStatus.OPEN_ARG:
             return "user"
         elif self._status == UnitStatus.OPEN_ENV:
@@ -253,6 +342,7 @@ cdef class _UnitSystem:
 
 
 cdef class Unit:
+
     cdef ut_unit* _unit
     cdef bint ptr_owner
     cdef char[2048] _buffer
@@ -271,6 +361,18 @@ cdef class Unit:
         self.ptr_owner = False
 
     def to(self, unit):
+        """Construct a unit converter to convert another unit.
+
+        Parameters
+        ----------
+        unit : Unit
+            The unit to convert to.
+
+        Returns
+        -------
+        UnitConverter
+            A converter that converts values to the provided unit.
+        """
         return self.UnitConverter(unit)
 
     cpdef UnitConverter(self, Unit unit):
@@ -296,6 +398,20 @@ cdef class Unit:
         return "Unit({0!r})".format(self.format(encoding="ascii"))
 
     cpdef compare(self, Unit other):
+        """Compare units.
+
+        Parameters
+        ----------
+        other : Unit
+            A unit to compare to.
+
+        Returns
+        -------
+        int
+            A negative integer if this unit is less than the provided
+            unit, 0 if they are equal, and a positive integer if this
+            unit is greater.
+        """
         return ut_compare(self._unit, other._unit)
 
     def __lt__(self, other):
@@ -332,6 +448,13 @@ cdef class Unit:
 
     @property
     def name(self):
+        """Name of the unit.
+
+        Returns
+        -------
+        str or None
+            Name of the unit as a string or, ``None`` if no mapping exists.
+        """
         name = ut_get_name(self._unit, 0)
         if name == NULL:
              status = ut_get_status()
@@ -344,6 +467,13 @@ cdef class Unit:
 
     @property
     def symbol(self):
+        """Symbol of the unit.
+
+        Returns
+        -------
+        str or None
+            Symbol of the unit as a string or, ``None`` if no mapping exists.
+        """
         symbol = ut_get_symbol(self._unit, 0)
         if symbol == NULL:
              status = ut_get_status()
@@ -356,6 +486,13 @@ cdef class Unit:
 
     @property
     def is_dimensionless(self):
+        """Check if the unit is dimensionless.
+
+        Returns
+        -------
+        bool
+            ``True`` if the unit is dimensionless, otherwise ``False``.
+        """
         return ut_is_dimensionless(self._unit) != 0
 
     cpdef is_convertible_to(self, Unit unit):
@@ -363,6 +500,9 @@ cdef class Unit:
 
 
 cdef class UnitConverter:
+
+    """Convert numeric values between compatible units."""
+
     cdef cv_converter* _conv
     cdef bint ptr_owner
 
@@ -377,6 +517,23 @@ cdef class UnitConverter:
         self.ptr_owner = False
 
     def __call__(self, value, out=None):
+        """Convert a value from one unit to another.
+
+        Parameters
+        ----------
+        value ; number, or array-like
+            The value or values to convert.
+        out : array-like, optional
+            If converting values from an array, the converted values
+            will be placed here. To convert in-place, this can be
+            the input array of values. If ``None``, a new array
+            will be created to hold the converted values.
+
+        Returns
+        -------
+        value or array-like
+            The converted values or values.
+        """
         try:
             n_items = len(value)
         except TypeError:
