@@ -72,3 +72,8 @@ under Grant No. `1831623`_,
 The Community Surface Dynamics Modeling System (CSDMS)*.
 
 .. _1831623: https://nsf.gov/awardsearch/showAward?AWD_ID=1831623
+
+
+.. image:: https://api.codacy.com/project/badge/Grade/34d0793423e24d6f87fcf2e57930c9cf
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/manual/mcflugen/pymt?utm_source=github.com&utm_medium=referral&utm_content=csdms/pymt&utm_campaign=Badge_Grade_Dashboard
