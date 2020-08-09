@@ -7,6 +7,7 @@ The Python Modeling Toolkit (pymt)
 |Conda Installation| |Conda Downloads| |Codacy| |Binder|
 
 Quick links:
+
 * `User documentation <https://pymt.readthedocs.io/>`_
 * `Installation instructions <https://pymt.readthedocs.io/en/latest/install.html>`_
 * `List of available models <https://pymt.readthedocs.io/en/latest/models.html>`_
