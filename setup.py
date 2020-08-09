@@ -37,6 +37,7 @@ setup(
     include_package_data=True,
     setup_requires=[],
     classifiers=[
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
@@ -47,6 +48,7 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering :: Physics",
     ],
+    keywords=["earth science", "model coupling"],
     packages=find_packages(exclude=("tests*",)),
     entry_points={"console_scripts": ["cmt-config=cmt.cmd.cmt_config:main"]},
     ext_modules=[
