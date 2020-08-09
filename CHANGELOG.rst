@@ -4,10 +4,139 @@ Changelog for pymt
 1.2.0 (unreleased)
 ------------------
 
-- Added a cythonized udunits2 module
+- Added a cythonized udunits2 module.
+
+- Documentation imporovements.
+
+1.1.3 (2020-04-23)
+------------------
+
+- Included the cfunits xml data with pymt install (#113)
+
+- Updated notebook readme (#114)
+
+- Updated example notebooks (#112)
 
 
-0.2.3 (2018-07-02)
+1.1.2 (2020-04-08)
+------------------
+
+- Removed deployment to PyPI (#111)
+
+- Fixed build of docs on readthedocs (#110)
+
+- Changed behavior of grid_x, y, and z for rectilinear grids (#107)
+
+
+1.1.0 (2020-02-26)
+------------------
+
+- Fixed failing tests (#93)
+
+- Improved documentation (#94, #96, #99, #100, #103, #105)
+
+- Added binder to documentation (#97)
+
+- Added example notebooks for GIPL
+
+- Added support for BMI *rectilinear* grid type (#90)
+
+- Added support for BMI *structured_quadrilateral* grid type (#89)
+
+- Added a sensible BMI class (#86)
+
+
+1.0.3 (2019-05-15)
+------------------
+
+- Include a copy of cfunits package as part of pymt (#85)
+
+
+1.0.2 (2019-05-14)
+------------------
+
+- Fixed cfunits import error on Windows (#84)
+
+- Fixed error getting metadata path from BMI class (#83)
+
+
+1.0.1 (2019-05-13)
+------------------
+
+- Fixed incorrect path from METADATA attribute (#82)
+
+- Imporoved documentation
+
+- Improved example notebooks
+
+
+1.0.0 (2019-02-18)
+------------------
+
+- Added a more pythonic BMI (#55)
+
+- Remove support from Python 2.7
+
+- Fixed CEM notebook (#64)
+
+- Fixed int error on some platforms (#58)
+
+- Improved documentation
+
+- Improved tests
+
+
+0.2.9 (2019-02-09)
+------------------
+
+- Fixed the quickstart tutorial (#55)
+
+- Removed the old way of loading models (i.e. from a package called `csdms`) (#54)
+
+0.2.8 (2019-02-07)
+------------------
+
+- Code clean-up (#50, #52)
+
+- Improved the HydroTrend notebook
+
+- Added continuous integration on Windows using AppVeyor (#48)
+
+0.2.7 (2019-01-23)
+------------------
+
+- Fixed installation issue where tests folder was installed (#43)
+
+- Removed utility scripts from installation (#42)
+
+- Make installation of ESMF optional (#41)
+
+- Added pymt example notebooks to docs (#40)
+
+- Improved documentation
+
+
+0.2.6 (2018-10-24)
+------------------
+
+- Load pymt plugins as components (#38)
+
+
+0.2.5 (2018-10-04)
+------------------
+
+- Fixed for new model_metadata API (#36)
+
+
+0.2.4 (2018-09-07)
+------------------
+
+- Improved documentation
+
+- Improved continuous integration
+
+
+0.2.3 (2018-07-06)
 ------------------
 
 - Removed dependency on nose
