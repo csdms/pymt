@@ -33,6 +33,26 @@ that expose the
 * A plug-in framework for adding additional BMI-enabled models to
   the framework
 
+What does it look like?  Here is an example of a simple *pymt* program that
+couples a *Waves* model with a *Coastline Evolution* model.
+
+.. code-block:: python
+
+    from pymt.models import Cem, Waves
+
+    waves = Waves()
+    cem = Cem()
+
+    waves.initialize(*waves.setup())
+    cem.initialize(*cem.setup())
+
+    for time in range(1000):
+        waves.update()
+        angle = waves.get_value("wave_angle")
+        cem.set_value("wave_angle", angle)
+        cem.update()
+
+
 This material is based upon work
 supported by the National Science Foundation
 under Grant No. `1831623`_,
