@@ -2,4 +2,20 @@ include LICENSE
 include README.rst
 include CHANGELOG.rst
 include AUTHORS.rst
-include requirements.txt
+include Makefile
+include requirements*.txt
+recursive-include tests *py
+recursive-include pymt/data/udunits *
+recursive-exclude deprecated *
+recursive-exclude docs *
+recursive-exclude scripts *py
+recursive-exclude notebooks *
+
+exclude .codacy.yaml
+exclude .gitmodules
+exclude .landscape.yml
+exclude .readthedocs.yaml
+exclude CONTRIBUTING.rst
+exclude appveyor.yml
+exclude conda-recipe/meta.yaml
+exclude environment.yml
