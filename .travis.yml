@@ -37,7 +37,7 @@ before_install:
     source $HOME/.bashrc
   fi
 - micromamba activate
-- micromamba install python=$PYTHON --yes -c conda-forge
+- micromamba install python=$PYTHON pip --yes -c conda-forge
 install:
 - pip install cython numpy
 - micromamba install esmpy udunits2 --yes -c conda-forge
