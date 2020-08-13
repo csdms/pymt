@@ -41,7 +41,7 @@ before_install:
 install:
 - pip install cython numpy
 - micromamba install esmpy udunits2 --yes -c conda-forge
-- pip install -e .
+- python setup.py install
 script:
 - pip install -r requirements-testing.txt
 - pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
