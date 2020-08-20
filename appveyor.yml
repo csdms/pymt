@@ -15,6 +15,7 @@ platform:
   - x64
 
 # os: Previous Visual Studio 2015
+os: Visual Studio 2019
 
 init:
   - "ECHO %PYTHON% %HOME% %PLATFORM%"
@@ -25,7 +26,7 @@ install:
   - cmd: conda update --yes --quiet conda
   - cmd: set PYTHONUNBUFFERED=1
   - cmd: conda config --set always_yes yes
-  - cmd: conda install mamba
+  - cmd: conda install mamba -c conda-forge
   - cmd: mamba install geos udunits2 -c conda-forge
   - cmd: mamba list
   - cmd: python --version
