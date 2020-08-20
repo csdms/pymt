@@ -39,7 +39,6 @@ before_install:
 - micromamba activate
 - micromamba install python=$PYTHON pip mamba --yes -c conda-forge
 install:
-- pip install cython numpy
 - mamba install esmpy udunits2 --yes -c conda-forge
 - pip install .
 script:
