@@ -14,7 +14,6 @@ environment:
 platform:
   - x64
 
-# os: Previous Visual Studio 2015
 os: Visual Studio 2019
 
 init:
@@ -23,10 +22,9 @@ init:
 
 install:
   - cmd: call %MINICONDA%\Scripts\activate.bat
-  - cmd: conda update --yes --quiet conda
-  - cmd: set PYTHONUNBUFFERED=1
-  - cmd: conda config --set always_yes yes
   - cmd: conda install mamba -c conda-forge
+  - cmd: set PYTHONUNBUFFERED=1
+  - cmd: mamba config --set always_yes yes
   - cmd: mamba install geos udunits2 -c conda-forge
   - cmd: mamba list
   - cmd: python --version
