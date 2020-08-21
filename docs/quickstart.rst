@@ -13,24 +13,30 @@ and explain what occurred.
 .. _CSDMS Help Desk: https://github.com/csdms/help-desk
 
 
-Install conda
--------------
+Install conda/mamba
+-------------------
 
 :term:`Anaconda` is a free, open-source, Python distribution
 that contains a comprehensive set of packages for scientific computing.
 If you don't have conda installed, the `Anaconda installation guide`_
 can help you through the process.
 
+Once you've installed *conda*, we suggest installing :term:*mamba* to
+install additional packages.
+
+.. code-block:: bash
+
+  $ conda install mamba -c conda-forge 
 
 Install *pymt*
 --------------
 
-Once you've installed conda,
+Once you've installed *mamba*,
 You can get *pymt* directly from :term:`conda-forge`:
 
 .. code-block:: bash
 
-  $ conda install pymt -c conda-forge 
+  $ mamba install pymt -c conda-forge 
 
 Installing into a :term:`conda environment` is strongly recommended.
 Check the :doc:`installation guide<install>` for more detailed
@@ -49,7 +55,7 @@ Install Hydrotrend into *pymt* with:
 
 .. code-block:: console
 
-    $ conda install pymt_hydrotrend -c conda-forge
+    $ mamba install pymt_hydrotrend -c conda-forge
 
 Check that the model has been installed by starting a Python
 session and importing *pymt*:

@@ -35,10 +35,10 @@ Install *pymt* into this conda environment with:
 
 .. code-block:: console
 
-    $ conda install pymt
+    $ mamba install pymt
 
 Note that *pymt* is built on several open source software
-libraries, so it may take a few minutes for conda to find,
+libraries, so it may take a few minutes for *mamba* to find,
 download, and install them.
 
 .. include:: installation-check.rst
@@ -71,13 +71,13 @@ you created above:
 
 .. code-block:: console
 
-    $ conda install --file=requirements.txt
+    $ mamba install --file=requirements.txt
 
 Then install *pymt* with:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ pip install -e .
 
 .. include:: installation-check.rst
 
