@@ -16,7 +16,7 @@ Install them with:
 
 .. code-block:: console
 
-    $ conda install pymt_cem
+    $ mamba install pymt_cem -c conda-forge
 
 
 Loading *pymt*

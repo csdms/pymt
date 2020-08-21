@@ -45,7 +45,6 @@ class Mock(MagicMock):
 
 
 MOCK_MODULES = [
-    "cfunits",
     "ESMF",
     "landlab",
     "landlab.graph",
@@ -103,7 +102,6 @@ extensions = [
     "sphinx.ext.autosummary",
     "nbsphinx",
     "IPython.sphinxext.ipython_console_highlighting",
-    "sphinxcontrib_github_alt",
 
 ]
 # Add any paths that contain templates here, relative to this directory.

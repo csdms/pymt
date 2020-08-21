@@ -8,6 +8,8 @@ Changelog for pymt
 
 - Documentation improvements
 
+- Use mamba for our continuous integration (#122)
+
 
 1.1.3 (2020-04-23)
 ------------------

@@ -84,6 +84,11 @@ can be found in the `Python Glossary`_.
 
       See :term:`object`.
 
+   mamba
+
+      A faster, open-source alternative to the :term:`conda` package
+      manager.
+
    Matplotlib
 
       A Python plotting library used in *pymt*. For more information,

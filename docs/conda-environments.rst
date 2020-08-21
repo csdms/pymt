@@ -18,19 +18,19 @@ side-by-side installations of Python, one for each project.  It doesn't actually
 install separate copies of Python, but it does provide a clever way to
 keep different project environments isolated.
 
-If you are on Mac or Linux, and have *conda* installed, from a terminal you
+If you are on Mac or Linux, and have *mamba* installed, from a terminal you
 can run the following to create a new Python environment,
 
 .. code-block:: bash
 
-  $ conda create -n myproject python
+  $ mamba create -n myproject python
 
 Now, whenever you want to work on a project, you only have to activate the
 corresponding environment.  On OS X and Linux, do the following,
 
 .. code-block:: bash
 
-  $ conda activate myproject
+  $ mamba activate myproject
 
 To get out of the environment,
 
@@ -42,12 +42,12 @@ To remove the environment,
 
 .. code-block:: bash
 
-  $ conda remove -n myproject --all
+  $ mamba remove -n myproject --all
 
 With this environment activated, you can install *pymt* into it with the
 following,
 
 .. code-block:: bash
 
-  $ conda install pymt -c conda-forge
+  $ mamba install pymt -c conda-forge
 
