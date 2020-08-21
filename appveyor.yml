@@ -25,7 +25,7 @@ install:
   - cmd: conda install mamba -c conda-forge --yes
   - cmd: mamba config --set always_yes yes
   - cmd: set PYTHONUNBUFFERED=1
-  - cmd: mamba install geos udunits2 -c conda-forge --yes
+  - cmd: mamba install shapely geos udunits2 -c conda-forge --yes
   - cmd: mamba list
   - cmd: python --version
 
