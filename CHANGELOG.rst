@@ -1,6 +1,12 @@
 Changelog for pymt
 ==================
 
+1.3 (unreleased)
+----------------
+
+- Nothing changed yet.
+
+
 1.2 (2020-09-11)
 ----------------
 
