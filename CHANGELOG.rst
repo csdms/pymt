@@ -1,8 +1,8 @@
 Changelog for pymt
 ==================
 
-1.2.0 (unreleased)
-------------------
+1.2 (2020-09-11)
+----------------
 
 - Added a cythonized udunits2 module (#120)
 
