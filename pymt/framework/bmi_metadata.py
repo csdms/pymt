@@ -22,16 +22,8 @@ into PyMT.  This ensures that:
    and model input files are properly constructed
    when preparing a model simulation.
 """
-
-import os
-import sys
-
 import model_metadata
-import pkg_resources
-import six
 from model_metadata import ModelMetadata
-
-from ..babel import BabelConfigError, query_config_var
 
 
 class MetadataNotFoundError(Exception):
@@ -40,26 +32,6 @@ class MetadataNotFoundError(Exception):
 
     def __str__(self):
         return self._path
-
-
-def bmi_data_dir(name):
-    """Get a component's data dir.
-
-    Parameters
-    ----------
-    name : str
-        The name of the component.
-
-    Returns
-    -------
-    str
-        The absolute path to the data directory for the component.
-    """
-    try:
-        datarootdir = query_config_var("datarootdir")
-    except BabelConfigError:
-        datarootdir = os.path.join(sys.prefix, "share")
-    return os.path.join(datarootdir, "csdms", name)
 
 
 class PluginMetadata(ModelMetadata):
