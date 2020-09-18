@@ -62,45 +62,8 @@ def bmi_data_dir(name):
     return os.path.join(datarootdir, "csdms", name)
 
 
-def find_model_metadata(plugin):
-    """Find the path to a plugin's metadata.
-
-    Parameters
-    ----------
-    plugin : PyMT plugin
-        A PyMT plugin object.
-
-    Returns
-    -------
-    str
-        Path to the folder that contains the plugin's metadata.
-    """
-    try:
-        model_metadata_dir = plugin.METADATA or "."
-    except AttributeError:
-        if isinstance(plugin, six.string_types):
-            plugin_name = plugin
-        else:
-            try:
-                plugin_name = plugin.__name__
-            except AttributeError:
-                plugin_name = plugin.__class__.__name__.split(".")[-1]
-
-        path_to_mmd = bmi_data_dir(plugin_name)
-    else:
-        if not os.path.isabs(model_metadata_dir):
-            path_to_mmd = pkg_resources.resource_filename(
-                plugin.__module__, model_metadata_dir
-            )
-        else:
-            path_to_mmd = model_metadata_dir
-
-    return os.path.normcase(os.path.abspath(path_to_mmd))
-
-
 class PluginMetadata(ModelMetadata):
     def __init__(self, model):
         path_to_mmd = model_metadata.api.find(model)
-        # path_to_mmd = find_model_metadata(model)
 
         ModelMetadata.__init__(self, path_to_mmd)
