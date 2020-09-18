@@ -26,6 +26,7 @@ into PyMT.  This ensures that:
 import os
 import sys
 
+import model_metadata
 import pkg_resources
 import six
 from model_metadata import ModelMetadata
@@ -99,6 +100,7 @@ def find_model_metadata(plugin):
 
 class PluginMetadata(ModelMetadata):
     def __init__(self, model):
-        path_to_mmd = find_model_metadata(model)
+        path_to_mmd = model_metadata.api.find(model)
+        # path_to_mmd = find_model_metadata(model)
 
         ModelMetadata.__init__(self, path_to_mmd)
