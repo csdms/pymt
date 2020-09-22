@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from pymt.framework.bmi_setup import _parse_author_info
