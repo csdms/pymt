@@ -2,9 +2,8 @@
 import jinja2
 import six
 from landlab.core.messages import format_message
-from model_metadata import MetadataNotFoundError
+from model_metadata import MetadataNotFoundError, ModelMetadata
 
-from .bmi_metadata import PluginMetadata
 
 # {{ desc|trim|wordwrap(70) if desc }}
 _DOCSTRING = u"""
@@ -101,7 +100,8 @@ def bmi_docstring(
     cite_as = cite_as or []
 
     try:
-        meta = PluginMetadata(plugin)
+        meta = ModelMetadata.from_obj(plugin)
+        # meta = PluginMetadata(plugin)
     except MetadataNotFoundError:
         if isinstance(plugin, six.string_types):
             info = dict(

@@ -3,7 +3,7 @@ deprecated
 jinja2
 landlab>=2
 matplotlib
-model_metadata
+model_metadata>=0.7
 netcdf4
 numpy
 pyyaml

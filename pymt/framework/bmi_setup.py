@@ -7,9 +7,9 @@ import zipfile
 import yaml
 from model_metadata.model_data_files import FileTemplate
 from model_metadata.model_setup import FileSystemLoader
+from model_metadata import ModelMetadata
 
 from ..utils import as_cwd
-from .bmi_metadata import PluginMetadata
 
 
 def _parse_author_info(info):
@@ -24,7 +24,7 @@ class SetupMixIn(object):
     def __init__(self):
         name = self.__class__.__name__.split(".")[-1]
 
-        self._meta = PluginMetadata(self._bmi)
+        self._meta = ModelMetadata.from_obj(self._bmi)
 
         self._defaults = {}
         self._parameters = {}
