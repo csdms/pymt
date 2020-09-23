@@ -4,7 +4,8 @@ Changelog for pymt
 1.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed model metadata discovery by using the model_metadata package
+  to look for metadata files (#125)
 
 
 1.2 (2020-09-11)
