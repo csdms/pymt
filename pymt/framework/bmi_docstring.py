@@ -24,7 +24,7 @@ URL: {{ url }}
 {% if cite_as -%}
 Cite as:
 {% for citation in cite_as %}
-{{ citation|trim|indent(width=4, indentfirst=True) }}
+{{ citation|trim|indent(width=4, first=True) }}
 {% endfor %}
 {%- endif %}
 {% if parameters %}
