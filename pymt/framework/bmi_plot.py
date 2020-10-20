@@ -4,6 +4,9 @@ import numpy as np
 
 
 def quick_plot(bmi, name, **kwds):
+    if bmi.var_location(name) == "none":
+        raise ValueError(f"{name} does not have an associated grid to plot")
+
     gid = bmi.var_grid(name)
     gtype = bmi.grid_type(gid)
     grid = bmi.grid[gid]
