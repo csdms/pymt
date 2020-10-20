@@ -6,7 +6,6 @@ env:
   matrix:
   - PYTHON="3.8"
   - PYTHON="3.7"
-  - PYTHON="3.6"
   global:
     - secure: "N7EenUcspE/pyC1I+TVLowRIBKPylRC6Jlk/DP4u5GAqIkrLqeZPvTjrWBIMvCkZ2B2dPtUZ5IbbxRMTZCTOQxzlcOL4hbJyzsrRJsskya+Mg9oAFYrZJ6D77AZaQ8iwLgGsOBJsTCyBp9iTBiB3x3KZYUwaMPw3SScVrbNOgzk="
 jobs:
