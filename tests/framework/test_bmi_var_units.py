@@ -1,4 +1,6 @@
 import pytest
+
+import numpy as np
 from numpy.testing import assert_array_equal
 
 from pymt.errors import IncompatibleUnitsError
@@ -21,6 +23,12 @@ class SimpleBmi:
 
     def get_var_location(self, name):
         return "node"
+
+    def get_var_nbytes(self, name):
+        return self.get_var_itemsize(name) * 4
+
+    def get_var_itemsize(self, name):
+        return np.dtype("float").itemsize
 
     def get_value(self, name, out):
         out[:] = [1, 2, 3, 4]
