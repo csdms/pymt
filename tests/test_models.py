@@ -9,6 +9,7 @@ MODELS = [models.__dict__[name] for name in models.__all__]
 MODELS.sort(key=lambda item: item.__name__)
 
 
+@pytest.mark.skip("test once")
 @pytest.mark.parametrize("cls", MODELS)
 def test_model_setup(cls):
     model = cls()
@@ -16,6 +17,7 @@ def test_model_setup(cls):
     assert os.path.isfile(os.path.join(args[1], args[0]))
 
 
+@pytest.mark.skip("test once")
 @pytest.mark.parametrize("cls", MODELS)
 def test_model_initialize(cls):
     model = cls()
@@ -26,6 +28,7 @@ def test_model_initialize(cls):
     assert model._initialized
 
 
+@pytest.mark.skip("test once")
 @pytest.mark.parametrize("cls", MODELS)
 def test_model_update(cls):
     model = cls()
@@ -37,7 +40,13 @@ def test_model_update(cls):
 @pytest.mark.parametrize("cls", MODELS)
 def test_model_finalize(cls):
     model = cls()
-    model.initialize(*model.setup())
+    args = model.setup()
+    assert os.path.isfile(os.path.join(args[1], args[0]))
+
+    model.initialize(*args)
+    assert model.initdir == args[1]
+    assert model._initialized
+
     model.update()
     model.finalize()
     assert not model._initialized
