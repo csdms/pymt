@@ -3,7 +3,7 @@ requires = ["cython", "numpy", "setuptools", "wheel"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ["pymt", "tests"]
+testpaths = ["notebooks", "pymt", "tests"]
 norecursedirs = [".*", "*.egg*", "build", "dist"]
 addopts = """
   --ignore setup.py
@@ -18,6 +18,10 @@ doctest_optionflags = [
   "IGNORE_EXCEPTION_DETAIL",
   "ALLOW_UNICODE"
 ]
+markers = """
+    slow: marks tests as slow (deselect with '-m "not slow"')
+    notebook: marks tests as notebook (deselect with '-m "not notebook"')
+"""
 
 [tool.isort]
 multi_line_output = 3
