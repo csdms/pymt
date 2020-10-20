@@ -4,7 +4,7 @@ Changelog for pymt
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed an issue in quick_plot when trying to plot unstructured meshes (#127)
 
 
 1.2.1 (2020-09-22)
