@@ -1,6 +1,5 @@
 import pkg_resources
 import traceback
-from collections import UserDict
 
 from .framework.bmi_bridge import bmi_factory
 
@@ -15,25 +14,6 @@ class ModelLoadError(Exception):
         return f"unable to load model ({self._name}):\n{self._reason}"
 
 
-def _load_entry_point(entry_point):
-    try:
-        model = entry_point.load()
-    except Exception as error:
-        raise ModelLoadError(
-            entry_point.name,
-            reason=traceback.format_exc(),
-            # reason=str(error),
-        )
-    else:
-        Model = bmi_factory(model)
-        Model.__name__ = entry_point.name
-        Model.__qualname__ = entry_point.name
-        Model.__module__ = __name__
-
-    return entry_point.name, Model
-
-
-# class ModelCollection(UserDict):
 class ModelCollection:
     def __new__(cls):
         models = []
@@ -84,7 +64,7 @@ class ModelCollection:
     def load_entry_point(entry_point):
         try:
             model = entry_point.load()
-        except Exception as error:
+        except Exception:
             raise ModelLoadError(entry_point.name, reason=traceback.format_exc())
         else:
             Model = bmi_factory(model)
