@@ -39,6 +39,8 @@ class DataValues(object):
 
     @property
     def grid(self):
+        if self.location == "none":
+            return None
         return self._bmi.var_grid(self.name)
 
     @property
@@ -296,7 +298,8 @@ class _BmiCap(DeprecatedMethods):
     def _grid_ids(self):
         grids = set()
         for var in set(self.input_var_names + self.output_var_names):
-            grids.add(self.var_grid(var))
+            if self.var_grid(var) is not None:
+                grids.add(self.var_grid(var))
         return tuple(grids)
 
     def get_component_name(self):
@@ -338,12 +341,14 @@ class _BmiCap(DeprecatedMethods):
 
     def get_value(self, name, out=None, units=None, angle=None, at=None, method=None):
         if out is None:
-            grid = self.var_grid(name)
+            # grid = self.var_grid(name)
             dtype = self.var_type(name)
             if dtype == "":
                 raise ValueError("{name} not understood".format(name=name))
-            loc = self.var_grid_loc(name)
-            out = np.empty(self.grid_dim(grid, loc), dtype=dtype)
+            n_items = self.var_nbytes(name) // self.var_itemsize(name)
+            # loc = self.var_grid_loc(name)
+            out = np.empty(n_items, dtype=dtype)
+            # out = np.empty(self.grid_dim(grid, loc), dtype=dtype)
             # out = np.empty(self.grid_dim(grid, loc), dtype=dtype)
 
         self.bmi.get_value(name, out)
@@ -433,9 +438,10 @@ class _BmiCap(DeprecatedMethods):
         return out
 
     def grid_face_nodes(self, grid, out=None):
-        if out is None:
-            out = np.empty(self.grid_vertex_count(grid), dtype=ctypes.c_int)
-        self.bmi.get_grid_face_nodes(grid, out)
+        if self.grid_face_count(grid) > 0:
+            if out is None:
+                out = np.empty(self.grid_vertex_count(grid), dtype=ctypes.c_int)
+            self.bmi.get_grid_face_nodes(grid, out)
         return out
 
     def grid_face_node_offset(self, grid, out=None):
@@ -443,9 +449,10 @@ class _BmiCap(DeprecatedMethods):
         return np.cumsum(nodes_per_face, out=out)
 
     def grid_nodes_per_face(self, grid, out=None):
-        if out is None:
-            out = np.empty(self.grid_face_count(grid), dtype=ctypes.c_int)
-        self.bmi.get_grid_nodes_per_face(grid, out)
+        if self.grid_face_count(grid) > 0:
+            if out is None:
+                out = np.empty(self.grid_face_count(grid), dtype=ctypes.c_int)
+            self.bmi.get_grid_nodes_per_face(grid, out)
         return out
 
     def grid_x(self, grid, out=None):
@@ -507,7 +514,8 @@ class _BmiCap(DeprecatedMethods):
             return self.bmi.get_grid_face_count(grid)
 
     def grid_vertex_count(self, grid):
-        return self.grid_nodes_per_face(grid).sum()
+        return self.grid_nodes_per_face(grid).sum() if self.grid_face_count(grid) > 0 else 0
+        # return self.grid_nodes_per_face(grid).sum()
 
     @property
     def input_var_names(self):
@@ -660,6 +668,8 @@ class _BmiCap(DeprecatedMethods):
             return self.bmi.get_var_location(name)
 
     def var_grid(self, name):
+        if self.var_location(name) == "none":
+            return None
         return self.bmi.get_var_grid(name)
 
     def var_itemsize(self, name):
