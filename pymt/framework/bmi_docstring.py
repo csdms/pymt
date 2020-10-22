@@ -24,7 +24,7 @@ URL: {{ url }}
 {% if cite_as -%}
 Cite as:
 {% for citation in cite_as %}
-{{ citation|trim|indent(width=4, indentfirst=True) }}
+{{ citation|trim|indent(width=4, first=True) }}
 {% endfor %}
 {%- endif %}
 {% if parameters %}
@@ -41,10 +41,10 @@ Examples
 >>> from pymt.models import {{name}}
 >>> model = {{name}}()
 >>> (fname, initdir) = model.setup()
->>> model.initialize(fname, dir=initdir)
->>> for _ in xrange(10):
+>>> model.initialize(fname, dir=initdir)  # doctest: +SKIP
+>>> for _ in range(10):  # doctest: +SKIP
 ...     model.update()
->>> model.finalize()
+>>> model.finalize()  # doctest: +SKIP
 """.strip()
 
 
@@ -120,7 +120,7 @@ def bmi_docstring(
     else:
         info = meta.info
         defaults = meta.parameters
-        name = meta.name
+        name = meta.api["class"]
 
     for param_name, param in defaults.items():
         param["name"] = param_name

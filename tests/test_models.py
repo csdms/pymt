@@ -37,7 +37,13 @@ def test_model_update(cls):
 @pytest.mark.parametrize("cls", MODELS)
 def test_model_finalize(cls):
     model = cls()
-    model.initialize(*model.setup())
+    args = model.setup()
+    assert os.path.isfile(os.path.join(args[1], args[0]))
+
+    model.initialize(*args)
+    assert model.initdir == args[1]
+    assert model._initialized
+
     model.update()
     model.finalize()
     assert not model._initialized

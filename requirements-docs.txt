@@ -7,4 +7,4 @@ sphinx_rtd_theme
 tornado
 entrypoints
 nbsphinx>=0.2.12
-sphinxcontrib_github_alt
+# sphinxcontrib_github_alt

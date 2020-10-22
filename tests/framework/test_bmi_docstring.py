@@ -16,10 +16,10 @@ Examples
 >>> from pymt.models import Model
 >>> model = Model()
 >>> (fname, initdir) = model.setup()
->>> model.initialize(fname, dir=initdir)
->>> for _ in xrange(10):
+>>> model.initialize(fname, dir=initdir)  # doctest: +SKIP
+>>> for _ in range(10):  # doctest: +SKIP
 ...     model.update()
->>> model.finalize()
+>>> model.finalize()  # doctest: +SKIP
 """.strip()
 
 
@@ -58,10 +58,10 @@ Examples
 >>> from pymt.models import DirtyHarry
 >>> model = DirtyHarry()
 >>> (fname, initdir) = model.setup()
->>> model.initialize(fname, dir=initdir)
->>> for _ in xrange(10):
+>>> model.initialize(fname, dir=initdir)  # doctest: +SKIP
+>>> for _ in range(10):  # doctest: +SKIP
 ...     model.update()
->>> model.finalize()
+>>> model.finalize()  # doctest: +SKIP
 """.strip()
     )
 
@@ -103,9 +103,9 @@ Examples
 >>> from pymt.models import DirtyHarry
 >>> model = DirtyHarry()
 >>> (fname, initdir) = model.setup()
->>> model.initialize(fname, dir=initdir)
->>> for _ in xrange(10):
+>>> model.initialize(fname, dir=initdir)  # doctest: +SKIP
+>>> for _ in range(10):  # doctest: +SKIP
 ...     model.update()
->>> model.finalize()
+>>> model.finalize()  # doctest: +SKIP
 """.strip()
     )
