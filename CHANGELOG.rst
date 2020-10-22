@@ -4,6 +4,9 @@ Changelog for pymt
 1.2.2 (unreleased)
 ------------------
 
+- Added ModelCollection class and MODELS instance to hold the currently
+  loaded models (#128)
+
 - Fixed an issue in quick_plot when trying to plot unstructured meshes (#127)
 
 
