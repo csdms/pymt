@@ -1,7 +1,7 @@
 Changelog for pymt
 ==================
 
-1.2.2 (unreleased)
+1.3.0 (2020-10-21)
 ------------------
 
 - Added ModelCollection class and MODELS instance to hold the currently
