@@ -4,7 +4,7 @@ Changelog for pymt
 1.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added text on the CSDMS Workbench to the README and docs (#129)
 
 
 1.3.0 (2020-10-21)
