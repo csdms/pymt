@@ -38,6 +38,11 @@ What does it look like?  Here is an example of a simple *pymt* program:
         cem.update()
 
 
+*pymt* is an element of the `CSDMS Workbench`_,
+an integrated system of software tools, technologies, and standards
+for building and coupling models.
+
+
 User Guide
 ----------
 
@@ -100,12 +105,16 @@ if you're developing with *pymt*
 feel free to open an `issue`_
 in the *pymt* GitHub repository.
 
-.. _CSDMS Help Desk: https://github.com/csdms/help-desk
-.. _issue: https://github.com/csdms/pymt/issues
-
 
 Indices and tables
 ==================
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+..
+   Links
+
+.. _CSDMS Workbench: https://csdms.colorado.edu/wiki/Workbench
+.. _CSDMS Help Desk: https://github.com/csdms/help-desk
+.. _issue: https://github.com/csdms/pymt/issues

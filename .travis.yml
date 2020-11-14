@@ -36,7 +36,7 @@ before_install:
     source $HOME/.bashrc
   fi
 - micromamba activate
-- micromamba install python=$PYTHON pip mamba --yes -c conda-forge
+- micromamba install python=$PYTHON pip mamba --yes -c conda-forge -p $MAMBA_ROOT_PREFIX
 install:
 - mamba install esmpy udunits2 --yes -c conda-forge
 - mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel --yes -c conda-forge

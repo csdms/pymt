@@ -53,12 +53,18 @@ couples a *Waves* model with a *Coastline Evolution* model.
         cem.update()
 
 
+PyMT is an element of the `CSDMS Workbench`_,
+an integrated system of software tools, technologies, and standards
+for building and coupling models.
+
 This material is based upon work
 supported by the National Science Foundation
 under Grant No. `1831623`_,
 *Community Facility Support:
 The Community Surface Dynamics Modeling System (CSDMS)*.
 
+
+.. _CSDMS Workbench: https://csdms.colorado.edu/wiki/Workbench
 .. _1831623: https://nsf.gov/awardsearch/showAward?AWD_ID=1831623
 
 .. |PYMT| image:: https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png
