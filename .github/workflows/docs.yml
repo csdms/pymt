@@ -40,17 +40,17 @@ jobs:
             with:
               auto-update-conda: true
               python-version: 3.8
-              channels: conda-forge
+              mamba-version: "*"
+              channels: conda-forge,defaults
               channel-priority: true
 
           - name: Show conda installation info
             run: |
-              conda info
-              conda list
+              mamba info
+              mamba list
     
           - name: Install dependencies
             run: |
-              conda install mamba
               mamba install --file=requirements.txt
               pip install -r requirements-docs.txt
               pip install -e .
