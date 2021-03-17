@@ -6,10 +6,10 @@ from pprint import pformat
 
 import numpy as np
 import yaml
+import gimli
 
 from deprecated import deprecated
 
-from .._udunits2 import UnitSystem
 from ..utils import as_cwd
 from ..errors import BmiError
 from ..units import transform_azimuth_to_math, transform_math_to_azimuth
@@ -21,7 +21,7 @@ from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
 
 
-UNITS = UnitSystem()
+UNITS = gimli.units
 
 
 class DataValues(object):

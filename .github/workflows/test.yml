@@ -41,7 +41,7 @@ jobs:
       - name: Install requirements
         run: |
           mamba install --file=requirements.txt --file=requirements-testing.txt
-          mamba install udunits2
+          mamba install gimli.units
           mamba list
 
       - name: Install Windows requirements
