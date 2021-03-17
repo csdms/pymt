@@ -8,7 +8,7 @@ norecursedirs = [".*", "*.egg*", "build", "dist"]
 addopts = """
   --ignore setup.py
   --tb native
-  --strict
+  --strict-markers
   --durations 16
   --doctest-modules
   -vvv
