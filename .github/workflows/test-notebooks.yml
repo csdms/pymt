@@ -49,10 +49,11 @@ jobs:
           pip install -e .
 
       - name: Install testing dependencies
-        run: mamba install --file=requirements-testing.txt -c conda-forge
+        run: |
+          mamba install --file=requirements-testing.txt
+          mamba install --file=requirements-notebooks.txt
 
       - name: Test jupyter notebooks
         run: |
           python -c 'import pymt; print(pymt.__version__)'
-          pip install -r requirements-notebooks.txt
           pytest notebooks --run-notebook -vvv
