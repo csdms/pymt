@@ -1,10 +1,9 @@
 import pytest
 
 import numpy as np
-from gimli import UnitNameError
+from gimli import IncompatibleUnitsError, UnitNameError
 from numpy.testing import assert_array_equal
 
-from pymt.errors import IncompatibleUnitsError
 from pymt.framework.bmi_bridge import BmiTimeInterpolator, GridMapperMixIn, _BmiCap
 
 
