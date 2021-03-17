@@ -52,6 +52,7 @@ jobs:
           - name: Install dependencies
             run: |
               mamba install --file=requirements.txt
+              mamba install udunits2
               pip install -r requirements-docs.txt
               pip install -e .
 
