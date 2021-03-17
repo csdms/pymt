@@ -54,6 +54,7 @@ jobs:
           mamba install --file=requirements-notebooks.txt
 
       - name: Test jupyter notebooks
+        timeout-minutes: 30
         run: |
           python -c 'import pymt; print(pymt.__version__)'
           pytest notebooks --run-notebook -vvv
