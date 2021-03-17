@@ -176,8 +176,7 @@ class Component(GridMixIn):
 
     @property
     def current_time(self):
-        """Current time for component updating.
-        """
+        """Current time for component updating."""
         try:
             return self._port.current_time
         except AttributeError:
@@ -185,8 +184,7 @@ class Component(GridMixIn):
 
     @property
     def start_time(self):
-        """Start time for component updating.
-        """
+        """Start time for component updating."""
         try:
             return self._port.start_time
         except AttributeError:
@@ -194,8 +192,7 @@ class Component(GridMixIn):
 
     @property
     def end_time(self):
-        """End time for component updating.
-        """
+        """End time for component updating."""
         try:
             return self._port.end_time
         except AttributeError:
@@ -203,14 +200,12 @@ class Component(GridMixIn):
 
     @property
     def uses(self):
-        """Names of connected *uses* ports.
-        """
+        """Names of connected *uses* ports."""
         return self._uses
 
     @property
     def provides(self):
-        """Names of connected *provides* ports.
-        """
+        """Names of connected *provides* ports."""
         return self._provides
 
     def connect(self, uses, port, vars_to_map=()):
@@ -266,8 +261,7 @@ class Component(GridMixIn):
             self._events.finalize()
 
     def initialize(self):
-        """Initialize a component and any connected events.
-        """
+        """Initialize a component and any connected events."""
         self._events.initialize()
 
     def run(self, stop_time):
@@ -283,8 +277,7 @@ class Component(GridMixIn):
         self._events.run(stop_time)
 
     def finalize(self):
-        """Finalize a component and any connected events.
-        """
+        """Finalize a component and any connected events."""
         self._events.finalize()
 
     def register(self, name):

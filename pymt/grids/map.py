@@ -106,7 +106,7 @@ class UnstructuredMap(Unstructured):
         return self._point[point_id]
 
     def is_in_cell(self, x, y, cell_id):
-        """ Check if a point is in a cell.
+        """Check if a point is in a cell.
 
         Parameters
         ----------

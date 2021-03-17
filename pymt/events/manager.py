@@ -176,8 +176,7 @@ class EventManager(object):
 
     @property
     def time(self):
-        """Current time along the time line.
-        """
+        """Current time along the time line."""
         return self._timeline.time
 
     @classmethod

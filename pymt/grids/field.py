@@ -175,135 +175,135 @@ class RectilinearField(Rectilinear, StructuredField):
 
 class RasterField(UniformRectilinear, StructuredField):
     """
-Create a field that looks like this,
+    Create a field that looks like this,
 
-::
+    ::
 
-    (0) --- (1) --- (2)
-     |       |       |
-     |   0   |   1   |
-     |       |       |
-    (3) --- (4) --- (5)
+        (0) --- (1) --- (2)
+         |       |       |
+         |   0   |   1   |
+         |       |       |
+        (3) --- (4) --- (5)
 
-Create the field,
+    Create the field,
 
-    >>> g = RasterField ((2,3), (1,2), (0, 0), indexing='ij')
-    >>> g.get_cell_count ()
-    2
-    >>> g.get_point_count ()
-    6
+        >>> g = RasterField ((2,3), (1,2), (0, 0), indexing='ij')
+        >>> g.get_cell_count ()
+        2
+        >>> g.get_point_count ()
+        6
 
-Add some data at the points of our grid.
+    Add some data at the points of our grid.
 
-    >>> data = np.arange (6)
-    >>> g.add_field ('var0', data, centering='point')
-    >>> g.get_field ('var0')
-    array([0, 1, 2, 3, 4, 5])
+        >>> data = np.arange (6)
+        >>> g.add_field ('var0', data, centering='point')
+        >>> g.get_field ('var0')
+        array([0, 1, 2, 3, 4, 5])
 
-The data can be given either as a 1D array or with the same shape
-as the point grid. In either case, though, it will be flattened.
+    The data can be given either as a 1D array or with the same shape
+    as the point grid. In either case, though, it will be flattened.
 
-    >>> data = np.arange (6)
-    >>> data.shape = (2, 3)
-    >>> g.add_field ('var0', data, centering='point')
-    >>> g.get_field ('var0')
-    array([0, 1, 2, 3, 4, 5])
+        >>> data = np.arange (6)
+        >>> data.shape = (2, 3)
+        >>> g.add_field ('var0', data, centering='point')
+        >>> g.get_field ('var0')
+        array([0, 1, 2, 3, 4, 5])
 
-If the size or shape doesn't match, it's an error.
+    If the size or shape doesn't match, it's an error.
 
-    >>> data = np.arange (2)
-    >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-        ...
-    DimensionError: 2 != 6
+        >>> data = np.arange (2)
+        >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        DimensionError: 2 != 6
 
-    >>> data = np.ones ((3, 2))
-    >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-        ...
-    DimensionError: (3, 2) != (2, 3)
+        >>> data = np.ones ((3, 2))
+        >>> g.add_field ('bad var', data, centering='point') # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        DimensionError: (3, 2) != (2, 3)
 
-Add data to the cells of the grid. Again, the data can be given
-as a 1D array or with the same shape as the cell grid and if the
-size or shape doesn't match raise an exception.
+    Add data to the cells of the grid. Again, the data can be given
+    as a 1D array or with the same shape as the cell grid and if the
+    size or shape doesn't match raise an exception.
 
-    >>> data = np.arange (2)
-    >>> g.add_field('var1', data, centering='zonal')
-    >>> g.get_field('var1')
-    array([0, 1])
+        >>> data = np.arange (2)
+        >>> g.add_field('var1', data, centering='zonal')
+        >>> g.get_field('var1')
+        array([0, 1])
 
-    >>> data = np.ones((2, 1))
-    >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-        ...
-    DimensionError: (2, 1) != (1, 2)
+        >>> data = np.ones((2, 1))
+        >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        DimensionError: (2, 1) != (1, 2)
 
-    >>> data = np.arange(3)
-    >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-        ...
-    DimensionError: 3 != 2
+        >>> data = np.arange(3)
+        >>> g.add_field('bad var', data, centering='zonal') # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        DimensionError: 3 != 2
 
-    >>> data = np.array(3)
-    >>> g.add_field('bad var', data, centering='zonal')  # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-        ...
-    DimensionError: 1 != 2
-
-
-A 1D-Field,
-
-    >>> g = RasterField ((6, ), (1.5, ), (0.5, ), indexing='ij')
-    >>> g.get_point_count ()
-    6
-    >>> g.get_cell_count ()
-    5
-
-    >>> point_data = np.arange (6.)
-    >>> g.add_field ('Point Data', point_data, centering='point')
-
-    >>> cell_data = np.arange (5.)*10.
-    >>> g.add_field ('Cell Data', cell_data, centering='zonal')
-
-    >>> g.get_field ('Cell Data')
-    array([  0.,  10.,  20.,  30.,  40.])
-
-    >>> g.get_field ('Point Data')
-    array([ 0.,  1.,  2.,  3.,  4.,  5.])
+        >>> data = np.array(3)
+        >>> g.add_field('bad var', data, centering='zonal')  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        DimensionError: 1 != 2
 
 
-A 3D-Field,
+    A 1D-Field,
 
-    >>> g = RasterField ((4, 3, 2), (1.5, 1., 3), (0.5, 0, -.5 ), indexing='ij')
-    >>> g.get_point_count ()
-    24
-    >>> g.get_cell_count ()
-    6
+        >>> g = RasterField ((6, ), (1.5, ), (0.5, ), indexing='ij')
+        >>> g.get_point_count ()
+        6
+        >>> g.get_cell_count ()
+        5
 
-    >>> g.add_field ('Point Data', g.get_x (), centering='point')
+        >>> point_data = np.arange (6.)
+        >>> g.add_field ('Point Data', point_data, centering='point')
 
-    >>> cell_data = np.arange (6.)*10.
-    >>> g.add_field ('Cell Data', cell_data, centering='zonal')
+        >>> cell_data = np.arange (5.)*10.
+        >>> g.add_field ('Cell Data', cell_data, centering='zonal')
 
-    >>> g.get_field ('Cell Data')
-    array([  0.,  10.,  20.,  30.,  40.,  50.])
+        >>> g.get_field ('Cell Data')
+        array([  0.,  10.,  20.,  30.,  40.])
 
-    >>> g.get_field('Point Data')
-    array([-0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,
-            2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5,
-           -0.5,  2.5])
+        >>> g.get_field ('Point Data')
+        array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
-    >>> g.get_shape()
-    array([4, 3, 2])
 
-    >>> g.get_x().size == g.get_field('Point Data').size
-    True
-    >>> x = g.get_x()
-    >>> x.shape
-    (24,)
-    >>> x.shape = g.get_shape()
-    >>> x.shape
-    (4, 3, 2)
+    A 3D-Field,
+
+        >>> g = RasterField ((4, 3, 2), (1.5, 1., 3), (0.5, 0, -.5 ), indexing='ij')
+        >>> g.get_point_count ()
+        24
+        >>> g.get_cell_count ()
+        6
+
+        >>> g.add_field ('Point Data', g.get_x (), centering='point')
+
+        >>> cell_data = np.arange (6.)*10.
+        >>> g.add_field ('Cell Data', cell_data, centering='zonal')
+
+        >>> g.get_field ('Cell Data')
+        array([  0.,  10.,  20.,  30.,  40.,  50.])
+
+        >>> g.get_field('Point Data')
+        array([-0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,
+                2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5, -0.5,  2.5,
+               -0.5,  2.5])
+
+        >>> g.get_shape()
+        array([4, 3, 2])
+
+        >>> g.get_x().size == g.get_field('Point Data').size
+        True
+        >>> x = g.get_x()
+        >>> x.shape
+        (24,)
+        >>> x.shape = g.get_shape()
+        >>> x.shape
+        (4, 3, 2)
 
     """
 

@@ -7,8 +7,8 @@ from pymt.printers.bov.database import Database
 
 
 def test_bov_database(tmpdir):
-    data = np.arange(6.)
-    field = RasterField((3, 2), (1., 1.), (0., 0.))
+    data = np.arange(6.0)
+    field = RasterField((3, 2), (1.0, 1.0), (0.0, 0.0))
     field.add_field("Elevation", data, centering="point")
 
     with tmpdir.as_cwd():
@@ -21,11 +21,11 @@ def test_bov_database(tmpdir):
         db.write(field)
         assert os.path.isfile("Bov_database_0000.bov")
 
-        data *= 2.
+        data *= 2.0
         db.write(field)
         assert os.path.isfile("Bov_database_0001.bov")
 
-        data *= 2.
+        data *= 2.0
         db.write(field)
         assert os.path.isfile("Bov_database_0002.bov")
 

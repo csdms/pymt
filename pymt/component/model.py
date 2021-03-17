@@ -54,20 +54,17 @@ class Model(object):
 
     @property
     def components(self):
-        """Names of the components.
-        """
+        """Names of the components."""
         return list(self._components.keys())
 
     @property
     def driver(self):
-        """Name of the driver component.
-        """
+        """Name of the driver component."""
         return self._driver
 
     @driver.setter
     def driver(self, driver):
-        """Set the driver component.
-        """
+        """Set the driver component."""
         if driver in self.components:
             self._driver = driver
         else:
@@ -75,19 +72,16 @@ class Model(object):
 
     @property
     def duration(self):
-        """Length of time the model will run.
-        """
+        """Length of time the model will run."""
         return self._duration
 
     @duration.setter
     def duration(self, duration):
-        """Set length of time the model will run.
-        """
+        """Set length of time the model will run."""
         self._duration = duration
 
     def go(self, filename=None):
-        """Start the model.
-        """
+        """Start the model."""
         if filename:
             with open(filename, "r") as f:
                 model = yaml.safe_load(f.read())

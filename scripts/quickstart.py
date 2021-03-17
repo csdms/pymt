@@ -3,50 +3,57 @@
 import time
 
 _attrs = {
-    'reset': '39;49;00m',
-    'bright': '01m',
-    'dim': '02m',
-    'standout': '03m',
-    'underline': '04m',
-    'blink': '05m',
-    'fast': '06m',
-    'reverse': '07m',
-    'hidden': '08m',
-    'xout': '09m'
+    "reset": "39;49;00m",
+    "bright": "01m",
+    "dim": "02m",
+    "standout": "03m",
+    "underline": "04m",
+    "blink": "05m",
+    "fast": "06m",
+    "reverse": "07m",
+    "hidden": "08m",
+    "xout": "09m",
 }
 
 _colors = [
-    ('black', 'darkgray'),
-    ('red', 'lightred'),
-    ('green', 'lightgreen'),
-    ('brown', 'yellow'),
-    ('blue', 'lightblue'),
-    ('purple', 'lightpurple'),
-    ('cyan', 'lightcyan'),
-    ('lightgray', 'white')]
+    ("black", "darkgray"),
+    ("red", "lightred"),
+    ("green", "lightgreen"),
+    ("brown", "yellow"),
+    ("blue", "lightblue"),
+    ("purple", "lightpurple"),
+    ("cyan", "lightcyan"),
+    ("lightgray", "white"),
+]
 
 codes = {}
 
-for (_attr, _val) in _attrs.items ():
-    codes[_attr] = '\x1b[' + _val
+for (_attr, _val) in _attrs.items():
+    codes[_attr] = "\x1b[" + _val
 
-for (i, (dark, light)) in enumerate (_colors):
-    codes[dark] = '\x1b[%im' % (i+30)
-    codes[light] = '\x1b[%i;01m' % (i+30)
+for (i, (dark, light)) in enumerate(_colors):
+    codes[dark] = "\x1b[%im" % (i + 30)
+    codes[light] = "\x1b[%i;01m" % (i + 30)
 
-def format (name, text):
-    return codes.get (name, '') + text + codes.get ('reset', '')
 
-def create_color_func (name):
-    def f (text):
-        return format (name, text)
+def format(name, text):
+    return codes.get(name, "") + text + codes.get("reset", "")
+
+
+def create_color_func(name):
+    def f(text):
+        return format(name, text)
+
     globals()[name] = f
 
-for _name in codes:
-    create_color_func (_name)
 
-def camel_case (text):
-    return ''.join (text.title ().split ())
+for _name in codes:
+    create_color_func(_name)
+
+
+def camel_case(text):
+    return "".join(text.title().split())
+
 
 QUICKSTART_BMI = """#! /usr/bin/env python
 
@@ -141,50 +148,55 @@ if __name__ == '__main__':
 
 """
 
-def prompt_for_val (d, key, text, default=None, prefix='> '):
+
+def prompt_for_val(d, key, text, default=None, prefix="> "):
     while True:
         if default is not None:
-            prompt = dim (lightgreen (prefix + '%s [%s]: ' % (text, default)))
+            prompt = dim(lightgreen(prefix + "%s [%s]: " % (text, default)))
         else:
-            prompt = dim (lightgreen (prefix + '%s: ' % (text)))
-        val = raw_input (prompt)
+            prompt = dim(lightgreen(prefix + "%s: " % (text)))
+        val = raw_input(prompt)
         if default and not val:
             val = default
         break
     d[key] = val
 
-def prompt_for_vals (d, key, text, default=None, prefix='> '):
+
+def prompt_for_vals(d, key, text, default=None, prefix="> "):
     vals = []
     while True:
         if default is not None:
-            prompt = dim (lightgreen (prefix + '%s [%s]: ' % (text, default)))
+            prompt = dim(lightgreen(prefix + "%s [%s]: " % (text, default)))
         else:
-            prompt = dim (lightgreen (prefix + '%s: ' % (text)))
-        val = raw_input (prompt)
+            prompt = dim(lightgreen(prefix + "%s: " % (text)))
+        val = raw_input(prompt)
         if default and not val:
             val = default
-        if len (val.strip ()) > 0:
-            vals.append (val)
+        if len(val.strip()) > 0:
+            vals.append(val)
         else:
             break
     d[key] = vals
     return vals
-    
-def generate (vals):
 
-    vals['class_name'] = camel_case (vals['name'])
-    vals['license'] = 'MIT'
-    vals['copyright'] = ', '.join ([time.strftime ('%Y'), vals['author']])
 
-    file = vals['class_name'].lower ()+'.py'
+def generate(vals):
+
+    vals["class_name"] = camel_case(vals["name"])
+    vals["license"] = "MIT"
+    vals["copyright"] = ", ".join([time.strftime("%Y"), vals["author"]])
+
+    file = vals["class_name"].lower() + ".py"
 
     from string import Template
-    with open (file, 'w') as f:
-        bmi_file = Template (QUICKSTART_BMI)
-        f.write (bmi_file.substitute (vals))
 
-def main ():
-    print bright ('Welcome to the BMI quickstart utility')
+    with open(file, "w") as f:
+        bmi_file = Template(QUICKSTART_BMI)
+        f.write(bmi_file.substitute(vals))
+
+
+def main():
+    print bright("Welcome to the BMI quickstart utility")
     print """
 Please enter values for the following settings (press Enter to accept a
 default, if one is given in square brackets)."""
@@ -193,19 +205,19 @@ default, if one is given in square brackets)."""
 
     print """
 Enter name of your model."""
-    prompt_for_val (vals, 'name', 'Model name')
-    prompt_for_val (vals, 'author', 'Author name')
-    prompt_for_val (vals, 'version', 'Version')
+    prompt_for_val(vals, "name", "Model name")
+    prompt_for_val(vals, "author", "Author name")
+    prompt_for_val(vals, "version", "Version")
 
     print """
 List of output variable names. These are the names of variarbles that your
 model is able to provide through a 'getter' function."""
-    prompt_for_val (vals, 'output_items', 'Output items', default='')
+    prompt_for_val(vals, "output_items", "Output items", default="")
 
     print """
 List of input variable names. These are the names of variarbles that another
 model is able to set through a 'setter' function."""
-    prompt_for_val (vals, 'input_items', 'Input items', default='')
+    prompt_for_val(vals, "input_items", "Input items", default="")
 
     print """
 Grid type:
@@ -213,14 +225,16 @@ Grid type:
     [1] = Rectilinear
     [2] = Structured
     [4] = Unstructured"""
-    prompt_for_val (vals, 'gridtype', 'Grid type', default='0')
+    prompt_for_val(vals, "gridtype", "Grid type", default="0")
 
-    generate (vals)
+    generate(vals)
 
-    print bright ('Finished: An initial BMI class has been created for your model.')
+    print bright("Finished: An initial BMI class has been created for your model.")
     print """
 You should now populate your BMI file (%s) with implementation for each of the
-class methods.""" % (vals['class_name'].lower ()+'.py')
+class methods.""" % (
+        vals["class_name"].lower() + ".py"
+    )
 
 
 prm_intro_template = """
@@ -229,33 +243,37 @@ prm_intro_template = """
 #    @author ${model_author}
 #    @version ${model_version}
 """
-def generate_prm (vals):
 
-    optionals = ['email', 'url']
-    file = '_'.join (vals['model_short_name'].lower ().split ()) + '.prm'
+
+def generate_prm(vals):
+
+    optionals = ["email", "url"]
+    file = "_".join(vals["model_short_name"].lower().split()) + ".prm"
 
     from string import Template
-    with open (file, 'w') as f:
-        prm_file = Template (prm_intro_template)
-        f.write (prm_file.substitute (vals))
+
+    with open(file, "w") as f:
+        prm_file = Template(prm_intro_template)
+        f.write(prm_file.substitute(vals))
         for opt in optionals:
             if not vals[opt] is None:
-                f.write ('#    @%s %s\n' % (opt, vals[opt]))
+                f.write("#    @%s %s\n" % (opt, vals[opt]))
 
-        f.write ('#\n')
-        for param in vals['params']:
-            f.write ('#    @param %s\n' % param)
-            f.write ('#        @brief \n')
-            f.write ('#        @description \n')
-            f.write ('#        @range \n')
-            f.write ('#        @units \n')
+        f.write("#\n")
+        for param in vals["params"]:
+            f.write("#    @param %s\n" % param)
+            f.write("#        @brief \n")
+            f.write("#        @description \n")
+            f.write("#        @range \n")
+            f.write("#        @units \n")
 
-        f.write ('#\n')
-        for param in vals['outparams']:
-            f.write ('#    @param[out] %s\n' % param)
+        f.write("#\n")
+        for param in vals["outparams"]:
+            f.write("#    @param[out] %s\n" % param)
 
-def make_prm ():
-    print bright ('Welcome to the BMI quickstart utility')
+
+def make_prm():
+    print bright("Welcome to the BMI quickstart utility")
     print """
 Please enter values for the following settings (press Enter to accept a
 default, if one is given in square brackets)."""
@@ -265,19 +283,19 @@ default, if one is given in square brackets)."""
     print """
 Model information ."""
 
-    prompt_for_val (vals, 'model_long_name', 'Model name')
-    prompt_for_val (vals, 'model_short_name', 'Model nick name', vals['model_long_name'])
-    prompt_for_val (vals, 'model_author', 'Author name')
-    prompt_for_val (vals, 'model_version', 'Version')
-    prompt_for_val (vals, 'url', 'URL', default=None)
-    prompt_for_val (vals, 'email', 'Author email', default=None)
+    prompt_for_val(vals, "model_long_name", "Model name")
+    prompt_for_val(vals, "model_short_name", "Model nick name", vals["model_long_name"])
+    prompt_for_val(vals, "model_author", "Author name")
+    prompt_for_val(vals, "model_version", "Version")
+    prompt_for_val(vals, "url", "URL", default=None)
+    prompt_for_val(vals, "email", "Author email", default=None)
 
-    prompt_for_vals (vals, 'params', 'Input parameters', default=None)
+    prompt_for_vals(vals, "params", "Input parameters", default=None)
 
-    prompt_for_vals (vals, 'outparams', 'Output parameters', default=None)
+    prompt_for_vals(vals, "outparams", "Output parameters", default=None)
 
-    generate_prm (vals)
+    generate_prm(vals)
 
-if __name__ == '__main__':
-    make_prm ()
 
+if __name__ == "__main__":
+    make_prm()

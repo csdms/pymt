@@ -57,7 +57,7 @@ class NonStructuredGridError(GridTypeError):
 
 class IGrid(object):
     """An interface for a grid object that represents a structured or unstructured
-       grid of nodes and elements.
+    grid of nodes and elements.
     """
 
     def get_x(self):
@@ -74,7 +74,7 @@ class IGrid(object):
 
     def get_offset(self):
         """Return an array of offsets in to the connectivity array for each
-           element of the grid."""
+        element of the grid."""
         pass
 
 

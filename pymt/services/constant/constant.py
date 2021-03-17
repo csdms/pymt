@@ -4,8 +4,7 @@ import yaml
 
 
 class ConstantScalars(object):
-    """Service component that returns scalars.
-    """
+    """Service component that returns scalars."""
 
     def initialize(self, filename):
         """Initialize the component from a file.
@@ -34,43 +33,35 @@ class ConstantScalars(object):
         self._time = 0.0
 
     def update(self, time):
-        """Update one time step.
-        """
+        """Update one time step."""
         self._time = time
 
     def update_until(self, time):
-        """Update until a time.
-        """
+        """Update until a time."""
         self._time = time
 
     def finalize(self):
-        """Clean up.
-        """
+        """Clean up."""
         pass
 
     def get_start_time(self):
-        """Component start time.
-        """
+        """Component start time."""
         return self._start_time
 
     def get_end_time(self):
-        """Component stop time.
-        """
+        """Component stop time."""
         return self._end_time
 
     def get_current_time(self):
-        """Component current time.
-        """
+        """Component current time."""
         return self._time
 
     def get_input_var_names(self):
-        """Input variable names.
-        """
+        """Input variable names."""
         return self._input_exchange_items
 
     def get_output_var_names(self):
-        """Output variable names.
-        """
+        """Output variable names."""
         return self._output_exchange_items
 
     def get_var_grid(self, var):

@@ -20,7 +20,6 @@ class IDatabase(object):
 
 
 class Database(IDatabase):
-
     def __init__(self):
         super(Database, self).__init__()
 

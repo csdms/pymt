@@ -3,9 +3,7 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
-from landlab.graph import (StructuredQuadGraph,
-                           UniformRectilinearGraph,
-                           RectilinearGraph)
+from landlab.graph import StructuredQuadGraph, UniformRectilinearGraph, RectilinearGraph
 
 COORDINATE_NAMES = ["z", "y", "x"]
 INDEX_NAMES = ["k", "j", "i"]

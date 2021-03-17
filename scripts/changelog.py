@@ -232,7 +232,9 @@ def main(output, quiet, verbose, format, force, batch):
 
     with open(path_to_changelog, "w") as fp:
         fp.write(contents)
-    click.secho("Fresh change log at {0}".format(path_to_changelog), bold=True, err=True)
+    click.secho(
+        "Fresh change log at {0}".format(path_to_changelog), bold=True, err=True
+    )
 
 
 if __name__ == "__main__":

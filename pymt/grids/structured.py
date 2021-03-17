@@ -120,8 +120,7 @@ from .unstructured import Unstructured, UnstructuredPoints
 
 class StructuredPoints(UnstructuredPoints):
     def __init__(self, *args, **kwds):
-        """StructuredPoints(x0 [, x1 [, x2]], shape)
-        """
+        """StructuredPoints(x0 [, x1 [, x2]], shape)"""
         (coordinates, shape) = (args[:-1], args[-1])
 
         if len(coordinates) < 1 or len(coordinates) > 3:
