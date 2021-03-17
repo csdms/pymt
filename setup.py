@@ -9,11 +9,11 @@ def read(filename):
         return fp.read()
 
 
-long_description = u'\n\n'.join(
+long_description = u"\n\n".join(
     [
-        read('README.rst'),
-        read('AUTHORS.rst'),
-        read('CHANGELOG.rst'),
+        read("README.rst"),
+        read("AUTHORS.rst"),
+        read("CHANGELOG.rst"),
     ]
 )
 

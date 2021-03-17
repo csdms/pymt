@@ -7,8 +7,7 @@ you want to force the manager to stop at particular intervals.
 
 
 class PassEvent(object):
-    """An event that doesn't do anything.
-    """
+    """An event that doesn't do anything."""
 
     def initialize(self):
         pass

@@ -260,14 +260,12 @@ class GridMixIn(object):
 
     @property
     def name(self):
-        """Name of the wrapped component.
-        """
+        """Name of the wrapped component."""
         return self._port.get_component_name()
 
     @property
     def input_items(self):
-        """Input item names as a list.
-        """
+        """Input item names as a list."""
         if self._port.get_input_item_count() > 0:
             return self._port.get_input_item_list()
         else:
@@ -275,8 +273,7 @@ class GridMixIn(object):
 
     @property
     def output_items(self):
-        """Output item names as a list.
-        """
+        """Output item names as a list."""
         if self._port.get_output_item_count() > 0:
             return self._port.get_output_item_list()
         else:

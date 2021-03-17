@@ -11,7 +11,7 @@ from pymt.printers.bov.bov_io import FileExists, tofile
 
 
 def test_1d(tmpdir):
-    grid = RasterField((12,), (1.,), (0.,))
+    grid = RasterField((12,), (1.0,), (0.0,))
     point_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", point_data, centering="point")
 
@@ -39,7 +39,7 @@ def test_1d(tmpdir):
 
 
 def test_2d(tmpdir):
-    grid = RasterField((3, 4), (1., 1.), (0., 0.))
+    grid = RasterField((3, 4), (1.0, 1.0), (0.0, 0.0))
     point_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", point_data, centering="point")
 
@@ -67,7 +67,7 @@ def test_2d(tmpdir):
 
 
 def test_3d(tmpdir):
-    grid = RasterField((2, 3, 4), (1., 1., 1.), (0., 0., 0.))
+    grid = RasterField((2, 3, 4), (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
     point_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", point_data, centering="point")
 
@@ -95,7 +95,7 @@ def test_3d(tmpdir):
 
 
 def test_all_fields(tmpdir):
-    grid = RasterField((12,), (1.,), (0.,))
+    grid = RasterField((12,), (1.0,), (0.0,))
     var_0_data = np.arange(grid.get_point_count())
     var_1_data = np.arange(grid.get_point_count()) * 10
     grid.add_field("var_0", var_0_data, centering="point")
@@ -116,7 +116,7 @@ def test_all_fields(tmpdir):
 
 
 def test_clobber(tmpdir):
-    grid = RasterField((12,), (1.,), (0.,))
+    grid = RasterField((12,), (1.0,), (0.0,))
     var_0_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", var_0_data, centering="point")
 
@@ -130,7 +130,7 @@ def test_clobber(tmpdir):
 
 
 def test_options(tmpdir):
-    grid = RasterField((12,), (1.,), (0.,))
+    grid = RasterField((12,), (1.0,), (0.0,))
     var_0_data = np.arange(grid.get_point_count())
     grid.add_field("var_0", var_0_data, centering="point")
 

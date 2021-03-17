@@ -18,7 +18,6 @@ class BmiError(PymtError):
 
 
 class BadUnitError(PymtError):
-
     def __init__(self, unit):
         self._unit = unit
 
@@ -27,7 +26,6 @@ class BadUnitError(PymtError):
 
 
 class IncompatibleUnitsError(PymtError):
-
     def __init__(self, src, dst):
         self._src = src
         self._dst = dst

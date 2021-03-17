@@ -53,12 +53,8 @@ def test_unit_conversion():
     """Test wrapping BMI time methods."""
     bmi = Bmi()
 
-    assert_array_equal(
-        bmi.get_value("elevation", units=None), [1.0, 2.0, 3.0, 4.0]
-    )
-    assert_array_equal(
-        bmi.get_value("elevation", units="m"), [1.0, 2.0, 3.0, 4.0]
-    )
+    assert_array_equal(bmi.get_value("elevation", units=None), [1.0, 2.0, 3.0, 4.0])
+    assert_array_equal(bmi.get_value("elevation", units="m"), [1.0, 2.0, 3.0, 4.0])
     assert_array_equal(
         bmi.get_value("elevation", units="km"), [0.001, 0.002, 0.003, 0.004]
     )

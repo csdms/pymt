@@ -5,7 +5,6 @@ from .framework.bmi_bridge import bmi_factory
 
 
 class ModelLoadError(Exception):
-
     def __init__(self, name, reason=None):
         self._name = name
         self._reason = reason or "no reason given"

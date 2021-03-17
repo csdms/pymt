@@ -35,7 +35,7 @@ _VALID_PARSED_PARAMS = {
     "output_file_namespace": "/Component/Info",
     "config_xml_file": "config.xml",
     "initialize_arg": "run --fast",
-    "port_queue_dt": 2.,
+    "port_queue_dt": 2.0,
     "mappers": ["mapper1", "mapper2"],
     "ports": ["one_port", "two_ports"],
     "optional_ports": ["one_port"],
@@ -73,7 +73,7 @@ class TestComponentInfo(unittest.TestCase):
 
     def test_floats(self):
         info = ComponentInfo(_VALID_PARAMS)
-        self.assertEqual(2., info["port_queue_dt"])
+        self.assertEqual(2.0, info["port_queue_dt"])
 
     def test_mappings(self):
         info = ComponentInfo(_VALID_PARAMS)
@@ -258,7 +258,7 @@ class TestToConfigFile(TestConfigFile):
 
     def test_partial_dict(self):
         name = self.make_empty_temp_file()
-        to_config_file(name, "section.name", {"port_queue_dt": 1.})
+        to_config_file(name, "section.name", {"port_queue_dt": 1.0})
 
         self.assertTrue(os.path.isfile(name))
 
@@ -266,7 +266,7 @@ class TestToConfigFile(TestConfigFile):
         config.read(name)
         self.assertTrue(config.has_section("section.name"))
         self.assertSetEqual(_VALID_KEYS, set(config.options("section.name")))
-        self.assertEqual(1., config.getfloat("section.name", "port_queue_dt"))
+        self.assertEqual(1.0, config.getfloat("section.name", "port_queue_dt"))
 
     def test_ignore_extra_params(self):
         name = self.make_empty_temp_file()

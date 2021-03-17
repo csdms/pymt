@@ -187,7 +187,9 @@ class NetcdfField(object):
         self._set_mesh_coordinate_data()
         self._set_face_node_connectivity_data()
 
-    def _set_time_variable(self, now=None, units="days", reference="00:00:00 UTC"):
+    def _set_time_variable(
+        self, now=None, units="days", reference="0001-01-01 00:00:00 UTC"
+    ):
         self.create_variable("time", "f8", ("time",))
 
         time = self.data_variable("time")

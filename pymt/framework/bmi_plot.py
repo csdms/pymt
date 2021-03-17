@@ -28,7 +28,9 @@ def quick_plot(bmi, name, **kwds):
             # tris = bmi.grid_face_node_connectivity(gid).reshape((-1, 3))
             plt.tripcolor(x, y, tris, z, **kwds)
         else:
-            raise ValueError("quickplot is only able to plot unstructured meshes of triangles")
+            raise ValueError(
+                "quickplot is only able to plot unstructured meshes of triangles"
+            )
     elif gtype in ("uniform_rectilinear", "structured_quad"):
         shape = bmi.grid_shape(gid)
         spacing = bmi.grid_spacing(gid)

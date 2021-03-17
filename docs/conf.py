@@ -28,10 +28,11 @@ from sphinx.domains.python import PythonDomain
 
 class PatchedPythonDomain(PythonDomain):
     def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
-        if 'refspecific' in node:
-            del node['refspecific']
+        if "refspecific" in node:
+            del node["refspecific"]
         return super(PatchedPythonDomain, self).resolve_xref(
-            env, fromdocname, builder, typ, target, node, contnode)
+            env, fromdocname, builder, typ, target, node, contnode
+        )
 
 
 def setup(sphinx):
@@ -72,7 +73,7 @@ MOCK_MODULES = [
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
-if os.environ.get('READTHEDOCS', ''):
+if os.environ.get("READTHEDOCS", ""):
     # RTD doesn't use the repo's Makefile to build docs.
     import subprocess
 
@@ -102,7 +103,6 @@ extensions = [
     "sphinx.ext.autosummary",
     "nbsphinx",
     "IPython.sphinxext.ipython_console_highlighting",
-
 ]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -112,7 +112,7 @@ templates_path = ["_templates"]
 #
 # source_suffix = ['.rst', '.md']
 # source_suffix = ".rst"
-source_suffix = ['.rst', '.ipynb']
+source_suffix = [".rst", ".ipynb"]
 
 # The master toctree document.
 master_doc = "index"
@@ -141,9 +141,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = [
-    "_build", "Thumbs.db", ".DS_Store", "*tests*", ".ipynb_checkpoints"
-]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "*tests*", ".ipynb_checkpoints"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -247,5 +245,5 @@ html_sidebars = {
         "links.html",
         "sourcelink.html",
         "searchbox.html",
-    ]
+    ],
 }

@@ -457,7 +457,7 @@ class _BmiCap(DeprecatedMethods):
 
     def grid_x(self, grid, out=None):
         if out is None:
-            if self.grid_type(grid) == 'rectilinear':
+            if self.grid_type(grid) == "rectilinear":
                 out = np.empty(self.grid_shape(grid)[1], dtype=float)
             else:
                 out = np.empty(self.grid_node_count(grid), dtype=float)
@@ -466,7 +466,7 @@ class _BmiCap(DeprecatedMethods):
 
     def grid_y(self, grid, out=None):
         if out is None:
-            if self.grid_type(grid) == 'rectilinear':
+            if self.grid_type(grid) == "rectilinear":
                 out = np.empty(self.grid_shape(grid)[0], dtype=float)
             else:
                 out = np.empty(self.grid_node_count(grid), dtype=float)
@@ -475,7 +475,7 @@ class _BmiCap(DeprecatedMethods):
 
     def grid_z(self, grid, out=None):
         if out is None:
-            if self.grid_type(grid) == 'rectilinear':
+            if self.grid_type(grid) == "rectilinear":
                 shape = self.grid_shape(grid)
                 try:
                     zdim = shape[2]
@@ -514,7 +514,11 @@ class _BmiCap(DeprecatedMethods):
             return self.bmi.get_grid_face_count(grid)
 
     def grid_vertex_count(self, grid):
-        return self.grid_nodes_per_face(grid).sum() if self.grid_face_count(grid) > 0 else 0
+        return (
+            self.grid_nodes_per_face(grid).sum()
+            if self.grid_face_count(grid) > 0
+            else 0
+        )
         # return self.grid_nodes_per_face(grid).sum()
 
     @property
@@ -539,7 +543,9 @@ class _BmiCap(DeprecatedMethods):
     @time_units.setter
     def time_units(self, new_units):
         self._time_units = new_units
-        self._time_converter = UNITS.Unit(self.bmi.get_time_units()).to(UNITS[new_units])
+        self._time_converter = UNITS.Unit(self.bmi.get_time_units()).to(
+            UNITS[new_units]
+        )
         # self._time_converter = UnitConverter(self.bmi.get_time_units(), new_units)
 
     # def get_time_units(self):

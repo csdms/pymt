@@ -154,8 +154,8 @@ def array_tofile(
     filename,
     array,
     name="",
-    spacing=(1., 1.),
-    origin=(0., 0.),
+    spacing=(1.0, 1.0),
+    origin=(0.0, 0.0),
     no_clobber=False,
     options=None,
 ):
@@ -173,9 +173,9 @@ def array_tofile(
     if len(shape) < 3:
         shape = np.append(shape, [1] * (3 - len(shape)))
     if len(origin) < 3:
-        origin = np.append(origin, [1.] * (3 - len(origin)))
+        origin = np.append(origin, [1.0] * (3 - len(origin)))
     if len(size) < 3:
-        size = np.append(size, [1.] * (3 - len(size)))
+        size = np.append(size, [1.0] * (3 - len(size)))
 
     dat_file = "%s.dat" % base
     bov_file = "%s.bov" % base

@@ -23,9 +23,7 @@ def test_raster(tmpdir, ndims):
 
     field = RasterField(shape, spacing, origin, units=units)
 
-    attrs = {
-        "description": "Example {ndims}D nc file".format(ndims=ndims)
-    }
+    attrs = {"description": "Example {ndims}D nc file".format(ndims=ndims)}
     data = np.arange(field.get_point_count())
 
     with tmpdir.as_cwd():

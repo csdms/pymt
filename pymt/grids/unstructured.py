@@ -1,7 +1,5 @@
 #! /bin/env python
-
 import numpy as np
-from six import MAXSIZE
 
 from .igrid import IGrid
 from .utils import (
@@ -10,6 +8,8 @@ from .utils import (
     get_default_coordinate_names,
     get_default_coordinate_units,
 )
+
+MAXSIZE = np.iinfo(int).max
 
 
 class UnstructuredPoints(IGrid):
