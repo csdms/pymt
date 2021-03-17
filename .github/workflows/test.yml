@@ -30,7 +30,7 @@ jobs:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
           mamba-version: "*"
-          channels: conda-forge
+          channels: conda-forge,defaults
           channel-priority: true
 
       - name: Show conda installation info
@@ -40,8 +40,20 @@ jobs:
 
       - name: Install requirements
         run: |
-          mamba install --file=requirements.txt
+          mamba install --file=requirements.txt --file=requirements-testing.txt
+          mamba install udunits2
           mamba list
+
+      - name: Install Windows requirements
+        if: matrix.os == 'windows-latest'
+        run: |
+          mamba install pymt_child pymt_hydrotrend pymt_permamodel
+
+      - name: Install Unix requirements
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        run: |
+          mamba install esmpy
+          mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
 
       - name: Build and install package
         run: |
