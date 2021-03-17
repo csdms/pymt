@@ -1,0 +1,11 @@
+jupyter
+jupyter_contrib_nbextensions
+nbformat
+seaborn
+pymt_cem
+pymt_child
+pymt_ecsimplesnow
+pymt_gipl
+pymt_hydrotrend
+pymt_permamodel
+pymt_sedflux
