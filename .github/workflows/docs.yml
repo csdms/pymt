@@ -51,7 +51,7 @@ jobs:
     
           - name: Install dependencies
             run: |
-              mamba install --file=requirements.txt --file=requirements-docs gimli.units
+              mamba install --file=requirements.txt --file=requirements-docs.txt gimli.units
               pip install -e .
 
           - name: Build documentation
