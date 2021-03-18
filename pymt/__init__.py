@@ -1,6 +1,6 @@
 import pkg_resources
 
-from ._udunits2 import UnitSystem
+from gimli import UnitSystem
 from .model_collection import ModelCollection
 
 MODELS = ModelCollection()

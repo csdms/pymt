@@ -3,13 +3,11 @@ import random
 
 import numpy as np
 import pytest
-
+from gimli import IncompatibleUnitsError, UnitNameError, UnitStatus, UnitFormatting
 from pymt.units import transform_azimuth_to_math, transform_math_to_azimuth
 
 
 from pymt import UnitSystem
-from pymt._udunits2 import UnitNameError, UnitStatus, UnitFormatting
-from pymt.errors import IncompatibleUnitsError
 
 
 @pytest.fixture
