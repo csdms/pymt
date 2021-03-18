@@ -21,56 +21,9 @@
 import os
 import sys
 
-# sys.path.insert(0, os.path.abspath('..'))
-from unittest.mock import MagicMock
-from sphinx.domains.python import PythonDomain
+sys.path.insert(0, os.path.abspath(".."))
 
-
-class PatchedPythonDomain(PythonDomain):
-    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
-        if "refspecific" in node:
-            del node["refspecific"]
-        return super(PatchedPythonDomain, self).resolve_xref(
-            env, fromdocname, builder, typ, target, node, contnode
-        )
-
-
-def setup(sphinx):
-    sphinx.override_domain(PatchedPythonDomain)
-
-
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-
-MOCK_MODULES = [
-    "ESMF",
-    "landlab",
-    "landlab.graph",
-    "matplotlib",
-    "matplotlib.pyplot",
-    "model_metadata",
-    "model_metadata.find",
-    "model_metadata.model_data_files",
-    "model_metadata.model_setup",
-    "netCDF4",
-    "numpy",
-    "numpy.testing",
-    "scipy",
-    "scipy.spatial",
-    "scipy.io",
-    "scipy.interpolate",
-    "scripting",
-    "scripting.contexts",
-    "shapely",
-    "shapely.geometry",
-    "xarray",
-    "yaml",
-]
-
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+import pymt
 
 
 if os.environ.get("READTHEDOCS", ""):
@@ -79,8 +32,6 @@ if os.environ.get("READTHEDOCS", ""):
 
     subprocess.run(["sphinx-apidoc", "--force", "-o", "./api", "../pymt", "*tests"])
 
-
-import pymt
 
 # -- General configuration ---------------------------------------------
 
