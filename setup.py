@@ -22,7 +22,7 @@ numpy_incl = pkg_resources.resource_filename("numpy", "core/include")
 
 setup(
     name="pymt",
-    version="1.3.1",
+    version="1.3.2.dev0",
     description="The CSDMS Python Modeling Toolkit",
     long_description=long_description,
     author="Eric Hutton",
