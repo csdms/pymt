@@ -1,7 +1,7 @@
 Changelog for pymt
 ==================
 
-1.3.1 (unreleased)
+1.3.1 (2021-03-18)
 ------------------
 
 - Added GitHub Actions workflow to build the docs (#134)
