@@ -5,7 +5,6 @@ include AUTHORS.rst
 include Makefile
 include requirements*.txt
 recursive-include tests *py
-recursive-include pymt/data/udunits *
 recursive-exclude deprecated *
 recursive-exclude docs *
 recursive-exclude scripts *py
@@ -16,6 +15,5 @@ exclude .gitmodules
 exclude .landscape.yml
 exclude .readthedocs.yaml
 exclude CONTRIBUTING.rst
-exclude appveyor.yml
 exclude conda-recipe/meta.yaml
 exclude environment.yml
