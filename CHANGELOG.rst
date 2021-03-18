@@ -4,6 +4,17 @@ Changelog for pymt
 1.3.1 (unreleased)
 ------------------
 
+- Added GitHub Actions workflow to build the docs (#134)
+
+- Added GitHub Actions workflow to test notebooks, for Linux and Mac
+  with Python 3.9 (#133)
+
+- Removed pymt.udunits in favor of gimli.units for the parsing and
+  converting of units (#133)
+
+- Added GitHub actions for continuous integration, building and testing
+  on all platforms and Python 3.7+ (#132)
+
 - Added text on the CSDMS Workbench to the README and docs (#129)
 
 
