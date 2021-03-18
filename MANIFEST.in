@@ -16,4 +16,5 @@ exclude .landscape.yml
 exclude .readthedocs.yaml
 exclude CONTRIBUTING.rst
 exclude conda-recipe/meta.yaml
+exclude conftest.py
 exclude environment.yml
