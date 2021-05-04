@@ -458,7 +458,7 @@ class _BmiCap(DeprecatedMethods):
     def grid_x(self, grid, out=None):
         if out is None:
             if self.grid_type(grid) == "rectilinear":
-                out = np.empty(self.grid_shape(grid)[1], dtype=float)
+                out = np.empty(self.grid_shape(grid)[-1], dtype=float)
             else:
                 out = np.empty(self.grid_node_count(grid), dtype=float)
         self.bmi.get_grid_x(grid, out)
@@ -467,7 +467,7 @@ class _BmiCap(DeprecatedMethods):
     def grid_y(self, grid, out=None):
         if out is None:
             if self.grid_type(grid) == "rectilinear":
-                out = np.empty(self.grid_shape(grid)[0], dtype=float)
+                out = np.empty(self.grid_shape(grid)[-2], dtype=float)
             else:
                 out = np.empty(self.grid_node_count(grid), dtype=float)
         self.bmi.get_grid_y(grid, out)
@@ -478,7 +478,7 @@ class _BmiCap(DeprecatedMethods):
             if self.grid_type(grid) == "rectilinear":
                 shape = self.grid_shape(grid)
                 try:
-                    zdim = shape[2]
+                    zdim = shape[-3]
                 except IndexError:
                     zdim = 1
                 out = np.empty(zdim, dtype=float)
