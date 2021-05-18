@@ -1,0 +1,9 @@
+name: pymt-docs
+channels:
+  - conda-forge
+dependencies:
+  - gimli.units
+  - pip
+  - pip:
+    - -r file:requirements.txt
+    - -r file:requirements-docs.txt

@@ -10,6 +10,8 @@ The following table lists the data components currently
 available through *pymt*.
 
 ==========  ===================================================================================================================
+..          Summary
+==========  ===================================================================================================================
 GeoTiff     Access data and metadata from a GeoTIFF file, through either a local filepath or a remote URL.
 GridMET     Fetch and cache gridMET meteorological data.
 NWIS        Download the National Water Information System (Nwis) time series datasets.
