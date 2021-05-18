@@ -17,5 +17,8 @@ python:
       path: .
   system_packages: false
 
+conda:
+  environment: environment-docs.yml
+
 build:
   image: latest
