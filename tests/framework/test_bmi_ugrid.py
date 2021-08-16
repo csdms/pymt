@@ -177,6 +177,45 @@ def test_rectilinear_grid():
     assert type(grid.data_vars["node_x"].data) == np.ndarray
 
 
+class BmiRectilinear3D:
+
+    x = np.array([1, 4, 8])
+    y = np.array([0, 1, 2, 3])
+    z = np.array([-2, 0, 1])
+    shape = (len(z), len(y), len(x))
+
+    def grid_type(self, grid_id):
+        return "rectilinear"
+
+    def grid_ndim(self, grid_id):
+        return len(self.shape)
+
+    def grid_shape(self, grid_id, out=None):
+        return np.array(self.shape)
+
+    def grid_x(self, grid_id, out=None):
+        return self.x
+
+    def grid_y(self, grid_id, out=None):
+        return self.y
+
+    def grid_z(self, grid_id, out=None):
+        return self.z
+
+
+def test_rectilinear_grid_3d():
+    """Test creating a 3D rectilinear grid."""
+    bmi = BmiRectilinear3D()
+    grid = Rectilinear(bmi, grid_id)
+
+    assert isinstance(grid, xr.Dataset)
+    assert grid.ndim == 3
+    assert grid.metadata["type"] == bmi.grid_type(grid_id)
+    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert len(grid.data_vars["node_x"].data) == np.prod(bmi.grid_shape(grid_id))
+
+
 class BmiUniformRectilinear:
 
     shape = (4, 3)
