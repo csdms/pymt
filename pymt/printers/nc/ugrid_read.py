@@ -6,7 +6,7 @@ from ...grids import utils as gutils
 from .constants import open_netcdf
 
 
-class NetcdfFieldReader(object):
+class NetcdfFieldReader:
     def __init__(self, path, fmt="NETCDF4"):
         self._path = path
 

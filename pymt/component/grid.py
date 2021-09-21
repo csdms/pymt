@@ -64,7 +64,7 @@ def get_raster_node_coordinates(grid, grid_id):
     Examples
     --------
     >>> from pymt.component.grid import get_raster_node_coordinates
-    >>> class RasterGrid(object):
+    >>> class RasterGrid:
     ...     def get_grid_shape(self, grid_id):
     ...         return (2, 3)
     ...     def get_grid_spacing(self, grid_id):
@@ -107,7 +107,7 @@ def get_rectilinear_node_coordinates(grid, grid_id):
     Examples
     --------
     >>> from pymt.component.grid import get_rectilinear_node_coordinates
-    >>> class RectilinearGrid(object):
+    >>> class RectilinearGrid:
     ...     def get_grid_x(self, grid_id):
     ...         return (0., 3., 4)
     ...     def get_grid_y(self, grid_id):
@@ -150,7 +150,7 @@ def get_structured_node_coordinates(grid, grid_id):
     Examples
     --------
     >>> from pymt.component.grid import get_structured_node_coordinates
-    >>> class StructuredGrid(object):
+    >>> class StructuredGrid:
     ...     def get_grid_x(self, grid_id):
     ...         return np.array((0., 3., 4, 0., 3., 4.)).reshape((2, 3))
     ...     def get_grid_y(self, grid_id):
@@ -194,7 +194,7 @@ def get_structured_node_connectivity(grid, grid_id):
     Examples
     --------
     >>> from pymt.component.grid import get_structured_node_connectivity
-    >>> class StructuredGrid(object):
+    >>> class StructuredGrid:
     ...     def get_grid_shape(self, grid_id):
     ...         return (2, 3)
     >>> g = StructuredGrid()
@@ -208,12 +208,12 @@ def get_structured_node_connectivity(grid, grid_id):
     return get_connectivity(shape, with_offsets=True)
 
 
-class GridMixIn(object):
+class GridMixIn:
     """Mix-in that makes a Component grid-like.
 
     Examples
     --------
-    >>> class Port(object):
+    >>> class Port:
     ...     def get_component_name(self):
     ...         return 'test-component'
     ...     def get_input_item_count(self):
@@ -235,7 +235,7 @@ class GridMixIn(object):
     >>> class Component(GridMixIn):
     ...     def __init__(self):
     ...         self._port = Port()
-    ...         super(Component, self).__init__()
+    ...         super().__init__()
     >>> c = Component()
     >>> c.name
     'test-component'

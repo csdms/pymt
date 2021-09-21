@@ -145,7 +145,7 @@ class RectilinearPoints(StructuredPoints):
             pass
 
         args = XI + [shape]
-        super(RectilinearPoints, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
 
     def get_x_coordinates(self):
         """
@@ -235,7 +235,7 @@ class Rectilinear(RectilinearPoints, Structured):
 
     def __init__(self, *args, **kwds):
         kwds["set_connectivity"] = True
-        super(Rectilinear, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
 
 
 if __name__ == "__main__":

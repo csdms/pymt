@@ -145,7 +145,7 @@ class StructuredPoints(UnstructuredPoints):
         kwds["units"] = coordinate_units
         kwds["coordinate_names"] = coordinate_names
 
-        super(StructuredPoints, self).__init__(*coordinates, **kwds)
+        super().__init__(*coordinates, **kwds)
 
     def get_shape(self, remove_singleton=False):
         """The shape of the structured grid with the given indexing.
@@ -159,16 +159,16 @@ class StructuredPoints(UnstructuredPoints):
         return shape
 
     def get_coordinate_units(self, i):
-        return super(StructuredPoints, self).get_coordinate_units(i)
+        return super().get_coordinate_units(i)
 
     def get_coordinate_name(self, i):
-        return super(StructuredPoints, self).get_coordinate_name(i)
+        return super().get_coordinate_name(i)
 
     def get_coordinate(self, i):
-        return super(StructuredPoints, self).get_coordinate(i)
+        return super().get_coordinate(i)
 
     def get_point_coordinates(self, *args, **kwds):
-        return super(StructuredPoints, self).get_point_coordinates(*args, **kwds)
+        return super().get_point_coordinates(*args, **kwds)
 
 
 class Structured(StructuredPoints, Unstructured):
@@ -205,7 +205,7 @@ class Structured(StructuredPoints, Unstructured):
             self._set_connectivity(c, o)
             kwds["set_connectivity"] = False
 
-        super(Structured, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
 
 
 if __name__ == "__main__":

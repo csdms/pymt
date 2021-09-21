@@ -21,7 +21,7 @@ def close(path):
         del _OPENED_FILES[path]
 
 
-class NetcdfField(object):
+class NetcdfField:
     def __init__(
         self, path, field, fmt="NETCDF4", append=False, time=None, keep_open=False
     ):

@@ -131,7 +131,7 @@ def tofile(field, path, **kwds):
         f.write(doc.toprettyxml())
 
 
-class IDatabase(object):
+class IDatabase:
     def __init__(self):
         pass
 
@@ -151,7 +151,7 @@ class Database(IDatabase):
         self._path = ""
         self._template = ""
 
-        super(Database, self).__init__()
+        super().__init__()
 
     def open(self, path, var_name):
         try:
@@ -187,7 +187,7 @@ class Database(IDatabase):
             pass
 
 
-class VtkDatabase(object):
+class VtkDatabase:
     def __init__(self, field):
         self._field = field
         self._count = 0

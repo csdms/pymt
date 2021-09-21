@@ -22,7 +22,7 @@ def get_class_names():
     return _CLASSES.keys()
 
 
-# class EmptyPort(object):
+# class EmptyPort:
 class EmptyPort(UniformRectilinearPoints):
     _name = None
 

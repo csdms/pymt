@@ -5,7 +5,7 @@ import os
 from .bov_io import tofile
 
 
-class IDatabase(object):
+class IDatabase:
     def __init__(self):
         pass
 
@@ -21,7 +21,7 @@ class IDatabase(object):
 
 class Database(IDatabase):
     def __init__(self):
-        super(Database, self).__init__()
+        super().__init__()
 
         self._var_name = ""
         self._path = ""

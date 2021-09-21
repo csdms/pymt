@@ -14,7 +14,7 @@ class VarNameError(Error):
         return self.name
 
 
-class BMI(object):
+class BMI:
     def initialize(self, filename):
         pass
 

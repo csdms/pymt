@@ -153,7 +153,7 @@ def run_regridding(srcfield, dstfield, method="nearest", unmapped="pass"):
     return dstfield
 
 
-class GridMapperMixIn(object):
+class GridMapperMixIn:
     def _esmf_mesh_by_id(self, gid):
         try:
             self._esmf_mesh
@@ -245,7 +245,7 @@ class GridMapperMixIn(object):
             Name of the destination values.
         """
         if len(args) == 1:
-            return super(GridMapperMixIn, self).set_value(name, *args)
+            return super().set_value(name, *args)
 
         mapfrom = kwds.pop("mapfrom", self)
         nomap = kwds.pop("nomap", None)
@@ -262,7 +262,7 @@ class GridMapperMixIn(object):
         if nomap is not None:
             data[nomap] = orig[nomap]
 
-        super(GridMapperMixIn, self).set_value(name, data)
+        super().set_value(name, data)
 
     def map_value(self, name, **kwds):
         """Map values from another grid.

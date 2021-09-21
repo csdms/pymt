@@ -1,4 +1,4 @@
-class GridType(object):
+class GridType:
     _type = None
 
     def __eq__(self, that):

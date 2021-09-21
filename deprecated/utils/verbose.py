@@ -52,7 +52,7 @@ class CmtLogger(logging.Logger):
         self.addHandler(ch)
 
 
-class Verbose(object):
+class Verbose:
     def __init__(self, verbosity=0, log=sys.stderr):
         self._verbosity = verbosity
         self._log = log

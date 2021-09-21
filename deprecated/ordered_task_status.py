@@ -28,7 +28,7 @@ import six
 from pymt.task_status import TaskStatus
 
 
-class OrderedTaskStatus(object):
+class OrderedTaskStatus:
     """OrderedTaskStatus([task, [status]])
 
     >>> status = OrderedTaskStatus()

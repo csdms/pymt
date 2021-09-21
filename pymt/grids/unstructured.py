@@ -41,7 +41,7 @@ class UnstructuredPoints(IGrid):
             self._offset = self._connectivity + 1
             self._cell_count = 0
 
-        super(UnstructuredPoints, self).__init__()
+        super().__init__()
 
     def get_attrs(self):
         return self._attrs
@@ -268,7 +268,7 @@ class Unstructured(UnstructuredPoints):
             self._set_connectivity(connectivity, offset)
 
         kwds["set_connectivity"] = False
-        super(Unstructured, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
 
     def _set_connectivity(self, connectivity, offset):
         self._connectivity = np.array(connectivity, dtype=int)

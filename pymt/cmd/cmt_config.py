@@ -8,7 +8,7 @@ import yaml
 from model_metadata.find import find_model_data_files
 
 
-class redirect(object):
+class redirect:
     def __init__(self, stdout=None, stderr=None):
         self._stdout = sys.stdout
         self._stderr = sys.stderr
