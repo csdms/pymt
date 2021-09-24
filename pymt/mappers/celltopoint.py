@@ -12,7 +12,7 @@ from .imapper import IGridMapper, IncompatibleGridError
 def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
     (dst_x, dst_y) = coords
 
-    point_to_cell_id = np.empty(len(dst_x), dtype=np.int)
+    point_to_cell_id = np.empty(len(dst_x), dtype=int)
     point_to_cell_id.fill(bad_val)
 
     for (j, point_id) in enumerate(src_point_ids):

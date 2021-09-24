@@ -52,7 +52,7 @@ class PointToCell(IGridMapper):
             raise ValueError("size mismatch between source and point count")
 
         if dst_vals is None:
-            dst_vals = np.array([bad_val] * self._dst_cell_count, dtype=np.float)
+            dst_vals = np.array([bad_val] * self._dst_cell_count, dtype=float)
         if dst_vals.size != self._dst_cell_count:
             raise ValueError("size mismatch between destination and cell count")
 

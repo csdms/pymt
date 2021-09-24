@@ -19,7 +19,7 @@ class ConstantScalars(object):
 
         self._vars = {}
         for (name, value) in scalar_vars.items():
-            self._vars[name] = np.array(value, dtype=np.float)
+            self._vars[name] = np.array(value, dtype=float)
 
         self._shape = (1,)
         self._spacing = (1.0,)
