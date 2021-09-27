@@ -2,6 +2,7 @@
 import os
 
 import numpy as np
+import xarray as xr
 from pytest import approx
 
 from pymt.grids import RasterField
@@ -41,34 +42,31 @@ def test_2d_constant_shape(tmpdir):
 
         db.close()
 
-        try:
-            root = open_nc_file(nc_file)
-        except Exception:
-            raise AssertionError("%s: Could not open" % nc_file)
-        else:
-            assert list(root.dimensions.keys()) == ["y", "x", "time"]
-            assert list(root.variables) == ["mesh", "y", "x", "Elevation", "time"]
+        root = xr.open_dataset(nc_file, engine="h5netcdf")
 
-            assert len(root.dimensions["x"]) == 3
-            assert len(root.dimensions["y"]) == 2
-            assert len(root.dimensions["time"]) == 2
+        assert set(root.dims) == {"y", "x", "time"}
+        assert set(root.data_vars) == {"mesh", "Elevation"}
 
-            assert root.variables["Elevation"].shape == (2, 2, 3)
+        assert root.dims["x"] == 3
+        assert root.dims["y"] == 2
+        assert root.dims["time"] == 2
 
-            assert root.variables["Elevation"][0].data == approx(
-                np.arange(6.0).reshape(2, 3)
-            )
-            assert root.variables["Elevation"][1].data == approx(
-                np.arange(6.0).reshape((2, 3)) * 2.0
-            )
+        assert root.variables["Elevation"].shape == (2, 2, 3)
 
-            assert root.variables["y"] == approx([0.0, 1.0])
-            assert root.variables["x"] == approx([0.0, 1.0, 2.0])
+        assert root.variables["Elevation"][0].data == approx(
+            np.arange(6.0).reshape(2, 3)
+        )
+        assert root.variables["Elevation"][1].data == approx(
+            np.arange(6.0).reshape((2, 3)) * 2.0
+        )
 
-            assert root.variables["Elevation"].long_name == "Elevation"
-            assert root.variables["Elevation"].units == "-"
+        assert root.variables["y"].data == approx([0.0, 1.0])
+        assert root.variables["x"].data == approx([0.0, 1.0, 2.0])
 
-            root.close()
+        assert root.data_vars["Elevation"].attrs["long_name"] == "Elevation"
+        assert root.data_vars["Elevation"].attrs["units"] == "-"
+
+        root.close()
 
 
 def test_2d_changing_shape(tmpdir):
@@ -103,27 +101,24 @@ def test_2d_changing_shape(tmpdir):
         db.close()
 
         nc_file = "Temperature_time_series_0000.nc"
-        try:
-            root = open_nc_file(nc_file)
-        except Exception:
-            raise AssertionError("%s: Could not open" % nc_file)
-        else:
-            assert list(root.dimensions.keys()) == ["y", "x", "time"]
-            assert list(root.variables) == ["mesh", "y", "x", "Temperature", "time"]
+        root = xr.open_dataset(nc_file, engine="h5netcdf")
 
-            assert len(root.dimensions["x"]) == 3
-            assert len(root.dimensions["y"]) == 3
-            assert len(root.dimensions["time"]) == 1
+        assert set(root.dims) == {"y", "x", "time"}
+        assert set(root.data_vars) == {"mesh", "Temperature"}
 
-            assert root.variables["Temperature"].shape == (1, 3, 3)
-            assert root.variables["Temperature"][0].data == approx(
-                np.arange(9.0).reshape((3, 3))
-            )
+        assert root.dims["x"] == 3
+        assert root.dims["y"] == 3
+        assert root.dims["time"] == 1
 
-            assert root.variables["x"] == approx([0.0, 1.0, 2.0])
-            assert root.variables["y"] == approx([0.0, 1.0, 2.0])
+        assert root.data_vars["Temperature"].shape == (1, 3, 3)
+        assert root.data_vars["Temperature"][0].data == approx(
+            np.arange(9.0).reshape((3, 3))
+        )
 
-            assert root.variables["Temperature"].long_name == "Temperature"
-            assert root.variables["Temperature"].units == "-"
+        assert root.variables["x"].data == approx([0.0, 1.0, 2.0])
+        assert root.variables["y"].data == approx([0.0, 1.0, 2.0])
 
-            root.close()
+        assert root.data_vars["Temperature"].attrs["long_name"] == "Temperature"
+        assert root.data_vars["Temperature"].attrs["units"] == "-"
+
+        root.close()
