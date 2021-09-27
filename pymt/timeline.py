@@ -70,7 +70,7 @@ one-timer
 import bisect
 
 
-class Timeline(object):
+class Timeline:
     """Create a timeline of events.
 
     Parameters

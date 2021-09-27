@@ -98,7 +98,7 @@ class PortEvent(GridMixIn):
         self._status_fp.close()
 
 
-class PortMapEvent(object):
+class PortMapEvent:
     """An event that maps values between ports.
 
     Parameters

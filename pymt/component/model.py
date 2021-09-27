@@ -43,7 +43,7 @@ def get_exchange_item_mapping(items):
     return mapping
 
 
-class Model(object):
+class Model:
     def __init__(self, components, driver=None, duration=0.0):
         self._components = dict(components)
         self._driver = driver

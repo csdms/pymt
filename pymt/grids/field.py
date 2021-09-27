@@ -24,7 +24,7 @@ def combine_args_to_list(*args, **kwds):
 
 class GridField(Unstructured, IField):
     def __init__(self, *args, **kwargs):
-        super(GridField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._fields = {}
         self._field_units = {}
 
@@ -157,7 +157,7 @@ class StructuredField(Structured, GridField):
             if val.ndim > 1 and np.any(val.shape != self.get_shape()):
                 raise DimensionError(val.shape, self.get_shape())
         try:
-            super(StructuredField, self).add_field(
+            super().add_field(
                 field_name,
                 val,
                 centering=centering,

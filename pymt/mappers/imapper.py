@@ -29,7 +29,7 @@ class NoMapperError(MapperError):
         return "No mapper to map %s to %s" % (self._src, self._dst)
 
 
-class IGridMapper(object):
+class IGridMapper:
     """Interface for a grid mapper."""
 
     def initialize(self, dest_grid, src_grid, **kwds):

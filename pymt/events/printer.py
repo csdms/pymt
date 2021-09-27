@@ -2,7 +2,7 @@ from ..portprinter.port_printer import PortPrinter
 from ..utils import as_cwd
 
 
-class PrintEvent(object):
+class PrintEvent:
     def __init__(self, *args, **kwds):
         # self._printer = PortPrinter.from_dict(kwds)
         self._run_dir = kwds.pop("run_dir", ".")

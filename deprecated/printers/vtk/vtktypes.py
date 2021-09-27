@@ -3,7 +3,7 @@
 from .encoders import ASCIIEncoder, Base64Encoder, RawEncoder
 
 
-class VtkEndian(object):
+class VtkEndian:
     def __init__(self, endian):
         self.name = endian
 
@@ -17,7 +17,7 @@ VtkBigEndian = VtkEndian("BigEndian")
 sys_to_vtk_endian = {"little": VtkLittleEndian, "big": VtkBigEndian}
 
 
-class VtkType(object):
+class VtkType:
     def __init__(self, name, size):
         self.bytes = size
         self.name = name
@@ -48,7 +48,7 @@ vtk_to_np_type = {
 }
 
 
-class VtkCellType(object):
+class VtkCellType:
     def __init__(self, name, id):
         self.id = id
         self.name = name
@@ -69,7 +69,7 @@ VtkPolygon = VtkCellType("Polygon", 7)
 edge_count_to_type = {1: VtkVertex, 2: VtkLine, 3: VtkTriangle, 4: VtkQuad}
 
 
-class VtkGridType(object):
+class VtkGridType:
     def __init__(self, name):
         self.name = name
 

@@ -3,7 +3,7 @@ import numpy as np
 import yaml
 
 
-class ConstantScalars(object):
+class ConstantScalars:
     """Service component that returns scalars."""
 
     def initialize(self, filename):

@@ -17,7 +17,7 @@ Examples
 --------
 Create an event that prints, "hello".
 
->>> class PrintHello(object):
+>>> class PrintHello:
 ...     def initialize(self):
 ...         print("hello from initialize")
 ...     def run(self, time):
@@ -52,7 +52,7 @@ from ..timeline import Timeline
 from ..utils.prefix import names_with_prefix
 
 
-class EventManager(object):
+class EventManager:
     """
     Parameters
     ----------

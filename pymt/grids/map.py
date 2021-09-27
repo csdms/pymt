@@ -62,7 +62,7 @@ class UnstructuredMap(Unstructured):
     name = "Unstructured"
 
     def __init__(self, *args, **kwargs):
-        super(UnstructuredMap, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self._point = {}
         last_offset = 0

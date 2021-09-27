@@ -9,7 +9,7 @@ from .encoders import encode
 from .vtktypes import np_to_vtk_type, sys_to_vtk_endian
 
 
-class VtkExtent(object):
+class VtkExtent:
     def __init__(self, shape):
         if len(shape) > 3:
             raise ValueError("number of dimension must be <= 3")
@@ -28,7 +28,7 @@ class VtkExtent(object):
         return self._extent_str
 
 
-class VtkOrigin(object):
+class VtkOrigin:
     def __init__(self, origin, spacing):
         if len(origin) > 3 or len(spacing) > 3:
             raise ValueError("number of dimension must be <= 3")
@@ -51,7 +51,7 @@ class VtkOrigin(object):
         return self._origin_str
 
 
-class VtkSpacing(object):
+class VtkSpacing:
     def __init__(self, spacing):
         if len(spacing) > 3:
             raise ValueError("number of dimension must be <= 3")

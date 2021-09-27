@@ -6,7 +6,7 @@ from .ugrid import close as ugrid_close
 from .write import field_tofile
 
 
-class IDatabase(object):
+class IDatabase:
     def __init__(self):
         pass
 

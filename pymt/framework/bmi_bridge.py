@@ -24,7 +24,7 @@ from .bmi_ugrid import dataset_from_bmi_grid
 UNITS = gimli.units
 
 
-class DataValues(object):
+class DataValues:
     def __init__(self, bmi, name):
         self._bmi = bmi
         self._name = name
@@ -91,7 +91,7 @@ Attributes:
         ).strip()
 
 
-class _BmiCapV1(object):
+class _BmiCapV1:
 
     """Add methods for backward compatibility."""
 
@@ -130,7 +130,7 @@ class _BmiCapV1(object):
         return _BmiCapV1._call_bmi(self.bmi.get_grid_offset, grid, out)
 
 
-class _BmiCapV2(object):
+class _BmiCapV2:
     @deprecated(reason="use get_grid_number_of_vertices")
     def get_grid_vertex_count(self, grid):
         return self.grid_vertex_count(grid)
@@ -273,7 +273,7 @@ class _BmiCap(DeprecatedMethods):
         self._var = dict()
         self._time_units = None
         self._initdir = None
-        super(_BmiCap, self).__init__()
+        super().__init__()
 
     @property
     def bmi(self):

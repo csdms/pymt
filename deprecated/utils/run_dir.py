@@ -3,7 +3,7 @@ import tempfile
 import shutil
 
 
-class cd(object):
+class cd:
     def __init__(self, path, create=False):
         self._dir = os.path.abspath(path)
         self._starting_dir = os.path.abspath(os.getcwd())
@@ -19,7 +19,7 @@ class cd(object):
         os.chdir(self._starting_dir)
 
 
-class cd_temp(object):
+class cd_temp:
     """Create a temporary directory and change to it.
 
     Parameters
@@ -60,7 +60,7 @@ class cd_temp(object):
         shutil.rmtree(self._dir)
 
 
-class RunDir(object):
+class RunDir:
     def __init__(self, directory, create=False):
         self._run_dir = directory
         self._create = create

@@ -138,7 +138,7 @@ def mapping_to_config_value(mapping):
     return ",".join(map_pairs)
 
 
-class ComponentInfo(object):
+class ComponentInfo:
     _keys = {
         "str": set(["output_file_namespace", "config_xml_file", "initialize_arg"]),
         "list": set(["mappers", "ports", "optional_ports", "init_ports"]),

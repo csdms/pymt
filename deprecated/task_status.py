@@ -59,7 +59,7 @@ def task_as_integer(task):
         return task_as_valid_integer(task)
 
 
-class TaskStatus(object):
+class TaskStatus:
     def __init__(
         self,
         name,
