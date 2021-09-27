@@ -165,7 +165,7 @@ class UnstructuredPoints(IGrid):
         nodes_per_cell = np.diff(self._offset)
 
         max_vertices = max(self._offset[0], nodes_per_cell.max())
-        matrix = np.empty((self._cell_count, max_vertices), dtype=np.int)
+        matrix = np.empty((self._cell_count, max_vertices), dtype=int)
 
         offset = self._offset[0]
         matrix[0, :offset] = self._connectivity[:offset]

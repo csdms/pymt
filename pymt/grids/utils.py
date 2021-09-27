@@ -38,7 +38,7 @@ def coordinates_to_numpy_matrix(*args):
     args = args_as_numpy_arrays(*args)
     assert_arrays_are_equal_size(*args)
 
-    coords = np.empty((len(args), len(args[0])), dtype=np.float)
+    coords = np.empty((len(args), len(args[0])), dtype=float)
     for (dim, arg) in enumerate(args):
         coords[dim][:] = arg.flatten()
     return coords
@@ -94,7 +94,7 @@ def _find_first(array, value):
 
 
 def connectivity_matrix_as_array(face_nodes, bad_val):
-    nodes_per_face = np.empty(face_nodes.shape[0], dtype=np.int)
+    nodes_per_face = np.empty(face_nodes.shape[0], dtype=int)
     for (face_id, face) in enumerate(face_nodes):
         nnodes = _find_first(face, bad_val)
         if nnodes > 0:

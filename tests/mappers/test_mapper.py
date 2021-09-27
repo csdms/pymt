@@ -28,7 +28,7 @@ def test_cell_to_point():
     src = UniformRectilinear((2, 4), (2, 1), (0, 0))
     dst = UnstructuredPoints(dst_x, dst_y)
 
-    src_vals = np.arange(src.get_cell_count(), dtype=np.float)
+    src_vals = np.arange(src.get_cell_count(), dtype=float)
 
     mapper = CellToPoint()
     mapper.initialize(dst, src)
@@ -36,7 +36,7 @@ def test_cell_to_point():
 
     assert_array_equal(dst_vals, [0.0, 2.0, -999.0])
 
-    src_vals = np.arange(src.get_cell_count(), dtype=np.float)
+    src_vals = np.arange(src.get_cell_count(), dtype=float)
     src_vals[0] = -9999
     dst_vals = np.zeros(dst.get_point_count()) + 100
     mapper.run(src_vals, dst_vals=dst_vals)
@@ -53,7 +53,7 @@ def test_point_to_cell():
     src = UnstructuredPoints(src_x, src_y)
     dst = UniformRectilinear((2, 4), (2, 1), (0, 0))
 
-    src_vals = np.arange(src.get_point_count(), dtype=np.float)
+    src_vals = np.arange(src.get_point_count(), dtype=float)
 
     mapper = PointToCell()
     mapper.initialize(dst, src)
@@ -81,7 +81,7 @@ def test_point_to_cell_on_edges():
     mapper = PointToCell()
     mapper.initialize(dst, src)
 
-    src_vals = np.arange(src.get_point_count(), dtype=np.float)
+    src_vals = np.arange(src.get_point_count(), dtype=float)
     dst_vals = np.zeros(dst.get_cell_count()) - 1
     mapper.run(src_vals, dst_vals=dst_vals)
     assert_array_equal(dst_vals, [1.0, 0.5, 3.0])
@@ -96,7 +96,7 @@ def test_point_to_cell_big():
     mapper = PointToCell()
     mapper.initialize(dst, src)
 
-    src_vals = np.arange(src.get_point_count(), dtype=np.float)
-    dst_vals = np.zeros(dst.get_cell_count(), dtype=np.float) - 1
+    src_vals = np.arange(src.get_point_count(), dtype=float)
+    dst_vals = np.zeros(dst.get_cell_count(), dtype=float) - 1
     mapper.run(src_vals, dst_vals=dst_vals)
     assert_array_equal(dst_vals, src_vals)
