@@ -16,7 +16,7 @@ from .utils import (
 )
 
 
-class PortPrinter(object):
+class PortPrinter:
     _format = ""
     _printer_class = None
 

@@ -55,7 +55,7 @@ class NonStructuredGridError(GridTypeError):
     type = "structured"
 
 
-class IGrid(object):
+class IGrid:
     """An interface for a grid object that represents a structured or unstructured
     grid of nodes and elements.
     """

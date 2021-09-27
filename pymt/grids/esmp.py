@@ -245,7 +245,7 @@ class EsmpGrid(IGrid):
         self._mesh_add_nodes()
         self._mesh_add_elements()
 
-        super(EsmpGrid, self).__init__()
+        super().__init__()
 
     def get_point_count(self):
         raise NotImplementedError("get_point_count")
@@ -295,7 +295,7 @@ class EsmpUniformRectilinear(UniformRectilinear, EsmpStructured):
 
 class EsmpField(IField):
     def __init__(self, *args, **kwargs):
-        super(EsmpField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._fields = {}
 
     def get_point_count(self):
@@ -338,9 +338,7 @@ class EsmpStructuredField(EsmpStructured, EsmpField):
             if val.ndim > 1 and np.any(val.shape != self.get_shape()):
                 raise DimensionError(val.shape, self.get_shape())
         try:
-            super(EsmpStructuredField, self).add_field(
-                field_name, val, centering=centering
-            )
+            super().add_field(field_name, val, centering=centering)
         except (DimensionError, CenteringValueError):
             raise
 

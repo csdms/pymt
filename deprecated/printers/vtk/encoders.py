@@ -16,12 +16,12 @@ class UnknownEncoder(EncoderError):
         return "%s: Unknown encoder" % self._name
 
 
-class Encoder(object):
+class Encoder:
     def encode(self, array):
         pass
 
 
-class ASCIIEncoder(object):
+class ASCIIEncoder:
     def encode(self, array):
         try:
             return " ".join([str(val) for val in array.flatten()])
@@ -29,7 +29,7 @@ class ASCIIEncoder(object):
             return " ".join([str(val) for val in array])
 
 
-class RawEncoder(object):
+class RawEncoder:
     def encode(self, array):
         try:
             as_str = array.tostring()
@@ -39,7 +39,7 @@ class RawEncoder(object):
         return block_size + as_str
 
 
-class Base64Encoder(object):
+class Base64Encoder:
     def encode(self, array):
         try:
             as_str = array.tostring()

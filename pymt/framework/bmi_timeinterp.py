@@ -4,7 +4,7 @@ from ..utils import as_cwd
 from .timeinterp import TimeInterpolator
 
 
-class BmiTimeInterpolator(object):
+class BmiTimeInterpolator:
     def __init__(self, *args, **kwds):
         method = kwds.pop("method", "linear")
         self._interpolators = dict(
@@ -12,7 +12,7 @@ class BmiTimeInterpolator(object):
         )
         self.reset(method=method)
 
-        super(BmiTimeInterpolator, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
 
     def reset(self, method="linear"):
         for name in self._interpolators:

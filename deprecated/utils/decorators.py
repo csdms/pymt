@@ -5,7 +5,7 @@ import warnings
 from functools import wraps
 
 
-class cache_result_in_object(object):
+class cache_result_in_object:
     def __init__(self, cache_as=None):
         self._attr = cache_as
 
@@ -21,7 +21,7 @@ class cache_result_in_object(object):
         return _wrapped
 
 
-class deprecated(object):
+class deprecated:
 
     """Mark a function as deprecated."""
 

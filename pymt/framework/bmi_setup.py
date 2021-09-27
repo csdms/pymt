@@ -20,7 +20,7 @@ def _parse_author_info(info):
     return tuple(author)
 
 
-class SetupMixIn(object):
+class SetupMixIn:
     def __init__(self):
         name = self.__class__.__name__.split(".")[-1]
 
@@ -126,7 +126,7 @@ class SetupMixIn(object):
         return self._meta.info["cite_as"]
 
 
-class GitHubSetupMixIn(object):
+class GitHubSetupMixIn:
     def setup(self, case="default", name=None, path=None):
         if name is None:
             try:

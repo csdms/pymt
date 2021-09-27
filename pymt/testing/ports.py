@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class UniformRectilinearGridPort(object):
+class UniformRectilinearGridPort:
     def __init__(self):
         self._shape = (4, 5)
         self._spacing = (1.0, 2.0)

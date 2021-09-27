@@ -17,7 +17,7 @@ Initialized
 """
 
 
-class Status(object):
+class Status:
     def __init__(self, string, val):
         self.string = string
         self.val = val

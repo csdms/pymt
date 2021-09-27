@@ -8,13 +8,13 @@ try:
 except ImportError:
     warnings.warn("vtk is not installed")
 
-    class VtkGridMixIn(object):
+    class VtkGridMixIn:
         pass
 
 
 else:
 
-    class VtkGridMixIn(object):
+    class VtkGridMixIn:
         _EDGE_COUNT_TO_TYPE = {
             1: tvtk.Vertex().cell_type,
             2: tvtk.Line().cell_type,

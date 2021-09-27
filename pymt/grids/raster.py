@@ -106,7 +106,7 @@ class UniformRectilinearPoints(RectilinearPoints):
         self._spacing = np.array(spacing, dtype=np.float64)
         self._origin = np.array(origin, dtype=np.float64)
 
-        super(UniformRectilinearPoints, self).__init__(*xi, **kwds)
+        super().__init__(*xi, **kwds)
 
     def get_spacing(self):
         """Spacing between nodes in each direction"""
@@ -140,7 +140,7 @@ class UniformRectilinear(UniformRectilinearPoints, Rectilinear):
 
     def __init__(self, shape, spacing, origin, **kwds):
         kwds["set_connectivity"] = False
-        super(UniformRectilinear, self).__init__(shape, spacing, origin, **kwds)
+        super().__init__(shape, spacing, origin, **kwds)
 
 
 if __name__ == "__main__":

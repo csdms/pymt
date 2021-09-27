@@ -8,7 +8,7 @@ from .interpolate import create_interpolators
 from .time_series_names import get_time_series_names
 
 
-class TimeInterpolator(object):
+class TimeInterpolator:
     def __init__(self):
         self._shape = ()
         self._spacing = ()

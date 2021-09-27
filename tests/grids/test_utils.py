@@ -7,7 +7,7 @@ import pymt.grids.utils as utils
 from pymt.grids import Structured, UniformRectilinear, UnstructuredPoints
 
 
-class NumpyArrayMixIn(object):
+class NumpyArrayMixIn:
     def assertArrayEqual(self, actual, expected):
         try:
             assert_array_equal(actual, expected)
