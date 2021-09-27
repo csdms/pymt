@@ -1,3 +1,4 @@
+h5netcdf
 pytest
 pytest-benchmark
 pytest-cov
