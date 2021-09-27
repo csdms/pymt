@@ -33,7 +33,7 @@ def test_raster(tmpdir, ndims):
 
         assert os.path.isfile("raster.nc")
 
-        ds = xarray.open_dataset("raster.nc")
+        ds = xarray.open_dataset("raster.nc", engine="h5netcdf")
 
         assert {"mesh", "Elevation", "time"}.issubset(ds.variables)
         assert "time" in ds.dims
