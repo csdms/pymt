@@ -5,5 +5,5 @@ dependencies:
   - gimli.units
   - pip
   - pip:
-    - -r file:requirements.txt
-    - -r file:requirements-docs.txt
+    - -r requirements.txt
+    - -r requirements-docs.txt
