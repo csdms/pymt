@@ -4,7 +4,7 @@ Changelog for pymt
 1.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed broken environment-docs.yml file (#145) and missing coverage (#146)
 
 
 1.3.1 (2021-03-18)
