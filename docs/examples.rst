@@ -25,44 +25,53 @@ and explain what occurred.
 Single Models
 -------------
 
-======================================================= =====================
-Model                                                   Notebook
-======================================================= =====================
-:doc:`Frost Number Model <notebooks/frost_number>`      |binder-frost_number|
-:doc:`Kudryavtsev Model <notebooks/ku>`                 |binder-ku|
-:doc:`GIPL Model <notebooks/gipl>`                      |binder-GIPL|
-:doc:`ECSimpleSnow Model <notebooks/ecsimplesnow>`      |binder-ECSnow|
-:doc:`Coastline Evolution Model <notebooks/cem>`        |binder-cem|
-:doc:`Hydrotrend <notebooks/hydrotrend>`                |binder-hydrotrend|
-:doc:`Hydrotrend Ganges <notebooks/hydrotrend_Ganges>`  |binder-hydrotrend_Ganges|
-:doc:`Sedflux3D <notebooks/sedflux3d>`                  |binder-sedflux3d|
-:doc:`Flexural Subsidence <notebooks/subside>`          |binder-subside|
-======================================================= =====================
+============================ =====================
+Model                        Notebook
+============================ =====================
+`Frost Number Model`_        |binder-frost_number|
+`Kudryavtsev Model`_         |binder-ku|
+`GIPL Model`_                |binder-GIPL|
+`ECSimpleSnow Model`_        |binder-ECSnow|
+`Coastline Evolution Model`_ |binder-cem|
+`Hydrotrend`_                |binder-hydrotrend|
+`Hydrotrend Ganges`_         |binder-hydrotrend_Ganges|
+`Sedflux3D`_                 |binder-sedflux3d|
+`Flexural Subsidence`_       |binder-subside|
+============================ =====================
 
+.. _Frost Number Model: https://github.com/csdms/pymt/blob/master/notebooks/frost_number.ipynb
 .. |binder-frost_number| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Ffrost_number.ipynb
 
+.. _Kudryavtsev Model: https://github.com/csdms/pymt/blob/master/notebooks/ku.ipynb
 .. |binder-ku| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fku.ipynb
 
+.. _GIPL Model: https://github.com/csdms/pymt/blob/master/notebooks/gipl.ipynb
 .. |binder-GIPL| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl.ipynb
 
+.. _ECSimpleSnow Model: https://github.com/csdms/pymt/blob/master/notebooks/ecsimplesnow.ipynb
 .. |binder-ECSnow| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fecsimplesnow.ipynb
 
+.. _Coastline Evolution Model: https://github.com/csdms/pymt/blob/master/notebooks/cem.ipynb
 .. |binder-cem| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem.ipynb
 
+.. _Hydrotrend: https://github.com/csdms/pymt/blob/master/notebooks/hydrotrend.ipynb
 .. |binder-hydrotrend| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fhydrotrend.ipynb
 
+.. _Hydrotrend Ganges: https://github.com/csdms/pymt/blob/master/notebooks/hydrotrend_Ganges.ipynb
 .. |binder-hydrotrend_Ganges| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fhydrotrend_Ganges.ipynb
 
+.. _Sedflux3D: https://github.com/csdms/pymt/blob/master/notebooks/sedflux3d.ipynb
 .. |binder-sedflux3d| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsedflux3d.ipynb
 
+.. _Flexural Subsidence: https://github.com/csdms/pymt/blob/master/notebooks/subside.ipynb
 .. |binder-subside| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fsubside.ipynb
 
@@ -70,38 +79,17 @@ Model                                                   Notebook
 Coupled Models
 --------------
 
-========================================================================== ========================
-Models                                                                     Notebook
-========================================================================== ========================
-:doc:`Coastline Evolution Model + Waves <notebooks/cem_and_waves>`         |binder-cem_and_waves|
-:doc:`GIPL + ECSimpleSnow Models <notebooks/gipl_and_ecsimplesnow>`        |binder-GIPL_and_ECSnow|
-========================================================================== ========================
+==================================== ========================
+Models                               Notebook
+==================================== ========================
+`Coastline Evolution Model + Waves`_ |binder-cem_and_waves|
+`GIPL + ECSimpleSnow Models`_        |binder-GIPL_and_ECSnow|
+==================================== ========================
 
+.. _Coastline Evolution Model + Waves: https://github.com/csdms/pymt/blob/master/notebooks/cem_and_waves.ipynb
 .. |binder-cem_and_waves| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fcem_and_waves.ipynb
 
+.. _GIPL + ECSimpleSnow Models: https://github.com/csdms/pymt/blob/master/notebooks/gipl_and_ecsimplesnow.ipynb
 .. |binder-GIPL_and_ECSnow| image:: https://mybinder.org/badge_logo.svg
  :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2Fgipl_and_ecsimplesnow.ipynb
-
-
-..
-   Sphinx emits a warning if documents aren't in a toctree.
-   Make a hidden toctree for the items above.
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-      <notebooks/frost_number>
-      <notebooks/ku>
-      <notebooks/gipl>
-      <notebooks/cem>
-      <notebooks/hydrotrend>
-      <notebooks/hydrotrend_Ganges>
-      <notebooks/sedflux3d>
-      <notebooks/subside>
-      <notebooks/child>
-      <notebooks/cem_and_waves>
-      <notebooks/gipl_and_ecsimplesnow>
-      <notebooks/sedflux3d_and_child>
-      <notebooks/ecsimplesnow>

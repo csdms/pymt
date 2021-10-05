@@ -73,7 +73,7 @@ can be found in the `Python Glossary`_.
 
    CSDMS
 
-      See :term:`Community Surface Dynamics Modeling System`.
+      See :term:`Community Surface Dynamics Modeling System (CSDMS)`.
 
    CSDMS Workbench
 
