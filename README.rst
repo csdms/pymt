@@ -3,7 +3,7 @@
 The Python Modeling Toolkit (pymt)
 ==================================
 
-|Build Status| |AppVeyor Status| |License| |Code Style| |Documentation Status| |Coverage Status| |Conda Version|
+|Build Status| |License| |Code Style| |Documentation Status| |Coverage Status| |Conda Version|
 |Conda Installation| |Conda Downloads| |Codacy| |Binder|
 
 Quick links:
@@ -12,11 +12,11 @@ Quick links:
 * `Installation instructions <https://pymt.readthedocs.io/en/latest/install.html>`_
 * `List of available models <https://pymt.readthedocs.io/en/latest/models.html>`_
 
-PyMT is an Open Source Python package, developed by the
+*pymt* is an Open Source Python package, developed by the
 `Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
 (CSDMS), that provides the necessary tools used for the coupling of models
 that expose the
-`Basic Model Interface <https://bmi-spec.readthedocs.io>`_
+`Basic Model Interface <https://bmi.readthedocs.io>`_
 (BMI). It contains:
 
 * Tools necessary for coupling models of disparate time and space
@@ -53,12 +53,11 @@ couples a *Waves* model with a *Coastline Evolution* model.
         cem.update()
 
 
-PyMT is an element of the `CSDMS Workbench`_,
+*pymt* is an element of the `CSDMS Workbench`_,
 an integrated system of software tools, technologies, and standards
 for building and coupling models.
 
-This material is based upon work
-supported by the National Science Foundation
+This work is supported by the National Science Foundation
 under Grant No. `1831623`_,
 *Community Facility Support:
 The Community Surface Dynamics Modeling System (CSDMS)*.
@@ -69,14 +68,12 @@ The Community Surface Dynamics Modeling System (CSDMS)*.
 
 .. |PYMT| image:: https://github.com/csdms/pymt/raw/master/docs/_static/pymt-logo-header-text.png
    :target: https://pymt.readthedocs.org/
-.. |Build Status| image:: https://travis-ci.org/csdms/pymt.svg?branch=master
-   :target: https://travis-ci.org/csdms/pymt
-.. |AppVeyor Status| image:: https://ci.appveyor.com/api/projects/status/bf8g17c05ugvhvfe/branch/master
-   :target: https://ci.appveyor.com/project/mcflugen/pymt/branch/master
+.. |Build Status| image:: https://github.com/csdms/pymt/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/csdms/pymt/actions/workflows/test.yml
 .. |License| image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: https://opensource.org/licenses/MIT
 .. |Code Style| image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/csdms/pymt
+   :target: https://github.com/csdms/pymt/actions/workflows/black.yml
 .. |Documentation Status| image:: https://readthedocs.org/projects/pymt/badge/?version=latest
    :target: https://pymt.readthedocs.io/en/latest/?badge=latest
 .. |Coverage Status| image:: https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master
