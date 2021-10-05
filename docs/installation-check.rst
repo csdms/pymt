@@ -4,9 +4,22 @@ and importing *pymt*:
 
 .. code-block:: python
 
-    >>> import pymt.models
-    => models: (none)
+    >>> import pymt
 
-By default, no models are installed with *pymt*.
-Instructions for installing models into *pymt*
-are given in the section :ref:`install-a-model`.
+A default set of models is included in the *pymt* install:
+
+.. code-block:: python
+
+    >>> for model in pymt.MODELS:
+    ...     print(model)
+    ...
+    Avulsion
+    Plume
+    Sedflux3D
+    Subside
+    FrostNumber
+    Ku
+    Hydrotrend
+    Child
+    Cem
+    Waves
