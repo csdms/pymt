@@ -33,8 +33,7 @@ can be found in the `Python Glossary`_.
    Basic Model Interface (BMI)
 
       A set a functions that are used to interact with and control a
-      model. See https://csdms.colorado.edu/wiki/BMI_Description for
-      more information.
+      model. See https://bmi.readthedocs.io for more information.
 
    Community Surface Dynamics Modeling System (CSDMS)
 
@@ -54,8 +53,9 @@ can be found in the `Python Glossary`_.
 
    conda-forge
 
-      A collection of community-built packages distributed by
-      :term:`Anaconda`. See https://conda-forge.org.
+      A community-led collection of recipes, build infrastructure,
+      and distributions for the :term:`conda` package manager.
+      See https://conda-forge.org.
 
    conda environment
 
@@ -94,10 +94,18 @@ can be found in the `Python Glossary`_.
 
       See :term:`object`.
 
+   Jupyter Notebook
+
+      Jupyter Notebook is an open-source web application for creating
+      and sharing documents that contain live code, equations,
+      visualizations, and narrative text.
+      See https://jupyter.org/.
+
    mamba
 
-      A faster, open-source alternative to the :term:`conda` package
+      A faster, open-source, alternative to the :term:`conda` package
       manager.
+      See https://mamba.readthedocs.io.
 
    Matplotlib
 
