@@ -8,9 +8,9 @@
 
 *pymt* is the *Python Modeling Toolkit*.
 It is an Open Source Python package, developed by the
-`Community Surface Dynamics Modeling System <https://csdms.colorado.edu>`_
-(CSDMS), that provides the tools needed for coupling models that expose the
-`Basic Model Interface <https://bmi-spec.readthedocs.io>`_ (BMI).
+`Community Surface Dynamics Modeling System`_ (CSDMS),
+that provides the tools needed for coupling models that expose the
+`Basic Model Interface`_ (BMI).
 
 *pymt* in three points:
 
@@ -115,6 +115,8 @@ Indices and tables
 ..
    Links
 
+.. _Community Surface Dynamics Modeling System: https://csdms.colorado.edu
+.. _Basic Model Interface: https://bmi.readthedocs.io
 .. _CSDMS Workbench: https://csdms.colorado.edu/wiki/Workbench
 .. _CSDMS Help Desk: https://github.com/csdms/help-desk
 .. _issue: https://github.com/csdms/pymt/issues
