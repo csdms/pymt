@@ -9,13 +9,13 @@ can be coupled together by exchanging data.
 
 If you would like to run these examples yourself, in addition to
 `installing pymt <installation.rst#Installation>`_, you will
-have to install Jupyter Notebook:
+have to install :term:`Jupyter Notebook`:
 
 .. code-block:: bash
 
     $ conda install notebook
 
-If you encounter any problems when running these Notebooks,
+If you encounter any problems when running these notebooks,
 please visit us at the `CSDMS Help Desk`_
 and explain what occurred.
 
@@ -26,7 +26,7 @@ Single Models
 -------------
 
 ============================ =====================
-Model                        Notebook
+Notebook                     Run on Binder...
 ============================ =====================
 `Frost Number Model`_        |binder-frost_number|
 `Kudryavtsev Model`_         |binder-ku|
@@ -80,7 +80,7 @@ Coupled Models
 --------------
 
 ==================================== ========================
-Models                               Notebook
+Notebook                             Run on Binder...
 ==================================== ========================
 `Coastline Evolution Model + Waves`_ |binder-cem_and_waves|
 `GIPL + ECSimpleSnow Models`_        |binder-GIPL_and_ECSnow|
