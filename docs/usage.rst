@@ -38,8 +38,7 @@ can be imported individually:
 
 .. code-block:: python
 
-  >>> from pymt.models import Waves
-  => models: Cem, Waves
+  >>> from pymt.models import Cem, Waves
 
 Either technique is acceptable,
 but there's a slight Pythonic preference
@@ -309,7 +308,7 @@ Find the variables exposed by our Waves instance:
 
 In each case,
 the variable names are returned in a tuple.
-The names tend to be quite descriptive,
+The names tend to be quite descriptive
 in order to aid in semantic matching between models.
 In practice,
 it's often convenient to use a common short name for a variable

@@ -1,17 +1,17 @@
-We strongly recommend using :term:`mamba` to install and run *pymt*. If
-you don't have *mamba* installed, the `Anaconda installation guide`_
+We strongly recommend using the *Anaconda* scientific computing environment.
+If you don't have it installed, the `Anaconda installation guide`_
 can help you through the process.
 
-Once you've installed *Anaconda*/*conda*, we suggest using the
-`mamba`_ package manager.  *mamba* is pretty much the same as *conda*,
-only faster. If you would rather stick with *conda*, just
-replace occurances of *mamba* with *conda*.
+Once you've installed Anaconda, we suggest using the :term:`mamba` package manager.
+*mamba* is pretty much the same as :term:`conda`, only faster.
+If you would rather stick with *conda*, just
+replace occurrences of *mamba* with *conda*.
 
 .. code-block:: console
 
-    $ conda install mamba
+    $ conda install mamba -c conda-forge
 
-add the :term:`conda-forge` channel
+Add the :term:`conda-forge` channel
 to the list of enabled conda channels on your machine:
 
 .. code-block:: console
@@ -33,5 +33,3 @@ Once the conda environment has been created, activate it with:
     $ conda activate pymt
 
 .. _Anaconda installation guide: http://docs.anaconda.com/anaconda/install/
-
-.. _mamba: https://medium.com/@QuantStack/open-software-packaging-for-science-61cecee7fc23

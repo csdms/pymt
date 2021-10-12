@@ -39,7 +39,7 @@ Install *pymt* into this conda environment with:
 
 Note that *pymt* is built on several open source software
 libraries, so it may take a few minutes for *mamba* to find,
-download, and install them.
+download, and install all of them.
 
 .. include:: installation-check.rst
 
@@ -51,7 +51,7 @@ From source
 
 .. include:: installation-environment.rst
 
-The source code for *pymt* can be downloaded from the `Github repo`_.
+The source code for *pymt* can be accessed from its `Github repository`_.
 
 You can either clone the public repository:
 
@@ -64,9 +64,11 @@ Or download the `tarball`_:
 .. code-block:: console
 
     $ curl -OL https://github.com/csdms/pymt/tarball/master
+    $ tar -xf master
 
 Once you have a copy of the source,
-install the *pymt* dependencies into the conda environment
+change into the source directory and
+install the dependencies required by *pymt* into the conda environment
 you created above:
 
 .. code-block:: console
@@ -82,5 +84,5 @@ Then install *pymt* with:
 .. include:: installation-check.rst
 
 
-.. _Github repo: https://github.com/csdms/pymt
+.. _Github repository: https://github.com/csdms/pymt
 .. _tarball: https://github.com/csdms/pymt/tarball/master
