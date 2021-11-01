@@ -3,7 +3,7 @@ import os
 from pymt.printers.nc.read import field_fromfile
 
 _BASE_URL_FOR_TEST_FILES = (
-    "https://csdms.colorado.edu/thredds/fileServer" "/benchmark/ugrid/"
+    "https://csdms.colorado.edu/data" "/benchmark/ugrid/"
 )
 _TMP_DIR = "tmp"
 
