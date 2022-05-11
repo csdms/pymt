@@ -1,6 +1,6 @@
 from pymt.framework.bmi_docstring import bmi_docstring
 
-DOCSTRING = u"""Basic Model Interface for Model.
+DOCSTRING = """Basic Model Interface for Model.
 
 
 
