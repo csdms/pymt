@@ -231,7 +231,7 @@ def test_values_on_cells():
 
     (x, y) = np.meshgrid(np.arange(0.5, 299.5, 1.0), np.arange(0.5, 299.5, 1.0))
 
-    data = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    data = np.sin(np.sqrt(x**2 + y**2) * np.pi / n_rows)
     src.add_field("srcfield", data, centering="zonal")
 
     dst = EsmpRasterField((n_rows * 2 - 1, n_cols * 2 - 1), (1.0 / 2, 1.0 / 2), (0, 0))
@@ -245,7 +245,7 @@ def test_values_on_cells():
     assert f is dst_field
 
     (x, y) = np.meshgrid(np.arange(0.5, 299.5, 0.5), np.arange(0.5, 299.5, 0.5))
-    exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    exact = np.sin(np.sqrt(x**2 + y**2) * np.pi / n_rows)
     residual = np.abs(exact.flat - f.data) / (n_rows * n_cols * 4.0)
     assert residual == approx(0.0, abs=1e-7)
 
@@ -255,7 +255,7 @@ def test_values_on_points():
     src = EsmpRasterField((n_rows, n_cols), (1, 1), (0, 0))
 
     (x, y) = np.meshgrid(np.arange(0.5, 300.5, 1.0), np.arange(0.5, 300.5, 1.0))
-    data = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    data = np.sin(np.sqrt(x**2 + y**2) * np.pi / n_rows)
     src.add_field("srcfield_at_points", data, centering="point")
 
     dst = EsmpRasterField((n_rows * 2 - 1, n_cols * 2 - 1), (1.0 / 2, 1.0 / 2), (0, 0))
@@ -268,6 +268,6 @@ def test_values_on_points():
     f = run_regridding(src_field, dst_field, method=esmf.RegridMethod.BILINEAR)
 
     (x, y) = np.meshgrid(np.arange(0.5, 300.0, 0.5), np.arange(0.5, 300.0, 0.5))
-    exact = np.sin(np.sqrt(x ** 2 + y ** 2) * np.pi / n_rows)
+    exact = np.sin(np.sqrt(x**2 + y**2) * np.pi / n_rows)
     residual = np.abs(exact.flat - f.data) / (n_rows * n_cols * 4.0)
     assert residual == approx(0.0, abs=1e-7)
