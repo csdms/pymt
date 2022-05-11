@@ -12,11 +12,11 @@ def sample_surface(x, y, alpha, eta=1.0, purity=1.0):
         1.0
         + eta
         * (
-            np.exp(-(x ** 2) - (y - alpha) ** 2)
-            + np.exp(-(x ** 2) - (y + alpha) ** 2)
-            + 2 * purity * np.exp(-(x ** 2) - y ** 2) * np.cos(2 * alpha * x)
+            np.exp(-(x**2) - (y - alpha) ** 2)
+            + np.exp(-(x**2) - (y + alpha) ** 2)
+            + 2 * purity * np.exp(-(x**2) - y**2) * np.cos(2 * alpha * x)
         )
-        / (2 * (1 + np.exp(-(alpha ** 2))))
+        / (2 * (1 + np.exp(-(alpha**2))))
     ) / 2.0
 
 

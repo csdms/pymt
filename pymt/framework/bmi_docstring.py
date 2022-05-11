@@ -6,7 +6,7 @@ from model_metadata import MetadataNotFoundError, ModelMetadata
 
 
 # {{ desc|trim|wordwrap(70) if desc }}
-_DOCSTRING = u"""
+_DOCSTRING = """
 Basic Model Interface for {{ name }}.
 
 {{ desc|trim if desc }}
