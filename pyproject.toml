@@ -1,12 +1,12 @@
 [build-system]
-requires = ["cython", "numpy", "setuptools", "wheel"]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["notebooks", "pymt", "tests"]
 norecursedirs = [".*", "*.egg*", "build", "dist"]
 addopts = """
-  --ignore setup.py
   --tb native
   --strict-markers
   --durations 16
