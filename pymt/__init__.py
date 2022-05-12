@@ -1,11 +1,8 @@
-import pkg_resources
+from ._version import __version__
 
 from gimli import UnitSystem
 from .model_collection import ModelCollection
 
 MODELS = ModelCollection()
 
-__version__ = pkg_resources.get_distribution("pymt").version
-__all__ = ["UnitSystem", "MODELS"]
-
-del pkg_resources
+__all__ = ["__version__", "UnitSystem", "MODELS"]
