@@ -1,5 +1,88 @@
 [build-system]
-requires = ["cython", "numpy", "setuptools", "wheel"]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymt"
+description = "The CSDMS Python Modeling Toolkit"
+authors = [
+  {email = "mcflugen@gmail.com"},
+  {name = "The CSDMS team"}
+]
+maintainers = [
+  {email = "mcflugen@gmail.com"},
+  {name = "The CSDMS team"}
+]
+keywords = ["earth science", "model coupling"]
+license = {file = "LICENSE.rst"}
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.8"
+dependencies = [
+  "click",
+  "deprecated",
+  "jinja2",
+  "landlab >= 2",
+  "matplotlib",
+  "model_metadata >= 0.7",
+  "netcdf4",
+  "numpy",
+  "pyyaml",
+  "scipy",
+  "shapely",
+  "six",
+  "xarray",
+]
+dynamic = ["readme", "version"]
+
+[project.urls]
+homepage = "https://csdms.colorado.edu"
+documentation = "https://pymt.readthedocs.io"
+repository = "https://github.com/csdms/pymt"
+changelog = "https://github.com/csdms/pymt/blob/develop/CHANGELOG.rst"
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "flake8",
+  "isort",
+  "zest.releaser[recommended]"
+]
+docs = [
+  "pandoc",
+  "nbformat",
+  "jupyter_client",
+  "ipython",
+  "sphinx >= 1.5.1",
+  "sphinx_rtd_theme",
+  "tornado",
+  "entrypoints",
+  "nbsphinx >= 0.2.12",
+]
+testing = [
+  "h5netcdf",
+  "pytest",
+  "pytest-benchmark",
+  "pytest-cov",
+  "pytest-datadir",
+  "pytest-mypy",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst", "AUTHORS.rst", "CHANGELOG.rst"]}
+version = {attr = "pymt._version.__version__"}
 
 [tool.pytest.ini_options]
 minversion = "6.0"
