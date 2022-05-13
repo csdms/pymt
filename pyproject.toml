@@ -20,11 +20,7 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
-  "Programming Language :: Cython",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: 3",
   "Topic :: Scientific/Engineering :: Physics",
 ]
 requires-python = ">=3.8"
@@ -46,7 +42,7 @@ dependencies = [
 dynamic = ["readme", "version"]
 
 [project.urls]
-homepage = "http://csdms.colorado.edu"
+homepage = "https://csdms.colorado.edu"
 documentation = "https://pymt.readthedocs.io"
 repository = "https://github.com/csdms/pymt"
 changelog = "https://github.com/csdms/pymt/blob/develop/CHANGELOG.rst"
