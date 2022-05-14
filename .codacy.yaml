@@ -5,7 +5,5 @@ exclude_paths:
   - tests/**
   - docs/conf.py
   - docs/demos/quickstart.py
-  - setup.py
-  - versioneer.py
   - pymt/_version.py
   - pymt/cfunits/**

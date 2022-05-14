@@ -20,4 +20,4 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --verbose --diff"
-          src: "setup.py pymt tests"
+          src: "pymt tests"
