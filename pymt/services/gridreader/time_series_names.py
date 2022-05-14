@@ -1,7 +1,6 @@
 import collections
 import re
 
-import six
 
 _TIME_SERIES_NAME_RE_PATTERN = r"(?P<name>[a-zA-Z_]+)@t=(?P<time_stamp>\d+)$"
 _TIME_SERIES_NAME_RE = re.compile(_TIME_SERIES_NAME_RE_PATTERN)
@@ -28,12 +27,12 @@ class TimeStampError(Error):
 
 
 def time_stamp_as_string(time_stamp):
-    if isinstance(time_stamp, six.string_types):
+    if isinstance(time_stamp, str):
         try:
             return str(int(time_stamp))
         except ValueError:
             raise TimeStampError(time_stamp)
-    elif isinstance(time_stamp, six.integer_types):
+    elif isinstance(time_stamp, int):
         return str(time_stamp)
     else:
         raise TimeStampError(time_stamp)

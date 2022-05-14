@@ -344,7 +344,7 @@ class _BmiCap(DeprecatedMethods):
             # grid = self.var_grid(name)
             dtype = self.var_type(name)
             if dtype == "":
-                raise ValueError("{name} not understood".format(name=name))
+                raise ValueError(f"{name} not understood")
             n_items = self.var_nbytes(name) // self.var_itemsize(name)
             # loc = self.var_grid_loc(name)
             out = np.empty(n_items, dtype=dtype)
@@ -781,10 +781,10 @@ def bmi_factory(cls):
         _cls = cls
 
         def __str__(self):
-            return "{0}".format(cls.__name__)
+            return f"{cls.__name__}"
 
         def __repr__(self):
-            return "<{0}()>".format(cls.__name__)
+            return f"<{cls.__name__}()>"
 
     BmiWrapper.__name__ = cls.__name__
     return BmiWrapper

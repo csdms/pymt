@@ -3,7 +3,6 @@ import os
 import socket
 import sys
 
-import six
 import yaml
 from model_metadata.find import find_model_data_files
 
@@ -17,19 +16,19 @@ class redirect:
         self._err = stderr or sys.stderr
 
     def __enter__(self):
-        if isinstance(self._out, six.string_types):
+        if isinstance(self._out, str):
             sys.stdout = open(self._out, "w")
         else:
             sys.stdout = self._out
-        if isinstance(self._err, six.string_types):
+        if isinstance(self._err, str):
             sys.stderr = open(self._err, "w")
         else:
             sys.stderr = self._err
 
     def __exit__(self, type_, value, traceback):
-        if isinstance(self._out, six.string_types):
+        if isinstance(self._out, str):
             sys.stdout.close()
-        if isinstance(self._err, six.string_types):
+        if isinstance(self._err, str):
             sys.stderr.close()
 
         sys.stdout = self._stdout

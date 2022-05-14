@@ -45,8 +45,8 @@ hello!
 hello!
 hello from finalize
 """
-from six import StringIO
-from six.moves.configparser import ConfigParser
+from configparser import ConfigParser
+from io import StringIO
 
 from ..timeline import Timeline
 from ..utils.prefix import names_with_prefix

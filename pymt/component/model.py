@@ -1,6 +1,5 @@
 import os
 
-import six
 import yaml
 
 from .component import Component
@@ -30,7 +29,7 @@ def get_exchange_item_mapping(items):
     """
     mapping = []
     for item in items:
-        if isinstance(item, six.string_types):
+        if isinstance(item, str):
             item_map = (item, item)
         else:
             try:
@@ -83,7 +82,7 @@ class Model:
     def go(self, filename=None):
         """Start the model."""
         if filename:
-            with open(filename, "r") as f:
+            with open(filename) as f:
                 model = yaml.safe_load(f.read())
             self._driver, self._duration = (model["driver"], model["duration"])
 
@@ -158,7 +157,7 @@ class Model:
         model : Model
             A newly-created model.
         """
-        with open(filename, "r") as fp:
+        with open(filename) as fp:
             return cls.load(fp)
 
     @classmethod

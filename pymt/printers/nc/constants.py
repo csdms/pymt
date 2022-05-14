@@ -4,7 +4,7 @@ import warnings
 
 from scipy.io import netcdf as nc3
 
-_VALID_NETCDF_FORMATS = set(["NETCDF3_CLASSIC", "NETCDF3_64BIT"])
+_VALID_NETCDF_FORMATS = {"NETCDF3_CLASSIC", "NETCDF3_64BIT"}
 
 _NP_TO_NC_TYPE = {
     "float32": "f4",
@@ -25,13 +25,13 @@ try:
 except ImportError:
     warnings.warn("Unable to import netCDF4.", ImportWarning)
 else:
-    _VALID_NETCDF_FORMATS |= set(["NETCDF4_CLASSIC", "NETCDF4"])
+    _VALID_NETCDF_FORMATS |= {"NETCDF4_CLASSIC", "NETCDF4"}
 
 
 def assert_valid_netcdf_format(fmt):
     if fmt not in _VALID_NETCDF_FORMATS:
         raise ValueError(
-            "%s: format is one of %s" % (fmt, ", ".join(_VALID_NETCDF_FORMATS))
+            "{}: format is one of {}".format(fmt, ", ".join(_VALID_NETCDF_FORMATS))
         )
 
 

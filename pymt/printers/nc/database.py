@@ -32,7 +32,7 @@ class Database(IDatabase):
 
         self._var_name = var_name
         self._path = path
-        self._template = "%s_%%04d%s" % (root, ext)
+        self._template = "{}_%04d{}".format(root, ext)
 
         self._point_count = None
         self._cell_count = None

@@ -1,6 +1,4 @@
 #! /usr/bin/env python
-from six.moves import xrange
-
 from ...grids import RectilinearField, StructuredField, UnstructuredField
 from ...grids import utils as gutils
 from .constants import open_netcdf
@@ -65,7 +63,7 @@ class NetcdfFieldReader:
             "structured",
             "unstructured",
         ):
-            raise ValueError("topology not understood: {0}".format(topology.type))
+            raise ValueError(f"topology not understood: {topology.type}")
 
         return topology
 
@@ -74,7 +72,7 @@ class NetcdfFieldReader:
             if self._root.variables[name].location == "node":
                 data = self.variable_data(name)
                 if self.contains_time_dimension():
-                    for time in xrange(len(self.time)):
+                    for time in range(len(self.time)):
                         self._field.add_field(
                             name + "@t=%d" % time, data[time, :], centering="point"
                         )
@@ -87,7 +85,7 @@ class NetcdfFieldReader:
             if self._root.variables[name].location == "face":
                 data = self.variable_data(name)
                 if self.contains_time_dimension():
-                    for time in xrange(len(self.time)):
+                    for time in range(len(self.time)):
                         self._field.add_field(
                             name + "@t=%d" % time, data[time, :], centering="cell"
                         )

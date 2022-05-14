@@ -7,9 +7,9 @@ from .timeinterp import TimeInterpolator
 class BmiTimeInterpolator:
     def __init__(self, *args, **kwds):
         method = kwds.pop("method", "linear")
-        self._interpolators = dict(
-            [(name, None) for name in self.output_var_names if "__" in name]
-        )
+        self._interpolators = {
+            name: None for name in self.output_var_names if "__" in name
+        }
         self.reset(method=method)
 
         super().__init__(*args, **kwds)
@@ -24,7 +24,7 @@ class BmiTimeInterpolator:
                 self._interpolators[name].add_data([(self.time, self.get_value(name))])
             except BmiError:
                 self._interpolators.pop(name)
-                print("unable to get value for {name}. ignoring".format(name=name))
+                print(f"unable to get value for {name}. ignoring")
 
     def interpolate(self, name, at):
         return self._interpolators[name].interpolate(at)

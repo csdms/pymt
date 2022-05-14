@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-
-import six
-from six.moves.configparser import ConfigParser
+from configparser import ConfigParser
+from io import StringIO
 
 from ..framework import services
 from ..printers.nc.database import Database as NcDatabase
@@ -21,7 +20,7 @@ class PortPrinter:
     _printer_class = None
 
     def __init__(self, port, var_name, filename=None):
-        if isinstance(port, six.string_types):
+        if isinstance(port, str):
             self._port = services.get_component_instance(port)
         else:
             self._port = port
@@ -62,7 +61,7 @@ class PortPrinter:
     @classmethod
     def from_string(cls, source, prefix="print"):
         config = ConfigParser()
-        config.readfp(six.StringIO(source))
+        config.readfp(StringIO(source))
         return cls._from_config(config, prefix=prefix)
 
     @classmethod

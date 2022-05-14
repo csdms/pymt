@@ -1,7 +1,5 @@
 import os
 
-from six.moves import xrange
-
 from pymt.portprinter.port_printer import NcPortPrinter
 from pymt.testing.ports import UniformRectilinearGridPort
 
@@ -27,7 +25,7 @@ def test_multiple_files(tmpdir):
 
     port = UniformRectilinearGridPort()
     with tmpdir.as_cwd():
-        for _ in xrange(5):
+        for _ in range(5):
             printer = NcPortPrinter(port, "sea_surface__temperature")
             printer.open()
             printer.write()
@@ -41,7 +39,7 @@ def test_time_series(tmpdir):
     with tmpdir.as_cwd():
         printer = NcPortPrinter(port, "sea_floor_surface_sediment__mean_of_grain_size")
         printer.open()
-        for _ in xrange(5):
+        for _ in range(5):
             printer.write()
         printer.close()
 

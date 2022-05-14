@@ -39,7 +39,7 @@ def quick_plot(bmi, name, **kwds):
         y = np.arange(shape[-2]) * spacing[-2] + origin[-2]
         plt.pcolormesh(x, y, z.reshape(shape), **kwds)
     else:
-        raise ValueError("no plotter for {gtype}".format(gtype=gtype))
+        raise ValueError(f"no plotter for {gtype}")
 
     plt.axis("tight")
     plt.gca().set_aspect("equal")
@@ -47,4 +47,4 @@ def quick_plot(bmi, name, **kwds):
     plt.ylabel(y_label)
 
     cbar = plt.colorbar()
-    cbar.ax.set_ylabel("{name} ({units})".format(name=name, units=bmi.var_units(name)))
+    cbar.ax.set_ylabel(f"{name} ({bmi.var_units(name)})")

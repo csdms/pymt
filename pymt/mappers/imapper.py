@@ -17,7 +17,7 @@ class IncompatibleGridError(MapperError):
         self._dst = dst
 
     def __str__(self):
-        return "Unable to map %s to %s" % (self._src, self._dst)
+        return "Unable to map {} to {}".format(self._src, self._dst)
 
 
 class NoMapperError(MapperError):
@@ -26,7 +26,7 @@ class NoMapperError(MapperError):
         self._dst = dst
 
     def __str__(self):
-        return "No mapper to map %s to %s" % (self._src, self._dst)
+        return "No mapper to map {} to {}".format(self._src, self._dst)
 
 
 class IGridMapper:

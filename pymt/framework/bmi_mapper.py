@@ -175,7 +175,7 @@ class GridMapperMixIn:
         except AttributeError:
             self._esmf_field = dict()
 
-        _id = "{gid}.{name}@{at}".format(gid=gid, name=name, at=at)
+        _id = f"{gid}.{name}@{at}"
 
         try:
             self._esmf_field[_id]

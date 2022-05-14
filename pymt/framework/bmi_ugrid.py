@@ -191,7 +191,7 @@ class StructuredQuadrilateral(_Base):
                 ("cf_role", "grid_topology"),
                 (
                     "long_name",
-                    "Topology data of {}D structured quadrilateral".format(self.ndim),
+                    f"Topology data of {self.ndim}D structured quadrilateral",
                 ),
                 ("topology_dimension", self.ndim),
                 ("node_coordinates", " ".join(coordinate_names(self.ndim))),
@@ -228,7 +228,7 @@ class Rectilinear(_Base):
                 ("cf_role", "grid_topology"),
                 (
                     "long_name",
-                    "Topology data of {}D structured quadrilateral".format(self.ndim),
+                    f"Topology data of {self.ndim}D structured quadrilateral",
                 ),
                 ("topology_dimension", self.ndim),
                 ("node_coordinates", " ".join(coordinate_names(self.ndim))),
@@ -267,7 +267,7 @@ class UniformRectilinear(_Base):
                 ("cf_role", "grid_topology"),
                 (
                     "long_name",
-                    "Topology data of {}D structured quadrilateral".format(self.ndim),
+                    f"Topology data of {self.ndim}D structured quadrilateral",
                 ),
                 ("topology_dimension", self.ndim),
                 ("node_coordinates", " ".join(coordinate_names(self.ndim))),
@@ -314,6 +314,6 @@ def dataset_from_bmi_grid(bmi, grid_id):
     elif grid_type == "rectilinear":
         grid = Rectilinear(bmi, grid_id)
     else:
-        raise ValueError("grid type not understood ({gtype})".format(gtype=grid_type))
+        raise ValueError(f"grid type not understood ({grid_type})")
 
     return grid
