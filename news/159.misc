@@ -1,0 +1,3 @@
+Removed dependency on ``six`` since we don't support Python 2 and updated code
+to use Python 3.8+ syntax.
+
