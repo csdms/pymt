@@ -43,7 +43,7 @@ class TimeInterpolator:
     def update_until(self, time):
         if time < self._start_time or time > self._endtime:
             raise ValueError(
-                "time is outside of start/end time ({0} not in [{1}, {2}])".format(
+                "time is outside of start/end time ({} not in [{}, {}])".format(
                     time, self._start_time, self._end_time
                 )
             )

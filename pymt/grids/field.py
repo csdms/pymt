@@ -1,6 +1,5 @@
 #! /bin/env python
 import numpy as np
-import six
 
 from .igrid import CENTERING_CHOICES, CenteringValueError, DimensionError, IField
 from .raster import UniformRectilinear
@@ -15,7 +14,7 @@ def combine_args_to_list(*args, **kwds):
     args = list(args)
     combined_args = []
     for arg in args:
-        if isinstance(arg, six.string_types):
+        if isinstance(arg, str):
             combined_args.append(arg)
         else:
             combined_args.extend(arg)

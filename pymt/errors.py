@@ -22,7 +22,7 @@ class BadUnitError(PymtError):
         self._unit = unit
 
     def __str__(self):
-        return "unknown unit ({0!r})".format(self._unit)
+        return f"unknown unit ({self._unit!r})"
 
 
 class IncompatibleUnitsError(PymtError):
@@ -31,4 +31,4 @@ class IncompatibleUnitsError(PymtError):
         self._dst = dst
 
     def __str__(self):
-        return "incompatible units ({0!r}, {1!r})".format(self._src, self._dst)
+        return f"incompatible units ({self._src!r}, {self._dst!r})"

@@ -17,7 +17,7 @@ def new_rectilinear(**kwds):
     shape = np.random.randint(3, 101 + 1, ndims)
     args = []
     for size in shape:
-        args.append(np.cumsum((1.0 - np.random.random(size))))
+        args.append(np.cumsum(1.0 - np.random.random(size)))
 
     return RectilinearField(*args, **kwds)
 

@@ -4,7 +4,6 @@ from collections import defaultdict
 
 import numpy as np
 from scipy.spatial import KDTree
-from six.moves import zip
 
 from .imapper import IGridMapper, IncompatibleGridError
 

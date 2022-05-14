@@ -93,7 +93,7 @@ class TimeInterpolator:
     @maxsize.setter
     def maxsize(self, val):
         if val is not None and val <= _MINIMUM_SIZE_FOR_METHOD[self.method]:
-            raise ValueError("maxsize too small for method ({0})".format(self.method))
+            raise ValueError(f"maxsize too small for method ({self.method})")
         self._maxsize = val
         self._trim_data_to_maxsize()
 

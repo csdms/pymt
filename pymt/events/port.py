@@ -3,7 +3,6 @@
 import os
 import sys
 
-import six
 import yaml
 
 from ..component.grid import GridMixIn
@@ -26,7 +25,7 @@ class PortEvent(GridMixIn):
     """
 
     def __init__(self, *args, **kwds):
-        if isinstance(kwds["port"], six.string_types):
+        if isinstance(kwds["port"], str):
             self._port = services.get_component_instance(kwds["port"])
         else:
             self._port = kwds["port"]
@@ -34,7 +33,7 @@ class PortEvent(GridMixIn):
         self._init_args = kwds.get("init_args", [])
         self._run_dir = kwds.get("run_dir", ".")
 
-        if isinstance(self._init_args, six.string_types):
+        if isinstance(self._init_args, str):
             self._init_args = [self._init_args]
 
         self._status_fp = open(
@@ -114,11 +113,11 @@ class PortMapEvent:
     """
 
     def __init__(self, *args, **kwds):
-        if isinstance(kwds["src_port"], six.string_types):
+        if isinstance(kwds["src_port"], str):
             self._src = services.get_component_instance(kwds["src_port"])
         else:
             self._src = kwds["src_port"]
-        if isinstance(kwds["dst_port"], six.string_types):
+        if isinstance(kwds["dst_port"], str):
             self._dst = services.get_component_instance(kwds["dst_port"])
         else:
             self._dst = kwds["dst_port"]

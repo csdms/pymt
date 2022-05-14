@@ -19,7 +19,7 @@ def test_init_without_args():
 def test_init_with_one_event():
     timeline = Timeline([("event 1", 1.0)])
 
-    assert set(["event 1"]) == timeline.events
+    assert {"event 1"} == timeline.events
     assert 1.0 == timeline.time_of_next_event
     assert "event 1" == timeline.next_event
 
@@ -27,7 +27,7 @@ def test_init_with_one_event():
 def test_init_with_two_events():
     timeline = Timeline([("event 1", 1.0), ("event 2", 0.25)])
 
-    assert set(["event 1", "event 2"]) == timeline.events
+    assert {"event 1", "event 2"} == timeline.events
     assert timeline.time_of_next_event == approx(0.25)
     assert timeline.next_event == "event 2"
 

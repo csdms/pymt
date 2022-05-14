@@ -98,7 +98,7 @@ class SetupMixIn:
         contact = self.author[0]
         email = self.email
         if email != "-":
-            contact = "{name} <{email}>".format(name=contact, email=email)
+            contact = f"{contact} <{email}>"
         return contact
 
     @property
@@ -154,7 +154,7 @@ def get_initialize_arg(dir_):
         Argument that can be passed to a BMI initialize method.
     """
     readme = os.path.join(dir_, "README.yaml")
-    with open(readme, "r") as fp:
+    with open(readme) as fp:
         metadata = yaml.safe_load(fp)
 
     args = metadata["bmi"]["initialize"]["args"]
@@ -178,7 +178,7 @@ def url_to_input_file_repo(name):
     str
         URL of input-file repository.
     """
-    return "https://github.com/mcflugen/{name}-input".format(name=name)
+    return f"https://github.com/mcflugen/{name}-input"
 
 
 def url_to_input_file_zip(name):
@@ -219,4 +219,4 @@ def fetch_input(name, path=None):
     with zipfile.ZipFile(path_, "r") as zipfp:
         zipfp.extractall(path=extract_to)
 
-    return os.path.join(extract_to, "{name}-input-master".format(name=name))
+    return os.path.join(extract_to, f"{name}-input-master")

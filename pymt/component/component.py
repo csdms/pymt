@@ -57,7 +57,6 @@ ValueError: AirPort
 """
 import warnings
 
-import six
 import yaml
 
 from ..events.chain import ChainEvent
@@ -146,7 +145,7 @@ class Component(GridMixIn):
         if provides is None:
             provides = set()
 
-        if isinstance(port, six.string_types):
+        if isinstance(port, str):
             if name is None:
                 name = port
             self._port = services.instantiate_component(port, name)
@@ -419,7 +418,7 @@ class Component(GridMixIn):
         Component
             A newly-created component.
         """
-        with open(path, "r") as yaml_file:
+        with open(path) as yaml_file:
             return cls._from_yaml(yaml_file.read())
 
     @classmethod

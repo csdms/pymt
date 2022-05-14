@@ -23,7 +23,7 @@ def test_raster(tmpdir, ndims):
 
     field = RasterField(shape, spacing, origin, units=units)
 
-    attrs = {"description": "Example {ndims}D nc file".format(ndims=ndims)}
+    attrs = {"description": f"Example {ndims}D nc file"}
     data = np.arange(field.get_point_count())
 
     with tmpdir.as_cwd():
@@ -50,7 +50,7 @@ def test_rectilinear(tmpdir, ndims):
     data = np.arange(field.get_point_count())
     field.add_field("Elevation", data, centering="point")
 
-    attrs = dict(description="Example {0}D nc file".format(ndims), author="pytest")
+    attrs = dict(description=f"Example {ndims}D nc file", author="pytest")
 
     with tmpdir.as_cwd():
         field_tofile(field, "rectilinear.nc", attrs=attrs, append=True)

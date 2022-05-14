@@ -46,7 +46,7 @@ def test_get_time_series_names():
             "earth_surface__temperature",
         ]
     )
-    assert names == set(["ice_surface__temperature"])
+    assert names == {"ice_surface__temperature"}
 
 
 def test_get_time_series_names_empty():
@@ -66,7 +66,7 @@ def test_get_time_series_names_ignore_bad_names():
             "sea_surface__temperature@t=",
         ]
     )
-    assert names == set(["ice_surface__temperature"])
+    assert names == {"ice_surface__temperature"}
 
 
 def test_sort_ascending_is_default():

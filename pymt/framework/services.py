@@ -91,7 +91,7 @@ def register_component_class(name, if_exists="raise"):
         _COMPONENT_CLASSES[cls_name] = getattr(mod, cls_name)
     except (KeyError, AttributeError):
         raise ImportError(
-            "cannot import component %s from %s" % (cls_name, module_name)
+            "cannot import component {} from {}".format(cls_name, module_name)
         )
 
 

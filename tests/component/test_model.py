@@ -41,7 +41,7 @@ def test_model_from_file_like(tmpdir, with_no_components):
         os.mkdir("air")
         with open("components.yml", "w") as fp:
             fp.write(AIR_PORT_CONTENTS)
-        with open("components.yml", "r") as fp:
+        with open("components.yml") as fp:
             model = Model.from_file_like(fp)
 
         assert model.components == ["air_port"]
