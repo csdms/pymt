@@ -10,7 +10,6 @@ recursive-exclude docs *
 recursive-exclude scripts *py
 recursive-exclude notebooks *
 
-exclude .codacy.yaml
 exclude .gitmodules
 exclude .landscape.yml
 exclude .readthedocs.yaml

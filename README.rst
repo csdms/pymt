@@ -4,7 +4,7 @@ The Python Modeling Toolkit (pymt)
 ==================================
 
 |Build Status| |License| |Code Style| |Documentation Status| |Coverage Status| |Conda Version|
-|Conda Installation| |Conda Downloads| |Codacy| |Binder|
+|Conda Installation| |Conda Downloads| |Binder|
 
 Quick links:
 
@@ -84,8 +84,6 @@ The Community Surface Dynamics Modeling System (CSDMS)*.
    :target: https://conda.anaconda.org/conda-forge
 .. |Conda Downloads| image:: https://anaconda.org/conda-forge/pymt/badges/downloads.svg
    :target: https://anaconda.org/conda-forge/pymt
-.. |Codacy| image:: https://app.codacy.com/project/badge/Grade/e8e273131ecb4d7d981fe9f4cf3e83d9
-    :target: https://www.codacy.com/manual/mcflugen/pymt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=csdms/pymt&amp;utm_campaign=Badge_Grade
 .. |Binder| image:: https://static.mybinder.org/badge_logo.svg
    :target: https://static.mybinder.org/badge_logo.svg
 
