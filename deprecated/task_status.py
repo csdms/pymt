@@ -2,8 +2,6 @@
 
 from collections import OrderedDict
 
-import six
-
 _TASK_STATUS_STRINGS = OrderedDict(
     [
         ("create", ("creating", "created")),
@@ -53,7 +51,7 @@ def task_as_valid_integer(task):
 
 
 def task_as_integer(task):
-    if isinstance(task, six.string_types):
+    if isinstance(task, str):
         return task_string_as_integer(task)
     else:
         return task_as_valid_integer(task)

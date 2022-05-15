@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 import collections
+import configparser
 
-import six
-from six.moves import configparser
 
 _KEY_TYPES = {
     "output_file_namespace": str,
@@ -27,7 +26,7 @@ class Error(Exception):
 
 class InfoKeyError(Error):
     def __init__(self, keys):
-        if isinstance(keys, six.string_types):
+        if isinstance(keys, str):
             self._keys = keys
         else:
             self._keys = ", ".join(keys)

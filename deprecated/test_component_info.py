@@ -5,7 +5,7 @@ from __future__ import print_function
 import unittest
 import os
 import tempfile
-from six.moves.configparser import ConfigParser
+from configparser import ConfigParser
 
 from pymt.component_info import (
     ComponentInfo,

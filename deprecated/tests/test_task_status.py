@@ -1,8 +1,6 @@
 #! /usr/bin/env python
 import unittest
 
-from six.moves import xrange
-
 from pymt.task_status import TaskStatus
 
 
@@ -36,7 +34,7 @@ class TestTaskStatus(unittest.TestCase):
     def test_start_already_started(self):
         task = TaskStatus("task")
 
-        for _ in xrange(10):
+        for _ in range(10):
             task.start()
             self.assertEqual(task.status, task.started)
 

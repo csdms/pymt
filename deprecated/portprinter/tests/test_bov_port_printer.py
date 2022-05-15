@@ -1,5 +1,3 @@
-from six.moves import xrange
-
 from pymt.portprinter.port_printer import BovPortPrinter, PortPrinter
 from pymt.testing.ports import UniformRectilinearGridPort
 from pymt.testing.assertions import assert_isfile_and_remove
@@ -17,7 +15,7 @@ def test_default():
 
 def test_multiple_files():
     port = UniformRectilinearGridPort()
-    for _ in xrange(5):
+    for _ in range(5):
         printer = BovPortPrinter(port, "sea_surface__temperature")
         printer.open()
         printer.write()
@@ -43,7 +41,7 @@ def test_time_series():
     port = UniformRectilinearGridPort()
     printer = BovPortPrinter(port, "sea_floor_surface_sediment__mean_of_grain_size")
     printer.open()
-    for _ in xrange(5):
+    for _ in range(5):
         printer.write()
     printer.close()
 
