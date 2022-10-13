@@ -72,7 +72,7 @@ Ready to contribute? Here's how to set up *pymt* for local development.
     $ cd pymt/
     $ conda install --file=requirements.txt
 
-    $ python setup.py develop
+    $ pip install -e .
 
 4. Create a branch for local development::
 

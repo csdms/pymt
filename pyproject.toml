@@ -88,7 +88,6 @@ minversion = "6.0"
 testpaths = ["notebooks", "pymt", "tests"]
 norecursedirs = [".*", "*.egg*", "build", "dist"]
 addopts = """
-  --ignore setup.py
   --tb native
   --strict-markers
   --durations 16
