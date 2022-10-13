@@ -9,7 +9,6 @@ numpy
 pyyaml
 scipy
 shapely
-six
 xarray
 # cfunits
 # esmpy

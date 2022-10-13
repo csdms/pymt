@@ -3,7 +3,6 @@ import sys
 import xml.dom.minidom
 
 import numpy as np
-from six.moves import xrange
 
 from .encoders import encode
 from .vtktypes import np_to_vtk_type, sys_to_vtk_endian
@@ -19,7 +18,7 @@ class VtkExtent:
         self._extent = []
         for n in shape:
             self._extent.append((0, n - 1))
-        for n in xrange(3 - len(shape)):
+        for n in range(3 - len(shape)):
             self._extent.append((0, 0))
 
         self._extent_str = " ".join(["%d %d" % x for x in self._extent])
@@ -42,7 +41,7 @@ class VtkOrigin:
         for (dx, x0) in zip(spacing, origin):
             self._cell_origin.append(x0 - dx * 0.5)
 
-        for _ in xrange(3 - len(origin)):
+        for _ in range(3 - len(origin)):
             self._cell_origin.append(0.0)
 
         self._origin_str = " ".join(["%f" % x for x in self._cell_origin])
@@ -61,7 +60,7 @@ class VtkSpacing:
         self._padded_spacing = []
         for dx in spacing:
             self._padded_spacing.append(dx)
-        for _ in xrange(3 - len(spacing)):
+        for _ in range(3 - len(spacing)):
             self._padded_spacing.append(0.0)
 
         self._spacing_str = " ".join(["%f" % x for x in self._padded_spacing])
@@ -172,7 +171,7 @@ class VtkPointsElement(VtkDataElement):
     def __init__(self, coords, **kwargs):
         n_components = 3
         xyz = []
-        for i in xrange(n_components):
+        for i in range(n_components):
             try:
                 xyz.append(coords[i])
             except IndexError:
