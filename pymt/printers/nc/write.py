@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 from warnings import warn
 
 from ...grids.assertions import is_rectilinear, is_structured

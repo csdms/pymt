@@ -1,5 +1,6 @@
-import pkg_resources
 import traceback
+
+import pkg_resources
 
 from .framework.bmi_bridge import bmi_factory
 

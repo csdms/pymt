@@ -1,10 +1,9 @@
 #! /usr/bin/env python
 
-import os
 import argparse
 
-import cmt.vtk
 import cmt.nc
+import cmt.vtk
 
 parser = argparse.ArgumentParser(description="Convert VTK file to NCU files")
 parser.add_argument("files", metavar="vtk_file", nargs="+", help="VTK formatted file")

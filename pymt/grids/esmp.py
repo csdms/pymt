@@ -1,4 +1,3 @@
-#! /bin/env python
 """PyMT interface to ESMPy grids.
 
 **Examples**

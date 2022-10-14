@@ -1,6 +1,9 @@
-#! /usr/bin/env python
-from ...grids import RectilinearField, StructuredField, UnstructuredField
-from ...grids import utils as gutils
+from ...grids import (
+    RectilinearField,
+    StructuredField,
+    UnstructuredField,
+    utils as gutils,
+)
 from .constants import open_netcdf
 
 

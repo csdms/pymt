@@ -1,4 +1,3 @@
-#! /bin/env python
 import warnings
 
 import yaml
@@ -95,6 +94,7 @@ class TimeInterpolator:
 
 def get_abspath_or_url(filename, prefix=""):
     import os
+
     from urlparse import urlparse, urlunparse
 
     parts = urlparse(filename)

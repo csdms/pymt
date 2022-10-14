@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import os
 
 from ...grids import utils as gutils

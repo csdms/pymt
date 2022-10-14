@@ -6,8 +6,8 @@ import yaml
 
 _exclude_file = pathlib.Path(__file__).absolute().parent / "exclude.yml"
 if _exclude_file.exists():
-    with open(_exclude_file, "r") as fp:
-        _EXCLUDE = dict([(item["file"], item["reason"]) for item in yaml.safe_load(fp)])
+    with open(_exclude_file) as fp:
+        _EXCLUDE = {item["file"]: item["reason"] for item in yaml.safe_load(fp)}
 else:
     _EXCLUDE = {}
 

@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 from ..errors import BmiError
 from ..utils import as_cwd
 from .timeinterp import TimeInterpolator

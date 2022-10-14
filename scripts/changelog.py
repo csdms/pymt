@@ -1,16 +1,15 @@
 #! /usr/bin/env python
-from __future__ import print_function
 
 import os
 import re
 import subprocess
 import sys
 from collections import OrderedDict, defaultdict
-from pkg_resources import parse_version
 
 import click
 import jinja2
 import m2r
+from pkg_resources import parse_version
 
 __version__ = "0.1.1"
 
@@ -53,7 +52,7 @@ def git_log(start=None, stop="HEAD"):
         # '--oneline',
     ]
     if start:
-        cmd.append("{start}..{stop}".format(start=start, stop=stop))
+        cmd.append(f"{start}..{stop}")
     return subprocess.check_output(cmd).strip().decode("utf-8")
 
 
@@ -89,8 +88,8 @@ def releases(ascending=True):
 def format_pr_message(message):
     m = re.match(
         "Merge pull request (?P<pr>#[0-9]+) "
-        "from (?P<branch>[\S]*)"
-        "(?P<postscript>[\s\S]*$)",
+        r"from (?P<branch>[\S]*)"
+        r"(?P<postscript>[\s\S]*$)",
         message,
     )
     if m:
@@ -100,7 +99,7 @@ def format_pr_message(message):
 
 
 def format_changelog_message(message):
-    m = re.match("(?P<first>\w+)(?P<rest>[\s\S]*)$", message)
+    m = re.match(r"(?P<first>\w+)(?P<rest>[\s\S]*)$", message)
     word = m.groupdict()["first"]
     if word in ("Add", "Fix", "Deprecate"):
         return word + "ed" + m.groupdict()["rest"]
@@ -224,7 +223,7 @@ def main(output, quiet, verbose, format, force, batch):
     path_to_changelog = os.path.join(git_top_level(), "CHANGELOG." + format)
     if os.path.isfile(path_to_changelog) and not force:
         click.secho(
-            "{0} exists. Use --force to overwrite".format(path_to_changelog),
+            f"{path_to_changelog} exists. Use --force to overwrite",
             fg="red",
             err=True,
         )
@@ -233,7 +232,7 @@ def main(output, quiet, verbose, format, force, batch):
     with open(path_to_changelog, "w") as fp:
         fp.write(contents)
     click.secho(
-        "Fresh change log at {0}".format(path_to_changelog), bold=True, err=True
+        f"Fresh change log at {path_to_changelog}", bold=True, err=True
     )
 
 

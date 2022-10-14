@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 from pymt.grids.grid_type import (
     GridTypeRectilinear,
     GridTypeStructured,

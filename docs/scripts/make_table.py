@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 import os
 import textwrap
-from tabulate import tabulate
 
 import click
 import yaml
+from tabulate import tabulate
 
 
 def construct_rows(notebook_index=None):
@@ -20,7 +20,7 @@ def construct_rows(notebook_index=None):
                 [
                     summary,
                     "",
-                    "|binder-{0}|".format(name),
+                    f"|binder-{name}|",
                 ]
             )
         rows.append((name, summary))
@@ -59,12 +59,10 @@ def make_table(dest, notebook_index):
     footer = []
     for name, notebooks in index.items():
         footer.append(
+            f"""
+            .. |binder-{name}| image:: https://mybinder.org/badge_logo.svg
+                :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2F{notebooks[0]}
             """
-            .. |binder-{0}| image:: https://mybinder.org/badge_logo.svg
-                :target: https://mybinder.org/v2/gh/csdms/pymt.git/master?filepath=notebooks%2F{1}
-            """.format(
-                name, notebooks[0]
-            )
         )
     print(textwrap.dedent(os.linesep.join(footer)), file=dest)
 

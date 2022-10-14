@@ -1,6 +1,5 @@
-import pytest
-
 import numpy as np
+import pytest
 from gimli import IncompatibleUnitsError, UnitNameError
 from numpy.testing import assert_array_equal
 

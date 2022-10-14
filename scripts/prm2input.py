@@ -1,10 +1,6 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
-
-import sys
-
-from cmt.scanners import InputParameterScanner, CmtScanner, MissingKeyError
+from cmt.scanners import InputParameterScanner
 
 
 def main():
@@ -16,13 +12,13 @@ def main():
     args = parser.parse_args()
 
     if len(args.file) == 1:
-        with open(args.file[0], "r") as f:
+        with open(args.file[0]) as f:
             scanner = InputParameterScanner(f)
             scanner.scan_file()
             print(scanner.fill_contents())
     else:
         for file in args.file:
-            with open(file, "r") as f:
+            with open(file) as f:
                 scanner = InputParameterScanner(f)
                 scanner.scan_file()
 
