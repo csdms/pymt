@@ -240,7 +240,7 @@ class Timeline:
         except AttributeError:
             event_items = events
 
-        for (event, interval) in event_items:
+        for event, interval in event_items:
             self.add_recurring_event(event, interval)
 
     def add_recurring_event(self, event, interval):

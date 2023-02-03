@@ -169,7 +169,7 @@ class UnstructuredPoints(IGrid):
         offset = self._offset[0]
         matrix[0, :offset] = self._connectivity[:offset]
         matrix[0, offset:] = fill_val
-        for (cell, offset) in enumerate(self._offset[:-1]):
+        for cell, offset in enumerate(self._offset[:-1]):
             n_vertices = nodes_per_cell[cell]
             matrix[cell + 1, :n_vertices] = self._connectivity[
                 offset : offset + n_vertices

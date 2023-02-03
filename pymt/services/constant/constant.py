@@ -17,7 +17,7 @@ class ConstantScalars:
             scalar_vars = yaml.safe_load(opened.read())
 
         self._vars = {}
-        for (name, value) in scalar_vars.items():
+        for name, value in scalar_vars.items():
             self._vars[name] = np.array(value, dtype=float)
 
         self._shape = (1,)

@@ -1,5 +1,4 @@
 class PymtError(Exception):
-
     pass
 
 

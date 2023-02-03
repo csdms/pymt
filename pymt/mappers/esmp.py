@@ -16,7 +16,6 @@ else:
 
 
 class EsmpMapper(IGridMapper):
-
     _name = None
 
     @property
@@ -99,7 +98,6 @@ class EsmpMapper(IGridMapper):
 
 
 class EsmpCellToCell(EsmpMapper):
-
     _name = "CellToCell"
 
     def init_fields(self):
@@ -117,7 +115,6 @@ class EsmpCellToCell(EsmpMapper):
 
 
 class EsmpPointToPoint(EsmpMapper):
-
     _name = "PointToPoint"
 
     def init_fields(self):

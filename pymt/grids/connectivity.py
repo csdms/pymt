@@ -96,7 +96,7 @@ def _get_offsets(shape, ordering="cw", dtype=int):
         offsets = np.array([0, 1], dtype=dtype)
 
     strides = np.cumprod(list(shape[-1:0:-1]))
-    for (dim, stride) in enumerate(strides):
+    for dim, stride in enumerate(strides):
         new_offsets = offsets + stride
         if ordered and dim % 2 == 0:
             offsets = np.append(offsets, new_offsets[::-1])
@@ -220,7 +220,7 @@ def get_connectivity(shape, **kwds):
             c.append(np.array(cell, dtype=kwds["dtype"]))
     else:
         c = np.empty((c0.size * points_per_cell,), dtype=kwds["dtype"])
-        for (i, offset) in enumerate(offsets):
+        for i, offset in enumerate(offsets):
             c[i::points_per_cell] = c0 + offset
 
     if with_offsets:

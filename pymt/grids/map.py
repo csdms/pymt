@@ -65,7 +65,7 @@ class UnstructuredMap(Unstructured):
 
         self._point = {}
         last_offset = 0
-        for (cell_id, offset) in enumerate(self._offset):
+        for cell_id, offset in enumerate(self._offset):
             cell = self._connectivity[last_offset:offset]
             last_offset = offset
 
@@ -78,7 +78,7 @@ class UnstructuredMap(Unstructured):
         (point_x, point_y) = (self.get_x(), self.get_y())
         self._polys = []
         last_offset = 0
-        for (cell_id, offset) in enumerate(self._offset):
+        for cell_id, offset in enumerate(self._offset):
             cell = self._connectivity[last_offset:offset]
             last_offset = offset
 

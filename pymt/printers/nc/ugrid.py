@@ -140,7 +140,7 @@ class NetcdfField:
         attrs = kwds.pop("attrs", {})
 
         variable = self.data_variable(name)
-        for (attr, value) in attrs.items():
+        for attr, value in attrs.items():
             variable.setncattr(attr, value)
 
         if len(args) > 0:
@@ -206,7 +206,7 @@ class NetcdfField:
 
     def _set_node_variable_data(self):
         point_fields = self.field.get_point_fields()
-        for (var_name, array) in point_fields.items():
+        for var_name, array in point_fields.items():
             self.create_variable(
                 var_name,
                 _NP_TO_NC_TYPE[str(array.dtype)],
@@ -226,7 +226,7 @@ class NetcdfField:
 
     def _set_face_variable_data(self):
         face_fields = self.field.get_cell_fields()
-        for (var_name, array) in face_fields.items():
+        for var_name, array in face_fields.items():
             self.create_variable(
                 var_name,
                 _NP_TO_NC_TYPE[str(array.dtype)],
@@ -271,11 +271,11 @@ class NetcdfRectilinearField(NetcdfField):
 
     def _set_mesh_dimensions(self):
         field_shape = self.field.get_shape()
-        for (name, axis) in zip(self.axis_coordinates, self.field_axes):
+        for name, axis in zip(self.axis_coordinates, self.field_axes):
             self.create_dimension(name, field_shape[axis])
 
     def _set_mesh_coordinate_data(self):
-        for (name, axis) in zip(self.axis_coordinates, self.field_axes):
+        for name, axis in zip(self.axis_coordinates, self.field_axes):
             self.create_variable(name, "f8", (name,))
             self.set_variable(
                 name,
@@ -313,7 +313,7 @@ class NetcdfStructuredField(NetcdfRectilinearField):
     def _set_mesh_coordinate_data(self):
         dims = self.node_data_dimensions
         # for (name, axis) in zip(self.node_coordinates, self.field_axes):
-        for (name, axis) in zip(self.node_data_dimensions, self.field_axes):
+        for name, axis in zip(self.node_data_dimensions, self.field_axes):
             self.create_variable(name, "f8", dims)
             self.set_variable(
                 name,
@@ -367,7 +367,7 @@ class NetcdfUnstructuredField(NetcdfStructuredField):
         dims = self.node_data_dimensions
         # for (name, axis) in zip(self.node_data_dimensions, self.field_axes):
         # for (name, axis) in zip(self.node_coordinates, self.field_axes):
-        for (axis, name) in enumerate(self.node_coordinates):
+        for axis, name in enumerate(self.node_coordinates):
             self.create_variable(name, "f8", dims)
             self.set_variable(
                 name,
