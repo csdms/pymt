@@ -5,10 +5,10 @@ landlab>=2
 matplotlib
 model_metadata>=0.7
 netcdf4
-numpy
+numpy<1.24  # for Ku
 pyyaml
-scipy
-shapely
+scipy<1.9  # see #162
+shapely<2  # see #164
 xarray
 # cfunits
 # esmpy
