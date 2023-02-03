@@ -22,7 +22,7 @@ class DimensionError(Error):
             self.dst_dim = dim1
 
     def __str__(self):
-        return "{} != {}".format(self.src_dim, self.dst_dim)
+        return f"{self.src_dim} != {self.dst_dim}"
 
 
 class CenteringValueError(Error):

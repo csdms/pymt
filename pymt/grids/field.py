@@ -1,4 +1,3 @@
-#! /bin/env python
 import numpy as np
 
 from .igrid import CENTERING_CHOICES, CenteringValueError, DimensionError, IField

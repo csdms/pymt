@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 from configparser import ConfigParser
 from io import StringIO
 

@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 """Execute events along a timeline.
 
 Examples

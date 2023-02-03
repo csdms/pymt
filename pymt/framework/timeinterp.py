@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import bisect
 
 from scipy.interpolate import interp1d

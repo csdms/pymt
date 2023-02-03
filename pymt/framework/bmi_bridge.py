@@ -4,22 +4,21 @@ import json
 import os
 from pprint import pformat
 
+import gimli
 import numpy as np
 import yaml
-import gimli
 
 from deprecated import deprecated
 
-from ..utils import as_cwd
 from ..errors import BmiError
 from ..units import transform_azimuth_to_math, transform_math_to_azimuth
+from ..utils import as_cwd
 from .bmi_docstring import bmi_docstring
 from .bmi_mapper import GridMapperMixIn
 from .bmi_plot import quick_plot
 from .bmi_setup import SetupMixIn
 from .bmi_timeinterp import BmiTimeInterpolator
 from .bmi_ugrid import dataset_from_bmi_grid
-
 
 UNITS = gimli.units
 

@@ -1,5 +1,3 @@
-#! /bin/env python
-
 import numpy as np
 
 from ..grids.esmp import EsmpUnstructuredField

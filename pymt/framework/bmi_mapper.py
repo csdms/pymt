@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import warnings
 
 import numpy as np

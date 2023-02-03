@@ -1,6 +1,3 @@
-#! /usr/bin/env
-
-
 def is_callable_method(obj, method):
     return hasattr(obj, method) and callable(getattr(obj, method))
 

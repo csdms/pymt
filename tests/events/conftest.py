@@ -4,9 +4,9 @@ import pytest
 @pytest.fixture(scope="session")
 def with_earth_and_air():
     from pymt.framework.services import (
-        register_component_classes,
-        instantiate_component,
         del_services,
+        instantiate_component,
+        register_component_classes,
     )
 
     del_services()

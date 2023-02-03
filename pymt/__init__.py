@@ -1,6 +1,6 @@
-from ._version import __version__
-
 from gimli import UnitSystem
+
+from ._version import __version__
 from .model_collection import ModelCollection
 
 MODELS = ModelCollection()

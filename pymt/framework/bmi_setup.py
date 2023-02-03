@@ -1,13 +1,12 @@
-#! /usr/bin/env python
 import os
 import tempfile
 import urllib
 import zipfile
 
 import yaml
+from model_metadata import ModelMetadata
 from model_metadata.model_data_files import FileTemplate
 from model_metadata.model_setup import FileSystemLoader
-from model_metadata import ModelMetadata
 
 from ..utils import as_cwd
 

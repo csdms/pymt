@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # pymt documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  9 13:47:02 2017.
@@ -24,7 +23,6 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 import pymt
-
 
 if os.environ.get("READTHEDOCS", ""):
     # RTD doesn't use the repo's Makefile to build docs.
@@ -69,9 +67,9 @@ source_suffix = [".rst", ".ipynb"]
 master_doc = "index"
 
 # General information about the project.
-project = u"pymt"
-copyright = u"2018, Eric Hutton"
-author = u"Eric Hutton"
+project = "pymt"
+copyright = "2018, Eric Hutton"
+author = "Eric Hutton"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -147,7 +145,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pymt.tex", u"pymt Documentation", u"Eric Hutton", "manual")
+    (master_doc, "pymt.tex", "pymt Documentation", "Eric Hutton", "manual")
 ]
 
 
@@ -155,7 +153,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pymt", u"pymt Documentation", [author], 1)]
+man_pages = [(master_doc, "pymt", "pymt Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------
@@ -167,7 +165,7 @@ texinfo_documents = [
     (
         master_doc,
         "pymt",
-        u"pymt Documentation",
+        "pymt Documentation",
         author,
         "pymt",
         "One line description of project.",

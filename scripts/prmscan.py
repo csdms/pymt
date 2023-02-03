@@ -1,10 +1,6 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
-
-import sys
-
-from cmt.scanners import InputParameterScanner, CmtScanner, MissingKeyError
+from cmt.scanners import CmtScanner, InputParameterScanner
 
 
 def main():

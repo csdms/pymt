@@ -1,10 +1,10 @@
-#! /usr/bin/env python
-
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from pymt.grids.map import UniformRectilinearMap as UniformRectilinear
-from pymt.grids.map import UnstructuredPointsMap as UnstructuredPoints
+from pymt.grids.map import (
+    UniformRectilinearMap as UniformRectilinear,
+    UnstructuredPointsMap as UnstructuredPoints,
+)
 from pymt.mappers import CellToPoint, PointToCell
 
 

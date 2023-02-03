@@ -54,4 +54,4 @@ def strip_prefix(name, prefix):
     if name.startswith(prefix):
         return name[len(prefix) :]
     else:
-        raise ValueError("{} does not start with {}".format(name, prefix))
+        raise ValueError(f"{name} does not start with {prefix}")

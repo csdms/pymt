@@ -4,9 +4,9 @@ import pytest
 @pytest.fixture(scope="function")
 def with_two_components():
     from pymt.framework.services import (
-        register_component_classes,
-        instantiate_component,
         del_services,
+        instantiate_component,
+        register_component_classes,
     )
 
     del_services()

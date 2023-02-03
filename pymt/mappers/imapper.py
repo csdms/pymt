@@ -1,6 +1,3 @@
-#! /bin/env python
-
-
 class MapperError(Exception):
     """Base class for error in this package."""
 
@@ -17,7 +14,7 @@ class IncompatibleGridError(MapperError):
         self._dst = dst
 
     def __str__(self):
-        return "Unable to map {} to {}".format(self._src, self._dst)
+        return f"Unable to map {self._src} to {self._dst}"
 
 
 class NoMapperError(MapperError):
@@ -26,7 +23,7 @@ class NoMapperError(MapperError):
         self._dst = dst
 
     def __str__(self):
-        return "No mapper to map {} to {}".format(self._src, self._dst)
+        return f"No mapper to map {self._src} to {self._dst}"
 
 
 class IGridMapper:

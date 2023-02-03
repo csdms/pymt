@@ -1,8 +1,6 @@
-#! /usr/bin/env python
 import jinja2
 from landlab.core.messages import format_message
 from model_metadata import MetadataNotFoundError, ModelMetadata
-
 
 # {{ desc|trim|wordwrap(70) if desc }}
 _DOCSTRING = """
