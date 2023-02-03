@@ -54,4 +54,4 @@ jobs:
               pip install -e .
 
           - name: Build documentation
-            run: make -C docs clean html
+            run: make docs
