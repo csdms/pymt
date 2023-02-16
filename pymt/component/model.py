@@ -134,7 +134,7 @@ class Model:
             source, with_connectivities=True
         )
 
-        for (name, component) in components.items():
+        for name, component in components.items():
             for port in connectivities[name]:
                 mapping = get_exchange_item_mapping(port["exchange_items"])
                 component.connect(

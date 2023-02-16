@@ -99,7 +99,7 @@ class UniformRectilinearPoints(RectilinearPoints):
         kwds.setdefault("set_connectivity", False)
 
         xi = []
-        for (nx, dx, x0) in zip(shape, spacing, origin):
+        for nx, dx, x0 in zip(shape, spacing, origin):
             xi.append(np.arange(nx, dtype=np.float64) * dx + x0)
 
         self._spacing = np.array(spacing, dtype=np.float64)

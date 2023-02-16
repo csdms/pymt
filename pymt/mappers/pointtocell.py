@@ -12,7 +12,7 @@ def map_cells_to_points(coords, dst_grid, dst_point_ids, bad_val=-1):
     src_x, src_y = coords
 
     cell_to_point_id = defaultdict(list)
-    for (j, point_id) in enumerate(dst_point_ids):
+    for j, point_id in enumerate(dst_point_ids):
         for cell_id in dst_grid.get_shared_cells(point_id):
             if dst_grid.is_in_cell(src_x[j], src_y[j], cell_id):
                 cell_to_point_id[cell_id].append(j)
@@ -21,7 +21,6 @@ def map_cells_to_points(coords, dst_grid, dst_point_ids, bad_val=-1):
 
 
 class PointToCell(IGridMapper):
-
     _name = "PointToCell"
 
     def initialize(self, dest_grid, src_grid, **kwds):
@@ -53,7 +52,7 @@ class PointToCell(IGridMapper):
         if dst_vals.size != self._dst_cell_count:
             raise ValueError("size mismatch between destination and cell count")
 
-        for (cell_id, point_ids) in self._map.items():
+        for cell_id, point_ids in self._map.items():
             if all(src_values[point_ids] > bad_val):
                 dst_vals[cell_id] = method(src_values[point_ids])
 

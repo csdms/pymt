@@ -79,7 +79,7 @@ class TestArgsAsNumpyArrays(unittest.TestCase, NumpyArrayMixIn):
 
         self.assertIsInstance(out_args, tuple)
         self.assertTrue(len(out_args), len(in_args))
-        for (in_arg, out_arg) in zip(in_args, out_args):
+        for in_arg, out_arg in zip(in_args, out_args):
             self.assertArrayEqual(out_arg, in_arg)
 
     def test_list_arg(self):
@@ -88,7 +88,7 @@ class TestArgsAsNumpyArrays(unittest.TestCase, NumpyArrayMixIn):
 
         self.assertIsInstance(out_args, tuple)
         self.assertTrue(len(out_args), len(in_args))
-        for (in_arg, out_arg) in zip(in_args, out_args):
+        for in_arg, out_arg in zip(in_args, out_args):
             self.assertArrayEqual(out_arg, np.array(in_arg))
 
     def test_tuple_arg(self):
@@ -97,7 +97,7 @@ class TestArgsAsNumpyArrays(unittest.TestCase, NumpyArrayMixIn):
 
         self.assertIsInstance(out_args, tuple)
         self.assertTrue(len(out_args), len(in_args))
-        for (in_arg, out_arg) in zip(in_args, out_args):
+        for in_arg, out_arg in zip(in_args, out_args):
             self.assertArrayEqual(out_arg, np.array(in_arg))
 
 

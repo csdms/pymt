@@ -10,7 +10,7 @@ def get_time_series_values(field, ordering="ascending", prefix=""):
 
     names = sort_time_series_names(field, ordering=ordering, prefix=prefix)
 
-    for (var_name, ordered_names) in names.items():
+    for var_name, ordered_names in names.items():
         for name in ordered_names:
             values[var_name].append(field.get_values(name))
 
@@ -29,7 +29,7 @@ def create_interpolators(times, fields, prefix="", kind="linear"):
 
     names = sort_time_series_names(fields.keys(), prefix=prefix, ordering="ascending")
 
-    for (var_name, ordered_names) in names.items():
+    for var_name, ordered_names in names.items():
         interpolators[var_name] = create_interpolator(
             fields, zip(ordered_names, times), kind=kind
         )

@@ -54,7 +54,6 @@ def test_vector_grid():
 
 
 class BmiPoints:
-
     x = np.array([0.0, 1.0, 0.0, 1.0])
     y = np.array([0.0, 0.0, 1.0, 1.0])
 
@@ -111,7 +110,6 @@ def test_unstructured_grid():
 
 
 class BmiStructuredQuadrilateral:
-
     x = np.array([[0.0, 3.0], [1.0, 4.0], [2.0, 5.0]])
     y = np.array([[0.0, 1.0], [2.0, 3.0], [4.0, 5.0]])
 
@@ -144,7 +142,6 @@ def test_structured_quadrilateral_grid():
 
 
 class BmiRectilinear:
-
     x = np.array([1, 4, 8])
     y = np.array([0, 1, 2, 3])
     shape = (len(y), len(x))
@@ -178,7 +175,6 @@ def test_rectilinear_grid():
 
 
 class BmiRectilinear3D:
-
     x = np.array([1, 4, 8])
     y = np.array([0, 1, 2, 3])
     z = np.array([-2, 0, 1])
@@ -217,7 +213,6 @@ def test_rectilinear_grid_3d():
 
 
 class BmiUniformRectilinear:
-
     shape = (4, 3)
     spacing = (1.0, 1.0)
     origin = (5.0, 2.0)

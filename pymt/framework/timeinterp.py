@@ -15,7 +15,6 @@ _MINIMUM_SIZE_FOR_METHOD = {
 
 
 class TimeInterpolator:
-
     METHODS = (
         "linear",
         "nearest",

@@ -12,7 +12,7 @@ def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
     point_to_cell_id = np.empty(len(dst_x), dtype=int)
     point_to_cell_id.fill(bad_val)
 
-    for (j, point_id) in enumerate(src_point_ids):
+    for j, point_id in enumerate(src_point_ids):
         for cell_id in src_grid.get_shared_cells(point_id):
             if src_grid.is_in_cell(dst_x[j], dst_y[j], cell_id):
                 point_to_cell_id[j] = cell_id
@@ -21,7 +21,6 @@ def map_points_to_cells(coords, src_grid, src_point_ids, bad_val=-1):
 
 
 class CellToPoint(IGridMapper):
-
     _name = "CellToPoint"
 
     def initialize(self, dest_grid, src_grid, **kwds):

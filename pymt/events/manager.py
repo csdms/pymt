@@ -111,7 +111,7 @@ class EventManager:
         """
         if not self._initializing:
             self._initializing = True
-            for (event, _) in self._order:
+            for event, _ in self._order:
                 try:
                     event.initialize()
                 except Exception:
@@ -154,7 +154,7 @@ class EventManager:
             if not self._finalizing:
                 self._finalizing = True
                 # for event in self._timeline.events:
-                for (event, _) in self._order[::-1]:
+                for event, _ in self._order[::-1]:
                     event.finalize()
             self._initialized = False
 

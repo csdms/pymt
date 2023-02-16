@@ -1,3 +1,5 @@
 from setuptools import setup
 
-setup()
+setup(
+    name="pymt",  # for GitHub dependency graph
+)
