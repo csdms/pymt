@@ -35,17 +35,17 @@ Examples
 >>> y = np.linspace(0, 1, ny)
 >>> xv, yv = meshgrid(x, y)
 >>> xv
-array([[ 0. ,  0.5,  1. ],
-       [ 0. ,  0.5,  1. ]])
+array([[0. , 0.5, 1. ],
+       [0. , 0.5, 1. ]])
 >>> yv
-array([[ 0.,  0.,  0.],
-       [ 1.,  1.,  1.]])
+array([[0., 0., 0.],
+       [1., 1., 1.]])
 >>> xv, yv = meshgrid(x, y, sparse=True)  # make sparse output arrays
 >>> xv
-array([[ 0. ,  0.5,  1. ]])
+array([[0. , 0.5, 1. ]])
 >>> yv
-array([[ 0.],
-       [ 1.]])
+array([[0.],
+       [1.]])
 
 `meshgrid` is very useful to evaluate functions on a grid.
 

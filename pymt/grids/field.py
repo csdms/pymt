@@ -267,7 +267,7 @@ class RasterField(UniformRectilinear, StructuredField):
         array([  0.,  10.,  20.,  30.,  40.])
 
         >>> g.get_field ('Point Data')
-        array([ 0.,  1.,  2.,  3.,  4.,  5.])
+        array([0., 1., 2., 3., 4., 5.])
 
 
     A 3D-Field,

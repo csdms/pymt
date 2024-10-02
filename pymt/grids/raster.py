@@ -10,9 +10,9 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
 >>> g = UniformRectilinear ((2,3), (1,2), (.5, 0), indexing='ij', units=('m', 'km'))
 >>> g.get_x()
-array([ 0.,  2.,  4.,  0.,  2.,  4.])
+array([0., 2., 4., 0., 2., 4.])
 >>> g.get_y()
-array([ 0.5,  0.5,  0.5,  1.5,  1.5,  1.5])
+array([0.5, 0.5, 0.5, 1.5, 1.5, 1.5])
 >>> [g.get_x_units(), g.get_y_units()]
 ['km', 'm']
 >>> g.get_z_units()
@@ -28,9 +28,9 @@ IndexError: Dimension out of bounds
 >>> g.get_shape()
 array([2, 3])
 >>> g.get_spacing()
-array([ 1.,  2.])
+array([1., 2.])
 >>> g.get_origin()
-array([ 0.5,  0. ])
+array([0.5, 0. ])
 >>> g.get_offset()
 array([4, 8])
 >>> g.get_connectivity()
@@ -42,15 +42,15 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
 >>> g = UniformRectilinearPoints ((2,3), (1,2), (.5, 0), indexing='ij', set_connectivity=True)
 >>> g.get_x()
-array([ 0.,  2.,  4.,  0.,  2.,  4.])
+array([0., 2., 4., 0., 2., 4.])
 >>> g.get_y()
-array([ 0.5,  0.5,  0.5,  1.5,  1.5,  1.5])
+array([0.5, 0.5, 0.5, 1.5, 1.5, 1.5])
 >>> g.get_shape()
 array([2, 3])
 >>> g.get_spacing()
-array([ 1.,  2.])
+array([1., 2.])
 >>> g.get_origin()
-array([ 0.5,  0. ])
+array([0.5, 0. ])
 
 >>> g.get_point_count()
 6
@@ -72,17 +72,17 @@ True
 
 >>> g = UniformRectilinearPoints ((5, ), (1., ), (.5,), indexing='ij', set_connectivity=True)
 >>> g.get_x()
-array([ 0.5,  1.5,  2.5,  3.5,  4.5])
+array([0.5, 1.5, 2.5, 3.5, 4.5])
 
 **3D-grid of cells**
 
 >>> g = UniformRectilinear ((4, 3, 2), (1, 2, 3), (-1, 0, 1), indexing='ij')
 >>> g.get_x()
-array([ 1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,
-        4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.,  1.,  4.])
+array([1., 4., 1., 4., 1., 4., 1., 4., 1., 4., 1., 4., 1., 4., 1., 4., 1.,
+       4., 1., 4., 1., 4., 1., 4.])
 >>> g.get_y()
-array([ 0.,  0.,  2.,  2.,  4.,  4.,  0.,  0.,  2.,  2.,  4.,  4.,  0.,
-        0.,  2.,  2.,  4.,  4.,  0.,  0.,  2.,  2.,  4.,  4.])
+array([0., 0., 2., 2., 4., 4., 0., 0., 2., 2., 4., 4., 0., 0., 2., 2., 4.,
+       4., 0., 0., 2., 2., 4., 4.])
 >>> g.get_z()
 array([-1., -1., -1., -1., -1., -1.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,
         1.,  1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  2.,  2.])

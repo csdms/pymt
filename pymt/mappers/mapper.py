@@ -12,15 +12,15 @@ Point-to-point Mapping
 >>> dst = Rectilinear([.5, 1.5, 2.5], [.25, 1.25])
 
 >>> src.get_x()
-array([ 0.,  2.,  0.,  2.,  0.,  2.])
+array([0., 2., 0., 2., 0., 2.])
 
 >>> src.get_y()
-array([ 0.,  0.,  1.,  1.,  2.,  2.])
+array([0., 0., 1., 1., 2., 2.])
 
 >>> dst.get_x()
-array([ 0.25,  1.25,  0.25,  1.25,  0.25,  1.25])
+array([0.25, 1.25, 0.25, 1.25, 0.25, 1.25])
 >>> dst.get_y()
-array([ 0.5,  0.5,  1.5,  1.5,  2.5,  2.5])
+array([0.5, 0.5, 1.5, 1.5, 2.5, 2.5])
 
 >>> src_vals = np.arange(src.get_point_count(), dtype=np.float64)
 
@@ -32,7 +32,7 @@ using nearest neighbor.
 >>> mapper = NearestVal()
 >>> mapper.initialize(dst, src)
 >>> mapper.run(src_vals)
-array([ 0.,  1.,  2.,  3.,  4.,  5.])
+array([0., 1., 2., 3., 4., 5.])
 
 >>> mappers = find_mapper(dst, src)
 >>> len(mappers)
@@ -102,10 +102,10 @@ Point-to-cell Mapping
 >>> mapper.initialize(dst, src)
 
 >>> mapper.run(src_vals, bad_val=-999)
-array([ 1.5,  4. ,  1. ])
+array([1.5, 4. , 1. ])
 
 >>> mapper.run(src_vals, bad_val=-999, method=np.sum)
-array([ 3.,  4.,  1.])
+array([3., 4., 1.])
 
 >>> src_vals[0] = -9999
 >>> dst_vals = np.zeros(dst.get_cell_count ()) - 1
@@ -129,7 +129,7 @@ Point on cell edges
 >>> dst_vals = np.zeros(dst.get_cell_count()) - 1
 >>> _ = mapper.run(src_vals, dst_vals=dst_vals)
 >>> dst_vals
-array([ 1. ,  0.5,  3. ])
+array([1. , 0.5, 3. ])
 
 A big mapper
 ============
