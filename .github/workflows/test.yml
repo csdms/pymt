@@ -56,9 +56,6 @@ jobs:
         run: |
           pip install -e .
 
-      - name: Install testing dependencies
-        run: mamba install --file=requirements-testing.txt
-
       - name: Test
         run: |
           python -c 'import pymt; print(pymt.__version__)'
