@@ -46,9 +46,9 @@ def test_2d_constant_shape(tmpdir):
         assert set(root.dims) == {"y", "x", "time"}
         assert set(root.data_vars) == {"mesh", "Elevation"}
 
-        assert root.dims["x"] == 3
-        assert root.dims["y"] == 2
-        assert root.dims["time"] == 2
+        assert root.sizes["x"] == 3
+        assert root.sizes["y"] == 2
+        assert root.sizes["time"] == 2
 
         assert root.variables["Elevation"].shape == (2, 2, 3)
 
@@ -105,9 +105,9 @@ def test_2d_changing_shape(tmpdir):
         assert set(root.dims) == {"y", "x", "time"}
         assert set(root.data_vars) == {"mesh", "Temperature"}
 
-        assert root.dims["x"] == 3
-        assert root.dims["y"] == 3
-        assert root.dims["time"] == 1
+        assert root.sizes["x"] == 3
+        assert root.sizes["y"] == 3
+        assert root.sizes["time"] == 1
 
         assert root.data_vars["Temperature"].shape == (1, 3, 3)
         assert root.data_vars["Temperature"][0].data == approx(
