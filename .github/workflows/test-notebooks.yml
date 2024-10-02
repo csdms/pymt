@@ -23,9 +23,9 @@ jobs:
         python-version: ["3.11"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-variant: Mambaforge
           miniforge-version: latest
@@ -39,7 +39,6 @@ jobs:
       - name: Install requirements
         run: |
           mamba install --file=requirements.txt
-          mamba install gimli.units
           mamba list
 
       - name: Build and install package
