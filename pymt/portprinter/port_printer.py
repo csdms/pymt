@@ -60,7 +60,7 @@ class PortPrinter:
     @classmethod
     def from_string(cls, source, prefix="print"):
         config = ConfigParser()
-        config.readfp(StringIO(source))
+        config.read_file(StringIO(source))
         return cls._from_config(config, prefix=prefix)
 
     @classmethod
