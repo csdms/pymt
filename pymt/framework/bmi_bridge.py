@@ -1,4 +1,5 @@
 """Bridge between BMI and a PyMT component."""
+
 import ctypes
 import json
 import os
@@ -91,7 +92,6 @@ Attributes:
 
 
 class _BmiCapV1:
-
     """Add methods for backward compatibility."""
 
     @staticmethod

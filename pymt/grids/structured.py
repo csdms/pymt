@@ -106,6 +106,7 @@ array([8])
 >>> g.get_connectivity()
 array([1, 0, 2, 3, 5, 4, 6, 7])
 """
+
 import warnings
 
 import numpy as np
