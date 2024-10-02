@@ -79,8 +79,8 @@ def test_points_grid():
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
     assert grid.metadata["type"] == bmi.grid_type(grid_id)
-    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
-    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert grid.data_vars["mesh"].attrs["type"] is bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) is np.ndarray
 
 
 class BmiUnstructured(BmiPoints):
@@ -106,8 +106,8 @@ def test_unstructured_grid():
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
     assert grid.metadata["type"] == bmi.grid_type(grid_id)
-    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
-    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert grid.data_vars["mesh"].attrs["type"] is bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) is np.ndarray
 
 
 class BmiStructuredQuadrilateral:
@@ -138,8 +138,8 @@ def test_structured_quadrilateral_grid():
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
     assert grid.metadata["type"] == bmi.grid_type(grid_id)
-    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
-    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert grid.data_vars["mesh"].attrs["type"] is bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) is np.ndarray
 
 
 class BmiRectilinear:
@@ -171,8 +171,8 @@ def test_rectilinear_grid():
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
     assert grid.metadata["type"] == bmi.grid_type(grid_id)
-    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
-    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert grid.data_vars["mesh"].attrs["type"] is bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) is np.ndarray
 
 
 class BmiRectilinear3D:
@@ -208,8 +208,8 @@ def test_rectilinear_grid_3d():
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 3
     assert grid.metadata["type"] == bmi.grid_type(grid_id)
-    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
-    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert grid.data_vars["mesh"].attrs["type"] is bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) is np.ndarray
     assert len(grid.data_vars["node_x"].data) == np.prod(bmi.grid_shape(grid_id))
 
 
@@ -242,5 +242,5 @@ def test_uniform_rectilinear_grid():
     assert isinstance(grid, xr.Dataset)
     assert grid.ndim == 2
     assert grid.metadata["type"] == bmi.grid_type(grid_id)
-    assert grid.data_vars["mesh"].attrs["type"] == bmi.grid_type(grid_id)
-    assert type(grid.data_vars["node_x"].data) == np.ndarray
+    assert grid.data_vars["mesh"].attrs["type"] is bmi.grid_type(grid_id)
+    assert type(grid.data_vars["node_x"].data) is np.ndarray
