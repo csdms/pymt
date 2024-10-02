@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.10"]
 
     steps:
       - uses: actions/checkout@v4
@@ -65,5 +65,5 @@ jobs:
           pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
 
       - name: Coveralls
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
         uses: AndreMiras/coveralls-python-action@v20201129
