@@ -1,5 +1,6 @@
 click
 deprecated
+gimli.units>=0.3.2
 jinja2
 landlab>=2
 matplotlib
