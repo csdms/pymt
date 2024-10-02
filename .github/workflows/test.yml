@@ -49,7 +49,6 @@ jobs:
       - name: Install Unix requirements
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
-          mamba install esmpy
           mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
 
       - name: Build and install package
