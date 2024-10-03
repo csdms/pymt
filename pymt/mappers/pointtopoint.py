@@ -37,10 +37,10 @@ def copy_good_values(src, dst, bad_val=-999):
     >>> rv is y
     True
     >>> y
-    array([[ 0.,  1.,  2.],
-           [ 3.,  4.,  5.]])
+    array([[0., 1., 2.],
+           [3., 4., 5.]])
     >>> copy_good_values(x, np.zeros(6), bad_val=3.)
-    array([ 0.,  0.,  0.,  0.,  4.,  5.])
+    array([0., 0., 0., 0., 4., 5.])
     """
     if src.size != dst.size:
         raise ValueError("size mismatch between source and destination arrays")
@@ -65,7 +65,7 @@ class NearestVal(IGridMapper):
     >>> mapper = NearestVal()
     >>> mapper.initialize(dst, src)
     >>> mapper.run(np.arange(6.))
-    array([ 0.,  1.,  2.,  3.,  4.,  5.])
+    array([0., 1., 2., 3., 4., 5.])
     """
 
     _name = "PointToPoint"

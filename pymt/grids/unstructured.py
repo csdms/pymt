@@ -212,10 +212,10 @@ class Unstructured(UnstructuredPoints):
     2
 
     >>> g.get_x()
-    array([ 0.,  2.,  1.,  3.])
+    array([0., 2., 1., 3.])
 
     >>> g.get_y()
-    array([ 0.,  0.,  1.,  1.])
+    array([0., 0., 1., 1.])
 
     >>> g.get_connectivity()
     array([0, 2, 1, 2, 3, 1])
@@ -247,11 +247,11 @@ class Unstructured(UnstructuredPoints):
     >>> g.get_cell_count()
     1
     >>> g.get_x()
-    array([ 0.,  1.,  0.,  1.,  0.,  1.,  0.,  1.])
+    array([0., 1., 0., 1., 0., 1., 0., 1.])
     >>> g.get_y()
-    array([ 0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.])
+    array([0., 0., 1., 1., 0., 0., 1., 1.])
     >>> g.get_z()
-    array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
+    array([0., 0., 0., 0., 1., 1., 1., 1.])
     """
 
     def __init__(self, *args, **kwds):

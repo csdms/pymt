@@ -48,9 +48,9 @@ port=earth_port
         assert os.path.isfile("air__density.nc")
         ds = xarray.open_dataset("air__density.nc", engine="h5netcdf")
         assert "air__density" in ds.variables
-        assert ds.dims["time"] == 5
+        assert ds.sizes["time"] == 5
 
         assert os.path.isfile("glacier_top_surface__slope.nc")
         ds = xarray.open_dataset("glacier_top_surface__slope.nc", engine="h5netcdf")
         assert "glacier_top_surface__slope" in ds.variables
-        assert ds.dims["time"] == 5
+        assert ds.sizes["time"] == 5

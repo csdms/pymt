@@ -25,15 +25,15 @@ def raster_node_coordinates(shape, spacing=None, origin=None):
     >>> from pymt.component.grid import raster_node_coordinates
     >>> (y, x) = raster_node_coordinates((2, 3))
     >>> y
-    array([[ 0.,  0.,  0.],
-           [ 1.,  1.,  1.]])
+    array([[0., 0., 0.],
+           [1., 1., 1.]])
     >>> x
-    array([[ 0.,  1.,  2.],
-           [ 0.,  1.,  2.]])
+    array([[0., 1., 2.],
+           [0., 1., 2.]])
 
     >>> (x, ) = raster_node_coordinates((3, ), (2., ), (1., ))
     >>> x
-    array([ 1.,  3.,  5.])
+    array([1., 3., 5.])
     """
     spacing = spacing or np.ones_like(shape, dtype=float)
     origin = origin or np.zeros_like(shape, dtype=float)
@@ -74,11 +74,11 @@ def get_raster_node_coordinates(grid, grid_id):
     >>> g = RasterGrid()
     >>> (y, x) = get_raster_node_coordinates(g, 0)
     >>> y
-    array([[ 2.,  2.,  2.],
-           [ 3.,  3.,  3.]])
+    array([[2., 2., 2.],
+           [3., 3., 3.]])
     >>> x
-    array([[ 1.,  3.,  5.],
-           [ 1.,  3.,  5.]])
+    array([[1., 3., 5.],
+           [1., 3., 5.]])
     """
     (shape, spacing, origin) = (
         grid.get_grid_shape(grid_id),
@@ -115,11 +115,11 @@ def get_rectilinear_node_coordinates(grid, grid_id):
     >>> g = RectilinearGrid()
     >>> (y, x) = get_rectilinear_node_coordinates(g, 0)
     >>> y
-    array([[ 2.,  2.,  2.],
-           [ 7.,  7.,  7.]])
+    array([[2., 2., 2.],
+           [7., 7., 7.]])
     >>> x
-    array([[ 0.,  3.,  4.],
-           [ 0.,  3.,  4.]])
+    array([[0., 3., 4.],
+           [0., 3., 4.]])
     """
     coordinate_vectors = []
     for coordinate_name in ["z", "y", "x"]:
@@ -160,11 +160,11 @@ def get_structured_node_coordinates(grid, grid_id):
     >>> g = StructuredGrid()
     >>> (y, x) = get_structured_node_coordinates(g, 0)
     >>> y
-    array([[ 2.,  2.,  2.],
-           [ 7.,  7.,  7.]])
+    array([[2., 2., 2.],
+           [7., 7., 7.]])
     >>> x
-    array([[ 0.,  3.,  4.],
-           [ 0.,  3.,  4.]])
+    array([[0., 3., 4.],
+           [0., 3., 4.]])
     """
     node_coordinates = []
     for coordinate_name in ["z", "y", "x"]:
@@ -246,11 +246,11 @@ class GridMixIn:
     >>> c.get_grid_type(0)
     'RASTER'
     >>> c.get_x(0)
-    array([[ 0.,  1.,  2.],
-           [ 0.,  1.,  2.]])
+    array([[0., 1., 2.],
+           [0., 1., 2.]])
     >>> c.get_y(0)
-    array([[ 0.,  0.,  0.],
-           [ 2.,  2.,  2.]])
+    array([[0., 0., 0.],
+           [2., 2., 2.]])
     """
 
     def __init__(self):

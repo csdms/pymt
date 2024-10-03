@@ -10,9 +10,9 @@ Create a grid of length 2 in the x direction, and 3 in the y direction.
 >>> g.get_cell_count()
 6
 >>> g.get_x()
-array([ 1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.,  1.,  2.,  4.,  8.])
+array([1., 2., 4., 8., 1., 2., 4., 8., 1., 2., 4., 8.])
 >>> g.get_y()
-array([ 1.,  1.,  1.,  1.,  2.,  2.,  2.,  2.,  3.,  3.,  3.,  3.])
+array([1., 1., 1., 1., 2., 2., 2., 2., 3., 3., 3., 3.])
 >>> g.get_shape()
 array([3, 4])
 
@@ -20,9 +20,9 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
 >>> g = Rectilinear([1., 2., 4., 8.], [1., 2., 3.], indexing='ij')
 >>> g.get_x()
-array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
+array([1., 2., 3., 1., 2., 3., 1., 2., 3., 1., 2., 3.])
 >>> g.get_y()
-array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
+array([1., 1., 1., 2., 2., 2., 4., 4., 4., 8., 8., 8.])
 >>> g.get_shape()
 array([4, 3])
 
@@ -38,9 +38,9 @@ Create a grid of length 2 in the i direction, and 3 in the j direction.
 
 >>> g = RectilinearPoints ([1., 2., 4., 8.], [1., 2., 3.], indexing='ij', set_connectivity=True)
 >>> g.get_x()
-array([ 1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.,  1.,  2.,  3.])
+array([1., 2., 3., 1., 2., 3., 1., 2., 3., 1., 2., 3.])
 >>> g.get_y()
-array([ 1.,  1.,  1.,  2.,  2.,  2.,  4.,  4.,  4.,  8.,  8.,  8.])
+array([1., 1., 1., 2., 2., 2., 4., 4., 4., 8., 8., 8.])
 >>> g.get_shape ()
 array([4, 3])
 >>> g.get_point_count()
@@ -63,7 +63,7 @@ True
 
 >>> g = Rectilinear([1,3,4,5,6], set_connectivity=True)
 >>> g.get_x()
-array([ 1.,  3.,  4.,  5.,  6.])
+array([1., 3., 4., 5., 6.])
 >>> g.get_point_count()
 5
 >>> g.get_cell_count()
@@ -78,17 +78,17 @@ array([2, 4, 6, 8])
 
 >>> g = Rectilinear ([0, 1], [2, 3], set_connectivity=True, indexing='ij')
 >>> g.get_x()
-array([ 2.,  3.,  2.,  3.])
+array([2., 3., 2., 3.])
 >>> g.get_y()
-array([ 0.,  0.,  1.,  1.])
+array([0., 0., 1., 1.])
 
 >>> g = Rectilinear ([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
 >>> g.get_x()
-array([ 4.,  5.,  4.,  5.,  4.,  5.,  4.,  5.])
+array([4., 5., 4., 5., 4., 5., 4., 5.])
 >>> g.get_y()
-array([ 2.,  2.,  3.,  3.,  2.,  2.,  3.,  3.])
+array([2., 2., 3., 3., 2., 2., 3., 3.])
 >>> g.get_z()
-array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
+array([0., 0., 0., 0., 1., 1., 1., 1.])
 >>> g.get_point_count()
 8
 >>> g.get_cell_count()
@@ -96,8 +96,8 @@ array([ 0.,  0.,  0.,  0.,  1.,  1.,  1.,  1.])
 
 >>> g = Rectilinear([0, 1, 2, 3], [4, 5, 6], [7, 8], set_connectivity=True, indexing='ij')
 >>> g.get_x()
-array([ 7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,
-        8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.,  7.,  8.])
+array([7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7., 8., 7.,
+       8., 7., 8., 7., 8., 7., 8.])
 >>> g.get_shape()
 array([4, 3, 2])
 >>> x = g.get_x()
@@ -153,7 +153,7 @@ class RectilinearPoints(StructuredPoints):
 
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
         >>> g.get_x_coordinates()
-        array([ 4.,  5.])
+        array([4., 5.])
         """
         return self._x_coordinates
 
@@ -164,7 +164,7 @@ class RectilinearPoints(StructuredPoints):
 
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
         >>> g.get_y_coordinates()
-        array([ 2.,  3.])
+        array([2., 3.])
         """
         return self._y_coordinates
 
@@ -175,7 +175,7 @@ class RectilinearPoints(StructuredPoints):
 
         >>> g = Rectilinear([0, 1], [2, 3], [4, 5], set_connectivity=True, indexing='ij')
         >>> g.get_z_coordinates()
-        array([ 0.,  1.])
+        array([0., 1.])
         """
         return self._z_coordinates
 

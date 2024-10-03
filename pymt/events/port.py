@@ -1,5 +1,6 @@
 """Wrap a port as a :class:`Timeline` event.
 """
+
 import os
 import sys
 
