@@ -20,12 +20,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.8, 3.9]
+        python-version: ["3.10"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-variant: Mambaforge
           miniforge-version: latest
@@ -39,7 +39,6 @@ jobs:
       - name: Install requirements
         run: |
           mamba install --file=requirements.txt --file=requirements-testing.txt
-          mamba install gimli.units
           mamba list
 
       - name: Install Windows requirements
@@ -66,5 +65,5 @@ jobs:
           pytest --cov=pymt --cov-report=xml:$(pwd)/coverage.xml -vvv
 
       - name: Coveralls
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
         uses: AndreMiras/coveralls-python-action@v20201129

@@ -1,11 +1,11 @@
 click
 deprecated
+gimli.units>=0.3.2
 jinja2
 landlab>=2
 matplotlib
 model_metadata>=0.7
 netcdf4
-numpy<1.24  # for Ku
 pyyaml
 scipy<1.9  # see #162
 shapely<2  # see #164
