@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from gimli import IncompatibleUnitsError, UnitNameError
+from gimli._udunits2 import UdunitsError
 from numpy.testing import assert_array_equal
 
 from pymt.framework.bmi_bridge import BmiTimeInterpolator, GridMapperMixIn, _BmiCap
@@ -64,12 +64,12 @@ def test_unit_conversion():
 def test_incompatible_units():
     """Test wrapping BMI time methods."""
     bmi = Bmi()
-    with pytest.raises(IncompatibleUnitsError):
+    with pytest.raises(UdunitsError):
         bmi.get_value("elevation", units="kg")
 
 
 def test_bad_units():
     """Test wrapping BMI time methods."""
     bmi = Bmi()
-    with pytest.raises(UnitNameError):
+    with pytest.raises(UdunitsError):
         bmi.get_value("elevation", units="not_real_units")
