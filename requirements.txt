@@ -7,8 +7,8 @@ matplotlib
 model_metadata>=0.8
 netcdf4
 pyyaml
-scipy<1.9  # see #162
-shapely<2  # see #164
+scipy
+shapely
 xarray
 # cfunits
 # esmpy
