@@ -38,8 +38,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          mamba install --file=requirements.txt --file=requirements-testing.txt
-          mamba list
+          pip install -r requirements.txt -r requirements-testing.txt
 
       # - name: Install Windows requirements
       #   if: matrix.os == 'windows-latest'
