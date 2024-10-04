@@ -27,14 +27,14 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-variant: Mambaforge
-          miniforge-version: latest
           python-version: ${{ matrix.python-version }}
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
 
       - name: Show conda installation info
         run: |
-          mamba info
-          mamba list
+          conda info
+          conda list
 
       - name: Install requirements
         run: |
@@ -43,12 +43,12 @@ jobs:
       # - name: Install Windows requirements
       #   if: matrix.os == 'windows-latest'
       #   run: |
-      #     mamba install pymt_child pymt_hydrotrend pymt_permamodel
+      #     conda install pymt_child pymt_hydrotrend pymt_permamodel
 
       # - name: Install Unix requirements
       #   if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
       #   run: |
-      #     mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
+      #     conda install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
 
       - name: Build and install package
         run: |
