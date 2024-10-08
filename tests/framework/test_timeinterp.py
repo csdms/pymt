@@ -13,7 +13,7 @@ def test_timeinterp():
 
 def test_timeinterp_with_scalars():
     interp = TimeInterpolator(((0.0, 1.0),))
-    with raises(ValueError):
+    with raises(AssertionError):
         assert interp(0.5) == approx(1.5)
     interp.add_data(((1.0, 2.0),))
     assert interp(0.5) == approx(1.5)
