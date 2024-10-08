@@ -4,7 +4,7 @@ gimli.units>=0.3.2
 jinja2
 landlab>=2
 matplotlib
-model_metadata>=0.8
+model_metadata<0.8
 netcdf4
 pyyaml
 scipy<1.9  # see #162
