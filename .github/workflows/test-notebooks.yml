@@ -32,16 +32,16 @@ jobs:
 
       - name: Show conda installation info
         run: |
-          mamba info
-          mamba list
+          conda info
+          conda list
 
       - name: Install requirements
         run: |
-          mamba install \
+          conda install \
             --file=requirements.txt \
             --file=requirements-testing.txt \
             --file=requirements-notebooks.txt
-          mamba list
+          conda list
 
       - name: Build and install package
         run: |

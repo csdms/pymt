@@ -32,23 +32,23 @@ jobs:
 
       - name: Show conda installation info
         run: |
-          mamba info
-          mamba list
+          conda info
+          conda list
 
       - name: Install requirements
         run: |
-          mamba install --file=requirements.txt --file=requirements-testing.txt
-          mamba list
+          conda install --file=requirements.txt --file=requirements-testing.txt
+          conda list
 
       - name: Install Windows requirements
         if: matrix.os == 'windows-latest'
         run: |
-          mamba install pymt_child pymt_hydrotrend pymt_permamodel
+          conda install pymt_child pymt_hydrotrend pymt_permamodel
 
       - name: Install Unix requirements
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
-          mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
+          conda install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
 
       - name: Build and install package
         run: |

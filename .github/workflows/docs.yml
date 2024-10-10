@@ -42,12 +42,12 @@ jobs:
 
           - name: Show conda installation info
             run: |
-              mamba info
-              mamba list
+              conda info
+              conda list
     
           - name: Install dependencies
             run: |
-              mamba install --file=requirements.txt --file=requirements-docs.txt gimli.units
+              conda install --file=requirements.txt --file=requirements-docs.txt gimli.units
               pip install -e .
 
           - name: Build documentation
