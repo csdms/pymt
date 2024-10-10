@@ -34,21 +34,20 @@ jobs:
             shell: bash -l {0}
 
         steps:
-          - uses: actions/checkout@v2
-          - uses: conda-incubator/setup-miniconda@v2
+          - uses: actions/checkout@v4
+          - uses: conda-incubator/setup-miniconda@v3
             with:
-              miniforge-variant: Mambaforge
               miniforge-version: latest
               python-version: 3.8
 
           - name: Show conda installation info
             run: |
-              mamba info
-              mamba list
+              conda info
+              conda list
     
           - name: Install dependencies
             run: |
-              mamba install --file=requirements.txt --file=requirements-docs.txt gimli.units
+              conda install --file=requirements.txt --file=requirements-docs.txt gimli.units
               pip install -e .
 
           - name: Build documentation

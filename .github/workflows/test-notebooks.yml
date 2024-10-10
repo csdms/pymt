@@ -27,22 +27,21 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-variant: Mambaforge
           miniforge-version: latest
           python-version: ${{ matrix.python-version }}
 
       - name: Show conda installation info
         run: |
-          mamba info
-          mamba list
+          conda info
+          conda list
 
       - name: Install requirements
         run: |
-          mamba install \
+          conda install \
             --file=requirements.txt \
             --file=requirements-testing.txt \
             --file=requirements-notebooks.txt
-          mamba list
+          conda list
 
       - name: Build and install package
         run: |
