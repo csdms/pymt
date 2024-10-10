@@ -41,23 +41,19 @@ jobs:
           mamba install --file=requirements.txt --file=requirements-testing.txt
           mamba list
 
-      - name: Install Windows requirements
-        if: matrix.os == 'windows-latest'
-        run: |
-          mamba install pymt_child pymt_hydrotrend pymt_permamodel
+      # - name: Install Windows requirements
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     mamba install pymt_child pymt_hydrotrend pymt_permamodel
 
-      - name: Install Unix requirements
-        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
-        run: |
-          mamba install esmpy
-          mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
+      # - name: Install Unix requirements
+      #   if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+      #   run: |
+      #     mamba install pymt_cem pymt_child pymt_hydrotrend pymt_permamodel
 
       - name: Build and install package
         run: |
           pip install -e .
-
-      - name: Install testing dependencies
-        run: mamba install --file=requirements-testing.txt
 
       - name: Test
         run: |

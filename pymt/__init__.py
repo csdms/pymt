@@ -1,4 +1,4 @@
-from gimli import UnitSystem
+from gimli.units import UnitSystem
 
 from ._version import __version__
 from .model_collection import ModelCollection

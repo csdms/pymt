@@ -38,17 +38,15 @@ jobs:
 
       - name: Install requirements
         run: |
-          mamba install --file=requirements.txt
+          mamba install \
+            --file=requirements.txt \
+            --file=requirements-testing.txt \
+            --file=requirements-notebooks.txt
           mamba list
 
       - name: Build and install package
         run: |
           pip install -e .
-
-      - name: Install testing dependencies
-        run: |
-          mamba install --file=requirements-testing.txt
-          mamba install --file=requirements-notebooks.txt
 
       - name: Test jupyter notebooks
         timeout-minutes: 30
