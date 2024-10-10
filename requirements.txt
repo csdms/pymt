@@ -6,6 +6,7 @@ landlab>=2
 matplotlib
 model_metadata<0.8
 netcdf4
+numpy<2  # see #173
 pyyaml
 scipy
 shapely
