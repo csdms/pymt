@@ -1,2 +1,0 @@
-Updated *pymt* to work with the newest version of both *shapely* and
-*scipy*.

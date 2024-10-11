@@ -1,2 +1,0 @@
-Fixed the successful, but 0%, coverage score reported by Coveralls through the coveralls-python Action.
-
