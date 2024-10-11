@@ -46,7 +46,7 @@ True
 
 """
 
-from shapely.geometry import Point, asLineString, asPoint, asPolygon
+from shapely.geometry import Point, LineString, Polygon
 
 from pymt.grids import (
     Rectilinear,
@@ -84,11 +84,11 @@ class UnstructuredMap(Unstructured):
 
             (x, y) = (point_x.take(cell), point_y.take(cell))
             if len(x) > 2:
-                self._polys.append(asPolygon(zip(x, y)))
+                self._polys.append(Polygon(zip(x, y)))
             elif len(x) == 2:
-                self._polys.append(asLineString(zip(x, y)))
+                self._polys.append(LineString(zip(x, y)))
             else:
-                self._polys.append(asPoint(zip(x, y)))
+                self._polys.append(Point(zip(x, y)))
 
     def get_shared_cells(self, point_id):
         """
