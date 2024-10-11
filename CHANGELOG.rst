@@ -3,6 +3,34 @@ Release Notes
 
 .. towncrier release notes start
 
+1.3.2 (2024-10-11)
+------------------
+
+Bug Fixes
+`````````
+
+- Fixed failing NetCDF tests related to a now non-existant THREDDS server. (`#150 <https://github.com/csdms/pymt/issues/150>`_)
+- Fixed the *environment.yml* file needed for running notebooks on Binder. (`#153 <https://github.com/csdms/pymt/issues/153>`_)
+
+
+Other Changes and Additions
+```````````````````````````
+
+- Fixed broken environment-docs.yml file. (`#145 <https://github.com/csdms/pymt/issues/145>`_)
+- Fixed the successful, but 0%, coverage score reported by Coveralls through the coveralls-python Action. (`#146 <https://github.com/csdms/pymt/issues/146>`_)
+- Reformat code for the newest version of *black*. (`#154 <https://github.com/csdms/pymt/issues/154>`_)
+- Setup `towncrier <https://towncrier.readthedocs.io/en/actual-freaking-docs/>`_ to manage the changelog. (`#155 <https://github.com/csdms/pymt/issues/155>`_)
+- Moved static project metadata into pyproject.toml. (`#156 <https://github.com/csdms/pymt/issues/156>`_)
+- Removed dependency on ``six`` since we don't support Python 2 and updated code
+  to use Python 3.8+ syntax. (`#159 <https://github.com/csdms/pymt/issues/159>`_)
+- Updated *pymt* for the latest version of *gimli.units*, which changed
+  its interface slightly. (`#169 <https://github.com/csdms/pymt/issues/169>`_)
+- Removed a bunch of lint that had built up over the years. (`#170 <https://github.com/csdms/pymt/issues/170>`_)
+- Added support for Python 3.10, and dropped support for older versions. (`#171 <https://github.com/csdms/pymt/issues/171>`_)
+- Updated *pymt* to work with the newest version of both *shapely* and
+  *scipy*. (`#174 <https://github.com/csdms/pymt/issues/174>`_)
+
+
 1.3.1 (2021-03-18)
 ------------------
 
