@@ -37,7 +37,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          conda install --file=requirements.txt --file=requirements-testing.txt
+          pip install -r requirements.txt -r requirements-testing.txt
           conda list
 
       - name: Install Windows requirements
