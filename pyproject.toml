@@ -27,6 +27,7 @@ requires-python = ">=3.8"
 dependencies = [
   "click",
   "deprecated",
+  "gimli.units",
   "jinja2",
   "landlab >= 2",
   "matplotlib",
