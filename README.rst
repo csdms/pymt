@@ -77,14 +77,10 @@ The Community Surface Dynamics Modeling System (CSDMS)*.
 .. |Documentation Status| image:: https://readthedocs.org/projects/pymt/badge/?version=latest
    :target: https://pymt.readthedocs.io/en/latest/?badge=latest
 .. |Coverage Status| image:: https://coveralls.io/repos/github/csdms/pymt/badge.svg?branch=master
+   :target: https://coveralls.io/github/csdms/pymt?branch=master
 .. |Conda Version| image:: https://anaconda.org/conda-forge/pymt/badges/version.svg
    :target: https://anaconda.org/conda-forge/pymt
-   :target: https://conda.anaconda.org/conda-forge
 .. |Conda Downloads| image:: https://anaconda.org/conda-forge/pymt/badges/downloads.svg
    :target: https://anaconda.org/conda-forge/pymt
 .. |Binder| image:: https://static.mybinder.org/badge_logo.svg
    :target: https://static.mybinder.org/badge_logo.svg
-
-
-
-
