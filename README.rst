@@ -3,8 +3,8 @@
 The Python Modeling Toolkit (pymt)
 ==================================
 
-|Build Status| |License| |Code Style| |Documentation Status| |Coverage Status| |Conda Version|
-|Conda Installation| |Conda Downloads| |Binder|
+|Build Status| |License| |Code Style| |Documentation Status| |Coverage Status|
+|Conda Version| |Conda Downloads| |Binder|
 
 Quick links:
 
@@ -80,13 +80,7 @@ The Community Surface Dynamics Modeling System (CSDMS)*.
    :target: https://coveralls.io/github/csdms/pymt?branch=master
 .. |Conda Version| image:: https://anaconda.org/conda-forge/pymt/badges/version.svg
    :target: https://anaconda.org/conda-forge/pymt
-.. |Conda Installation| image:: https://anaconda.org/conda-forge/pymt/badges/installer/conda.svg
-   :target: https://conda.anaconda.org/conda-forge
 .. |Conda Downloads| image:: https://anaconda.org/conda-forge/pymt/badges/downloads.svg
    :target: https://anaconda.org/conda-forge/pymt
 .. |Binder| image:: https://static.mybinder.org/badge_logo.svg
    :target: https://static.mybinder.org/badge_logo.svg
-
-
-
-
